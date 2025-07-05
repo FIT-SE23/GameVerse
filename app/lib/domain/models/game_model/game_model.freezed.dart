@@ -1,0 +1,185 @@
+// dart format width=80
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'game_model.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+
+/// @nodoc
+mixin _$GameModel {
+
+ int get appId; String get name; String? get description; String get headerImage; List<String>? get screenshots; Map<String, dynamic>? get price; bool get installed; double? get playtimeHours;
+/// Create a copy of GameModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GameModelCopyWith<GameModel> get copyWith => _$GameModelCopyWithImpl<GameModel>(this as GameModel, _$identity);
+
+  /// Serializes this GameModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.appId, appId) || other.appId == appId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&const DeepCollectionEquality().equals(other.screenshots, screenshots)&&const DeepCollectionEquality().equals(other.price, price)&&(identical(other.installed, installed) || other.installed == installed)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,appId,name,description,headerImage,const DeepCollectionEquality().hash(screenshots),const DeepCollectionEquality().hash(price),installed,playtimeHours);
+
+@override
+String toString() {
+  return 'GameModel(appId: $appId, name: $name, description: $description, headerImage: $headerImage, screenshots: $screenshots, price: $price, installed: $installed, playtimeHours: $playtimeHours)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GameModelCopyWith<$Res>  {
+  factory $GameModelCopyWith(GameModel value, $Res Function(GameModel) _then) = _$GameModelCopyWithImpl;
+@useResult
+$Res call({
+ int appId, String name, String? description, String headerImage, List<String>? screenshots, Map<String, dynamic>? price, bool installed, double? playtimeHours
+});
+
+
+
+
+}
+/// @nodoc
+class _$GameModelCopyWithImpl<$Res>
+    implements $GameModelCopyWith<$Res> {
+  _$GameModelCopyWithImpl(this._self, this._then);
+
+  final GameModel _self;
+  final $Res Function(GameModel) _then;
+
+/// Create a copy of GameModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? appId = null,Object? name = null,Object? description = freezed,Object? headerImage = null,Object? screenshots = freezed,Object? price = freezed,Object? installed = null,Object? playtimeHours = freezed,}) {
+  return _then(_self.copyWith(
+appId: null == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
+as String,screenshots: freezed == screenshots ? _self.screenshots : screenshots // ignore: cast_nullable_to_non_nullable
+as List<String>?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,installed: null == installed ? _self.installed : installed // ignore: cast_nullable_to_non_nullable
+as bool,playtimeHours: freezed == playtimeHours ? _self.playtimeHours : playtimeHours // ignore: cast_nullable_to_non_nullable
+as double?,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _GameModel implements GameModel {
+  const _GameModel({required this.appId, required this.name, this.description, required this.headerImage, final  List<String>? screenshots, final  Map<String, dynamic>? price, this.installed = false, this.playtimeHours}): _screenshots = screenshots,_price = price;
+  factory _GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
+
+@override final  int appId;
+@override final  String name;
+@override final  String? description;
+@override final  String headerImage;
+ final  List<String>? _screenshots;
+@override List<String>? get screenshots {
+  final value = _screenshots;
+  if (value == null) return null;
+  if (_screenshots is EqualUnmodifiableListView) return _screenshots;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+ final  Map<String, dynamic>? _price;
+@override Map<String, dynamic>? get price {
+  final value = _price;
+  if (value == null) return null;
+  if (_price is EqualUnmodifiableMapView) return _price;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+@override@JsonKey() final  bool installed;
+@override final  double? playtimeHours;
+
+/// Create a copy of GameModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GameModelCopyWith<_GameModel> get copyWith => __$GameModelCopyWithImpl<_GameModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$GameModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.appId, appId) || other.appId == appId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&const DeepCollectionEquality().equals(other._screenshots, _screenshots)&&const DeepCollectionEquality().equals(other._price, _price)&&(identical(other.installed, installed) || other.installed == installed)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,appId,name,description,headerImage,const DeepCollectionEquality().hash(_screenshots),const DeepCollectionEquality().hash(_price),installed,playtimeHours);
+
+@override
+String toString() {
+  return 'GameModel(appId: $appId, name: $name, description: $description, headerImage: $headerImage, screenshots: $screenshots, price: $price, installed: $installed, playtimeHours: $playtimeHours)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GameModelCopyWith<$Res> implements $GameModelCopyWith<$Res> {
+  factory _$GameModelCopyWith(_GameModel value, $Res Function(_GameModel) _then) = __$GameModelCopyWithImpl;
+@override @useResult
+$Res call({
+ int appId, String name, String? description, String headerImage, List<String>? screenshots, Map<String, dynamic>? price, bool installed, double? playtimeHours
+});
+
+
+
+
+}
+/// @nodoc
+class __$GameModelCopyWithImpl<$Res>
+    implements _$GameModelCopyWith<$Res> {
+  __$GameModelCopyWithImpl(this._self, this._then);
+
+  final _GameModel _self;
+  final $Res Function(_GameModel) _then;
+
+/// Create a copy of GameModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? appId = null,Object? name = null,Object? description = freezed,Object? headerImage = null,Object? screenshots = freezed,Object? price = freezed,Object? installed = null,Object? playtimeHours = freezed,}) {
+  return _then(_GameModel(
+appId: null == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
+as String,screenshots: freezed == screenshots ? _self._screenshots : screenshots // ignore: cast_nullable_to_non_nullable
+as List<String>?,price: freezed == price ? _self._price : price // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,installed: null == installed ? _self.installed : installed // ignore: cast_nullable_to_non_nullable
+as bool,playtimeHours: freezed == playtimeHours ? _self.playtimeHours : playtimeHours // ignore: cast_nullable_to_non_nullable
+as double?,
+  ));
+}
+
+
+}
+
+// dart format on
