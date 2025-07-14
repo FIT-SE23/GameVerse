@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
-class GameDetailsScreen extends StatelessWidget {
-  final int gameId;
-
-  const GameDetailsScreen({
-    super.key,
-    required this.gameId,  
-  });
+class AdvanceSearchScreen extends StatelessWidget {
+  const AdvanceSearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +11,13 @@ class GameDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Game Details for Game ID: $gameId',
-            style: Theme.of(context).textTheme.headlineLarge,
+            'Advanced Search',
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),
-          // Placeholder for game details content
+          // Placeholder for advanced search content
           Text(
-            'Here you can view detailed information about the game with ID $gameId.',
+            'Here you can perform advanced searches for games based on various criteria.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 32), // Extra space before footer

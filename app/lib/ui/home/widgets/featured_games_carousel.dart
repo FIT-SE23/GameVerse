@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import '../view_model/home_viewmodel.dart';
-import 'package:provider/provider.dart';
+
 
 class FeaturedGamesCarousel extends StatefulWidget {
   const FeaturedGamesCarousel({super.key});
@@ -132,7 +135,8 @@ class FeaturedGameCard extends StatelessWidget {
         onTap: () {
           // Use ViewModel to select game before navigation
           Provider.of<HomeViewModel>(context, listen: false).selectGame(game);
-          Navigator.pushNamed(context, '/gameDetails', arguments: game.appId);
+          // Navigator.pushNamed(context, '/gameDetails', arguments: game.appId);
+          context.push('/game-details/${game.appId}');
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

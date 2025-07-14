@@ -95,14 +95,24 @@ class AuthRepository {
   // Login with Google
   Future<UserModel?> loginWithGoogle() async {
     try {
+    debugPrint('Starting Google OAuth...');
+
+    if (kIsWeb) {
+      // Web flow - use default
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+      );
+    } else {
+      // Desktop/Mobile flow - use custom scheme
       await supabase.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: 'gameverse://auth-callback',
-        authScreenLaunchMode:
-            kIsWeb ? LaunchMode.platformDefault : LaunchMode.externalApplication, // Launch the auth screen in a new webview on mobile.
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
+    }
+    debugPrint('OAuth initiated, session will be handled by deep link callback');
 
-      return await checkSession();
+      return null;
     } catch (e) {
       debugPrint('Google login error: $e');
       return null;
@@ -110,7 +120,7 @@ class AuthRepository {
   }
 
   // Generic login that selects appropriate method
-  Future<UserModel?> login({AuthProvider provider = AuthProvider.supabase}) async {
+  Future<UserModel?> login(AuthProvider provider) async {
     switch (provider) {
       case AuthProvider.supabase:
         // This is just a demo login - in real app, you'd show a login form

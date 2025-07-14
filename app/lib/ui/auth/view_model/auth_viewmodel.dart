@@ -36,19 +36,26 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Login with Supabase email/password (default)
-  Future<void> login({AuthProvider provider = AuthProvider.google}) async {
+  // Login with provider
+  Future<void> login(AuthProvider provider) async {
     try {
       _status = AuthStatus.loading;
+      _errorMessage = '';
       notifyListeners();
       
-      _user = await _authRepository.login(provider: provider);
-      
-      if (_user != null) {
-        _status = AuthStatus.authenticated;
+      if (provider == AuthProvider.google) {
+        // For Google OAuth, the actual authentication happens via deep link
+        await _authRepository.loginWithGoogle();
+        // Status will be updated when deep link callback is processed
       } else {
-        _status = AuthStatus.unauthenticated;
-        _errorMessage = 'Login failed: No user data returned';
+        _user = await _authRepository.login(provider);
+        
+        if (_user != null) {
+          _status = AuthStatus.authenticated;
+        } else {
+          _status = AuthStatus.unauthenticated;
+          _errorMessage = 'Login failed: Your username or password is incorrect';
+        }
       }
     } catch (e) {
       _status = AuthStatus.error;

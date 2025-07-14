@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class NavigationTopbar extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onNavigate;
+
+  final Function(String) onNavigate;
 
   const NavigationTopbar({
     super.key, 
-    required this.selectedIndex,
     required this.onNavigate,
   });
 
   @override
   Widget build(BuildContext context) {
+    final currentLocation = GoRouterState.of(context).matchedLocation;
+
     return Container(
       height: 50,
       color: Theme.of(context).appBarTheme.backgroundColor,
@@ -32,11 +34,10 @@ class NavigationTopbar extends StatelessWidget {
           ),
           
           // Navigation items
-          _buildNavItem(context, 0, 'Home', Icons.home),
-          _buildNavItem(context, 1, 'Library', Icons.games),
-          _buildNavItem(context, 2, 'Category', Icons.category),
-          _buildNavItem(context, 3, 'Community', Icons.people),
-          _buildNavItem(context, 4, 'Downloads', Icons.download),
+          _buildNavItem(context, '/', 'Home', Icons.home, currentLocation),
+          _buildNavItem(context, '/library', 'Library', Icons.games, currentLocation),
+          _buildNavItem(context, '/forums', 'Forums', Icons.forum, currentLocation),
+          _buildNavItem(context, '/downloads', 'Downloads', Icons.download, currentLocation),
           
           // Search icon
           SearchAnchor(
@@ -69,9 +70,7 @@ class NavigationTopbar extends StatelessWidget {
                 return ListTile(
                   title: Text(item),
                   onTap: () {
-                    // setState(() {
-                    //   controller.closeView(item);
-                    // });
+                    // Handle search item tap
                   },
                 );
               });
@@ -92,48 +91,78 @@ class NavigationTopbar extends StatelessWidget {
               }
             ),
           ),
-          // Account icon
-        
+          // Account section
           Consumer<AuthViewModel>(
             builder: (context, authProvider, _) {
               if (authProvider.status == AuthStatus.authenticated) {
-                return Container(
-                  width: 140,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(8),
+                return PopupMenuButton<String>(
+                  popUpAnimationStyle: AnimationStyle(
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.decelerate,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // CircleAvatar(
-                      //   backgroundImage: NetworkImage(authProvider.userProfile?.avatarUrl ?? ''),
-                      //   radius: 12,
-                      // ),
-                      Icon(
-                        Icons.account_circle,
-                        color: Theme.of(context).appBarTheme.foregroundColor,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        authProvider.user?.name ?? 'Guest',
-                        style: TextStyle(
+                  child: Container(
+                    width: 140,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.account_circle,
                           color: Theme.of(context).appBarTheme.foregroundColor,
-                          fontSize: 14,
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 8), Text(
+                            authProvider.user?.name ?? 'Guest',
+                            style: TextStyle(
+                              color: Theme.of(context).appBarTheme.foregroundColor,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
+                    ),
                   ),
+                  onSelected: (value) {
+                    if (value == 'logout') {
+                      authProvider.logout();
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'profile',
+                      child: ListTile(
+                        leading: Icon(Icons.account_circle),
+                        title: Text('Profile'),
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'settings',
+                      child: ListTile(
+                        leading: Icon(Icons.settings),
+                        title: Text('Settings'),
+                      ),
+                    ),
+                    const PopupMenuDivider(),
+                    const PopupMenuItem(
+                      value: 'logout',
+                      child: ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text('Logout'),
+                      ),
+                    ),
+                  ],
                 );
               }
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: authProvider.login, 
-                    // style: Theme.of(context).elevatedButtonTheme.style,
+                    onPressed: () => onNavigate('/login'),
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(Theme.of(context).appBarTheme.backgroundColor),
                     ),
@@ -141,8 +170,7 @@ class NavigationTopbar extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: authProvider.login, 
-                    // style: Theme.of(context).elevatedButtonTheme.style,
+                    onPressed: () => onNavigate('/signup'), 
                     child: const Text('Sign Up'),
                   ),
                 ],
@@ -154,8 +182,8 @@ class NavigationTopbar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, String title, IconData icon) {
-    final isSelected = selectedIndex == index;
+  Widget _buildNavItem(BuildContext context, String route, String title, IconData icon, String currenLocation) {
+    final isSelected = currenLocation == route;
 
     return Container(
       decoration: BoxDecoration(
@@ -166,29 +194,27 @@ class NavigationTopbar extends StatelessWidget {
           ),
         ),
       ),
-      child:
-        InkWell(
-          onTap: () {
-            // Handle navigation
-            onNavigate(index);
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).appBarTheme.foregroundColor,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
+      child: InkWell(
+        onTap: () {
+          onNavigate(route);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).appBarTheme.foregroundColor,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }

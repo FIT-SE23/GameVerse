@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PageFooter extends StatelessWidget {
-  const PageFooter({Key? key}) : super(key: key);
+  final Function(String) onNavigate;
+  const PageFooter({
+    super.key,
+    required this.onNavigate,  
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,8 @@ class PageFooter extends StatelessWidget {
                   ],
                 ),
               ),
+
+              SizedBox(width: 64),
               
               // Links column 1
               Expanded(
@@ -40,14 +46,22 @@ class PageFooter extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Company',
+                      'GameVerse',
                       style: theme.textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
-                    _buildFooterLink(context, 'About Us', () {}),
-                    _buildFooterLink(context, 'Careers', () {}),
-                    _buildFooterLink(context, 'News', () {}),
-                    _buildFooterLink(context, 'Partners', () {}),
+                    _buildFooterLink(context, 'Home', () {
+                      onNavigate('/');
+                    }),
+                    _buildFooterLink(context, 'Library', () {
+                      onNavigate('/library');
+                    }),
+                    _buildFooterLink(context, 'Forums', () {
+                      onNavigate('/forums');
+                    }),
+                    _buildFooterLink(context, 'Downloads', () {
+                      onNavigate('/downloads');
+                    }),
                   ],
                 ),
               ),
@@ -58,14 +72,12 @@ class PageFooter extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Support',
+                      'Company',
                       style: theme.textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
-                    _buildFooterLink(context, 'Help Center', () {}),
+                    _buildFooterLink(context, 'About Us', () {}),
                     _buildFooterLink(context, 'FAQs', () {}),
-                    _buildFooterLink(context, 'Contact Us', () {}),
-                    _buildFooterLink(context, 'Account Issues', () {}),
                   ],
                 ),
               ),
@@ -96,10 +108,6 @@ class PageFooter extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '© 2025 GameVerse. All rights reserved.',
-                style: theme.textTheme.bodySmall,
-              ),
               Row(
                 children: [
                   IconButton(
@@ -119,6 +127,10 @@ class PageFooter extends StatelessWidget {
                   ),
                 ],
               ),
+              Text(
+                '© 2025 GameVerse Corporation. All rights reserved. All trademarks are the property of their respective owners in Vietnam and other countries.',
+                style: theme.textTheme.bodySmall,
+              ),
             ],
           ),
         ],
@@ -131,12 +143,12 @@ class PageFooter extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 4),
       child: TextButton(
         onPressed: onPressed,
-        child: Text(title),
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           minimumSize: const Size(0, 32),
           alignment: Alignment.centerLeft,
         ),
+        child: Text(title),
       ),
     );
   }

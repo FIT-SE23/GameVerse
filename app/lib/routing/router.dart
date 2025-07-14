@@ -1,88 +1,92 @@
-import 'package:flutter/material.dart';
+import 'package:gameverse/ui/advance_search/widgets/advance_search_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
-import 'package:gameverse/ui/auth/widgets/login_screen.dart';
+import 'package:gameverse/ui/auth/widgets/auth_screen.dart';
 import 'package:gameverse/ui/game_detail/widgets/game_details_screen.dart';
+import 'package:gameverse/ui/home/widgets/home_screen.dart';
+import 'package:gameverse/ui/library/widgets/library_screen.dart';
+import 'package:gameverse/ui/forums/widgets/forums_screen.dart';
+import 'package:gameverse/ui/downloads/widgets/downloads_screen.dart';
 import 'package:gameverse/ui/shared/widgets/main_layout.dart';
 import 'routes.dart';
 
 class AppRouter {
-  static GoRouter createRouter(BuildContext context) {
+  static GoRouter createRouter() {
     return GoRouter(
       initialLocation: Routes.home,
       redirect: (context, state) {
         final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-        final isLoggedIn = (authViewModel.status == AuthStatus.authenticated); 
+        final isLoggedIn = (authViewModel.status == AuthStatus.authenticated);
         
         // If going to login but already logged in, redirect home
         if (state.matchedLocation == Routes.login && isLoggedIn) {
           return Routes.home;
         }
         
-        // If accessing a protected route without being logged in, redirect to login
-        // (Add any protected routes here)
-        if (['/library'].contains(state.matchedLocation) && !isLoggedIn) {
-          return Routes.login;
-        }
-        
-        // Otherwise allow the navigation
         return null;
       },
       routes: [
-        GoRoute(
-          path: Routes.home,
-          builder: (context, state) => const MainLayout(initialIndex: 0),
-        ),
-        GoRoute(
-          path: Routes.login,
-          builder: (context, state) => const LoginScreen(),
-        ),
-        GoRoute(
-          path: Routes.gameDetails,
-          builder: (context, state) {
-            final gameId = int.parse(state.pathParameters['id'] ?? '0');
-            return GameDetailsScreen(gameId: gameId);
+        // Main shell route with persistent navigation and footer
+        ShellRoute(
+          builder: (context, state, child) {
+            return MainLayout(child: child);
           },
+          routes: [
+            GoRoute(
+              path: Routes.home,
+              builder: (context, state) => const HomeScreen(),
+            ),
+            GoRoute(
+              path: Routes.library,
+              builder: (context, state) => const LibraryScreen(),
+            ),
+            GoRoute(
+              path: Routes.advanceSearch,
+              builder: (context, state) => const AdvanceSearchScreen(),
+            ),
+            GoRoute(
+              path: Routes.forums,
+              builder: (context, state) => const ForumsScreen(),
+            ),
+            GoRoute(
+              path: Routes.downloads,
+              builder: (context, state) => const DownloadsScreen(),
+            ),
+            GoRoute(
+              path: Routes.gameDetails,
+              builder: (context, state) {
+                final gameId = int.parse(state.pathParameters['id'] ?? '0');
+                return GameDetailsScreen(gameId: gameId);
+              },
+              routes: [
+                // Nested route for game details with dynamic ID
+                GoRoute(
+                  path: ':id',
+                  builder: (context, state) {
+                    final gameId = int.parse(state.pathParameters['id'] ?? '0');
+                    return GameDetailsScreen(gameId: gameId);
+                  },
+                ),
+              ]
+            ),
+            GoRoute(
+              path: Routes.login,
+              builder: (context, state) => const AuthScreen(
+                initialTab: 'login',
+              ),
+            ),
+            GoRoute(
+              path: Routes.signup,
+              builder: (context, state) => const AuthScreen(
+                initialTab: 'register',
+              ),
+            ),
+
+          ],
         ),
-        GoRoute(
-          path: Routes.library,
-          builder: (context, state) => const MainLayout(initialIndex: 1),
-        ),
-        GoRoute(
-          path: Routes.category,
-          builder: (context, state) => const MainLayout(initialIndex: 2),
-        ),
-        GoRoute(
-          path: Routes.community,
-          builder: (context, state) => const MainLayout(initialIndex: 3),
-        ),
-        GoRoute(
-          path: Routes.downloads,
-          builder: (context, state) => const MainLayout(initialIndex: 4),
-        ),
+        // Standalone login route (no shell)
       ],
     );
-  }
-
-  // Legacy navigation method for backward compatibility
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case '/':
-        return MaterialPageRoute(builder: (_) => const MainLayout(initialIndex: 0));
-        
-      case '/gameDetails':
-        final gameId = (settings.arguments as int?) ?? 0;
-        return MaterialPageRoute(builder: (_) => GameDetailsScreen(gameId: gameId));
-      
-      default:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(
-              child: Text('No route defined for ${settings.name}'),
-            ),
-          ),
-        );
-    }
   }
 }

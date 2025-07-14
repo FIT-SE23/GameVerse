@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key});
+class DownloadsScreen extends StatelessWidget {
+  const DownloadsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +11,13 @@ class LibraryScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Your Library',
+            'Your Downloads',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),
           // Placeholder for library content
           Text(
-            'Here you can manage your games, view installed titles, and access your game collection.',
+            'Here you can manage your downloads, view progress, and access your downloaded games.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 600), // Extra space before footer

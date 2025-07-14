@@ -1,60 +1,51 @@
 import 'package:flutter/material.dart';
-
-import '../../home/widgets/home_screen.dart';
-import '../../library/widgets/library_screen.dart';
-import '../../category/widgets/category_screen.dart';
-import '../../community/widgets/community_screen.dart';
-import '../../downloads/widgets/download_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'navigation_topbar.dart';
+import 'page_footer.dart';
 
-class MainLayout extends StatefulWidget {
-  final int initialIndex;
+class MainLayout extends StatelessWidget {
+  final Widget child;
   
-  const MainLayout({super.key, this.initialIndex = 0});
-
-  @override
-  State<MainLayout> createState() => _MainLayoutState();
-}
-
-class _MainLayoutState extends State<MainLayout> {
-  late int _selectedIndex;
-  
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = widget.initialIndex;
-  }
-
-  final List<Widget> _pages = const [
-    HomeScreen(),
-    LibraryScreen(),
-    CategoryScreen(),
-    CommunityScreen(),
-    DownloadsScreen(),
-  ];
-
-  void _onNavigate(int index) {
-    if (_selectedIndex != index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
+  const MainLayout({
+    super.key,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          // Navigation topbar - persistent
+          // Persistent navigation topbar
           NavigationTopbar(
-            selectedIndex: _selectedIndex,
-            onNavigate: _onNavigate,
+            onNavigate: (String route) {
+              context.go(route);
+            },
           ),
           
-          // Content area - changes based on navigation
+          // Content area with footer
           Expanded(
-            child: _pages[_selectedIndex],
+            child: CustomScrollView(
+              slivers: [
+                // Main content (this changes based on route)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    children: [
+                      // Page content
+                      Expanded(child: child),
+                      // Footer at the bottom
+                      PageFooter(
+                        onNavigate: (String route) {
+                          // Handle footer navigation
+                          context.go(route);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

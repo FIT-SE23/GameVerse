@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key});
+class ForumsScreen extends StatelessWidget {
+  const ForumsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +11,13 @@ class LibraryScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Your Library',
+            'Forums',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),
           // Placeholder for library content
           Text(
-            'Here you can manage your games, view installed titles, and access your game collection.',
+            'Here you can discuss games, share tips, and connect with other gamers.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 600), // Extra space before footer
