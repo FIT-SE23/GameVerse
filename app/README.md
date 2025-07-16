@@ -172,8 +172,8 @@ This project follows **Clean Architecture** principles with clear separation of 
 ### 📞 Support
 
 * **Email**: [support@gameverse.com](mailto:support@gameverse.com)
-* **Discord**: [GameVerse Community](https://discord.gg/GameVerse)
-* **Issues**: GitHub Issues
+* **Discord**: [GameVerse Community](https://discord.gg/GameVerse...)
+* **Issues**: [GitHub Issues](https://github.com/FIT-SE23/GameVerse)
 
 ---
 

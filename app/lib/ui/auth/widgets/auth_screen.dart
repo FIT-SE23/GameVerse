@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
@@ -56,9 +57,11 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
       if (!mounted) return;
       
       if (authViewModel.status == AuthStatus.authenticated) {
-        Navigator.of(context).pushReplacementNamed('/');
+        context.push('/');
       } else {
-        _showErrorSnackBar(authViewModel.errorMessage);
+        if (authViewModel.errorMessage.isNotEmpty) {
+          _showErrorSnackBar(authViewModel.errorMessage);
+        }
       }
     } finally {
       if (mounted) {
@@ -166,7 +169,7 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
                   
                   // Back to home
                   TextButton(
-                    onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
+                    onPressed: () => context.push('/'),
                     child: const Text('Continue as Guest'),
                   ),
                   

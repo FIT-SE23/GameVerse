@@ -13,35 +13,36 @@ class MainLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void onNavigate(String route) {
+      context.go(route);
+    };
+
     return Scaffold(
       body: Column(
         children: [
           // Persistent navigation topbar
           NavigationTopbar(
-            onNavigate: (String route) {
-              context.go(route);
-            },
+            onNavigate: onNavigate,
           ),
           
-          // Content area with footer
           Expanded(
             child: CustomScrollView(
               slivers: [
                 // Main content (this changes based on route)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    children: [
-                      // Page content
-                      Expanded(child: child),
-                      // Footer at the bottom
-                      PageFooter(
-                        onNavigate: (String route) {
-                          // Handle footer navigation
-                          context.go(route);
-                        },
-                      ),
-                    ],
+                SliverToBoxAdapter(
+                  // Minimum height to ensure that the footer is always at the bottom
+                  // even if the content is short
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height, // Adjust as needed
+                    ),
+                    child: child,
+                  ),
+                ),
+                // Footer
+                SliverToBoxAdapter(
+                  child: PageFooter(
+                    onNavigate: onNavigate,
                   ),
                 ),
               ],

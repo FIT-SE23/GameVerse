@@ -179,7 +179,7 @@ class _SignUpFormState extends State<SignupForm> {
                     TextSpan(
                       text: 'Terms of Service',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
@@ -191,7 +191,7 @@ class _SignUpFormState extends State<SignupForm> {
                     TextSpan(
                       text: 'GameVerse Store End User License Agreement',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
