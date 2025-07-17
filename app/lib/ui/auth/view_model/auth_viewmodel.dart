@@ -78,7 +78,7 @@ class AuthViewModel extends ChangeNotifier {
         _status = AuthStatus.authenticated;
       } else {
         _status = AuthStatus.unauthenticated;
-        _errorMessage = 'Registration failed: No user data returned';
+        _errorMessage = 'Registration failed: Email already exists or invalid data';
       }
     } catch (e) {
       _status = AuthStatus.error;

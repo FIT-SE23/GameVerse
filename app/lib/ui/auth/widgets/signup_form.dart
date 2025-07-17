@@ -50,7 +50,7 @@ class _SignUpFormState extends State<SignupForm> {
         if (!mounted) return;
         
         if (authViewModel.status == AuthStatus.authenticated) {
-          Navigator.of(context).pushReplacementNamed('/');
+          context.pop();
         } else {
           _showErrorSnackBar(authViewModel.errorMessage);
         }
@@ -139,7 +139,7 @@ class _SignUpFormState extends State<SignupForm> {
               labelText: 'Confirm Password',
               prefixIcon: const Icon(Icons.lock),
               suffixIcon: IconButton(
-                icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
                 onPressed: () {
                   setState(() {
                     _isPasswordVisible = !_isPasswordVisible;

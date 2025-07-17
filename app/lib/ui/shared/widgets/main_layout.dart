@@ -15,7 +15,7 @@ class MainLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     void onNavigate(String route) {
       context.go(route);
-    };
+    }
 
     return Scaffold(
       body: Column(

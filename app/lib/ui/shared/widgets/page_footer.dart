@@ -127,9 +127,11 @@ class PageFooter extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(
-                '© 2025 GameVerse Corporation. All rights reserved. All trademarks are the property of their respective owners in Vietnam and other countries.',
-                style: theme.textTheme.bodySmall,
+              Expanded(
+                child: Text(
+                  '© 2025 GameVerse Corporation. All rights reserved. All trademarks are the property of their respective owners in Vietnam and other countries.',
+                  style: theme.textTheme.bodySmall,
+                ),
               ),
             ],
           ),

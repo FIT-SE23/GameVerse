@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
@@ -45,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
         if (!mounted) return;
         
         if (authViewModel.status == AuthStatus.authenticated) {
-          Navigator.of(context).pushReplacementNamed('/');
+          context.pop();
         } else {
           _showErrorSnackBar(authViewModel.errorMessage);
         }
