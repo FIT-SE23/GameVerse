@@ -1,5 +1,7 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'window_buttons.dart';
+
 import 'navigation_topbar.dart';
 import 'page_footer.dart';
 
@@ -13,17 +15,24 @@ class MainLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void onNavigate(String route) {
-      context.go(route);
-    }
 
     return Scaffold(
       body: Column(
         children: [
-          // Persistent navigation topbar
-          NavigationTopbar(
-            onNavigate: onNavigate,
+          // Window title bar
+          WindowTitleBarBox(
+            child: MoveWindow(
+              child: Container(
+                color: Theme.of(context).colorScheme.surface,
+                height: 32,
+                alignment: Alignment.centerRight,
+                child: WindowButtons(),
+              ),
+            ),
           ),
+
+          // Persistent navigation topbar
+          NavigationTopbar(),
           
           Expanded(
             child: CustomScrollView(
@@ -41,9 +50,7 @@ class MainLayout extends StatelessWidget {
                 ),
                 // Footer
                 SliverToBoxAdapter(
-                  child: PageFooter(
-                    onNavigate: onNavigate,
-                  ),
+                  child: PageFooter(),
                 ),
               ],
             ),

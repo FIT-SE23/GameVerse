@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PageFooter extends StatelessWidget {
-  final Function(String) onNavigate;
   const PageFooter({
     super.key,
-    required this.onNavigate,  
   });
 
   @override
@@ -51,16 +50,16 @@ class PageFooter extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _buildFooterLink(context, 'Home', () {
-                      onNavigate('/');
+                      context.push('/');
                     }),
                     _buildFooterLink(context, 'Library', () {
-                      onNavigate('/library');
+                      context.push('/library');
                     }),
                     _buildFooterLink(context, 'Forums', () {
-                      onNavigate('/forums');
+                      context.push('/forums');
                     }),
                     _buildFooterLink(context, 'Downloads', () {
-                      onNavigate('/downloads');
+                      context.push('/downloads');
                     }),
                   ],
                 ),

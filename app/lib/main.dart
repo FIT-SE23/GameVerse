@@ -1,26 +1,36 @@
+import 'dart:io';
+import 'dart:async';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:app_links/app_links.dart';
+
 import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 import 'package:gameverse/routing/router.dart';
 import 'package:gameverse/config/config.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/config/url_protocol/api.dart';
-import 'dart:io';
-import 'dart:async';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'package:app_links/app_links.dart';
-
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load();
-  await AuthRepository.initializeSupabase();
+  try {
+    await dotenv.load();
+  } catch (e) {
+    debugPrint('Failed to load .env file: $e');
+  }
+  
+  try {
+    await AuthRepository.initializeSupabase();
+  } catch (e) {
+    debugPrint('Failed to initialize Supabase: $e');
+  }
   
   // Register the custom URL protocol for Windows
-  if (Platform.isWindows) {
+  if (Platform.isWindows && !kIsWeb) {
     try {
       registerProtocolHandler(
         'gameverse',
@@ -49,6 +59,19 @@ void main(List<String> args) async {
     providers: appProviders(),
     child: MyApp(initialDeepLink: initialDeepLink),
   ));
+
+  // Set minimum window size only for desktop platforms
+  if (!kIsWeb) {
+    doWhenWindowReady(() {
+      const minSize = Size(300, 400);
+      const initialSize = Size(1400, 800);
+      appWindow.minSize = minSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+
+      appWindow.show();
+    });
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -73,17 +96,27 @@ class _MyAppState extends State<MyApp> {
     _appLinks = AppLinks();
     
     // Initialize deep link handling
-    _initializeDeepLinking();
-    
+    if (!kIsWeb) {
+      _initializeDeepLinking();
+    }
+
     // Handle initial deep link if present
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialDeepLink != null) {
         _handleDeepLink(widget.initialDeepLink!);
       }
       
-      // Initialize auth state
-      Provider.of<AuthViewModel>(context, listen: false).init();
+      _initializeAuth();
     });
+  }
+
+  Future<void> _initializeAuth() async {
+    try {
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      await authViewModel.init();
+    } catch (e) {
+      debugPrint('Failed to initialize auth: $e');
+    }
   }
 
   void _initializeDeepLinking() {
@@ -214,6 +247,9 @@ class _MyAppState extends State<MyApp> {
       case 'forums':
         _router.go('/forums');
         break;
+      case 'downloads':
+        _router.go('/downloads');
+        break;
       default:
         debugPrint('Unhandled deep link: $uri');
         _router.go('/');
@@ -232,7 +268,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp.router(
       title: 'GameVerse',
-      scaffoldMessengerKey: _navigatorKey, // Add navigator key
+      scaffoldMessengerKey: _navigatorKey,
       theme: themeProvider.isDarkMode
           ? AppTheme.darkTheme
           : AppTheme.lightTheme,

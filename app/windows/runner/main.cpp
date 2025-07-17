@@ -5,7 +5,12 @@
 #include "flutter_window.h"
 #include "utils.h"
 
+// Include the App Links plugin for handling deep links.
 #include "app_links/app_links_plugin_c_api.h"
+
+// Include the Bitsdojo Window plugin for custom window management.
+#include <bitsdojo_window_windows/bitsdojo_window_plugin.h>
+auto bdw = bitsdojo_window_configure(BDW_CUSTOM_FRAME | BDW_HIDE_ON_STARTUP);
 
 bool SendAppLinkToInstance(const std::wstring& title) {
   // Find our exact window
