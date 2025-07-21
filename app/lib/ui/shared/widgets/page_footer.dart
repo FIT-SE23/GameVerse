@@ -12,7 +12,7 @@ class PageFooter extends StatelessWidget {
     
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-      color: theme.colorScheme.surface,
+      color: theme.appBarTheme.backgroundColor,
       child: Column(
         children: [
           Row(

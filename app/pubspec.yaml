@@ -58,6 +58,9 @@ dependencies:
   # Customize size application
   bitsdojo_window: ^0.1.6
 
+  # Load SVG image
+  flutter_svg: ^2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -80,9 +83,17 @@ dependency_overrides:
 flutter:
   uses-material-design: true
 
+  fonts:
+    - family: Play
+      fonts:
+        - asset: assets/fonts/Play-Regular.ttf
+        - asset: assets/fonts/Play-Bold.ttf
+          weight: 700
+
   assets:
     - assets/images/
     - assets/icons/
+    - assets/logo/
     - .env
 
 msix_config:

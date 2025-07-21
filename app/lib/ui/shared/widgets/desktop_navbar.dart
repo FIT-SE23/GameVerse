@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
@@ -14,6 +15,13 @@ class DesktopNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String logoAddr;
+    if (Theme.brightnessOf(context) == Brightness.dark) {
+      logoAddr = 'assets/logo/logo_horizontal_white.svg';
+    }
+    else {
+      logoAddr = 'assets/logo/logo_horizontal_black.svg';
+    }
     return Container(
       height: 60,
       color: Theme.of(context).appBarTheme.backgroundColor,
@@ -23,17 +31,13 @@ class DesktopNavbar extends StatelessWidget {
           // Logo/header
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Text(
-              'GameVerse',
-              style: TextStyle(
-                fontSize: 18, 
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).appBarTheme.foregroundColor,
-              ),
+            child: Transform.scale(
+              scale: 1.8,
+              origin: Offset(0, 0),
+              child: 
+              SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 50,)
             ),
           ),
-          
-          const SizedBox(width: 16),
           
           // Navigation items
           Row(
@@ -49,7 +53,7 @@ class DesktopNavbar extends StatelessWidget {
           Container(
             width: 300,
             height: 35,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
+            margin: const EdgeInsets.symmetric(horizontal: 0),
             child: SearchAnchor(
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(

@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
 
+class DarkThemeColors {
+  DarkThemeColors._();
+
+  static const Color background = Color(0xFF141414);
+  static const Color text = Color(0xFFFFFFFF);
+  static const Color shell = Color(0xFF252525);
+  static const Color onShell = Color(0xFFFFFFFF);
+}
+
+class LightThemeColors {
+  LightThemeColors._();
+
+  static const Color background = Color(0xFFDADADA);
+  static const Color shell = Color(0xFFEBEBEB);
+  static const Color text = Color(0xFF141414);
+}
+
+class SignatureColors {
+  SignatureColors._();
+
+  static const Color cyan = Color(0xFF47FFE7);
+  static const Color onCyan = Color(0xFF141414);
+}
+
 class AppTheme {
   // DARK THEME
   static ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
+    fontFamily: 'Play',
     
     // Base colors
     primaryColor: const Color(0xFF1a73e8),      // Primary blue - main brand color
-    scaffoldBackgroundColor: const Color(0xFF121212), // App background
+    scaffoldBackgroundColor: DarkThemeColors.background, // App background
     
     colorScheme: const ColorScheme.dark(
       primary: Color(0xFF1a73e8),         // Primary buttons, active states
@@ -16,8 +41,8 @@ class AppTheme {
       primaryContainer: Color(0xFF173B5A), // Secondary buttons, containers
       onPrimaryContainer: Color(0xFFBFE0FF), // Text on primary containers
       
-      secondary: Color(0xFF66c0f4),       // Accent color for highlights
-      onSecondary: Colors.black,          // Text on secondary color
+      secondary: SignatureColors.cyan,       // Accent color for highlights
+      onSecondary: SignatureColors.onCyan,          // Text on secondary color
       secondaryContainer: Color(0xFF0D2F49), // Secondary containers
       onSecondaryContainer: Color(0xFFB8E5FF), // Text on secondary containers
       
@@ -43,8 +68,8 @@ class AppTheme {
     
     // App bar
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1E1E1E),  // App bar background
-      foregroundColor: Color(0xFFE0E0E0),  // App bar text/icons
+      backgroundColor: DarkThemeColors.shell,  // App bar background
+      foregroundColor: DarkThemeColors.onShell,  // App bar text/icons
       elevation: 0,
       centerTitle: false,
       titleTextStyle: TextStyle(
@@ -98,17 +123,17 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFE0E0E0)),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFFE0E0E0)),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFE0E0E0)),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFE0E0E0)),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Color(0xFFE0E0E0)),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFFE0E0E0)),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: DarkThemeColors.text),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: DarkThemeColors.text),
       
-      bodyLarge: TextStyle(fontSize: 16, color: Color(0xFFE0E0E0)),
-      bodyMedium: TextStyle(fontSize: 14, color: Color(0xFFE0E0E0)),
-      bodySmall: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0)),
+      bodyLarge: TextStyle(fontSize: 16, color: DarkThemeColors.text),
+      bodyMedium: TextStyle(fontSize: 14, color: DarkThemeColors.text),
+      bodySmall: TextStyle(fontSize: 12, color: DarkThemeColors.text),
     ),
     
     // Bottom navigation
@@ -130,10 +155,11 @@ class AppTheme {
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
+    fontFamily: 'Play',
     
     // Base colors
     primaryColor: const Color(0xFF1a73e8),    // Primary blue - main brand color
-    scaffoldBackgroundColor: const Color.fromARGB(255, 210, 210, 210),    // App background
+    scaffoldBackgroundColor: LightThemeColors.background,    // App background
     
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF1a73e8),        // Primary buttons, active states
@@ -141,8 +167,8 @@ class AppTheme {
       primaryContainer: Color.fromARGB(255, 41, 119, 254), // Secondary buttons, containers
       onPrimaryContainer: Color.fromARGB(255, 255, 255, 255), // Text on primary containers
       
-      secondary: Color.fromARGB(255, 0, 162, 255),      // Accent color for highlights
-      onSecondary: Colors.white,         // Text on secondary color
+      secondary: SignatureColors.cyan,      // Accent color for highlights
+      onSecondary: SignatureColors.onCyan,         // Text on secondary color
       secondaryContainer: Color(0xFFD4E9FF), // Secondary containers
       onSecondaryContainer: Color(0xFF00497D), // Text on secondary containers
       
