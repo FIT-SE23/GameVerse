@@ -68,6 +68,15 @@ dev_dependencies:
   win32: ^5.14.0
   ffi: ^2.1.4
 
+dependency_overrides:
+  flutter_secure_storage_linux:
+    git:
+      url: https://github.com/m-berto/flutter_secure_storage.git
+      ref: patch-2
+      path: flutter_secure_storage_linux
+  flutter_secure_storage_platform_interface: 2.0.0
+
+
 flutter:
   uses-material-design: true
 
