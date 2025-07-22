@@ -7,4 +7,12 @@ abstract final class Routes {
   static const advanceSearch = '/advance-search';
   static const forums = '/forums';
   static const downloads = '/downloads';
+  static const profile = '/profile';
+  static const settings = '/settings';
+  static const about = '/about';
+  static const contact = '/contact';
+  static const privacyPolicy = '/privacy-policy';
+  static const termsOfService = '/terms-of-service';
+  static const faqs = '/faqs';
+  static const authCallback = '/auth-callback';
 }

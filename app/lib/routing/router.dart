@@ -3,12 +3,15 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/ui/auth/widgets/auth_screen.dart';
+import 'package:gameverse/ui/auth/widgets/auth_callback_screen.dart';
 import 'package:gameverse/ui/game_detail/widgets/game_details_screen.dart';
 import 'package:gameverse/ui/home/widgets/home_screen.dart';
 import 'package:gameverse/ui/library/widgets/library_screen.dart';
 import 'package:gameverse/ui/forums/widgets/forums_screen.dart';
 import 'package:gameverse/ui/downloads/widgets/downloads_screen.dart';
 import 'package:gameverse/ui/shared/widgets/main_layout.dart';
+import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
+import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -54,6 +57,10 @@ class AppRouter {
               builder: (context, state) => const DownloadsScreen(),
             ),
             GoRoute(
+              path: Routes.settings,
+              builder: (context, state) => const SettingsScreen(),
+            ),
+            GoRoute(
               path: Routes.gameDetails,
               builder: (context, state) {
                 final gameId = int.parse(state.pathParameters['id'] ?? '0');
@@ -71,6 +78,15 @@ class AppRouter {
               ]
             ),
             GoRoute(
+              path: Routes.profile,
+              builder: (context, state) => const ProfileScreen(),
+            ),
+            // Auth routes
+            GoRoute(
+              path: Routes.authCallback,
+              builder: (context, state) => const AuthCallbackScreen(),
+            ),
+            GoRoute(
               path: Routes.login,
               builder: (context, state) => const AuthScreen(
                 initialTab: 'login',
@@ -82,7 +98,6 @@ class AppRouter {
                 initialTab: 'register',
               ),
             ),
-
           ],
         ),
         // Standalone login route (no shell)

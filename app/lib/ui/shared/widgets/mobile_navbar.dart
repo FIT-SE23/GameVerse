@@ -178,20 +178,22 @@ class MobileNavbar extends StatelessWidget {
                                   leading: const Icon(Icons.account_circle),
                                   title: Text(authProvider.user?.name ?? 'Guest'),
                                   subtitle: Text(authProvider.user?.email ?? ''),
+                                  onTap: () {
+                                    context.push('/profile');
+                                  },
                                 ),
                                 ListTile(
                                   leading: const Icon(Icons.settings),
                                   title: const Text('Settings'),
                                   onTap: () {
-                                    Navigator.pop(context);
-                                    // Navigate to settings
+                                    context.push('/settings');
                                   },
                                 ),
                                 ListTile(
                                   leading: const Icon(Icons.logout),
                                   title: const Text('Logout'),
                                   onTap: () {
-                                    Navigator.pop(context);
+                                    context.push('/login');
                                     authProvider.logout();
                                   },
                                 ),

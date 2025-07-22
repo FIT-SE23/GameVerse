@@ -9,7 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 // import 'package:url_launcher/url_launcher.dart';
 import 'package:gameverse/domain/models/user_model/user_model.dart';
 
-enum AuthProvider { supabase, google }
+enum AuthProvider { supabase, google, facebook }
 
 class AuthRepository {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
@@ -25,6 +25,17 @@ class AuthRepository {
   String? get accessToken => _accessToken;
   UserModel? get currentUser => _currentUser;
   bool get isAuthenticated => _currentUser != null;
+
+  // Get appropriate redirect URL based on platform
+  String get _redirectUrl {
+    if (kIsWeb) {
+      // For web, use the current origin + callback path
+      return '${Uri.base.origin}/auth-callback';
+    } else {
+      // For desktop/mobile, use custom URL scheme
+      return 'gameverse://auth-callback';
+    }
+  }
   
   // Supabase client getter
   SupabaseClient get supabase => Supabase.instance.client;
@@ -65,7 +76,7 @@ class AuthRepository {
   }
 
   // Login with Supabase (email/password)
-  Future<UserModel?> loginWithSupabase(String email, String password) async {
+  Future<void> loginWithSupabase(String email, String password) async {
     try {
       final response = await supabase.auth.signInWithPassword(
         email: email,
@@ -83,50 +94,59 @@ class AuthRepository {
         );
         _lastUsedProvider = AuthProvider.supabase;
         _accessToken = response.session?.accessToken;
-        return _currentUser;
       }
-      return null;
     } catch (e) {
       debugPrint('Supabase login error: $e');
-      return null;
     }
   }
 
   // Login with Google
-  Future<UserModel?> loginWithGoogle() async {
+  Future<void> loginWithGoogle() async {
     try {
-    debugPrint('Starting Google OAuth...');
+      debugPrint('Starting Google OAuth...');
 
-    if (kIsWeb) {
-      // Web flow - use default
       await supabase.auth.signInWithOAuth(
         OAuthProvider.google,
+        redirectTo: _redirectUrl,
+        authScreenLaunchMode:
+          kIsWeb ? LaunchMode.platformDefault : LaunchMode.externalApplication,
       );
-    } else {
-      // Desktop/Mobile flow - use custom scheme
-      await supabase.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'gameverse://auth-callback',
-        authScreenLaunchMode: LaunchMode.externalApplication,
-      );
-    }
-    debugPrint('OAuth initiated, session will be handled by deep link callback');
+      debugPrint('OAuth initiated, session will be handled by deep link callback');
 
-      return null;
     } catch (e) {
       debugPrint('Google login error: $e');
-      return null;
+    }
+  }
+  // Login with Facebook
+  Future<void> loginWithFacebook() async {
+    try {
+      debugPrint('Starting Facebook OAuth...');
+
+      // Desktop/Mobile flow - use custom scheme
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.facebook,
+        redirectTo: _redirectUrl,
+        authScreenLaunchMode: 
+          kIsWeb ? LaunchMode.platformDefault : LaunchMode.externalApplication,
+      );
+      debugPrint('OAuth initiated, session will be handled by deep link callback');
+    } catch (e) {
+      debugPrint('Google login error: $e');
     }
   }
 
   // Generic login that selects appropriate method
-  Future<UserModel?> login(AuthProvider provider) async {
+  Future<void> login(AuthProvider provider, {
+    String email = '',
+    String password = '',
+  }) async {
     switch (provider) {
       case AuthProvider.supabase:
-        // This is just a demo login - in real app, you'd show a login form
-        return await loginWithSupabase('demo@example.com', 'password123');
+        return await loginWithSupabase(email, password);
       case AuthProvider.google:
         return await loginWithGoogle();
+      case AuthProvider.facebook:
+        return await loginWithFacebook();
     }
   }
 

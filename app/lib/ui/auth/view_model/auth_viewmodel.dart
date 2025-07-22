@@ -37,26 +37,17 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   // Login with provider
-  Future<void> login(AuthProvider provider) async {
+  Future<void> login(AuthProvider provider, {
+    String email = '',
+    String password = '',
+  }) async {
     try {
       _status = AuthStatus.loading;
       _errorMessage = '';
       notifyListeners();
-      
-      if (provider == AuthProvider.google) {
-        // For Google OAuth, the actual authentication happens via deep link
-        await _authRepository.loginWithGoogle();
-        // Status will be updated when deep link callback is processed
-      } else {
-        _user = await _authRepository.login(provider);
-        
-        if (_user != null) {
-          _status = AuthStatus.authenticated;
-        } else {
-          _status = AuthStatus.unauthenticated;
-          _errorMessage = 'Login failed: Your username or password is incorrect';
-        }
-      }
+
+      await _authRepository.login(provider, email: email, password: password);
+      // No need to assign _status because deep linking will handle it
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = 'Login failed: $e';
