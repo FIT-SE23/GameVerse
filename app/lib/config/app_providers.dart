@@ -1,6 +1,7 @@
 import 'package:gameverse/ui/game_detail/view_model/game_viewmodel.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
 import 'package:gameverse/ui/profile/view_model/profile_viewmodel.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:http/http.dart' as http;
@@ -43,6 +44,9 @@ List<SingleChildWidget> appProviders() {
     ),
     ChangeNotifierProvider(
       create: (_) => ProfileViewModel(),
+    ),
+    ChangeNotifierProvider(
+      create: (_) => SettingsViewmodel(),
     ),
     ChangeNotifierProvider(
       create: (context) => AuthViewModel(
