@@ -160,10 +160,16 @@ class DesktopNavbar extends StatelessWidget {
               if (value == 'logout') {
                 authProvider.logout();
               }
+              else if (value == 'profile') {
+                context.push('/profile');
+              } else if (value == 'settings') {
+                context.push('/settings');
+              }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'profile',
+                mouseCursor: SystemMouseCursors.click,
                 child: ListTile(
                   leading: Icon(Icons.account_circle),
                   title: Text('Profile'),
@@ -171,6 +177,7 @@ class DesktopNavbar extends StatelessWidget {
               ),
               const PopupMenuItem(
                 value: 'settings',
+                mouseCursor: SystemMouseCursors.click,
                 child: ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('Settings'),
@@ -179,6 +186,7 @@ class DesktopNavbar extends StatelessWidget {
               const PopupMenuDivider(),
               const PopupMenuItem(
                 value: 'logout',
+                mouseCursor: SystemMouseCursors.click,
                 child: ListTile(
                   leading: Icon(Icons.logout),
                   title: Text('Logout'),

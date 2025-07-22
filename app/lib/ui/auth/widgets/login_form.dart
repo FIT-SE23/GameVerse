@@ -40,8 +40,10 @@ class _LoginFormState extends State<LoginForm> {
       try {
         final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
         
-        // For demo purposes, we'll use the default login
-        await authViewModel.login(AuthProvider.supabase);
+        await authViewModel.login(AuthProvider.supabase,
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
         
         if (!mounted) return;
         
@@ -55,8 +57,6 @@ class _LoginFormState extends State<LoginForm> {
           setState(() => _isLoading = false);
         }
       }
-      // Implement login logic here
-      // After login, set _isLoading to false
     }
   }
 

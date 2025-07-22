@@ -47,17 +47,17 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
     super.dispose();
   }
   
-  Future<void> _handleGoogleLogin() async {
+  Future<void> _handleLogin(AuthProvider provider) async {
     setState(() => _isLoading = true);
     
     try {
       final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-      await authViewModel.login(AuthProvider.google);
+      await authViewModel.login(provider);
       
       if (!mounted) return;
       
       if (authViewModel.status == AuthStatus.authenticated) {
-        context.push('/');
+        context.pop();
       } else {
         if (authViewModel.errorMessage.isNotEmpty) {
           _showErrorSnackBar(authViewModel.errorMessage);
@@ -156,9 +156,24 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: _isLoading ? null : _handleGoogleLogin,
+                      onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.google),
                       icon: const Icon(Icons.g_mobiledata, size: 24),
                       label: const Text('Continue with Google'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 16),
+
+                  // Facebook Sign In
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.facebook),
+                      icon: const Icon(Icons.facebook_rounded, size: 24),
+                      label: const Text('Continue with Facebook'),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
