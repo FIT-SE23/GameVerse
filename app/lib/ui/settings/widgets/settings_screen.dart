@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:gameverse/ui/profile/view_model/profile_viewmodel.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -8,8 +8,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ProfileViewModel, ThemeViewModel>(
-      builder: (context, profileViewModel, themeViewModel, child) {
+    return Consumer2<SettingsViewmodel, ThemeViewModel>(
+      builder: (context, settingsViewModel, themeViewModel, child) {
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -19,50 +19,50 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 'Show Activity',
                 'Display your recent gaming activity',
-                profileViewModel.showActivity,
-                (value) => profileViewModel.updateShowActivity(value),
+                settingsViewModel.showActivity,
+                (value) => settingsViewModel.updateShowActivity(value),
               ),
               _buildPrivacyToggle(
                 context,
                 'Show Friends',
                 'Display your friends list',
-                profileViewModel.showFriends,
-                (value) => profileViewModel.updateShowFriends(value),
+                settingsViewModel.showFriends,
+                (value) => settingsViewModel.updateShowFriends(value),
               ),
               _buildPrivacyToggle(
                 context,
                 'Show Gaming Stats',
                 'Display your gaming statistics',
-                profileViewModel.showStats,
-                (value) => profileViewModel.updateShowStats(value),
+                settingsViewModel.showStats,
+                (value) => settingsViewModel.updateShowStats(value),
               ),
               _buildPrivacyToggle(
                 context,
                 'Show Preferences',
                 'Display your gaming preferences',
-                profileViewModel.showPreferences,
-                (value) => profileViewModel.updateShowPreferences(value),
+                settingsViewModel.showPreferences,
+                (value) => settingsViewModel.updateShowPreferences(value),
               ),
               _buildPrivacyToggle(
                 context,
                 'Show Last Active',
                 'Display when you were last active',
-                profileViewModel.showLastActive,
-                (value) => profileViewModel.updateShowLastActive(value),
+                settingsViewModel.showLastActive,
+                (value) => settingsViewModel.updateShowLastActive(value),
               ),
               _buildPrivacyToggle(
                 context,
                 'Show Location',
                 'Display your location',
-                profileViewModel.showLocation,
-                (value) => profileViewModel.updateShowLocation(value),
+                settingsViewModel.showLocation,
+                (value) => settingsViewModel.updateShowLocation(value),
               ),
               _buildPrivacyToggle(
                 context,
                 'Show Bio',
                 'Display your bio/about section',
-                profileViewModel.showBio,
-                (value) => profileViewModel.updateShowBio(value),
+                settingsViewModel.showBio,
+                (value) => settingsViewModel.updateShowBio(value),
               ),
           
               const Divider(height: 32),
