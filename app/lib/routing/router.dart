@@ -83,10 +83,6 @@ class AppRouter {
             ),
             // Auth routes
             GoRoute(
-              path: Routes.authCallback,
-              builder: (context, state) => const AuthCallbackScreen(),
-            ),
-            GoRoute(
               path: Routes.login,
               builder: (context, state) => const AuthScreen(
                 initialTab: 'login',
@@ -101,6 +97,10 @@ class AppRouter {
           ],
         ),
         // Standalone login route (no shell)
+        GoRoute(
+          path: Routes.authCallback,
+          builder: (context, state) => const AuthCallbackScreen(),
+        ),
       ],
     );
   }

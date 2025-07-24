@@ -10,6 +10,13 @@ abstract class UserModel with _$UserModel {
     required String id,
     required String name,
     required String email,
+    String? avatarUrl,
+    String? bio,
+    String? typeUser,
+
+    List<String>? ownedGamesID,
+    List<String>? favoriteGamesID,
+    List<String>? installedGamesID,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, Object?> json) => 
