@@ -1,4 +1,4 @@
-import 'package:gameverse/ui/game_detail/view_model/game_viewmodel.dart';
+import 'package:gameverse/ui/game_detail/view_model/game_detail_viewmodel.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
 import 'package:gameverse/ui/profile/view_model/profile_viewmodel.dart';
 import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
@@ -21,12 +21,12 @@ List<SingleChildWidget> appProviders() {
     ChangeNotifierProvider(
       create: (_) => ThemeViewModel(),
     ),
-    ChangeNotifierProxyProvider<GameRepository, GameViewModel>(
-      create: (context) => GameViewModel(
+    ChangeNotifierProxyProvider<GameRepository, GameDetailViewModel>(
+      create: (context) => GameDetailViewModel(
         gameRepository: Provider.of<GameRepository>(context, listen: false),
       ),
       update: (context, repository, previous)  =>
-          previous ?? GameViewModel(gameRepository: repository),
+          previous ?? GameDetailViewModel(gameRepository: repository),
     ),
     ChangeNotifierProxyProvider<GameRepository, HomeViewModel>(
       create: (context) => HomeViewModel(

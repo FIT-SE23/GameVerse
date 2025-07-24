@@ -283,31 +283,69 @@ class ProfileHeader extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Stats Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  StatusCard(
-                    icon: Icons.games,
-                    label: 'Games Owned',
-                    value: profileViewModel.gamesOwned.toString(),
-                  ),
-                  StatusCard(
-                    icon: Icons.schedule,
-                    label: 'Hours Played',
-                    value: profileViewModel.totalHoursPlayed.toStringAsFixed(0),
-                  ),
-                  StatusCard(
-                    icon: Icons.emoji_events,
-                    label: 'Achievements',
-                    value: profileViewModel.totalAchievements.toString(),
-                  ),
-                  StatusCard(
-                    icon: Icons.favorite,
-                    label: 'Wishlist',
-                    value: profileViewModel.wishlistCount.toString(),
-                  ),
-                ],
-              ),
+              if (MediaQuery.sizeOf(context).width > 600) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    StatusCard(
+                      icon: Icons.games,
+                      label: 'Games Owned',
+                      value: profileViewModel.gamesOwned.toString(),
+                    ),
+                    StatusCard(
+                      icon: Icons.schedule,
+                      label: 'Hours Played',
+                      value: profileViewModel.totalHoursPlayed.toStringAsFixed(0),
+                    ),
+                    StatusCard(
+                      icon: Icons.emoji_events,
+                      label: 'Achievements',
+                      value: profileViewModel.totalAchievements.toString(),
+                    ),
+                    StatusCard(
+                      icon: Icons.favorite,
+                      label: 'Wishlist',
+                      value: profileViewModel.wishlistCount.toString(),
+                    ),
+                  ],
+                ),
+              ] else ...[
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        StatusCard(
+                          icon: Icons.games,
+                          label: 'Games Owned',
+                          value: profileViewModel.gamesOwned.toString(),
+                        ),
+                        StatusCard(
+                          icon: Icons.schedule,
+                          label: 'Hours Played',
+                          value: profileViewModel.totalHoursPlayed.toStringAsFixed(0),
+                        )
+                      ]
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        StatusCard(
+                          icon: Icons.emoji_events,
+                          label: 'Achievements',
+                          value: profileViewModel.totalAchievements.toString(),
+                        ),
+                        StatusCard(
+                          icon: Icons.favorite,
+                          label: 'Wishlist',
+                          value: profileViewModel.wishlistCount.toString(),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ]
             ],
           ),
         ),

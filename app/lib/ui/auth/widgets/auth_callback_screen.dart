@@ -20,8 +20,6 @@ class _AuthCallbackScreenState extends State<AuthCallbackScreen> {
 
   Future<void> _handleWebAuthCallback() async {
     if (!kIsWeb) {
-      // Redirect to desktop callback handler
-      context.go('/');
       return;
     }
 

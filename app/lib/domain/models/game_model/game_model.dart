@@ -8,11 +8,25 @@ abstract class GameModel with _$GameModel {
   const factory GameModel({
     required int appId,
     required String name,
-    String? description,
+    required int recommended,
+    required String briefDescription,
+    required String description,
+    required String requirements,
     required String headerImage,
     List<String>? screenshots,
     Map<String, dynamic>? price,
+    required List<String> categoriesID,
+
+    // Sale related fields
+    bool? isSale,
+    double? discountPercent,
+    DateTime? saleStartDate,
+    DateTime? saleEndDate,
+
+    // Field for User only
+    @Default(false) bool isOwned,
     @Default(false) bool installed,
+    @Default(false) bool favorite,
     double? playtimeHours,
   }) = _GameModel;
 
