@@ -81,7 +81,7 @@ class GameCard extends StatelessWidget {
             ),
 
             // Discount badge (if available)
-            if (game.description != null && game.description!.contains('Save'))
+            if (game.description.contains('Save'))
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -91,7 +91,7 @@ class GameCard extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    game.description!,
+                    game.description,
                     style: TextStyle(
                       color: theme.colorScheme.onSecondary,
                       fontWeight: FontWeight.bold,
