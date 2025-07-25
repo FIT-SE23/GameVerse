@@ -14,8 +14,13 @@ import 'package:gameverse/routing/router.dart';
 import 'package:gameverse/config/config.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/config/url_protocol/api.dart';
+
+import 'package:flutter/rendering.dart';
+
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  // set to true to debug widgets easier
+  debugPaintSizeEnabled = false;
 
   try {
     await dotenv.load();

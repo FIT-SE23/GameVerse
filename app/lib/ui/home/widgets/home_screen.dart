@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 import 'featured_games_carousel.dart';
 import 'explore_new_game.dart';
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(vertical: 32, horizontal: max(MediaQuery.of(context).size.width / 10, 32)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
@@ -35,7 +36,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            FeaturedGamesCarousel(),
+            FeaturedDiscountCarousel(),
             SizedBox(height: 32),
             Text(
               'Categories',

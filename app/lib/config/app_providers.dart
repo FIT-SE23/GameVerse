@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/ui/home/view_model/home_viewmodel.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
+// import 'package:gameverse/ui/shared/game_selectable_viewmodel.dart';
 
 import '../data/repositories/auth_repository.dart';
 import '../data/repositories/game_repository.dart';
@@ -18,6 +19,7 @@ List<SingleChildWidget> appProviders() {
     ChangeNotifierProvider(
       create: (_) => ThemeViewModel(),
     ),
+
     ChangeNotifierProxyProvider<GameRepository, GameViewModel>(
       create: (context) => GameViewModel(
         gameRepository: Provider.of<GameRepository>(context, listen: false),
@@ -25,6 +27,7 @@ List<SingleChildWidget> appProviders() {
       update: (context, repository, previous)  =>
           previous ?? GameViewModel(gameRepository: repository),
     ),
+
     ChangeNotifierProxyProvider<GameRepository, HomeViewModel>(
       create: (context) => HomeViewModel(
         gameRepository: Provider.of<GameRepository>(context, listen: false),
@@ -32,6 +35,7 @@ List<SingleChildWidget> appProviders() {
       update: (context, repository, previous)  =>
           previous ?? HomeViewModel(gameRepository: repository),
     ),
+
     ChangeNotifierProvider(
       create: (context) => AuthViewModel(
         authRepository: Provider.of<AuthRepository>(context, listen: false),
