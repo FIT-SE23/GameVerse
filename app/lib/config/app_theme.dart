@@ -15,9 +15,10 @@ class DarkThemeColors {
 class LightThemeColors {
   LightThemeColors._();
 
-  static const Color background = Color(0xFFDADADA);
-  static const Color shell = Color(0xFFEBEBEB);
+  static const Color background = Color(0xFFFAFAFA);
   static const Color text = Color(0xFF141414);
+  static const Color shell = Color(0xFFEBEBEB);
+  static const Color onShell = Color(0xFF141414);
 
   static const Color cyan = Color(0xFF20CFC2);
   static const Color onCyan = Color(0xFFFFFFFF);
@@ -58,7 +59,7 @@ class AppTheme {
     
     // Card theme
     cardTheme: CardThemeData(
-      color: Color(0xFF1E1E1E),           // Card background
+      color: DarkThemeColors.shell,           // Card background
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -122,13 +123,13 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: DarkThemeColors.text),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: DarkThemeColors.text),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
       
       bodyLarge: TextStyle(fontSize: 16, color: DarkThemeColors.text),
       bodyMedium: TextStyle(fontSize: 14, color: DarkThemeColors.text),
@@ -184,7 +185,7 @@ class AppTheme {
     
     // Card theme
     cardTheme: CardThemeData(
-      color: Colors.white,               // Card background
+      color: LightThemeColors.shell,               // Card background
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -194,8 +195,8 @@ class AppTheme {
     
     // App bar
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),      // App bar background
-      foregroundColor: Color(0xFF1F1F1F), // App bar text/icons
+      backgroundColor: LightThemeColors.shell,      // App bar background
+      foregroundColor: LightThemeColors.onShell, // App bar text/icons
       elevation: 0,
       centerTitle: false,
       titleTextStyle: TextStyle(
@@ -250,13 +251,13 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: LightThemeColors.text),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: LightThemeColors.text),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: LightThemeColors.text),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: LightThemeColors.text),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: LightThemeColors.text),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: LightThemeColors.text),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: LightThemeColors.text),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: LightThemeColors.text),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: LightThemeColors.text),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: LightThemeColors.text),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: LightThemeColors.text),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: LightThemeColors.text),
       
       bodyLarge: TextStyle(fontSize: 16, color: LightThemeColors.text),
       bodyMedium: TextStyle(fontSize: 14, color: LightThemeColors.text),

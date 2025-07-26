@@ -13,8 +13,7 @@ class PageFooter extends StatelessWidget {
     String logoAddr;
     if (Theme.brightnessOf(context) == Brightness.dark) {
       logoAddr = 'assets/logo/logo_vertical_white.svg';
-    }
-    else {
+    } else {
       logoAddr = 'assets/logo/logo_vertical_black.svg';
     }
     
@@ -98,7 +97,7 @@ class PageFooter extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'GameVerse',
+                                'GAMEVERSE',
                                 style: theme.textTheme.titleMedium,
                               ),
                               const SizedBox(height: 8),
@@ -155,7 +154,7 @@ class PageFooter extends StatelessWidget {
                     ),
                     const SizedBox(height: 32),
                     Text(
-                      '© 2025 GameVerse Corporation. All rights reserved. All trademarks are the property of their respective owners in Vietnam and other countries.',
+                      '© 2025 GAMEVERSE Corporation. All rights reserved. All trademarks are the property of their respective owners in Vietnam and other countries.',
                       style: theme.textTheme.bodySmall,
                     ),
                   ],
@@ -163,22 +162,6 @@ class PageFooter extends StatelessWidget {
               ),
             ],
           ),
-          
-          // const SizedBox(height: 16),
-          
-          // Social media and copyright row
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     const SizedBox(width: 32),
-          //     Expanded(
-          //       child: Text(
-          //         '© 2025 GameVerse Corporation. All rights reserved. All trademarks are the property of their respective owners in Vietnam and other countries.',
-          //         style: theme.textTheme.bodySmall,
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -194,7 +177,14 @@ class PageFooter extends StatelessWidget {
           minimumSize: const Size(0, 32),
           alignment: Alignment.centerLeft,
         ),
-        child: Text(title),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          )
+        ),
       ),
     );
   }

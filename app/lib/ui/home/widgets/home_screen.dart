@@ -1,65 +1,71 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:provider/provider.dart';
+// import 'dart:math';
+import 'package:gameverse/config/padding_config.dart';
 
-import 'featured_games_carousel.dart';
-import 'explore_new_game.dart';
+import '../view_model/home_viewmodel.dart';
+
+import 'game_section_horizontal.dart';
+import 'game_section_fancy.dart';
 import 'genres_game.dart';
-import 'popular_games.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 32, horizontal: max(MediaQuery.of(context).size.width / 10, 32)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Popular Games',
-              style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold
+      child: Consumer<HomeViewModel>(
+        builder: (context, homeViewModel, child) {
+          return Column(
+            children: [
+              // this is not in Padding because the key art's width
+              // is the window's width
+              GameSectionFancy(title: 'Popular Games', gameList: Provider.of<HomeViewModel>(context, listen: false).popularGames,),
+
+              Padding(
+                padding: getNegativeSpacePadding(context),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 32),
+                    GameSectionHorizontal(title: 'Feature Discounts', gameList: Provider.of<HomeViewModel>(context, listen: false).featuredDiscount,),
+              
+                    SizedBox(height: 32),
+                    Text(
+                      'Categories',
+                      style: TextStyle(
+                        fontSize: 22, 
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    GenresGame(),
+              
+                    SizedBox(height: 32),
+                    GameSectionHorizontal(title: 'Explore New Games', gameList: Provider.of<HomeViewModel>(context, listen: false).newReleases,),
+              
+                    SizedBox(height: 96), // Extra space before footer
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            PopularGames(),
-            SizedBox(height: 32),
-            Text(
-              'Features Discounts',
-              style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold
-              ),
-            ),
-            SizedBox(height: 16),
-            FeaturedDiscountCarousel(),
-            SizedBox(height: 32),
-            Text(
-              'Categories',
-              style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold
-              ),
-            ),
-            SizedBox(height: 16),
-            GenresGame(),
-            SizedBox(height: 32),
-            Text(
-              'Explore New Games',
-              style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold
-              ),
-            ),
-            SizedBox(height: 16),
-            ExploreNewGame(),
-            SizedBox(height: 32), // Extra space before footer
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }

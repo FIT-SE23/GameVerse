@@ -21,23 +21,22 @@ class GameCard extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Container(
-      width: 280,
+      width: 240,
       margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        // color: theme.cardTheme.color,
-        // borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
+      // decoration: BoxDecoration(
+      //   color: theme.cardTheme.color,
+      //   borderRadius: BorderRadius.circular(8),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.black.withValues(alpha: 0.1),
+      //       blurRadius: 8,
+      //       offset: const Offset(0, 2),
+      //     ),
+      //   ],
+      // ),
+      // clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          // Use GameSelectableViewModel to select game before navigation
           // Provider.of<HomeViewModel>(context, listen: false).selectGame(game);
           onSelect(game);
           // Navigator.pushNamed(context, '/gameDetails', arguments: game.appId);
@@ -103,22 +102,19 @@ class GameCard extends StatelessWidget {
             
             // Game details
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Game title
                   Text(
                     game.name,
-                    style: theme.textTheme.titleMedium,
+                    style: theme.textTheme.titleSmall,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   
                   const SizedBox(height: 8),
-                                      
-                  const SizedBox(height: 8),
-                  
                   // Price
                   Text(
                     game.price != null 

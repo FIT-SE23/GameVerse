@@ -42,7 +42,7 @@ class HomeViewModel extends ChangeNotifier {
       _featuredDiscount = await _gameRepository.getFeaturedGames();
       
       // In a real app, we would have more API calls for different sections
-      _newReleases = _featuredDiscount.take(4).toList();
+      _newReleases = _featuredDiscount;
 
       // Same as new releases, currently just taking 5 featured discount games to demo
       _popularGames = _featuredDiscount.take(5).toList();
