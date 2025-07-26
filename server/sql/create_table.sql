@@ -1,56 +1,46 @@
 create table if not exists "User" (
-  UserID uuid default gen_random_uuid(),
-  Username varchar,
+  UserID uuid default gen_random_uuid() primary key,
+  Username varchar check (char_length(Username) >= 4 and char_length(Username) <= 20),
   Email varchar unique,
-  HashPassword varchar,
-
-  primary key (UserID)
+  HashPassword varchar
 );
 
 create table if not exists "PaymentMethod" (
-  PaymentMethodID uuid default gen_random_uuid(),
+  PaymentMethodID uuid default gen_random_uuid() primary key,
   Type varchar,
-  Information text,
-
-  primary key (PaymentMethodID)
+  Information text
 );
 
 create table if not exists "Publisher" (
-  PublisherID uuid,
+  PublisherID uuid primary key,
   PaymentMethodID uuid,
   Description text,
 
-  primary key (PublisherID),
-  foreign key (PublisherID) references "User" (UserID) on delete set null,
-  foreign key (PaymentMethodID) references "PaymentMethod" (PaymentMethodID) on delete set null
+  foreign key (PublisherID) references "User" (UserID) on delete cascade,
+  foreign key (PaymentMethodID) references "PaymentMethod" (PaymentMethodID) on delete cascade
 );
 
 create table if not exists "Resource" (
-  ResourceID uuid default gen_random_uuid(),
+  ResourceID uuid default gen_random_uuid() primary key,
   UserID uuid,
   URL text,
 
-  primary key (ResourceID),
-  foreign key (UserID) references "User" (UserID) on delete set null
+  foreign key (UserID) references "User" (UserID) on delete cascade
 );
 
 create table if not exists "Game" (
-  GameID uuid default gen_random_uuid(),
+  GameID uuid default gen_random_uuid() primary key,
   PublisherID uuid,
   Name varchar,
   Description text,
-  SaleInformation text,
 
-  primary key (GameID),
-  foreign key (PublisherID) references "Publisher" (PublisherID) on delete set null
+  foreign key (PublisherID) references "Publisher" (PublisherID) on delete cascade
 );
 
 create table if not exists "Category" (
-  CategoryID uuid default gen_random_uuid(),
+  CategoryID uuid default gen_random_uuid() primary key,
   CategoryName varchar,
-  IsSensitive boolean,
-
-  primary key (CategoryID)
+  IsSensitive boolean
 );
 
 create table if not exists "Game_Category" (
@@ -58,28 +48,44 @@ create table if not exists "Game_Category" (
   CategoryID uuid,
 
   primary key (GameID, CategoryID),
-  foreign key (GameID) references "Game" (GameID) on delete set null,
-  foreign key (CategoryID) references "Category" (CategoryID) on delete set null
+  foreign key (GameID) references "Game" (GameID) on delete cascade,
+  foreign key (CategoryID) references "Category" (CategoryID) on delete cascade
+);
+
+create table if not exists "Game_Resource" (
+  GameID uuid,
+  ResourceID uuid,
+
+  primary key (GameID, ResourceID),
+  foreign key (GameID) references "Game" (GameID) on delete cascade,
+  foreign key (ResourceID) references "Resource" (ResourceID) on delete cascade
+);
+
+create table if not exists "Game_Sale" (
+  GameID uuid primary key,
+  StartDate date,
+  EndDate date check (StartDate < EndDate),
+  DiscountPercentage int2 check (DiscountPercentage >= 0 and DiscountPercentage <= 100),
+
+  foreign key (GameID) references "Game" (GameID) on delete cascade
 );
 
 create table if not exists "Forum" (
-  ForumID uuid,
+  ForumID uuid primary key,
 
-  primary key (ForumID),
-  foreign key (ForumID) references "Game" (GameID) on delete set null
+  foreign key (ForumID) references "Game" (GameID) on delete cascade
 );
 
 create table if not exists "Post" (
-  PostID uuid default gen_random_uuid(),
+  PostID uuid default gen_random_uuid() primary key,
   UserID uuid,
   ForumID uuid,
   Content text,
   Upvote int4,
   PostDate timestamp default now(),
 
-  primary key (PostID),
-  foreign key (UserID) references "User" (UserID) on delete set null,
-  foreign key (ForumID) references "Forum" (ForumID) on delete set null
+  foreign key (UserID) references "User" (UserID) on delete cascade,
+  foreign key (ForumID) references "Forum" (ForumID) on delete cascade
 );
 
 create table if not exists "Comment" (
@@ -91,8 +97,8 @@ create table if not exists "Comment" (
   CommentDate timestamp default now(),
 
   primary key (CommentID),
-  foreign key (UserID) references "User" (UserID) on delete set null,
-  foreign key (ForumID) references "Forum" (ForumID) on delete set null
+  foreign key (UserID) references "User" (UserID) on delete cascade,
+  foreign key (ForumID) references "Forum" (ForumID) on delete cascade
 );
 
 create table if not exists "Transaction" (
@@ -100,11 +106,11 @@ create table if not exists "Transaction" (
   PaymentMethodID uuid,
   SenderID uuid,
   ReceiverID uuid,
-  MoneyAmount int4,
+  MoneyAmount int4 check (MoneyAmount > 0),
   TransactionDate timestamp default now(),
 
   primary key (TransactionID),
-  foreign key (PaymentMethodID) references "PaymentMethod" (PaymentMethodID) on delete set null,
-  foreign key (SenderID) references "User" (UserID) on delete set null,
-  foreign key (ReceiverID) references "User" (UserID) on delete set null
+  foreign key (PaymentMethodID) references "PaymentMethod" (PaymentMethodID) on delete cascade,
+  foreign key (SenderID) references "User" (UserID) on delete cascade,
+  foreign key (ReceiverID) references "User" (UserID) on delete cascade
 );
