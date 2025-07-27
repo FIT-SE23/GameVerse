@@ -10,13 +10,13 @@ import (
 	"runtime"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
-	storage_go "github.com/supabase-community/storage-go"
 	"github.com/supabase-community/supabase-go"
 )
 
-func _jsonResponse(c echo.Context, code int, message string, returnVal interface{}) error {
+func _jsonResponse(c echo.Context, code int, message string, returnVal any) error {
 	jsonData := map[string]any{
 		"message": message,
 		"return":  returnVal,
@@ -39,24 +39,9 @@ func main() {
 		return
 	}
 
+	bucketId := "root"
+
 	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, `
-/login (POST): email, password
-/user (GET): id
-/user (POST): username, email, password
-/game (GET): id (for example /game/1345-abdf-12cs)
-/game (POST): publisherid, gamename, description, files (multipart form), categories (format: cat1,cat2,cat3, for example: Horror,Open World,FPS)
-
-/category (POST): name, sensitive ("" is false, otherwise, it's true)
-/payment (POST): type, information
-/publisher (POST): userid, paymentmethodid, description
-/publisher (GET): id (/publisher/1355-lals-1355)
-
-/search (GET): entity, username (if entity == user, for example: /search?entity=user&name=Foo)
-							 entity, gamename (if entity == game, for example: /search?entity=game&name=Foo)
-			`)
-	})
 
 	e.POST("/login", func(c echo.Context) error {
 		email := c.FormValue("email")
@@ -111,7 +96,7 @@ func main() {
 		}
 		return jsonResponse(c, http.StatusOK, "", user)
 	})
-	e.PUT("/user/:id", func(c echo.Context) error {
+	e.PATCH("/user/:id", func(c echo.Context) error {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
 	})
 
@@ -130,11 +115,11 @@ func main() {
 			"name":        gameName,
 			"description": description,
 		}
-		_, _, err := client.From("Game").Insert(game, false, "", "gameid", "").ExecuteString()
+		_, _, err := client.From("Game").Insert(game, false, "", "", "").ExecuteString()
 		if err != nil {
 			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 		}
-		rep, _, err := client.From("Game").Select("gameid", "", false).Eq("name", gameName).Single().ExecuteString()
+		rep, _, err := client.From("Game").Select("gameid", "", false).Eq("publisherid", publisherID).Eq("name", gameName).Single().ExecuteString()
 		if err != nil {
 			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 		}
@@ -158,23 +143,22 @@ func main() {
 			src, err := file.Open()
 			if err != nil {
 				errFiles = append(errFiles, file.Filename)
-				// fmt.Println("Read file failed", file.Filename, err)
+				fmt.Println("Read file failed", file.Filename, err)
 				continue
 			}
 			defer src.Close()
 
-			upsert := true
-			_, uplErr := client.Storage.UploadFile("test", userID+"/res/"+file.Filename, src, storage_go.FileOptions{Upsert: &upsert})
+			_, uplErr := client.Storage.UploadFile(bucketId, userID+"/res/"+strings.ReplaceAll(time.Now().UTC().Format(time.RFC3339), ":", "-")+file.Filename, src)
 			if uplErr != nil {
 				errFiles = append(errFiles, file.Filename)
-				// fmt.Println("Upload failed", file.Filename, uplErr)
+				fmt.Println("Upload failed", file.Filename, uplErr)
 				continue
 			}
 
-			signedURL, err := client.Storage.CreateSignedUrl("test", userID+"/res/"+file.Filename, 365*24*60*60)
+			signedURL, err := client.Storage.CreateSignedUrl(bucketId, userID+"/res/"+file.Filename, 365*24*60*60)
 			if err != nil {
 				errFiles = append(errFiles, file.Filename)
-				// fmt.Println("Create signed url failed", file.Filename, err)
+				fmt.Println("Create signed url failed", file.Filename, err)
 				continue
 			}
 
@@ -263,7 +247,6 @@ func main() {
 	e.GET("/game/:id", func(c echo.Context) error {
 		gameID := c.Param("id")
 
-		// TODO: remove `publisherid`
 		rep, _, err := client.From("Game").Select("publisherid, name, description, Category(categoryname), Resource(url)", "", false).Eq("gameid", gameID).Single().ExecuteString()
 		if err != nil {
 			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
@@ -274,16 +257,9 @@ func main() {
 			return jsonResponse(c, http.StatusBadRequest, "Invalid gameid" /*err.Error()*/, "")
 		}
 
-		if gameBasicInfo["Game_Category"] != nil {
-			delete(gameBasicInfo, "Game_Category")
-		}
-		if gameBasicInfo["Game_Resource"] != nil {
-			delete(gameBasicInfo, "Game_Resource")
-		}
-
 		return jsonResponse(c, http.StatusOK, "", gameBasicInfo)
 	})
-	e.PUT("/game/:id", func(c echo.Context) error {
+	e.PATCH("/game/:id", func(c echo.Context) error {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
 	})
 
@@ -328,8 +304,8 @@ func main() {
 	})
 
 	e.POST("category", func(c echo.Context) error {
-		categoryName := c.FormValue("name")
-		isSensitive := c.FormValue("sensitive")
+		categoryName := c.FormValue("categoryname")
+		isSensitive := c.FormValue("issensitive")
 
 		category := map[string]any{
 			"categoryname": categoryName,
@@ -379,7 +355,6 @@ func main() {
 	e.GET("/publisher/:id", func(c echo.Context) error {
 		publisherid := c.Param("id")
 
-		// TODO: retrieve games
 		rep, _, err := client.From("Publisher").Select("description, Game(*)", "", false).Eq("publisherid", publisherid).Single().ExecuteString()
 		if err != nil {
 			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
@@ -392,7 +367,7 @@ func main() {
 		}
 		return jsonResponse(c, http.StatusOK, "", user)
 	})
-	e.PUT("/publisher/:id", func(c echo.Context) error {
+	e.PATCH("/publisher/:id", func(c echo.Context) error {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
 	})
 
