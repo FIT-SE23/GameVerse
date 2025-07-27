@@ -8,7 +8,7 @@ create table if not exists "User" (
 create table if not exists "PaymentMethod" (
   PaymentMethodID uuid default gen_random_uuid() primary key,
   Type varchar,
-  Information text
+  Information text unique
 );
 
 create table if not exists "Publisher" (
@@ -31,7 +31,7 @@ create table if not exists "Resource" (
 create table if not exists "Game" (
   GameID uuid default gen_random_uuid() primary key,
   PublisherID uuid,
-  Name varchar,
+  Name text unique,
   Description text,
 
   foreign key (PublisherID) references "Publisher" (PublisherID) on delete cascade
@@ -39,7 +39,7 @@ create table if not exists "Game" (
 
 create table if not exists "Category" (
   CategoryID uuid default gen_random_uuid() primary key,
-  CategoryName varchar,
+  CategoryName varchar unique,
   IsSensitive boolean
 );
 
