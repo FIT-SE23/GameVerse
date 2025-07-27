@@ -82,7 +82,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                   thickness: 8,
                   radius: const Radius.circular(8),
                   controller: _scrollController,
-                  child: ListView.builder(
+                  child: ListView.separated(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
@@ -91,9 +91,9 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                       final game = widget.gameList[index];
                       return GameCard(
                         game: game,
-                        onSelect: Provider.of<HomeViewModel>(context, listen: false).selectGame,
                       );
                     },
+                    separatorBuilder:(context, index) => SizedBox(width: 16),
                   ),
                 ),
               ),

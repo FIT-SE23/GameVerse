@@ -6,23 +6,18 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 
 class GameCard extends StatelessWidget {
   final GameModel game;
-  // a function like "Provider.of<HomeViewModel>(context, listen: false).selectGame"
-  // is passed so that it will be called when tapping on the game card
-  final void Function(GameModel) onSelect;
 
   const GameCard({
     super.key,
     required this.game,
-    required this.onSelect,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Container(
+    return SizedBox(
       width: 240,
-      margin: const EdgeInsets.only(right: 16),
       // decoration: BoxDecoration(
       //   color: theme.cardTheme.color,
       //   borderRadius: BorderRadius.circular(8),
@@ -37,9 +32,6 @@ class GameCard extends StatelessWidget {
       // clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          // Provider.of<HomeViewModel>(context, listen: false).selectGame(game);
-          onSelect(game);
-          // Navigator.pushNamed(context, '/gameDetails', arguments: game.appId);
           context.push('/game-details/${game.appId}');
         },
         child: Column(
