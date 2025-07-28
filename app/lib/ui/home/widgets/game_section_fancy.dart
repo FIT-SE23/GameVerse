@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gameverse/config/padding_config.dart';
 
 import '../view_model/home_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
-import 'package:gameverse/ui/shared/widgets/game_title_card.dart';
+import 'package:gameverse/ui/home/widgets/game_title_card.dart';
 
 class GameSectionFancy extends StatefulWidget {
   final String title;
@@ -17,6 +18,8 @@ class GameSectionFancy extends StatefulWidget {
 }
 
 class _GameSectionFancyState extends State<GameSectionFancy> {
+  int currentGameIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +33,8 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
     final viewModel = Provider.of<HomeViewModel>(context, listen: false);
     final status = viewModel.state;
     final theme = Theme.of(context);
-    int currentGameIndex = 0;
+
+    const double defaultHeight = 480;
 
     return SizedBox(
       width: double.infinity,
@@ -40,34 +44,44 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
         children: [
           if (status == HomeViewState.success && widget.gameList.isNotEmpty)
             Positioned.fill(
-              child: Image.network(
-                widget.gameList[currentGameIndex].headerImage,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    child: Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        color: theme.colorScheme.onSurfaceVariant,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 1000),
+                transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(
+                  opacity: animation,
+                  child: child
+                ),
+                child: Image.network(
+                  width: double.infinity,
+                  height: 640,
+                  key: ValueKey(widget.gameList[currentGameIndex].headerImage),
+                  widget.gameList[currentGameIndex].headerImage,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      child: Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded / 
-                                loadingProgress.expectedTotalBytes!
-                            : null,
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded / 
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
 
@@ -81,7 +95,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment(0, -1),
-                  end: Alignment(0, 0.6),
+                  end: Alignment(0, 0.8),
                   colors: [
                     theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
                     theme.scaffoldBackgroundColor
@@ -105,13 +119,13 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
             
                 if (status == HomeViewState.loading)
                   const SizedBox(
-                    height: 500,
+                    height: defaultHeight,
                     child: Center(child: CircularProgressIndicator()),
                   )
                   
                 else if (status == HomeViewState.error)
                   SizedBox(
-                    height: 500,
+                    height: defaultHeight,
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -130,14 +144,80 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                 else if (status == HomeViewState.success && widget.gameList.isNotEmpty)
                   SizedBox(
                     width: double.infinity,
-                    height: 500,
+                    height: defaultHeight,
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 3,
-                          child: Center(),
+                          flex: 4,
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 500),
+                                  transitionBuilder: (Widget child, Animation<double> animation)
+                                    => FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                  ),
+                                  child: Image.network(
+                                    width: double.infinity,
+                                    height: defaultHeight,
+                                    key: ValueKey(widget.gameList[currentGameIndex].headerImage),
+                                    widget.gameList[currentGameIndex].headerImage,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: theme.colorScheme.surfaceContainerHighest,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.image_not_supported,
+                                            color: theme.colorScheme.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    loadingBuilder: (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Container(
+                                        color: theme.colorScheme.surfaceContainerHighest,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded / 
+                                                    loadingProgress.expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                              Positioned(
+                                top: -1,
+                                bottom: -1,
+                                left: -1,
+                                right: -1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment(-1, 0),
+                                      end: Alignment(1, 0),
+                                      colors: [
+                                        theme.scaffoldBackgroundColor.withValues(alpha: 0.8),
+                                        theme.scaffoldBackgroundColor.withValues(alpha: 0)
+                                      ]
+                                    )
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 16),
+
+                        const SizedBox(width: 32),
+                        
                         Expanded(
                           flex: 1,
                           child: Column(
@@ -146,7 +226,15 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                               widget.gameList.length,
                               (int index) => GameTitleCard(
                                   game: widget.gameList[index],
-                                  onSelect: viewModel.selectGame,
+                                  index: index,
+                                  selectedIndex: currentGameIndex,
+                                  onSelect: (index) {
+                                    if (index == currentGameIndex) {
+                                      context.push('/game-details/${widget.gameList[index].appId}');
+                                    } else {
+                                      setState(() => currentGameIndex = index);
+                                    }
+                                  }
                                 )
                             ),
                           ),
@@ -157,7 +245,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
             
                 else
                   const SizedBox(
-                    height: 500,
+                    height: defaultHeight,
                     child: Center(child: Text('Something went wrong')),
                   )
               ],

@@ -28,10 +28,6 @@ class HomeViewModel extends ChangeNotifier {
   // Error handling
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
-
-  // Selected game for details
-  GameModel? _selectedGame;
-  GameModel? get selectedGame => _selectedGame;
   
   Future<void> loadHomePageData() async {
     try {
@@ -58,10 +54,5 @@ class HomeViewModel extends ChangeNotifier {
   
   void refreshData() {
     loadHomePageData();
-  }
-
-  void selectGame(GameModel game) {
-    _selectedGame = game;
-    notifyListeners();
   }
 }

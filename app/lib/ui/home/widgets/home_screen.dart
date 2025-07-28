@@ -48,10 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(height: 32),
                     Text(
                       'Categories',
-                      style: TextStyle(
-                        fontSize: 22, 
-                        fontWeight: FontWeight.bold
-                      ),
+                      style: Theme.of(context).textTheme.displayLarge
                     ),
                     SizedBox(height: 16),
                     GenresGame(),
