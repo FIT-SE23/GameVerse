@@ -3,13 +3,6 @@ import 'package:gameverse/config/app_theme.dart';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 
-ThemeData getContrastTheme(ThemeData theme) {
-  if (theme.brightness == Brightness.dark) {
-    return AppTheme.lightTheme;
-  }
-  return AppTheme.darkTheme;
-}
-
 class GameTitleCard extends StatefulWidget {
   final GameModel game;
   final int index;
@@ -36,7 +29,7 @@ class _GameTitleCardState extends State<GameTitleCard> {
 
     return SizedBox(
       width: double.infinity,
-      height: 60,
+      height: 56,
       child: Stack(
         fit: StackFit.loose,
         children: [
@@ -84,13 +77,13 @@ class _GameTitleCardState extends State<GameTitleCard> {
                   begin: Alignment(-1, 0),
                   end: Alignment(1, 0),
                   colors: 
-                  widget.selectedIndex != widget.index ?
-                  [
+                  widget.selectedIndex != widget.index
+                    ? [
                     theme.scaffoldBackgroundColor.withValues(alpha: 0.5),
                     theme.scaffoldBackgroundColor
                   ] : [
-                    getContrastTheme(theme).scaffoldBackgroundColor.withValues(alpha: 0.5),
-                    getContrastTheme(theme).scaffoldBackgroundColor
+                    getOppositeTheme(theme).scaffoldBackgroundColor.withValues(alpha: 0.5),
+                    getOppositeTheme(theme).scaffoldBackgroundColor
                   ]
                 )
               ),
@@ -106,7 +99,7 @@ class _GameTitleCardState extends State<GameTitleCard> {
                 children: [
                   Text(
                     widget.game.name,
-                    style: widget.selectedIndex != widget.index ? theme.textTheme.titleSmall : getContrastTheme(theme).textTheme.titleSmall,
+                    style: widget.selectedIndex != widget.index ? theme.textTheme.titleSmall : getOppositeTheme(theme).textTheme.titleSmall,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.right,
