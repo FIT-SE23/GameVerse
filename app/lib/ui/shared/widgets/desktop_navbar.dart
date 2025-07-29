@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
+import 'package:gameverse/config/app_theme.dart';
+
 class DesktopNavbar extends StatelessWidget {
   final String currentLocation;
   const DesktopNavbar({
@@ -22,6 +24,8 @@ class DesktopNavbar extends StatelessWidget {
     else {
       logoAddr = 'assets/logo/logo_horizontal_black.svg';
     }
+    final theme = Theme.of(context);
+
     return Container(
       height: 60,
       color: Theme.of(context).appBarTheme.backgroundColor,
@@ -48,26 +52,37 @@ class DesktopNavbar extends StatelessWidget {
               _buildNavItem(context, '/downloads', 'Downloads', currentLocation),
             ],
           ),
-          
+          const SizedBox(width: 8),
           // Search bar
           Container(
             width: 300,
-            height: 35,
+            height: 30,
             margin: const EdgeInsets.symmetric(horizontal: 0),
             child: SearchAnchor(
+              viewShape: RoundedRectangleBorder(
+                // borderRadius: BorderRadius.circular(0),
+              ),
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
                   controller: controller,
                   padding: const WidgetStatePropertyAll<EdgeInsets>(
-                    EdgeInsets.symmetric(horizontal: 16.0),
+                    EdgeInsets.symmetric(horizontal: 8.0),
                   ),
                   onTap: () => controller.openView(),
                   onChanged: (_) => controller.openView(),
-                  leading: const Icon(Icons.search, size: 20),
+                  leading: Icon(Icons.search, size: 20, color: AppTheme.themeColors(theme.brightness).getText),
                   hintText: 'Search games...',
                   hintStyle: const WidgetStatePropertyAll<TextStyle>(
                     TextStyle(color: Color.fromARGB(179, 150, 150, 150), fontSize: 14),
                   ),
+                  elevation: WidgetStateProperty.all(0),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      // borderRadius: BorderRadius.circular(0),
+                      side: BorderSide(color: AppTheme.themeColors(theme.brightness).getText, width: 1)
+                    )
+                  ),
+                  backgroundColor: WidgetStateProperty.all(theme.appBarTheme.backgroundColor),
                 );
               },
               suggestionsBuilder: (BuildContext context, SearchController controller) {

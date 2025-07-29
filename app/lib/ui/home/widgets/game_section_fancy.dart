@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gameverse/config/padding_config.dart';
+import 'package:gameverse/config/spacing_config.dart';
 
 import '../view_model/home_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/ui/home/widgets/game_title_card.dart';
+import 'package:gameverse/ui/home/widgets/game_card_big.dart';
 
 class GameSectionFancy extends StatefulWidget {
   final String title;
@@ -34,7 +35,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
     final status = viewModel.state;
     final theme = Theme.of(context);
 
-    const double defaultHeight = 480;
+    const double defaultHeight = 500;
 
     return SizedBox(
       width: double.infinity,
@@ -42,6 +43,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
       child: Stack(
         fit: StackFit.loose,
         children: [
+          // Background key art
           if (status == HomeViewState.success && widget.gameList.isNotEmpty)
             Positioned.fill(
               child: AnimatedSwitcher(
@@ -105,6 +107,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
             )
           ),
 
+          // Game section
           Padding(
             padding: getNegativeSpacePadding(context),
             child: Column(
@@ -142,6 +145,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                   )
             
                 else if (status == HomeViewState.success && widget.gameList.isNotEmpty)
+                  // Current chosen game
                   SizedBox(
                     width: double.infinity,
                     height: defaultHeight,
@@ -149,73 +153,9 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                       children: [
                         Expanded(
                           flex: 4,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 500),
-                                  transitionBuilder: (Widget child, Animation<double> animation)
-                                    => FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                  ),
-                                  child: Image.network(
-                                    width: double.infinity,
-                                    height: defaultHeight,
-                                    key: ValueKey(widget.gameList[currentGameIndex].headerImage),
-                                    widget.gameList[currentGameIndex].headerImage,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: theme.colorScheme.surfaceContainerHighest,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.image_not_supported,
-                                            color: theme.colorScheme.onSurfaceVariant,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    loadingBuilder: (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                                        color: theme.colorScheme.surfaceContainerHighest,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            value: loadingProgress.expectedTotalBytes != null
-                                                ? loadingProgress.cumulativeBytesLoaded / 
-                                                    loadingProgress.expectedTotalBytes!
-                                                : null,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              Positioned(
-                                top: -1,
-                                bottom: -1,
-                                left: -1,
-                                right: -1,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment(-1, 0),
-                                      end: Alignment(1, 0),
-                                      colors: [
-                                        theme.scaffoldBackgroundColor.withValues(alpha: 0.8),
-                                        theme.scaffoldBackgroundColor.withValues(alpha: 0)
-                                      ]
-                                    )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
+                          child: GameCardBig(game: widget.gameList[currentGameIndex], height: defaultHeight),
                         ),
-
+                  
                         const SizedBox(width: 32),
                         
                         Expanded(

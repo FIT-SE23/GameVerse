@@ -1,30 +1,62 @@
 import 'package:flutter/material.dart';
 
-class DarkThemeColors {
-  DarkThemeColors._();
+abstract class ThemeColors {
+  Color get getBackground;
+  Color get getText;
+  Color get getShell;
+  Color get getOnShell;
+  Color get getCyan;
+  Color get getOnCyan;
+}
 
+class DarkThemeColors implements ThemeColors {
   static const Color background = Color(0xFF141414);
   static const Color text = Color(0xFFFAFAFA);
   static const Color shell = Color(0xFF252525);
   static const Color onShell = Color(0xFFFFFFFF);
-
   static const Color cyan = Color(0xFF47FFE7);
   static const Color onCyan = Color(0xFF141414);
+
+  @override Color get getBackground => background;
+  @override Color get getText => text;
+  @override Color get getShell => shell;
+  @override Color get getOnShell => onShell;
+  @override Color get getCyan => cyan;
+  @override Color get getOnCyan => onCyan;
 }
 
-class LightThemeColors {
-  LightThemeColors._();
-
+class LightThemeColors implements ThemeColors {
   static const Color background = Color(0xFFFAFAFA);
   static const Color text = Color(0xFF141414);
   static const Color shell = Color(0xFFEBEBEB);
   static const Color onShell = Color(0xFF141414);
-
   static const Color cyan = Color(0xFF20CFC2);
   static const Color onCyan = Color(0xFFFFFFFF);
+
+  @override Color get getBackground => background;
+  @override Color get getText => text;
+  @override Color get getShell => shell;
+  @override Color get getOnShell => onShell;
+  @override Color get getCyan => cyan;
+  @override Color get getOnCyan => onCyan;
+}
+
+ThemeData getOppositeTheme(ThemeData theme) {
+  if (theme.brightness == Brightness.dark) {
+    return AppTheme.lightTheme;
+  }
+  return AppTheme.darkTheme;
 }
 
 class AppTheme {
+  static ThemeColors themeColors(Brightness brightness) {
+    if (brightness == Brightness.dark) {
+      return DarkThemeColors();
+    } else {
+      return LightThemeColors();
+    }
+  }
+  
   // DARK THEME
   static ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
@@ -37,7 +69,7 @@ class AppTheme {
     
     colorScheme: const ColorScheme.dark(
       primary: DarkThemeColors.cyan,         // Primary buttons, active states
-      onPrimary: Colors.white,            // Text/icons on primary color
+      onPrimary: DarkThemeColors.onCyan,            // Text/icons on primary color
       primaryContainer: Color(0xFF173B5A), // Secondary buttons, containers
       onPrimaryContainer: Color(0xFFBFE0FF), // Text on primary containers
       
@@ -163,7 +195,7 @@ class AppTheme {
     
     colorScheme: const ColorScheme.light(
       primary: LightThemeColors.cyan,        // Primary buttons, active states
-      onPrimary: Colors.white,           // Text/icons on primary color
+      onPrimary: LightThemeColors.onCyan,           // Text/icons on primary color
       primaryContainer: Color.fromARGB(255, 41, 119, 254), // Secondary buttons, containers
       onPrimaryContainer: Color.fromARGB(255, 255, 255, 255), // Text on primary containers
       

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'dart:math';
-import 'package:gameverse/config/padding_config.dart';
+import 'package:gameverse/config/spacing_config.dart';
 
 import '../view_model/home_viewmodel.dart';
 
