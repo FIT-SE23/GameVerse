@@ -21,6 +21,11 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	// TODO: Check game's name length
 	gameName := c.FormValue("gamename")
 	description := c.FormValue("description")
+	resourceType := c.FormValue("type")
+
+	if resourceType == "" {
+		resourceType = "binary"
+	}
 
 	game := map[string]string{
 		"publisherid": publisherID,
@@ -78,6 +83,7 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 		resource := map[string]string{
 			"userid": userID,
 			"url":    signedURL.SignedURL,
+			"type":   resourceType,
 		}
 		_, _, err = client.From("Resource").Insert(resource, false, "", "", "").ExecuteString()
 		if err != nil {
