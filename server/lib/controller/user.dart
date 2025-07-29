@@ -57,9 +57,17 @@ Future<Response> listUser(String username) async {
     Uri.parse(serverURL + "search?entity=user&username=$username"),
   );
 
+  var jsonBody;
+
+  try {
+    jsonBody = jsonDecode(raw.body);
+  } on FormatException catch (e) {
+    return Response.fromJson(400, {"message": e.message});
+  }
+
   final response = Response.fromJson(
     raw.statusCode,
-    jsonDecode(raw.body) as Map<String, dynamic>,
+    jsonBody as Map<String, dynamic>,
   );
 
   final users = <User>[];
