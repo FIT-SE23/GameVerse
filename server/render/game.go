@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"slices"
 	"strings"
@@ -12,50 +13,8 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
-func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
-	publisherID := c.FormValue("publisherid")
-	if publisherID == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Require publisherID", "")
-	}
-
-	// TODO: Check game's name length
-	gameName := c.FormValue("gamename")
-	description := c.FormValue("description")
-	resourceType := c.FormValue("type")
-
-	if resourceType == "" {
-		resourceType = "binary"
-	}
-
-	game := map[string]string{
-		"publisherid": publisherID,
-		"name":        gameName,
-		"description": description,
-	}
-	_, _, err := client.From("Game").Insert(game, false, "", "", "").ExecuteString()
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-	}
-	rep, _, err := client.From("Game").Select("gameid", "", false).Eq("publisherid", publisherID).Eq("name", gameName).Single().ExecuteString()
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-	}
-	var gameID map[string]string
-	err = json.Unmarshal([]byte(rep), &gameID)
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Game uploaded but database does not return the id" /*err.Error()*/, "")
-	}
-	userID := publisherID
-
-	// https://echo.labstack.com/docs/cookbook/file-upload
-	form, err := c.MultipartForm()
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-	}
-
-	files := form.File["files"]
+func addResources(c echo.Context, client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
 	errFiles := []string{}
-
 	for _, file := range files {
 		src, err := file.Open()
 		if err != nil {
@@ -94,15 +53,19 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 
 		rep, _, err := client.From("Resource").Select("resourceid", "", false).Eq("url", resource["url"]).Single().ExecuteString()
 		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+			fmt.Println("Select from Resource table failed", file.Filename, err)
+			errFiles = append(errFiles, file.Filename)
+			continue
 		}
 		var resourceid map[string]any
 		err = json.Unmarshal([]byte(rep), &resourceid)
 		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, "Resource uploaded but database does not return the id" /*err.Error()*/, "")
+			fmt.Println("Resource uploaded but database does not return the id", err.Error())
+			errFiles = append(errFiles, file.Filename)
+			continue
 		}
 		gameResource := map[string]any{
-			"gameid":     gameID["gameid"],
+			"gameid":     gameID,
 			"resourceid": resourceid["resourceid"],
 		}
 		_, _, err = client.From("Game_Resource").Insert(gameResource, false, "", "", "").ExecuteString()
@@ -112,6 +75,59 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 		}
 	}
 
+	return errFiles
+}
+
+func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
+	publisherID := c.FormValue("publisherid")
+	if publisherID == "" {
+		return jsonResponse(c, http.StatusBadRequest, "Require publisherID", "")
+	}
+
+	// TODO: Check game's name length
+	gameName := c.FormValue("gamename")
+	description := c.FormValue("description")
+
+	game := map[string]string{
+		"publisherid": publisherID,
+		"name":        gameName,
+		"description": description,
+	}
+	_, _, err := client.From("Game").Insert(game, false, "", "", "").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	rep, _, err := client.From("Game").Select("gameid", "", false).Eq("publisherid", publisherID).Eq("name", gameName).Single().ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	var gameID map[string]string
+	err = json.Unmarshal([]byte(rep), &gameID)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, "Game uploaded but database does not return the id" /*err.Error()*/, "")
+	}
+	userID := publisherID
+
+	// https://echo.labstack.com/docs/cookbook/file-upload
+	form, err := c.MultipartForm()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	files := form.File["binary"]
+	errFiles := addResources(c, client, userID, gameID["gameid"], bucketId, files, "binary")
+	if len(errFiles) > 0 {
+		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+	}
+
+	files = form.File["media"]
+	errFiles = addResources(c, client, userID, gameID["gameid"], bucketId, files, "media")
+	if len(errFiles) > 0 {
+		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+	}
+
+	files = form.File["executable"]
+	errFiles = addResources(c, client, userID, gameID["gameid"], bucketId, files, "executable")
 	if len(errFiles) > 0 {
 		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}

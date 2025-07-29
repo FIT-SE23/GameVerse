@@ -44,7 +44,9 @@ Future<Response> addGame(
   String publisherid,
   String name,
   String description,
-  List<String> files,
+  List<String> binaries,
+  List<String> medias,
+  List<String> exes,
   String categories,
 ) async {
   final request =
@@ -53,9 +55,23 @@ Future<Response> addGame(
         ..fields["gamename"] = name
         ..fields["description"] = description
         ..fields["categories"] = categories;
-  for (final file in files) {
+  for (final file in binaries) {
     try {
-      request.files.add(await http.MultipartFile.fromPath("files", file));
+      request.files.add(await http.MultipartFile.fromPath("binary", file));
+    } on PathNotFoundException catch (e) {
+      return Response.fromJson(400, {"message": e.message, "return": file});
+    }
+  }
+  for (final file in medias) {
+    try {
+      request.files.add(await http.MultipartFile.fromPath("media", file));
+    } on PathNotFoundException catch (e) {
+      return Response.fromJson(400, {"message": e.message, "return": file});
+    }
+  }
+  for (final file in exes) {
+    try {
+      request.files.add(await http.MultipartFile.fromPath("executable", file));
     } on PathNotFoundException catch (e) {
       return Response.fromJson(400, {"message": e.message, "return": file});
     }

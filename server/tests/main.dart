@@ -1,11 +1,7 @@
-import "dart:convert";
-
-import "package:crypto/crypto.dart";
 import "package:gameverse_server/controller/game.dart";
 import "package:gameverse_server/controller/user.dart";
 import "package:gameverse_server/controller/publisher.dart";
 import "package:gameverse_server/controller/payment.dart";
-import "package:http/http.dart" as http;
 
 void main() async {
   if (false) {
@@ -51,6 +47,8 @@ void main() async {
           "Absolutely/path/file2",
           "Absolutely/path/file3",
         ],
+        ["MediaPath/pic1", "MediaPath/pic2"],
+        ["main.exe"],
         "Indie",
       ),
     );
