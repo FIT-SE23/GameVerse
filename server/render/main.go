@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"runtime"
@@ -148,14 +151,15 @@ func main() {
 			}
 			defer src.Close()
 
-			_, uplErr := client.Storage.UploadFile(bucketId, userID+"/res/"+strings.ReplaceAll(time.Now().UTC().Format(time.RFC3339), ":", "-")+file.Filename, src)
+			filepath := userID + "/res/" + strings.ReplaceAll(time.Now().UTC().Format(time.RFC3339), ":", "-") + file.Filename
+			_, uplErr := client.Storage.UploadFile(bucketId, filepath, src)
 			if uplErr != nil {
 				errFiles = append(errFiles, file.Filename)
 				fmt.Println("Upload failed", file.Filename, uplErr)
 				continue
 			}
 
-			signedURL, err := client.Storage.CreateSignedUrl(bucketId, userID+"/res/"+file.Filename, 365*24*60*60)
+			signedURL, err := client.Storage.CreateSignedUrl(bucketId, filepath, 365*24*60*60)
 			if err != nil {
 				errFiles = append(errFiles, file.Filename)
 				fmt.Println("Create signed url failed", file.Filename, err)
@@ -168,6 +172,7 @@ func main() {
 			}
 			_, _, err = client.From("Resource").Insert(resource, false, "", "", "").ExecuteString()
 			if err != nil {
+				fmt.Println("Insert into Resource table failed", file.Filename, err)
 				errFiles = append(errFiles, file.Filename)
 				continue
 			}
@@ -187,6 +192,7 @@ func main() {
 			}
 			_, _, err = client.From("Game_Resource").Insert(gameResource, false, "", "", "").ExecuteString()
 			if err != nil {
+				fmt.Println("Insert into Game_Resource table failed", file.Filename, err)
 				errFiles = append(errFiles, file.Filename)
 			}
 		}
@@ -369,6 +375,111 @@ func main() {
 	})
 	e.PATCH("/publisher/:id", func(c echo.Context) error {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
+	})
+
+	e.GET("/purchase/cancel", func(c echo.Context) error {
+		return c.String(http.StatusOK, "No")
+	})
+	e.GET("/purchase/return", func(c echo.Context) error {
+		getAccessToken := func(id string, secret string) string {
+			url := "https://api-m.sandbox.paypal.com/v1/oauth2/token"
+			data := []byte("grant_type=client_credentials")
+			req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+			if err != nil {
+				fmt.Println(err)
+				return ""
+			}
+
+			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			auth := id + ":" + secret
+			req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(auth)))
+
+			res, err := http.DefaultClient.Do(req)
+			if err != nil {
+				fmt.Println(err)
+				return ""
+			}
+
+			defer res.Body.Close()
+			body, err := io.ReadAll(res.Body)
+			if err != nil {
+				fmt.Println(err)
+				return ""
+			}
+
+			var result map[string]any
+			err = json.Unmarshal(body, &result)
+			if err != nil {
+				fmt.Println(err)
+				return ""
+			}
+			if result["access_token"] == "" {
+				return ""
+			}
+
+			switch token := result["access_token"].(type) {
+			case string:
+				return token
+			default:
+				return ""
+			}
+		}
+		payerId := c.QueryParam("PayerID")
+		paymentId := c.QueryParam("paymentId")
+		id := os.Getenv("APP_ID")
+		secret := os.Getenv("APP_SECRET")
+		url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId + "/execute"
+		accessToken := getAccessToken(id, secret)
+		if accessToken == "" {
+			return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
+		}
+		paymentData := map[string]any{
+			"payer_id": payerId,
+		}
+
+		jsonData, err := json.Marshal(paymentData)
+		if err != nil {
+			fmt.Println("Error marshalling JSON:", err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		_, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+		if err != nil {
+			fmt.Println("Error creating request:", err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+		if err != nil {
+			fmt.Println("Error creating request:", err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		req.Header.Set("Authorization", "Bearer "+accessToken)
+		req.Header.Set("Content-Type", "application/json")
+
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Println(err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		defer res.Body.Close()
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		var result map[string]any
+		err = json.Unmarshal(body, &result)
+		if err != nil {
+			fmt.Println(err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+		fmt.Println(result)
+
+		return jsonResponse(c, http.StatusBadRequest, "", "")
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))
