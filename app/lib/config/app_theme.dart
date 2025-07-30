@@ -7,21 +7,21 @@ class DarkThemeColors {
   static const Color text = Color(0xFFFFFFFF);
   static const Color shell = Color(0xFF252525);
   static const Color onShell = Color(0xFFFFFFFF);
+
+  static const Color cyan = Color(0xFF47FFE7);
+  static const Color onCyan = Color(0xFF141414);
 }
 
 class LightThemeColors {
   LightThemeColors._();
 
-  static const Color background = Color(0xFFDADADA);
-  static const Color shell = Color(0xFFEBEBEB);
+  static const Color background = Color(0xFFFAFAFA);
   static const Color text = Color(0xFF141414);
-}
+  static const Color shell = Color(0xFFEBEBEB);
+  static const Color onShell = Color(0xFF141414);
 
-class SignatureColors {
-  SignatureColors._();
-
-  static const Color cyan = Color(0xFF47FFE7);
-  static const Color onCyan = Color(0xFF141414);
+  static const Color cyan = Color(0xFF20CFC2);
+  static const Color onCyan = Color(0xFFFFFFFF);
 }
 
 class AppTheme {
@@ -32,17 +32,17 @@ class AppTheme {
     fontFamily: 'Play',
     
     // Base colors
-    primaryColor: const Color(0xFF1a73e8),      // Primary blue - main brand color
+    primaryColor: DarkThemeColors.cyan,      // Primary blue - main brand color
     scaffoldBackgroundColor: DarkThemeColors.background, // App background
     
     colorScheme: const ColorScheme.dark(
-      primary: Color(0xFF1a73e8),         // Primary buttons, active states
+      primary: DarkThemeColors.cyan,         // Primary buttons, active states
       onPrimary: Colors.white,            // Text/icons on primary color
       primaryContainer: Color(0xFF173B5A), // Secondary buttons, containers
       onPrimaryContainer: Color(0xFFBFE0FF), // Text on primary containers
       
-      secondary: SignatureColors.cyan,       // Accent color for highlights
-      onSecondary: SignatureColors.onCyan,          // Text on secondary color
+      secondary: DarkThemeColors.cyan,       // Accent color for highlights
+      onSecondary: DarkThemeColors.onCyan,          // Text on secondary color
       secondaryContainer: Color(0xFF0D2F49), // Secondary containers
       onSecondaryContainer: Color(0xFFB8E5FF), // Text on secondary containers
       
@@ -59,7 +59,7 @@ class AppTheme {
     
     // Card theme
     cardTheme: CardThemeData(
-      color: Color(0xFF1E1E1E),           // Card background
+      color: DarkThemeColors.shell,           // Card background
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -81,8 +81,8 @@ class AppTheme {
     // Elevated buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1a73e8), // Button background
-        foregroundColor: Colors.white,           // Button text
+        backgroundColor: DarkThemeColors.cyan, // Button background
+        foregroundColor: DarkThemeColors.onCyan,           // Button text
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -92,7 +92,7 @@ class AppTheme {
     // Text buttons
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF66c0f4), // Text button color
+        foregroundColor: DarkThemeColors.cyan, // Text button color
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       ),
     ),
@@ -100,7 +100,7 @@ class AppTheme {
     // Outlined buttons
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: const Color(0xFF66c0f4), // Text color
+        foregroundColor: DarkThemeColors.cyan, // Text color
         side: const BorderSide(color: Color(0xFF444444)), // Border color
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -117,19 +117,19 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
-        borderSide: BorderSide(color: Color(0xFF1a73e8), width: 2),
+        borderSide: BorderSide(color: DarkThemeColors.cyan, width: 2),
       ),
     ),
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: DarkThemeColors.text),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: DarkThemeColors.text),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
       
       bodyLarge: TextStyle(fontSize: 16, color: DarkThemeColors.text),
       bodyMedium: TextStyle(fontSize: 14, color: DarkThemeColors.text),
@@ -158,17 +158,17 @@ class AppTheme {
     fontFamily: 'Play',
     
     // Base colors
-    primaryColor: const Color(0xFF1a73e8),    // Primary blue - main brand color
+    primaryColor: LightThemeColors.cyan,    // Primary blue - main brand color
     scaffoldBackgroundColor: LightThemeColors.background,    // App background
     
     colorScheme: const ColorScheme.light(
-      primary: Color(0xFF1a73e8),        // Primary buttons, active states
+      primary: LightThemeColors.cyan,        // Primary buttons, active states
       onPrimary: Colors.white,           // Text/icons on primary color
       primaryContainer: Color.fromARGB(255, 41, 119, 254), // Secondary buttons, containers
       onPrimaryContainer: Color.fromARGB(255, 255, 255, 255), // Text on primary containers
       
-      secondary: SignatureColors.cyan,      // Accent color for highlights
-      onSecondary: SignatureColors.onCyan,         // Text on secondary color
+      secondary: LightThemeColors.cyan,      // Accent color for highlights
+      onSecondary: LightThemeColors.onCyan,         // Text on secondary color
       secondaryContainer: Color(0xFFD4E9FF), // Secondary containers
       onSecondaryContainer: Color(0xFF00497D), // Text on secondary containers
       
@@ -185,7 +185,7 @@ class AppTheme {
     
     // Card theme
     cardTheme: CardThemeData(
-      color: Colors.white,               // Card background
+      color: LightThemeColors.shell,               // Card background
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -195,8 +195,8 @@ class AppTheme {
     
     // App bar
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),      // App bar background
-      foregroundColor: Color(0xFF1F1F1F), // App bar text/icons
+      backgroundColor: LightThemeColors.shell,      // App bar background
+      foregroundColor: LightThemeColors.onShell, // App bar text/icons
       elevation: 0,
       centerTitle: false,
       titleTextStyle: TextStyle(
@@ -209,8 +209,8 @@ class AppTheme {
     // Elevated buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1a73e8), // Button background
-        foregroundColor: Colors.white,           // Button text
+        backgroundColor: LightThemeColors.cyan, // Button background
+        foregroundColor: LightThemeColors.onCyan,           // Button text
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -220,7 +220,7 @@ class AppTheme {
     // Text buttons
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF1a73e8), // Text button color
+        foregroundColor: LightThemeColors.cyan, // Text button color
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       ),
     ),
@@ -228,7 +228,7 @@ class AppTheme {
     // Outlined buttons
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: const Color(0xFF1a73e8), // Text color
+        foregroundColor: LightThemeColors.cyan, // Text color
         side: const BorderSide(color: Color(0xFFDDDDDD)), // Border color
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -245,23 +245,23 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
-        borderSide: BorderSide(color: Color(0xFF1a73e8), width: 2),
+        borderSide: BorderSide(color: LightThemeColors.cyan, width: 2),
       ),
     ),
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1F1F1F)),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1F1F1F)),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1F1F1F)),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: LightThemeColors.text),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: LightThemeColors.text),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: LightThemeColors.text),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1F1F1F)),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Color(0xFF1F1F1F)),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF1F1F1F)),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: LightThemeColors.text),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: LightThemeColors.text),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: LightThemeColors.text),
       
-      bodyLarge: TextStyle(fontSize: 16, color: Color(0xFF1F1F1F)),
-      bodyMedium: TextStyle(fontSize: 14, color: Color(0xFF1F1F1F)),
-      bodySmall: TextStyle(fontSize: 12, color: Color(0xFF5F5F5F)),
+      bodyLarge: TextStyle(fontSize: 16, color: LightThemeColors.text),
+      bodyMedium: TextStyle(fontSize: 14, color: LightThemeColors.text),
+      bodySmall: TextStyle(fontSize: 12, color: LightThemeColors.text),
     ),
     
     // Bottom navigation

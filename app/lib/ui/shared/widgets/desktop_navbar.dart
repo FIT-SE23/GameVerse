@@ -76,6 +76,7 @@ class DesktopNavbar extends StatelessWidget {
             ),
           ),
           
+          const SizedBox(width: 8),
           // Theme toggle
           Tooltip(
             message: 'Toggle theme',
@@ -93,6 +94,7 @@ class DesktopNavbar extends StatelessWidget {
               }
             ),
           ),
+          const SizedBox(width: 8),
           
           // Account section
           Padding(

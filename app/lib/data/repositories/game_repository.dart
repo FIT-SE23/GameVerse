@@ -30,7 +30,7 @@ class GameRepository {
         if (data['featured_win'] != null) {
           for (var item in data['featured_win']) {
             games.add(GameModel(
-              appId: item['id'] ?? 0,
+              appId: item['id'].toString(),
               name: item['name'] ?? 'Unknown Game',
               recommended: item['recommended'] ?? 0,
               briefDescription: item['brief_description'] ?? '',
@@ -54,7 +54,7 @@ class GameRepository {
         if (data['specials'] != null) {
           for (var item in data['specials']) {
             games.add(GameModel(
-              appId: item['id'] ?? 0,
+              appId: item['id'].toString(),
               name: item['name'] ?? 'Special Offer',
               recommended: item['recommended'] ?? 0,
               briefDescription: item['brief_description'] ?? '',
@@ -90,7 +90,7 @@ class GameRepository {
     return _getMockOwnedGames();
   }
 
-  Future<GameModel?> getGameDetails(int gameId) async {
+  Future<GameModel?> getGameDetails(String gameId) async {
     await Future.delayed(const Duration(milliseconds: 300));
     
     // First check in featured games
@@ -135,7 +135,7 @@ class GameRepository {
   List<GameModel> _getMockFeaturedGames() {
     return [
       GameModel(
-        appId: 1091500,
+        appId: 'game1',
         name: 'Cyberpunk 2077',
         recommended: 95,
         briefDescription: 'An open-world, action-adventure story set in Night City.',
@@ -158,7 +158,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 1174180,
+        appId: 'game2',
         name: 'Red Dead Redemption 2',
         recommended: 97,
         briefDescription: 'An epic tale of life in America\'s unforgiving heartland.',
@@ -177,7 +177,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 1222670,
+        appId: 'game3',
         name: 'The Witcher 3: Wild Hunt',
         recommended: 98,
         briefDescription: 'The most awarded game of a generation is now enhanced for the next!',
@@ -199,7 +199,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 271590,
+        appId: 'game4',
         name: 'Grand Theft Auto V',
         recommended: 94,
         briefDescription: 'Grand Theft Auto V for PC offers players the option to explore the award-winning world of Los Santos and Blaine County.',
@@ -223,7 +223,7 @@ class GameRepository {
   List<GameModel> _getMockOwnedGames() {
     return [
       GameModel(
-        appId: 570,
+        appId: 'game5',
         name: 'Dota 2',
         recommended: 92,
         briefDescription: 'Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes.',
@@ -243,7 +243,7 @@ class GameRepository {
         playtimeHours: 156.7,
       ),
       GameModel(
-        appId: 730,
+        appId: 'game6',
         name: 'Counter-Strike 2',
         recommended: 89,
         briefDescription: 'Counter-Strike 2 marks the beginning of a new chapter in the legendary FPS series.',
@@ -263,7 +263,7 @@ class GameRepository {
         playtimeHours: 234.2,
       ),
       GameModel(
-        appId: 440,
+        appId: 'game7',
         name: 'Team Fortress 2',
         recommended: 88,
         briefDescription: 'Nine distinct classes provide a broad range of tactical abilities and personalities.',
@@ -283,7 +283,7 @@ class GameRepository {
         playtimeHours: 67.8,
       ),
       GameModel(
-        appId: 72850,
+        appId: 'game8',
         name: 'The Elder Scrolls V: Skyrim',
         recommended: 96,
         briefDescription: 'EPIC FANTASY REBORN - The next chapter in the highly anticipated Elder Scrolls saga.',
@@ -308,7 +308,7 @@ class GameRepository {
   List<GameModel> _getMockAdditionalGames() {
     return [
       GameModel(
-        appId: 1086940,
+        appId: 'game9',
         name: 'Baldur\'s Gate 3',
         recommended: 96,
         briefDescription: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.',
@@ -326,7 +326,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 1938090,
+        appId: 'game10',
         name: 'Call of Duty®: Modern Warfare® III',
         recommended: 82,
         briefDescription: 'In the direct sequel to the record-breaking Call of Duty®: Modern Warfare® II.',
@@ -346,7 +346,7 @@ class GameRepository {
     ];
   }
 
-  GameModel _createDetailedMockGame(int gameId) {
+  GameModel _createDetailedMockGame(String gameId) {
     return GameModel(
       appId: gameId,
       name: 'Game $gameId',
@@ -360,10 +360,10 @@ class GameRepository {
         'https://via.placeholder.com/600x338/FF9800/FFFFFF?text=Screenshot+2',
         'https://via.placeholder.com/600x338/9C27B0/FFFFFF?text=Screenshot+3',
       ],
-      price: gameId % 3 == 0 ? null : {'final': 2999, 'discount_percent': gameId % 2 == 0 ? 25 : 0},
+      price: gameId == 'game1' ? {'final': 2999, 'discount_percent': 50} : null,
       categoriesID: ['Action', 'Adventure', 'Indie'],
-      isSale: gameId % 2 == 0,
-      discountPercent: gameId % 2 == 0 ? 25.0 : null,
+      isSale: gameId == 'game1',
+      discountPercent: gameId == 'game1' ? 50.0 : null,
       isOwned: false,
       installed: false,
       favorite: false,

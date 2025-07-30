@@ -37,7 +37,7 @@ class GameDetailViewModel extends ChangeNotifier {
   int _totalReviews = 0;
   int get totalReviews => _totalReviews;
 
-  Future<void> loadGameDetails(int gameId) async {
+  Future<void> loadGameDetails(String gameId) async {
     try {
       _state = GameDetailState.loading;
       notifyListeners();

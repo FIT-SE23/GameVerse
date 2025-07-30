@@ -6,7 +6,7 @@ part 'game_model.g.dart';
 @freezed
 abstract class GameModel with _$GameModel {
   const factory GameModel({
-    required int appId,
+    required String appId,
     required String name,
     required int recommended,
     required String briefDescription,

@@ -8,7 +8,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<SettingsViewmodel, ThemeViewModel>(
+    return Consumer2<SettingsViewModel, ThemeViewModel>(
       builder: (context, settingsViewModel, themeViewModel, child) {
         return SingleChildScrollView(
           child: Column(

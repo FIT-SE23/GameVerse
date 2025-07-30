@@ -12,6 +12,9 @@ import 'package:gameverse/ui/downloads/widgets/downloads_screen.dart';
 import 'package:gameverse/ui/shared/widgets/main_layout.dart';
 import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
 import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
+import 'package:gameverse/ui/post/widgets/post_screen.dart';
+import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
+
 import 'routes.dart';
 
 class AppRouter {
@@ -29,8 +32,7 @@ class AppRouter {
         
         return null;
       },
-      routes: [
-        // Main shell route with persistent navigation and footer
+            routes: [
         ShellRoute(
           builder: (context, state, child) {
             return MainLayout(child: child);
@@ -67,7 +69,6 @@ class AppRouter {
                 return GameDetailsScreen(gameId: gameId);
               },
               routes: [
-                // Nested route for game details with dynamic ID
                 GoRoute(
                   path: ':id',
                   builder: (context, state) {
@@ -81,22 +82,39 @@ class AppRouter {
               path: Routes.profile,
               builder: (context, state) => const ProfileScreen(),
             ),
-            // Auth routes
-            GoRoute(
-              path: Routes.login,
-              builder: (context, state) => const AuthScreen(
-                initialTab: 'login',
-              ),
-            ),
-            GoRoute(
-              path: Routes.signup,
-              builder: (context, state) => const AuthScreen(
-                initialTab: 'register',
-              ),
-            ),
           ],
         ),
-        // Standalone login route (no shell)
+        
+        // Forum routes (outside main layout for better navigation)
+        GoRoute(
+          path: '/forum-posts/:gameId/:gameName',
+          builder: (context, state) {
+            final gameId = state.pathParameters['gameId']!;
+            final gameName = Uri.decodeComponent(state.pathParameters['gameName']!);
+            return ForumPostsScreen(gameId: gameId, gameName: gameName);
+          },
+        ),
+        GoRoute(
+          path: '/post/:postId',
+          builder: (context, state) {
+            final postId = state.pathParameters['postId']!;
+            return PostScreen(postId: postId);
+          },
+        ),
+        
+        // Auth routes
+        GoRoute(
+          path: Routes.login,
+          builder: (context, state) => const AuthScreen(
+            initialTab: 'login',
+          ),
+        ),
+        GoRoute(
+          path: Routes.signup,
+          builder: (context, state) => const AuthScreen(
+            initialTab: 'signup',
+          ),
+        ),
         GoRoute(
           path: Routes.authCallback,
           builder: (context, state) => const AuthCallbackScreen(),

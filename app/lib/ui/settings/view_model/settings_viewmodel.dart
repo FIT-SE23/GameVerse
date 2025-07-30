@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-class SettingsViewmodel extends ChangeNotifier {
+class SettingsViewModel extends ChangeNotifier {
   // Privacy settings
   bool _showActivity = true;
   bool get showActivity => _showActivity;

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameModel {
 
- int get appId; String get name; int get recommended; String get briefDescription; String get description; String get requirements; String get headerImage; List<String>? get screenshots; Map<String, dynamic>? get price; List<String> get categoriesID;// Sale related fields
+ String get appId; String get name; int get recommended; String get briefDescription; String get description; String get requirements; String get headerImage; List<String>? get screenshots; Map<String, dynamic>? get price; List<String> get categoriesID;// Sale related fields
  bool? get isSale; double? get discountPercent; DateTime? get saleStartDate; DateTime? get saleEndDate;// Field for User only
  bool get isOwned; bool get installed; bool get favorite; double? get playtimeHours;
 /// Create a copy of GameModel
@@ -51,7 +51,7 @@ abstract mixin class $GameModelCopyWith<$Res>  {
   factory $GameModelCopyWith(GameModel value, $Res Function(GameModel) _then) = _$GameModelCopyWithImpl;
 @useResult
 $Res call({
- int appId, String name, int recommended, String briefDescription, String description, String requirements, String headerImage, List<String>? screenshots, Map<String, dynamic>? price, List<String> categoriesID, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, bool isOwned, bool installed, bool favorite, double? playtimeHours
+ String appId, String name, int recommended, String briefDescription, String description, String requirements, String headerImage, List<String>? screenshots, Map<String, dynamic>? price, List<String> categoriesID, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, bool isOwned, bool installed, bool favorite, double? playtimeHours
 });
 
 
@@ -71,7 +71,7 @@ class _$GameModelCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? appId = null,Object? name = null,Object? recommended = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? screenshots = freezed,Object? price = freezed,Object? categoriesID = null,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? isOwned = null,Object? installed = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
   return _then(_self.copyWith(
 appId: null == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
 as int,briefDescription: null == briefDescription ? _self.briefDescription : briefDescription // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -102,7 +102,7 @@ class _GameModel implements GameModel {
   const _GameModel({required this.appId, required this.name, required this.recommended, required this.briefDescription, required this.description, required this.requirements, required this.headerImage, final  List<String>? screenshots, final  Map<String, dynamic>? price, required final  List<String> categoriesID, this.isSale, this.discountPercent, this.saleStartDate, this.saleEndDate, this.isOwned = false, this.installed = false, this.favorite = false, this.playtimeHours}): _screenshots = screenshots,_price = price,_categoriesID = categoriesID;
   factory _GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
 
-@override final  int appId;
+@override final  String appId;
 @override final  String name;
 @override final  int recommended;
 @override final  String briefDescription;
@@ -178,7 +178,7 @@ abstract mixin class _$GameModelCopyWith<$Res> implements $GameModelCopyWith<$Re
   factory _$GameModelCopyWith(_GameModel value, $Res Function(_GameModel) _then) = __$GameModelCopyWithImpl;
 @override @useResult
 $Res call({
- int appId, String name, int recommended, String briefDescription, String description, String requirements, String headerImage, List<String>? screenshots, Map<String, dynamic>? price, List<String> categoriesID, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, bool isOwned, bool installed, bool favorite, double? playtimeHours
+ String appId, String name, int recommended, String briefDescription, String description, String requirements, String headerImage, List<String>? screenshots, Map<String, dynamic>? price, List<String> categoriesID, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, bool isOwned, bool installed, bool favorite, double? playtimeHours
 });
 
 
@@ -198,7 +198,7 @@ class __$GameModelCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? appId = null,Object? name = null,Object? recommended = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? screenshots = freezed,Object? price = freezed,Object? categoriesID = null,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? isOwned = null,Object? installed = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
   return _then(_GameModel(
 appId: null == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
 as int,briefDescription: null == briefDescription ? _self.briefDescription : briefDescription // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable

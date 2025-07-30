@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
+import 'package:gameverse/ui/shared/widgets/game_card.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -242,6 +243,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                           ? _buildEmptyState(context)
                           : TabBarView(
                               controller: _tabController,
+                              physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 _buildGamesList(libraryViewModel.filteredGames, libraryViewModel.viewMode),
                                 _buildGamesList(libraryViewModel.downloadedGames, libraryViewModel.viewMode),
@@ -307,16 +309,17 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       final crossAxisCount = MediaQuery.of(context).size.width > 1200 ? 4 : 
                            MediaQuery.of(context).size.width > 800 ? 3 : 2;
       
+      // Using game_card.dart for grid tiles
       return GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.9,
+          childAspectRatio: 0.8,
         ),
         itemCount: games.length,
-        itemBuilder: (context, index) => _GameGridTile(game: games[index]),
+        itemBuilder: (context, index) => GameCard(game: games[index]),
       );
     }
   }
@@ -546,106 +549,6 @@ class _GameListTile extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GameGridTile extends StatelessWidget {
-  final GameModel game;
-
-  const _GameGridTile({required this.game});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => context.push('/game-details/${game.appId}'),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Game Image
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Stack(
-                children: [
-                  Image.network(
-                    game.headerImage,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: const Center(
-                          child: Icon(Icons.videogame_asset, size: 32),
-                        ),
-                      );
-                    },
-                  ),
-                  
-                  // Status Badges
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Row(
-                      children: [
-                        if (game.installed)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text(
-                              'Installed',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Game Info
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      game.name,
-                      style: theme.textTheme.titleSmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    
-                    const Spacer(),
-                    
-                    if (game.playtimeHours != null) ...[
-                      Text(
-                        '${game.playtimeHours!.toStringAsFixed(1)}h played',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

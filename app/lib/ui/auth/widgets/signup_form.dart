@@ -23,6 +23,7 @@ class _SignUpFormState extends State<SignupForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
   bool _termsAccepted = false;
 
@@ -139,15 +140,15 @@ class _SignUpFormState extends State<SignupForm> {
               labelText: 'Confirm Password',
               prefixIcon: const Icon(Icons.lock),
               suffixIcon: IconButton(
-                icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                icon: Icon(_isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off),
                 onPressed: () {
                   setState(() {
-                    _isPasswordVisible = !_isPasswordVisible;
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                   });
                 },
               ),
             ),
-            obscureText: !_isPasswordVisible,
+            obscureText: !_isConfirmPasswordVisible,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please confirm your password';

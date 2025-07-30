@@ -49,7 +49,7 @@ class LibraryViewModel extends ChangeNotifier {
   int get downloadedCount => downloadedGames.length;
 
   // Favorite games storage (in a real app, this would be persistent)
-  final Set<int> _favoriteGameIds = {};
+  final Set<String> _favoriteGameIds = {};
 
   Future<void> loadLibrary() async {
     _isLoading = true;
@@ -97,7 +97,7 @@ class LibraryViewModel extends ChangeNotifier {
     _applyFilters();
   }
 
-  void toggleFavorite(int gameId) {
+  void toggleFavorite(String gameId) {
     if (_favoriteGameIds.contains(gameId)) {
       _favoriteGameIds.remove(gameId);
     } else {
@@ -106,7 +106,7 @@ class LibraryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleInstalled(int gameId) {
+  void toggleInstalled(String gameId) {
     final gameIndex = _games.indexWhere((game) => game.appId == gameId);
     if (gameIndex != -1) {
       _games[gameIndex] = _games[gameIndex].copyWith(
@@ -116,7 +116,7 @@ class LibraryViewModel extends ChangeNotifier {
     }
   }
 
-  bool _isFavorite(int gameId) => _favoriteGameIds.contains(gameId);
+  bool _isFavorite(String gameId) => _favoriteGameIds.contains(gameId);
 
   void _applyFilters() {
     _filteredGames = _games.where((game) {
