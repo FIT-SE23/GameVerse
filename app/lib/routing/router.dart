@@ -65,14 +65,16 @@ class AppRouter {
             GoRoute(
               path: Routes.gameDetails,
               builder: (context, state) {
-                final gameId = int.parse(state.pathParameters['id'] ?? '0');
+                // final gameId = int.parse(state.pathParameters['id'] ?? '0');
+                final gameId = state.pathParameters['id'] ?? '0';
                 return GameDetailsScreen(gameId: gameId);
               },
               routes: [
                 GoRoute(
                   path: ':id',
                   builder: (context, state) {
-                    final gameId = int.parse(state.pathParameters['id'] ?? '0');
+                    // final gameId = int.parse(state.pathParameters['id'] ?? '0');
+                    final gameId = state.pathParameters['id'] ?? '0';
                     return GameDetailsScreen(gameId: gameId);
                   },
                 ),

@@ -9,21 +9,21 @@ import 'game_section_fancy.dart';
 import 'genres_game.dart';
 
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+//   @override
+//   State<HomeScreen> createState() => _HomeScreenState();
+// }
 
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-    });
-  }
+// class _HomeScreenState extends State<HomeScreen> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+//     });
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, homeViewModel, child) {
           return Column(
             children: [
-              // this is not in Padding because the key art's width
-              // is the window's width
+              // this is not in Padding because the background key art
+              // fills the window's width
               GameSectionFancy(title: 'Popular Games', gameList: Provider.of<HomeViewModel>(context, listen: false).popularGames,),
 
               Padding(

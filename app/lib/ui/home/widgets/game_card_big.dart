@@ -90,41 +90,44 @@ class GameCardBig extends StatelessWidget {
                 ),
               ),
                       
-              Positioned.fill(
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: width > 400 ? 400 : width - 32,
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 500),
                   transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(
                     opacity: animation,
                     child: child
                   ),
-                  child: SizedBox(
+                  child: Padding(
                     key: ValueKey(game),
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 32, bottom: 32, top: height / 2),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            game.name,
-                            style: theme.textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            game.price != null 
-                              ? '${(game.price!['final'] as int) / 100} VND' 
-                              : 'Free to Play',
-                            style: theme.textTheme.displaySmall!.copyWith(fontSize: 18),
-                          ),
-                          // const SizedBox(height: 20),
-                          // Text(
-                          //   game.briefDescription,
-                          //   style: theme.textTheme.displaySmall,
-                          // ),
-                        ],
-                      ),
+                    padding: EdgeInsets.only(left: 32, bottom: 32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          game.name,
+                          style: theme.textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          game.price != null 
+                            ? '${(game.price!['final'] as int) / 100} VND' 
+                            : 'Free to Play',
+                          style: theme.textTheme.displaySmall!.copyWith(fontSize: 18),
+                        ),
+                        // const SizedBox(height: 20),
+                        // Text(
+                        //   game.briefDescription,
+                        //   style: theme.textTheme.displaySmall,
+                        // ),
+                      ],
                     ),
                   ),
                 ),

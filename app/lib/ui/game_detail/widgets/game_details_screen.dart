@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+// import 'package:gameverse/config/spacing_config.dart';
+// import 'package:gameverse/domain/models/game_model/game_model.dart';
+
+import '../view_model/game_details_viewmodel.dart';
+import 'game_details_panel.dart';
+
 
 class GameDetailsScreen extends StatelessWidget {
-  final int gameId;
+  final String gameId;
 
   const GameDetailsScreen({
     super.key,
-    required this.gameId,  
+    required this.gameId,
   });
+
+//   @override
+//   State<GameDetailsScreen> createState() => _GameDetailsScreenState();
+// }
+
+// class _GameDetailsScreenState extends State<GameDetailsScreen> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.gameId);
+//     });
+//   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Game Details for Game ID: $gameId',
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(height: 16),
-          // Placeholder for game details content
-          Text(
-            'Here you can view detailed information about the game with ID $gameId.',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 32), // Extra space before footer
-        ],
+      child: Consumer<GameDetailsViewModel>(
+        builder: (context, gameDetailsViewModel, child) {
+          return GameDetailsPanel(gameId: gameId);
+        },
       ),
     );
   }

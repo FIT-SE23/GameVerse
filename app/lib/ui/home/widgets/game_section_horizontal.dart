@@ -117,7 +117,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
         else
           const SizedBox(
             height: 200,
-            child: Center(child: Text('No special offers available')),
+            child: Center(child: Text('Something went wrong :(')),
           )
       ],
     );

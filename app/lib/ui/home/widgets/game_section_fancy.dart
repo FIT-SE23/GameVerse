@@ -36,10 +36,11 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
     final theme = Theme.of(context);
 
     const double defaultHeight = 500;
+    const double keyArtHeight = 640;
 
     return SizedBox(
       width: double.infinity,
-      height: 640,
+      height: keyArtHeight,
       child: Stack(
         fit: StackFit.loose,
         children: [
@@ -53,10 +54,10 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                   child: child
                 ),
                 child: Image.network(
+                  widget.gameList[currentGameIndex].headerImage,
+                  key: ValueKey(widget.gameList[currentGameIndex].headerImage),
                   width: double.infinity,
                   height: 640,
-                  key: ValueKey(widget.gameList[currentGameIndex].headerImage),
-                  widget.gameList[currentGameIndex].headerImage,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -113,12 +114,12 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 64),
+                const SizedBox(height: 64),
                 Text(
                   widget.title,
                   style: Theme.of(context).textTheme.displayLarge
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
             
                 if (status == HomeViewState.loading)
                   const SizedBox(
@@ -186,7 +187,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                 else
                   const SizedBox(
                     height: defaultHeight,
-                    child: Center(child: Text('Something went wrong')),
+                    child: Center(child: Text('Something went wrong :(')),
                   )
               ],
             ),
