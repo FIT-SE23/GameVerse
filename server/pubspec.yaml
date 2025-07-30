@@ -3,5 +3,7 @@ name: gameverse_server
 environment:
   sdk: ^3.7.2
 dependencies:
-  supabase: ^2.8.0
+  http: ^1.4.0
+  crypto: ^3.0.6
+  cryptography: ^2.7.0
 

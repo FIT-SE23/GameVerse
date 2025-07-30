@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/config/spacing_config.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
@@ -319,7 +320,10 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
           childAspectRatio: 0.8,
         ),
         itemCount: games.length,
-        itemBuilder: (context, index) => GameCard(game: games[index]),
+        itemBuilder: (context, index) => GameCard(
+          game: games[index],
+          width: cardWidth(context)
+        ),
       );
     }
   }

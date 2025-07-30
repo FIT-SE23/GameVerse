@@ -6,21 +6,20 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 
 class GameCard extends StatelessWidget {
   final GameModel game;
-  // a function like "Provider.of<HomeViewModel>(context, listen: false).selectGame"
-  // is passed so that it will be called when tapping on the game card
+  final double width;
 
   const GameCard({
     super.key,
     required this.game,
+    required this.width
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Container(
-      width: 240,
-      margin: const EdgeInsets.only(right: 16),
+    return SizedBox(
+      width: width,
       // decoration: BoxDecoration(
       //   color: theme.cardTheme.color,
       //   borderRadius: BorderRadius.circular(8),
@@ -34,6 +33,9 @@ class GameCard extends StatelessWidget {
       // ),
       // clipBehavior: Clip.antiAlias,
       child: InkWell(
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onTap: () {
           context.push('/game-details/${game.appId}');
         },
@@ -97,7 +99,7 @@ class GameCard extends StatelessWidget {
             
             // Game details
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -113,8 +115,8 @@ class GameCard extends StatelessWidget {
                   // Price
                   Text(
                     game.price != null 
-                        ? '${(game.price!['final'] as int) / 100} VND' 
-                        : 'Free to Play',
+                      ? '${(game.price!['final'] as int) / 100} VND' 
+                      : 'Free to Play',
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],

@@ -5,6 +5,8 @@ import '../view_model/home_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/ui/shared/widgets/game_card.dart';
 
+import 'package:gameverse/config/spacing_config.dart';
+
 
 class GameSectionHorizontal extends StatefulWidget {
   final String title;
@@ -75,14 +77,15 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
           Column(
             children: [
               SizedBox(
-                height: 260,
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  scrollbarOrientation: ScrollbarOrientation.bottom,
-                  thickness: 8,
-                  radius: const Radius.circular(8),
-                  controller: _scrollController,
-                  child: ListView.builder(
+                height: 240,
+                child: ScrollConfiguration(
+                  // thumbVisibility: true,
+                  // scrollbarOrientation: ScrollbarOrientation.bottom,
+                  // thickness: 8,
+                  // radius: const Radius.circular(8),
+                  // controller: _scrollController,
+                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                  child: ListView.separated(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
@@ -91,12 +94,14 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                       final game = widget.gameList[index];
                       return GameCard(
                         game: game,
+                        width: cardWidth(context),
                       );
                     },
+                    separatorBuilder:(context, index) => const SizedBox(width: spaceCardHorizontal),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              // const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

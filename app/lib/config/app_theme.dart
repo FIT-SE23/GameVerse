@@ -1,30 +1,62 @@
 import 'package:flutter/material.dart';
 
-class DarkThemeColors {
-  DarkThemeColors._();
-
-  static const Color background = Color(0xFF141414);
-  static const Color text = Color(0xFFFFFFFF);
-  static const Color shell = Color(0xFF252525);
-  static const Color onShell = Color(0xFFFFFFFF);
-
-  static const Color cyan = Color(0xFF47FFE7);
-  static const Color onCyan = Color(0xFF141414);
+abstract class ThemeColors {
+  Color get getBackground;
+  Color get getText;
+  Color get getShell;
+  Color get getOnShell;
+  Color get getCyan;
+  Color get getOnCyan;
 }
 
-class LightThemeColors {
-  LightThemeColors._();
+class DarkThemeColors implements ThemeColors {
+  static const Color background = Color(0xFF141414);
+  static const Color text = Color(0xFFFAFAFA);
+  static const Color shell = Color(0xFF252525);
+  static const Color onShell = Color(0xFFFFFFFF);
+  static const Color cyan = Color(0xFF47FFE7);
+  static const Color onCyan = Color(0xFF141414);
 
+  @override Color get getBackground => background;
+  @override Color get getText => text;
+  @override Color get getShell => shell;
+  @override Color get getOnShell => onShell;
+  @override Color get getCyan => cyan;
+  @override Color get getOnCyan => onCyan;
+}
+
+class LightThemeColors implements ThemeColors {
   static const Color background = Color(0xFFFAFAFA);
   static const Color text = Color(0xFF141414);
   static const Color shell = Color(0xFFEBEBEB);
   static const Color onShell = Color(0xFF141414);
-
   static const Color cyan = Color(0xFF20CFC2);
   static const Color onCyan = Color(0xFFFFFFFF);
+
+  @override Color get getBackground => background;
+  @override Color get getText => text;
+  @override Color get getShell => shell;
+  @override Color get getOnShell => onShell;
+  @override Color get getCyan => cyan;
+  @override Color get getOnCyan => onCyan;
+}
+
+ThemeData getOppositeTheme(ThemeData theme) {
+  if (theme.brightness == Brightness.dark) {
+    return AppTheme.lightTheme;
+  }
+  return AppTheme.darkTheme;
 }
 
 class AppTheme {
+  static ThemeColors themeColors(Brightness brightness) {
+    if (brightness == Brightness.dark) {
+      return DarkThemeColors();
+    } else {
+      return LightThemeColors();
+    }
+  }
+  
   // DARK THEME
   static ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
@@ -37,7 +69,7 @@ class AppTheme {
     
     colorScheme: const ColorScheme.dark(
       primary: DarkThemeColors.cyan,         // Primary buttons, active states
-      onPrimary: Colors.white,            // Text/icons on primary color
+      onPrimary: DarkThemeColors.onCyan,            // Text/icons on primary color
       primaryContainer: Color(0xFF173B5A), // Secondary buttons, containers
       onPrimaryContainer: Color(0xFFBFE0FF), // Text on primary containers
       
@@ -123,17 +155,17 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: DarkThemeColors.text),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: DarkThemeColors.text, letterSpacing: 0.25),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: DarkThemeColors.text, letterSpacing: 0.25),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: DarkThemeColors.text, letterSpacing: 0.25),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: DarkThemeColors.text),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: DarkThemeColors.text, letterSpacing: 0.25),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DarkThemeColors.text, letterSpacing: 0.25),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: DarkThemeColors.text, letterSpacing: 0.25),
       
-      bodyLarge: TextStyle(fontSize: 16, color: DarkThemeColors.text),
-      bodyMedium: TextStyle(fontSize: 14, color: DarkThemeColors.text),
-      bodySmall: TextStyle(fontSize: 12, color: DarkThemeColors.text),
+      bodyLarge: TextStyle(fontSize: 16, color: DarkThemeColors.text, letterSpacing: 0.25),
+      bodyMedium: TextStyle(fontSize: 14, color: DarkThemeColors.text, letterSpacing: 0.25),
+      bodySmall: TextStyle(fontSize: 12, color: DarkThemeColors.text, letterSpacing: 0.25),
     ),
     
     // Bottom navigation
@@ -163,7 +195,7 @@ class AppTheme {
     
     colorScheme: const ColorScheme.light(
       primary: LightThemeColors.cyan,        // Primary buttons, active states
-      onPrimary: Colors.white,           // Text/icons on primary color
+      onPrimary: LightThemeColors.onCyan,           // Text/icons on primary color
       primaryContainer: Color.fromARGB(255, 41, 119, 254), // Secondary buttons, containers
       onPrimaryContainer: Color.fromARGB(255, 255, 255, 255), // Text on primary containers
       
@@ -251,17 +283,17 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: LightThemeColors.text),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: LightThemeColors.text),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: LightThemeColors.text),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: LightThemeColors.text, letterSpacing: 0.25),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: LightThemeColors.text, letterSpacing: 0.25),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: LightThemeColors.text, letterSpacing: 0.25),
       
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: LightThemeColors.text),
-      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: LightThemeColors.text),
-      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: LightThemeColors.text),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: LightThemeColors.text, letterSpacing: 0.25),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: LightThemeColors.text, letterSpacing: 0.25),
+      titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: LightThemeColors.text, letterSpacing: 0.25),
       
-      bodyLarge: TextStyle(fontSize: 16, color: LightThemeColors.text),
-      bodyMedium: TextStyle(fontSize: 14, color: LightThemeColors.text),
-      bodySmall: TextStyle(fontSize: 12, color: LightThemeColors.text),
+      bodyLarge: TextStyle(fontSize: 16, color: LightThemeColors.text, letterSpacing: 0.25),
+      bodyMedium: TextStyle(fontSize: 14, color: LightThemeColors.text, letterSpacing: 0.25),
+      bodySmall: TextStyle(fontSize: 12, color: LightThemeColors.text, letterSpacing: 0.25),
     ),
     
     // Bottom navigation
