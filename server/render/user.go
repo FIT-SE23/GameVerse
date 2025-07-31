@@ -93,3 +93,21 @@ func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, 
 	}
 	return jsonResponse(c, http.StatusOK, "", user)
 }
+
+func addGameWithStatus(c echo.Context, client *supabase.Client, status string) error {
+	userid := c.FormValue("userid")
+	gameid := c.FormValue("gameid")
+
+	user_game := map[string]string{
+		"userid": userid,
+		"gameid": gameid,
+	}
+
+	_, _, err := client.From("User_Game").Insert(user_game, false, "", "", "").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	// TODO: "return" field
+	return jsonResponse(c, http.StatusOK, "", "")
+}

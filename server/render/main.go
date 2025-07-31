@@ -64,6 +64,16 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
+	e.POST("/addtolibrary", func(c echo.Context) error {
+		return addGameWithStatus(c, client, "In library")
+	})
+	e.POST("/addtowishlist", func(c echo.Context) error {
+		return addGameWithStatus(c, client, "In wishlist")
+	})
+	e.POST("/addtocart", func(c echo.Context) error {
+		return addGameWithStatus(c, client, "In cart")
+	})
+
 	e.POST("/game", func(c echo.Context) error {
 		return addGame(c, client, bucketId)
 	})
