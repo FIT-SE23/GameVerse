@@ -51,6 +51,18 @@ func main() {
 	e.PATCH("/user/:id", func(c echo.Context) error {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
 	})
+	e.GET("/user/:id/library", func(c echo.Context) error {
+		userid := c.Param("id")
+		return getGamesWithStatus(c, client, userid, "In library")
+	})
+	e.GET("/user/:id/wishlist", func(c echo.Context) error {
+		userid := c.Param("id")
+		return getGamesWithStatus(c, client, userid, "In wishlist")
+	})
+	e.POST("/user/cart", func(c echo.Context) error {
+		userid := c.FormValue("userid")
+		return getGamesWithStatus(c, client, userid, "In cart")
+	})
 
 	e.POST("/game", func(c echo.Context) error {
 		return addGame(c, client, bucketId)

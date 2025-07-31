@@ -79,3 +79,17 @@ func login(c echo.Context, client *supabase.Client) error {
 	}
 	return jsonResponse(c, http.StatusOK, "", userid)
 }
+
+func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
+	rep, _, err := client.From("User_Game").Select("Game(*)", "", false).Eq("userid", userid).Eq("status", status).ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	var user []map[string]any
+	err = json.Unmarshal([]byte(rep), &user)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
+	}
+	return jsonResponse(c, http.StatusOK, "", user)
+}
