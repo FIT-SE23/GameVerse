@@ -9,21 +9,21 @@ import 'game_section_fancy.dart';
 import 'genres_game.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-// class _HomeScreenState extends State<HomeScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-//     });
-//   }
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

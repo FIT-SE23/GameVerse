@@ -112,7 +112,7 @@ class GameCardBig extends StatelessWidget {
                           children: [
                             Text(
                               game.name,
-                              style: theme.textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+                              style: theme.textTheme.displayLarge,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
@@ -126,7 +126,7 @@ class GameCardBig extends StatelessWidget {
                               game.price != null 
                                 ? '${(game.price!['final'] as int) / 100} VND' 
                                 : 'Free to Play',
-                              style: theme.textTheme.displaySmall!.copyWith(fontSize: 18),
+                              style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
                             ),
                           ],
                         ),
