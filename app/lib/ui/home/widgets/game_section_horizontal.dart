@@ -78,13 +78,12 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
             children: [
               SizedBox(
                 height: 240,
-                child: ScrollConfiguration(
-                  // thumbVisibility: true,
-                  // scrollbarOrientation: ScrollbarOrientation.bottom,
-                  // thickness: 8,
-                  // radius: const Radius.circular(8),
-                  // controller: _scrollController,
-                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                child: Scrollbar(
+                  thumbVisibility: false,
+                  scrollbarOrientation: ScrollbarOrientation.bottom,
+                  thickness: 8,
+                  radius: const Radius.circular(8),
+                  controller: _scrollController,
                   child: ListView.separated(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
@@ -101,7 +100,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                   ),
                 ),
               ),
-              // const SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

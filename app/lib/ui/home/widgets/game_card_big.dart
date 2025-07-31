@@ -108,19 +108,27 @@ class GameCardBig extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          game.name,
-                          style: theme.textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: true,
+                        Row(
+                          children: [
+                            Text(
+                              game.name,
+                              style: theme.textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                          game.price != null 
-                            ? '${(game.price!['final'] as int) / 100} VND' 
-                            : 'Free to Play',
-                          style: theme.textTheme.displaySmall!.copyWith(fontSize: 18),
+                        Row(
+                          children: [
+                            Text(
+                              game.price != null 
+                                ? '${(game.price!['final'] as int) / 100} VND' 
+                                : 'Free to Play',
+                              style: theme.textTheme.displaySmall!.copyWith(fontSize: 18),
+                            ),
+                          ],
                         ),
                         // const SizedBox(height: 20),
                         // Text(
