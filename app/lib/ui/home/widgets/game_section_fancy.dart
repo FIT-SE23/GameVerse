@@ -21,13 +21,13 @@ class GameSectionFancy extends StatefulWidget {
 class _GameSectionFancyState extends State<GameSectionFancy> {
   int currentGameIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,10 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
     final theme = Theme.of(context);
 
     const double defaultHeight = 500;
-    const double keyArtHeight = 640;
 
     return SizedBox(
       width: double.infinity,
-      height: keyArtHeight,
+      height: backgroundKeyArtHeight,
       child: Stack(
         fit: StackFit.loose,
         children: [

@@ -15,8 +15,10 @@ EdgeInsets getNegativeSpacePadding(BuildContext context) {
 
 const double spaceCardHorizontal = 16;
 const double minCardWidth = 160;
-const int maxCardPerRow = 5;
+const int maxCardPerRow = 4;
 const int minCardPerRow = 2;
+
+const double backgroundKeyArtHeight = 640;
 
 double cardWidth(BuildContext context) {
   int cardPerRow = min(((screenWidth(context) - 2 * negativeSpaceWidth(context) + spaceCardHorizontal) / (minCardWidth + spaceCardHorizontal)).toInt(), maxCardPerRow);

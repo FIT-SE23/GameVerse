@@ -4,27 +4,28 @@ import 'package:gameverse/config/spacing_config.dart';
 // import 'package:gameverse/domain/models/game_model/game_model.dart';
 
 import '../view_model/game_details_viewmodel.dart';
+import 'game_media_carousel.dart';
 
-class GameDetailsPanel extends StatefulWidget {
+class GameDetailsLayout extends StatefulWidget {
   final String gameId;
 
-  const GameDetailsPanel({
+  const GameDetailsLayout({
     super.key,
     required this.gameId,
   });
 
   @override
-  State<GameDetailsPanel> createState() => _GameDetailsPanelState();
+  State<GameDetailsLayout> createState() => _GameDetailsLayoutState();
 }
 
-class _GameDetailsPanelState extends State<GameDetailsPanel> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.gameId);
-    });
-  }
+class _GameDetailsLayoutState extends State<GameDetailsLayout> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.gameId);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +33,21 @@ class _GameDetailsPanelState extends State<GameDetailsPanel> {
     final status = viewModel.state;
     final theme = Theme.of(context);
 
-    const double keyArtHeight = 640;
-
     return SizedBox(
       width: double.infinity,
-      height: keyArtHeight,
+      // height: 2000,
       child: Stack(
         children: [
           // Game's key art
           if (status == GameDetailsState.success)
-            Positioned.fill(
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
               child: Image.network(
                 viewModel.gameDetail!.headerImage,
                 width: double.infinity,
-                height: keyArtHeight,
+                height: backgroundKeyArtHeight,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -78,10 +80,10 @@ class _GameDetailsPanelState extends State<GameDetailsPanel> {
           // Gradient
           Positioned(
             top: 0,
-            bottom: -2,
             left: 0,
             right: 0,
             child: Container(
+              height: backgroundKeyArtHeight + 2,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment(0, -1),
@@ -133,7 +135,8 @@ class _GameDetailsPanelState extends State<GameDetailsPanel> {
                         viewModel.gameDetail!.name,
                         style: theme.textTheme.displayLarge,
                       ),
-                      const SizedBox(height: 16),
+
+                      const SizedBox(height: 32),
                       
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,14 +146,7 @@ class _GameDetailsPanelState extends State<GameDetailsPanel> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (viewModel.gameDetail!.screenshots != null)
-                                  Text(
-                                    'There are screenshots'
-                                  )
-                                else
-                                  Text(
-                                    'There is no screenshots'
-                                  )
+                                GameMediaCarousel(media: <String>[])
                               ],
                             )
                           ),
@@ -160,11 +156,24 @@ class _GameDetailsPanelState extends State<GameDetailsPanel> {
                           Expanded(
                             flex: 1,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  viewModel.gameDetail!.briefDescription,
-                                  style: theme.textTheme.bodyMedium,
+                                AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: Image.network(
+                                    viewModel.gameDetail!.headerImage,
+                                    fit: BoxFit.cover
+                                  ),
                                 ),
+
+                                const SizedBox(height: 8),
+
+                                Text(
+                                  viewModel.gameDetail!.price != null 
+                                    ? '${(viewModel.gameDetail!.price!['final'] as int) / 100} VND' 
+                                    : 'Free to Play',
+                                  style: theme.textTheme.bodyLarge,
+                                )
                               ],
                             ),
                           )
