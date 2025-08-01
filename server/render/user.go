@@ -2,14 +2,14 @@ package main
 
 import (
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strings"
+	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
@@ -66,28 +66,33 @@ func searchUsers(c echo.Context, client *supabase.Client) error {
 	return jsonResponse(c, http.StatusOK, "", users)
 }
 
-func encodeUserToken(userid string) string {
-	now := time.Now().UTC().Format(time.RFC3339)
-	raw := userid + "|" + now
+func createUserToken(userid string) string {
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"user":       userid,
+			"authorized": true,
+			"exp":        time.Now().Add(time.Hour * 24).Unix(),
+		})
 
-	token := base64.StdEncoding.EncodeToString([]byte(raw))
+	gvSecret := os.Getenv("GV_SERECT")
+	token, _ := claims.SignedString([]byte(gvSecret))
 	return token
 }
 
-func decodeUserToken(token string) (string, error) {
-	raw, err := base64.StdEncoding.DecodeString(token)
+func verifyUserToken(token string) error {
+	raw, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
+		gvSecret := os.Getenv("GV_SERECT")
+		return []byte(gvSecret), nil
+	})
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	info := strings.Split(string(raw), "|")
-	if len(info) == 0 {
-		return "", errors.New("invalid token")
+	if !raw.Valid {
+		return errors.New("invalid token")
 	}
 
-	userid := info[0]
-
-	return userid, nil
+	return nil
 }
 
 func login(c echo.Context, client *supabase.Client) error {
@@ -105,7 +110,7 @@ func login(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	return jsonResponse(c, http.StatusOK, "", encodeUserToken(userid["userid"]))
+	return jsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
 }
 
 func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {

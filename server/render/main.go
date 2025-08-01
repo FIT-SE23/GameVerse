@@ -61,21 +61,25 @@ func main() {
 	})
 	e.POST("/user/cart", func(c echo.Context) error {
 		token := c.FormValue("token")
-		userid, err := decodeUserToken(token)
+		err := verifyUserToken(token)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
 		}
+
+		userid := c.FormValue("userid")
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
 	e.POST("/addtolibrary", func(c echo.Context) error {
 		token := c.FormValue("token")
-		userid, err := decodeUserToken(token)
+		err := verifyUserToken(token)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
 		}
+
+		userid := c.FormValue("userid")
 		gameid := c.FormValue("gameid")
 
 		userGame := map[string]string{
@@ -88,11 +92,13 @@ func main() {
 	})
 	e.POST("/addtowishlist", func(c echo.Context) error {
 		token := c.FormValue("token")
-		userid, err := decodeUserToken(token)
+		err := verifyUserToken(token)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
 		}
+
+		userid := c.FormValue("userid")
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
@@ -104,11 +110,13 @@ func main() {
 	})
 	e.POST("/addtocart", func(c echo.Context) error {
 		token := c.FormValue("token")
-		userid, err := decodeUserToken(token)
+		err := verifyUserToken(token)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
 		}
+
+		userid := c.FormValue("userid")
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
