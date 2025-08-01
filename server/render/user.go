@@ -2,9 +2,13 @@ package main
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
@@ -62,6 +66,30 @@ func searchUsers(c echo.Context, client *supabase.Client) error {
 	return jsonResponse(c, http.StatusOK, "", users)
 }
 
+func encodeUserToken(userid string) string {
+	now := time.Now().UTC().Format(time.RFC3339)
+	raw := userid + "|" + now
+
+	token := base64.StdEncoding.EncodeToString([]byte(raw))
+	return token
+}
+
+func decodeUserToken(token string) (string, error) {
+	raw, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return "", err
+	}
+
+	info := strings.Split(string(raw), "|")
+	if len(info) == 0 {
+		return "", errors.New("invalid token")
+	}
+
+	userid := info[0]
+
+	return userid, nil
+}
+
 func login(c echo.Context, client *supabase.Client) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
@@ -77,7 +105,7 @@ func login(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	return jsonResponse(c, http.StatusOK, "", userid)
+	return jsonResponse(c, http.StatusOK, "", encodeUserToken(userid["userid"]))
 }
 
 func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
@@ -94,16 +122,8 @@ func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, 
 	return jsonResponse(c, http.StatusOK, "", user)
 }
 
-func addGameWithStatus(c echo.Context, client *supabase.Client, status string) error {
-	userid := c.FormValue("userid")
-	gameid := c.FormValue("gameid")
-
-	user_game := map[string]string{
-		"userid": userid,
-		"gameid": gameid,
-	}
-
-	_, _, err := client.From("User_Game").Insert(user_game, false, "", "", "").ExecuteString()
+func addGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
+	_, _, err := client.From("User_Game").Insert(userGame, false, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

@@ -60,18 +60,63 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In wishlist")
 	})
 	e.POST("/user/cart", func(c echo.Context) error {
-		userid := c.FormValue("userid")
+		token := c.FormValue("token")
+		userid, err := decodeUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
 	e.POST("/addtolibrary", func(c echo.Context) error {
-		return addGameWithStatus(c, client, "In library")
+		token := c.FormValue("token")
+		userid, err := decodeUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+		gameid := c.FormValue("gameid")
+
+		userGame := map[string]string{
+			"userid": userid,
+			"gameid": gameid,
+			"status": "In library",
+		}
+
+		return addGameWithStatus(c, client, userGame)
 	})
 	e.POST("/addtowishlist", func(c echo.Context) error {
-		return addGameWithStatus(c, client, "In wishlist")
+		token := c.FormValue("token")
+		userid, err := decodeUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+		gameid := c.FormValue("gameid")
+		userGame := map[string]string{
+			"userid": userid,
+			"gameid": gameid,
+			"status": "In wishlist",
+		}
+
+		return addGameWithStatus(c, client, userGame)
 	})
 	e.POST("/addtocart", func(c echo.Context) error {
-		return addGameWithStatus(c, client, "In cart")
+		token := c.FormValue("token")
+		userid, err := decodeUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+		gameid := c.FormValue("gameid")
+		userGame := map[string]string{
+			"userid": userid,
+			"gameid": gameid,
+			"status": "In cart",
+		}
+
+		return addGameWithStatus(c, client, userGame)
 	})
 
 	e.POST("/game", func(c echo.Context) error {
