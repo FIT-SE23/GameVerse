@@ -12,6 +12,7 @@ import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/ui/forum_posts/view_model/forum_posts_viewmodel.dart';
 import 'package:gameverse/ui/forums/view_model/forum_viewmodel.dart';
 import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
+import 'package:gameverse/ui/transactions/view_model/transaction_viewmodel.dart';
 
 
 import '../data/repositories/auth_repository.dart';
@@ -20,6 +21,7 @@ import '../data/repositories/forum_repository.dart';
 import '../data/repositories/post_repository.dart';
 import '../data/repositories/comment_repository.dart';
 
+import '../data/services/transaction_service.dart';
 List<SingleChildWidget> appProviders() {
   return [
     Provider(create: (_) => GameRepository(httpClient: http.Client())),
@@ -27,6 +29,7 @@ List<SingleChildWidget> appProviders() {
     Provider(create: (_) => ForumRepository()),
     Provider(create: (_) => PostRepository()),
     Provider(create: (_) => CommentRepository()),
+    Provider<TransactionService>(create: (_) => TransactionService()),
 
     // ViewModels
     ChangeNotifierProvider(
@@ -73,6 +76,11 @@ List<SingleChildWidget> appProviders() {
     ),
     ChangeNotifierProvider<ThemeViewModel>(
       create: (_) => ThemeViewModel(),
+    ),
+    ChangeNotifierProvider<TransactionViewModel>(
+      create: (context) => TransactionViewModel(
+        transactionService: context.read<TransactionService>(),
+      ),
     ),
   ];
 }

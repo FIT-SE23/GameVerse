@@ -26,7 +26,7 @@ class ForumRepository {
   List<GameModel> _getMockGamesWithForums() {
     return [
       GameModel(
-        appId: '1091500',
+        appId: '1',
         name: 'Cyberpunk 2077',
         recommended: 95,
         briefDescription: 'An open-world, action-adventure story set in Night City.',
@@ -36,7 +36,7 @@ class ForumRepository {
         categoriesID: ['RPG', 'Action'],
       ),
       GameModel(
-        appId: '730',
+        appId: '6',
         name: 'Counter-Strike 2',
         recommended: 89,
         briefDescription: 'The legendary FPS returns.',
@@ -46,7 +46,7 @@ class ForumRepository {
         categoriesID: ['FPS', 'Competitive'],
       ),
       GameModel(
-        appId: '570',
+        appId: '5',
         name: 'Dota 2',
         recommended: 92,
         briefDescription: 'The ultimate MOBA experience.',

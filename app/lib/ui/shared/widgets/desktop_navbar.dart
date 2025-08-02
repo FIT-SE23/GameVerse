@@ -175,10 +175,8 @@ class DesktopNavbar extends StatelessWidget {
               if (value == 'logout') {
                 authProvider.logout();
               }
-              else if (value == 'profile') {
-                context.push('/profile');
-              } else if (value == 'settings') {
-                context.push('/settings');
+              else {
+                context.push('/${value.toLowerCase()}');
               }
             },
             itemBuilder: (context) => [
@@ -190,6 +188,15 @@ class DesktopNavbar extends StatelessWidget {
                   title: Text('Profile'),
                 ),
               ),
+              const PopupMenuItem(
+                value: 'transactions',
+                mouseCursor: SystemMouseCursors.click,
+                child: ListTile(
+                  leading: Icon(Icons.account_balance_wallet),
+                  title: Text('Transactions'),
+                ),
+              ),
+              
               const PopupMenuItem(
                 value: 'settings',
                 mouseCursor: SystemMouseCursors.click,

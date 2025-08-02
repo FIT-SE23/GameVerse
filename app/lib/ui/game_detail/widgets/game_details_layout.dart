@@ -146,12 +146,41 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                GameMediaCarousel(media: <String>[])
+                                GameMediaCarousel(media: <String>[]),
+                                const SizedBox(height: 32),
+                                Text(
+                                  'About this game',
+                                  style: theme.textTheme.displayMedium
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Welcome to the official description of this game. This is where you can talk about the gameplay, the story, the mechanics, or anything else that makes your game unique. Feel free to elaborate on the features, style, or goals—whatever helps players understand what they\'re about to dive into.\n\nThis is the description of this game. Here you can write about what the game is, what players can expect, and any key features or gameplay elements. Use this section to give a brief overview that captures interest and explains what makes the game worth playing.\n\nThis section is reserved for an exciting and detailed summary of the game. Here, you\'ll describe what players can do, what makes the game fun, and why they should try it. Think of this as your game\'s elevator pitch—but longer.\n\nThis is where the game description goes. Talk about the world, the characters, the gameplay, or just write something to fill space until the real text is ready. Make it sound cool—or don\'t, it\'s just a placeholder!',
+                                  style: theme.textTheme.bodyLarge,
+                                ),
+                                const SizedBox(height: 32),
+                                Text(
+                                  'System requirements',
+                                  style: theme.textTheme.displayMedium
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Center(),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Center(),
+                                    ),
+                                  ],
+                                )
                               ],
                             )
                           ),
 
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 32),
 
                           Expanded(
                             flex: 1,

@@ -249,16 +249,21 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 }
 
 func getGame(c echo.Context, client *supabase.Client) error {
+	fmt.Println(c.Response().Header())
+	// userid := c.Get("userid").(*jwt.Token)
+	// claims := userid.Claims.(jwt.MapClaims)
 	gameID := c.Param("id")
+	// userid := c.Param("id")
 
-	rep, _, err := client.From("Game").Select("publisherid, name, description, Category(categoryname), Resource(url)", "", false).Eq("gameid", gameID).Single().ExecuteString()
+	// TODO: check game status if user already signed in
+	rep, _, err := client.From("Game").Select("publisherid, name, description, Category(categoryname), Resource(url, type)", "", false).Eq("gameid", gameID).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	var gameBasicInfo map[string]any
+	var gameBasicInfo []map[string]any
 	err = json.Unmarshal([]byte(rep), &gameBasicInfo)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid gameid" /*err.Error()*/, "")
+		return jsonResponse(c, http.StatusBadRequest, "Invalid gameid or the return value datatype does not match with gameBasicInfo datatype" /*err.Error()*/, "")
 	}
 
 	return jsonResponse(c, http.StatusOK, "", gameBasicInfo)

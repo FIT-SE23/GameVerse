@@ -135,7 +135,7 @@ class GameRepository {
   List<GameModel> _getMockFeaturedGames() {
     return [
       GameModel(
-        appId: 'game1',
+        appId: '1',
         name: 'Cyberpunk 2077',
         recommended: 95,
         briefDescription: 'An open-world, action-adventure story set in Night City.',
@@ -158,7 +158,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 'game2',
+        appId: '2',
         name: 'Red Dead Redemption 2',
         recommended: 97,
         briefDescription: 'An epic tale of life in America\'s unforgiving heartland.',
@@ -177,7 +177,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 'game3',
+        appId: '3',
         name: 'The Witcher 3: Wild Hunt',
         recommended: 98,
         briefDescription: 'The most awarded game of a generation is now enhanced for the next!',
@@ -199,7 +199,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 'game4',
+        appId: '4',
         name: 'Grand Theft Auto V',
         recommended: 94,
         briefDescription: 'Grand Theft Auto V for PC offers players the option to explore the award-winning world of Los Santos and Blaine County.',
@@ -223,7 +223,7 @@ class GameRepository {
   List<GameModel> _getMockOwnedGames() {
     return [
       GameModel(
-        appId: 'game5',
+        appId: '5',
         name: 'Dota 2',
         recommended: 92,
         briefDescription: 'Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes.',
@@ -243,7 +243,7 @@ class GameRepository {
         playtimeHours: 156.7,
       ),
       GameModel(
-        appId: 'game6',
+        appId: '6',
         name: 'Counter-Strike 2',
         recommended: 89,
         briefDescription: 'Counter-Strike 2 marks the beginning of a new chapter in the legendary FPS series.',
@@ -263,7 +263,7 @@ class GameRepository {
         playtimeHours: 234.2,
       ),
       GameModel(
-        appId: 'game7',
+        appId: '7',
         name: 'Team Fortress 2',
         recommended: 88,
         briefDescription: 'Nine distinct classes provide a broad range of tactical abilities and personalities.',
@@ -283,7 +283,7 @@ class GameRepository {
         playtimeHours: 67.8,
       ),
       GameModel(
-        appId: 'game8',
+        appId: '8',
         name: 'The Elder Scrolls V: Skyrim',
         recommended: 96,
         briefDescription: 'EPIC FANTASY REBORN - The next chapter in the highly anticipated Elder Scrolls saga.',
@@ -308,7 +308,7 @@ class GameRepository {
   List<GameModel> _getMockAdditionalGames() {
     return [
       GameModel(
-        appId: 'game9',
+        appId: '9',
         name: 'Baldur\'s Gate 3',
         recommended: 96,
         briefDescription: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.',
@@ -326,7 +326,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: 'game10',
+        appId: '10',
         name: 'Call of Duty®: Modern Warfare® III',
         recommended: 82,
         briefDescription: 'In the direct sequel to the record-breaking Call of Duty®: Modern Warfare® II.',

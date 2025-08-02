@@ -103,13 +103,14 @@ class GameCardBig extends StatelessWidget {
                   ),
                   child: Padding(
                     key: ValueKey(game),
-                    padding: EdgeInsets.only(left: 32, bottom: 32),
+                    padding: EdgeInsets.only(top: 32, left: 32, bottom: 32),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child:
                             Text(
                               game.name,
                               style: theme.textTheme.displayLarge,
@@ -117,18 +118,17 @@ class GameCardBig extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
                             ),
-                          ],
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child:
                             Text(
                               game.price != null 
                                 ? '${(game.price!['final'] as int) / 100} VND' 
                                 : 'Free to Play',
                               style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
                             ),
-                          ],
                         ),
                         // const SizedBox(height: 20),
                         // Text(

@@ -14,8 +14,12 @@ import 'package:gameverse/config/url_protocol/api.dart';
 import 'package:gameverse/utils/deeplink.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
+// import 'package:flutter/rendering.dart';
+
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // debugPaintSizeEnabled = true;
 
   try {
     await dotenv.load();
@@ -108,15 +112,13 @@ class _MyAppState extends State<MyApp> {
     }
 
     // Initialize deep link handling only for desktop
-    if (!kIsWeb) {
+    if (!kIsWeb && mounted) {
       try {
-        if (mounted) {
           deepLinkHandler = DeepLink(context, _router);
           // Handle initial deep link if present
           if (widget.initialDeepLink != null) {
             deepLinkHandler!.handleDeepLink(widget.initialDeepLink!);
           }
-        }
       } catch (e) {
         debugPrint('Failed to initialize deep link handler: $e');
       }
