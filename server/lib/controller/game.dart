@@ -86,6 +86,56 @@ Future<Response> addGame(
   return response;
 }
 
+Future<Response> getGame(String gameid) async {
+  final raw = await http.get(
+    Uri.parse(serverURL + "game/" + gameid),
+    headers: {"Autorization": "Bearer " + ""},
+  );
+  var jsonBody;
+
+  try {
+    jsonBody = jsonDecode(raw.body);
+  } on FormatException catch (e) {
+    return Response.fromJson(400, {"message": e.message});
+  }
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonBody as Map<String, dynamic>,
+  );
+
+  print(jsonBody);
+  final game = Game.fromJson(response.data as Map<String, dynamic>);
+
+  return Response(code: response.code, message: response.message, data: game);
+}
+
+Future<Response> listGames(String gamename) async {
+  final raw = await http.get(
+    Uri.parse(serverURL + "search?entity=game&gamename=$gamename"),
+  );
+
+  var jsonBody;
+
+  try {
+    jsonBody = jsonDecode(raw.body);
+  } on FormatException catch (e) {
+    return Response.fromJson(400, {"message": e.message});
+  }
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonBody as Map<String, dynamic>,
+  );
+
+  final users = <Game>[];
+  for (var user in response.data as List<dynamic>) {
+    users.add(Game.fromJson(user as Map<String, dynamic>));
+  }
+
+  return Response(code: response.code, message: response.message, data: users);
+}
+
 class Category {
   final String? categoryid;
   final String? categoryName;
