@@ -108,15 +108,13 @@ class _MyAppState extends State<MyApp> {
     }
 
     // Initialize deep link handling only for desktop
-    if (!kIsWeb) {
+    if (!kIsWeb && mounted) {
       try {
-        if (mounted) {
           deepLinkHandler = DeepLink(context, _router);
           // Handle initial deep link if present
           if (widget.initialDeepLink != null) {
             deepLinkHandler!.handleDeepLink(widget.initialDeepLink!);
           }
-        }
       } catch (e) {
         debugPrint('Failed to initialize deep link handler: $e');
       }

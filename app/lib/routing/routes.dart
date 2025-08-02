@@ -15,4 +15,5 @@ abstract final class Routes {
   static const termsOfService = '/terms-of-service';
   static const faqs = '/faqs';
   static const authCallback = '/auth-callback';
+  static const transactions = '/transactions';
 }

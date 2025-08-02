@@ -168,17 +168,17 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
                   const SizedBox(height: 16),
 
                   // Facebook Sign In
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.facebook),
-                      icon: const Icon(Icons.facebook_rounded, size: 24),
-                      label: const Text('Continue with Facebook'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: OutlinedButton.icon(
+                  //     onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.facebook),
+                  //     icon: const Icon(Icons.facebook_rounded, size: 24),
+                  //     label: const Text('Continue with Facebook'),
+                  //     style: OutlinedButton.styleFrom(
+                  //       padding: const EdgeInsets.symmetric(vertical: 12),
+                  //     ),
+                  //   ),
+                  // ),
                   
                   const SizedBox(height: 16),
                   

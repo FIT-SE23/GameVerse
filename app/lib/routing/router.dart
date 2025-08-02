@@ -14,6 +14,7 @@ import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
 import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
 import 'package:gameverse/ui/post/widgets/post_screen.dart';
 import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
+import 'package:gameverse/ui/transactions/widgets/transaction_screen.dart';
 
 import 'routes.dart';
 
@@ -28,6 +29,14 @@ class AppRouter {
         // If going to login but already logged in, redirect home
         if (state.matchedLocation == Routes.login && isLoggedIn) {
           return Routes.home;
+        }
+
+        // Guard against accessing protected routes when not logged in
+        if (!isLoggedIn && 
+            (state.matchedLocation == Routes.settings ||
+             state.matchedLocation == Routes.profile ||
+             state.matchedLocation == Routes.transactions)) {
+          return Routes.login;
         }
         
         return null;
@@ -82,6 +91,22 @@ class AppRouter {
               path: Routes.profile,
               builder: (context, state) => const ProfileScreen(),
             ),
+            GoRoute(
+              path: Routes.login,
+              builder: (context, state) => const AuthScreen(
+                initialTab: 'login',
+              ),
+            ),
+            GoRoute(
+              path: Routes.signup,
+              builder: (context, state) => const AuthScreen(
+                initialTab: 'signup',
+              ),
+            ),
+            GoRoute(
+              path: Routes.transactions,
+              builder: (context, state) => const TransactionScreen(),
+            ),
           ],
         ),
         
@@ -103,18 +128,6 @@ class AppRouter {
         ),
         
         // Auth routes
-        GoRoute(
-          path: Routes.login,
-          builder: (context, state) => const AuthScreen(
-            initialTab: 'login',
-          ),
-        ),
-        GoRoute(
-          path: Routes.signup,
-          builder: (context, state) => const AuthScreen(
-            initialTab: 'signup',
-          ),
-        ),
         GoRoute(
           path: Routes.authCallback,
           builder: (context, state) => const AuthCallbackScreen(),

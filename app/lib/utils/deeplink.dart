@@ -150,17 +150,26 @@ class DeepLink {
   }
 
   void _showSnackBar(String message, {Color? backgroundColor}) {
-    if (!context.mounted) return;
-    
+    // Use post frame callback to ensure the widget tree is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Check if context is still mounted and has ScaffoldMessenger
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: backgroundColor,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        try {
+          final scaffoldMessenger = ScaffoldMessenger.maybeOf(context);
+          if (scaffoldMessenger != null) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text(message),
+                duration: const Duration(seconds: 3),
+                backgroundColor: backgroundColor,
+              ),
+            );
+          } else {
+            debugPrint('ScaffoldMessenger not available: $message');
+          }
+        } catch (e) {
+          debugPrint('Error showing snackbar: $e - Message: $message');
+        }
       }
     });
   }
