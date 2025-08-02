@@ -24,6 +24,7 @@ create table if not exists "Resource" (
   ResourceID uuid default gen_random_uuid() primary key,
   UserID uuid,
   URL text,
+  type text,
 
   foreign key (UserID) references "User" (UserID) on delete cascade
 );
@@ -113,4 +114,14 @@ create table if not exists "Transaction" (
   foreign key (PaymentMethodID) references "PaymentMethod" (PaymentMethodID) on delete cascade,
   foreign key (SenderID) references "User" (UserID) on delete cascade,
   foreign key (ReceiverID) references "User" (UserID) on delete cascade
+);
+
+create table if not exists "User_Game" (
+  UserID uuid,
+  GameID uuid,
+  status text,
+
+  primary key (UserID, GameID),
+  foreign key (GameID) references "Game" (GameID) on delete cascade,
+  foreign key (UserID) references "User" (UserID) on delete cascade
 );

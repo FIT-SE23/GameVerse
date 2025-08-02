@@ -55,3 +55,25 @@ Future<Response> addPublisher(
 
   return response;
 }
+
+Future<Response> updatePublisher({
+  required String publisherId,
+  String? paymentMethodId,
+  String? description,
+}) async {
+  final body = <String, String>{};
+  if (paymentMethodId != null) body['paymentmethodid'] = paymentMethodId;
+  if (description != null) body['description'] = description;
+
+  final raw = await http.patch(
+    Uri.parse(serverURL + 'publisher/$publisherId'),
+    body: body,
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}

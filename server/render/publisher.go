@@ -41,3 +41,35 @@ func addPublisher(c echo.Context, client *supabase.Client) error {
 
 	return jsonResponse(c, http.StatusOK, "", "")
 }
+
+func updatePublisher(c echo.Context, client *supabase.Client) error {
+    publisherID := c.Param("id")
+
+    _, _, err := client.From("Publisher").Select("publisherid", "", false).Eq("publisherid", publisherID).Single().ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+    paymentMethodID := c.FormValue("paymentmethodid")
+    description     := c.FormValue("description")
+
+    if paymentMethodID == "" && description == "" {
+        return jsonResponse(c, http.StatusBadRequest, "Nothing to update", "")
+    }
+
+    updates := map[string]any{}
+    if paymentMethodID != "" {
+        updates["paymentmethodid"] = paymentMethodID
+    }
+    if description != "" {
+        updates["description"] = description
+    }
+
+    _, _, err = client.From("Publisher").Update(updates, "", "").Eq("publisherid", publisherID).ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+    return jsonResponse(c, http.StatusOK, "", "")
+}
+

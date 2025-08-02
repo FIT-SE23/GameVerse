@@ -40,6 +40,23 @@ class Game {
   }
 }
 
+Future<void> _addFiles(
+  final request,
+  String fieldName,
+  List<String>? paths,
+) async {
+  if (paths == null) return;
+  for (final path in paths) {
+    try {
+      request.files.add(await http.MultipartFile.fromPath(fieldName, path));
+    } on PathNotFoundException catch (e) {
+      return Future.error(
+        Response.fromJson(400, {'message': e.message, 'return': path}),
+      );
+    }
+  }
+}
+
 Future<Response> addGame(
   String publisherid,
   String name,
@@ -55,26 +72,67 @@ Future<Response> addGame(
         ..fields["gamename"] = name
         ..fields["description"] = description
         ..fields["categories"] = categories;
-  for (final file in binaries) {
-    try {
-      request.files.add(await http.MultipartFile.fromPath("binary", file));
-    } on PathNotFoundException catch (e) {
-      return Response.fromJson(400, {"message": e.message, "return": file});
+
+  try {
+    await _addFiles(request, 'binary', binaries);
+    await _addFiles(request, 'media', medias);
+    await _addFiles(request, 'executable', exes);
+  } catch (err) {
+    if (err is Response) return err;
+    return Response.fromJson(400, {
+      'message': 'File processing error: ${err.toString()}',
+      'return': null
+    });
+  }
+
+  final raw = await request.send();
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(await raw.stream.bytesToString()) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> updateGame({
+  required String gameId,
+  String? name,
+  String? description,
+  String? categories,
+  List<String>? resourceids,
+  List<String>? binaries,
+  List<String>? medias,
+  List<String>? exes,
+}) async {
+  final request = http.MultipartRequest('PATCH', Uri.parse(serverURL + 'game/$gameId'),);
+
+  if (name != null) {
+    request.fields['gamename'] = name;
+  }
+  if (description != null) {
+    request.fields['description'] = description;
+  }
+  if (categories != null) {
+    request.fields['categories'] = categories;
+  }
+  if (resourceids != null && resourceids.isNotEmpty) {
+    final validResourceIDs = resourceids.map((id) => id.trim()).where((id) => id.isNotEmpty).toList();
+        
+    if (validResourceIDs.isNotEmpty) {
+      request.fields['resourceids'] = jsonEncode(validResourceIDs);
     }
   }
-  for (final file in medias) {
-    try {
-      request.files.add(await http.MultipartFile.fromPath("media", file));
-    } on PathNotFoundException catch (e) {
-      return Response.fromJson(400, {"message": e.message, "return": file});
-    }
-  }
-  for (final file in exes) {
-    try {
-      request.files.add(await http.MultipartFile.fromPath("executable", file));
-    } on PathNotFoundException catch (e) {
-      return Response.fromJson(400, {"message": e.message, "return": file});
-    }
+
+  try {
+    await _addFiles(request, 'binary', binaries);
+    await _addFiles(request, 'media', medias);
+    await _addFiles(request, 'executable', exes);
+  } catch (err) {
+    if (err is Response) return err;
+    return Response.fromJson(400, {
+      'message': 'File processing error: ${err.toString()}',
+      'return': null
+    });
   }
 
   final raw = await request.send();

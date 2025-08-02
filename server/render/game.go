@@ -13,7 +13,7 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
-func addResources(c echo.Context, client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
+func addResources(client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
 	errFiles := []string{}
 	for _, file := range files {
 		src, err := file.Open()
@@ -78,6 +78,72 @@ func addResources(c echo.Context, client *supabase.Client, userID string, gameID
 	return errFiles
 }
 
+func deleteResources(client *supabase.Client, bucketId string, resourceIDs []string) []string {
+	var errorResources []string
+	var toDelete []string
+
+	rep, _, err := client.From("Resource").Select("resourceid, url", "", false).In("resourceid", resourceIDs).ExecuteString()
+
+	if err != nil {
+		fmt.Println("Error: Could not fetch resource data:", err)
+		return resourceIDs
+	}
+
+	var resources []map[string]string
+	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
+		fmt.Println("Error: Could not parse resource data:", err)
+		return resourceIDs
+	}
+
+	resourceURLMap := make(map[string]string)
+	for _, res := range resources {
+		resourceURLMap[res["resourceid"]] = res["url"]
+	}
+
+	for _, resID := range resourceIDs {
+		urlStr, ok := resourceURLMap[resID]
+		if !ok {
+			fmt.Println("Warning: Resource not found in database: ", resID)
+			errorResources = append(errorResources, resID)
+			continue
+		}
+
+		prefix := "/storage/v1/object/sign/" + bucketId + "/"
+		pathIndex := strings.Index(urlStr, prefix)
+		if pathIndex == -1 {
+			fmt.Println("Error: Invalid URL format for resource: ", resID)
+			errorResources = append(errorResources, resID)
+			continue
+		}
+		
+		pathWithQuery := urlStr[pathIndex+len(prefix):]
+		filePath := pathWithQuery
+		if queryIndex := strings.Index(pathWithQuery, "?"); queryIndex != -1 {
+			filePath = pathWithQuery[:queryIndex]
+		}
+		_, err := client.Storage.RemoveFile(bucketId, []string{filePath})
+		if err != nil {
+			fmt.Printf("Error: Failed to delete file %s from storage: %v\n", filePath, err)
+			errorResources = append(errorResources, resID)
+			continue
+		}
+
+		toDelete = append(toDelete, resID)
+	}
+
+	if len(toDelete) > 0 {
+		_, _, err := client.From("Resource").Delete("", "").In("resourceid", toDelete).Execute()
+		if err != nil {
+			fmt.Println("Error: Files deleted from storage, but not in database:", err)
+			errorResources = append(errorResources, toDelete...)
+		} else {
+			fmt.Println("Successfully deleted from database:", toDelete)
+		}
+	}
+
+	return errorResources
+}
+
 func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	publisherID := c.FormValue("publisherid")
 	if publisherID == "" {
@@ -115,19 +181,19 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	}
 
 	files := form.File["binary"]
-	errFiles := addResources(c, client, userID, gameID["gameid"], bucketId, files, "binary")
+	errFiles := addResources(client, userID, gameID["gameid"], bucketId, files, "binary")
 	if len(errFiles) > 0 {
 		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
 	files = form.File["media"]
-	errFiles = addResources(c, client, userID, gameID["gameid"], bucketId, files, "media")
+	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "media")
 	if len(errFiles) > 0 {
 		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
 	files = form.File["executable"]
-	errFiles = addResources(c, client, userID, gameID["gameid"], bucketId, files, "executable")
+	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "executable")
 	if len(errFiles) > 0 {
 		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
@@ -136,6 +202,7 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+	
 	var knownCategories []map[string]any
 	err = json.Unmarshal([]byte(rep), &knownCategories)
 	if err != nil {
@@ -210,4 +277,153 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	}
 
 	return jsonResponse(c, http.StatusOK, "", games)
+}
+
+func updateGame(c echo.Context, client *supabase.Client, bucketId string) error {
+	gameID := c.Param("id")
+
+	rep, _, err := client.From("Game").Select("publisherid", "", false).Eq("gameid", gameID).Single().ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusNotFound, "Game not found!", err.Error())
+	}
+
+	var gameData map[string]interface{}
+	if err := json.Unmarshal([]byte(rep), &gameData); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse game data!", err.Error())
+	}
+
+	userID, ok := gameData["publisherid"].(string)
+	if !ok || userID == "" {
+		return jsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
+	}
+
+	errorReport := make(map[string]interface{})
+
+	updates := map[string]any{}
+	name := c.FormValue("gamename")
+	desc := c.FormValue("description")
+	if name != "" {
+		updates["name"] = name
+	}
+	if desc != "" {
+		updates["description"] = desc
+	}
+	if len(updates) > 0 {
+		_, _, err := client.From("Game").Update(updates, "", "").Eq("gameid", gameID).ExecuteString()
+		if err != nil {
+			return jsonResponse(c, http.StatusInternalServerError, "Failed to update game metadata!", err.Error())
+		}
+	}
+
+	catsRaw := c.FormValue("categories")
+	if catsRaw != "" {
+		newCats := slices.DeleteFunc(strings.Split(catsRaw, ","), func(s string) bool { return strings.TrimSpace(s) == "" })
+		_, _, _ = client.From("Game_Category").Delete("", "").Eq("gameid", gameID).ExecuteString()
+		
+		if len(newCats) > 0 {
+			rep, _, err := client.From("Category").Select("", "", false).ExecuteString()
+			if err != nil {
+				return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch categories!", err.Error())
+			}
+			
+			var knownCategories []map[string]any
+			err = json.Unmarshal([]byte(rep), &knownCategories)
+			if err != nil {
+				return jsonResponse(c, http.StatusInternalServerError, "Failed to parse categories!", err.Error())
+			}
+			
+			errCat := []string{}
+			
+			for _, category := range newCats {
+				categoryName := strings.TrimSpace(category)
+				index := slices.IndexFunc(knownCategories, func(knownCategory map[string]any) bool {return knownCategory["categoryname"] == categoryName})
+				if index == -1 {
+					errCat = append(errCat, categoryName)
+					continue
+				}
+
+				pair := map[string]any{
+					"gameid":     gameID,
+					"categoryid": knownCategories[index]["categoryid"],
+				}
+				
+				_, _, err := client.From("Game_Category").Insert(pair, true, "", "", "").ExecuteString()
+				if err != nil {
+					errCat = append(errCat, categoryName)
+					continue
+				}
+			}
+			if len(errCat) > 0 {
+				errorReport["failed_categories"] = errCat
+			}
+		}
+	}
+
+	replaceRaw := c.FormValue("resourceids")
+	var toDelete []string
+	
+	if replaceRaw != "" {
+		err := json.Unmarshal([]byte(replaceRaw), &toDelete)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
+		}
+		if len(toDelete) > 0 {
+			// Verify resources belong to this game before deletion
+			rep, _, err := client.From("Game_Resource").Select("resourceid", "", false).Eq("gameid", gameID).In("resourceid", toDelete).ExecuteString()
+			if err != nil {
+				errorReport["verification_failed"] = "Could not verify resource ownership"
+			} else {
+				var gameResources []map[string]string
+				json.Unmarshal([]byte(rep), &gameResources)
+				
+				toDelete := make([]string, 0, len(gameResources))
+				for _, res := range gameResources {
+					toDelete = append(toDelete, res["resourceid"])
+				}
+				
+				if len(toDelete) > 0 {
+					failed := deleteResources(client, bucketId, toDelete)
+					if len(failed) > 0 {
+						errorReport["failed_deletions"] = failed
+					}
+				}
+			}
+		}
+	}
+
+	form, err := c.MultipartForm()
+	if err != nil && err != http.ErrNotMultipart {
+		return jsonResponse(c, http.StatusBadRequest, "Failed to parse form data!", err.Error())
+	}
+	if form != nil {
+		files := form.File["binary"]
+		if len(files) > 0 {
+			errFiles := addResources(client, userID, gameID, bucketId, files, "binary")
+			if len(errFiles) > 0 {
+				errorReport["failed_binary"] = errFiles
+			}
+		}
+
+		files = form.File["media"]
+		if len(files) > 0 {
+			errFiles := addResources(client, userID, gameID, bucketId, files, "media")
+			if len(errFiles) > 0 {
+				errorReport["failed_media"] = errFiles
+			}
+		}
+
+		files = form.File["executable"]
+		if len(files) > 0 {
+			errFiles := addResources(client, userID, gameID, bucketId, files, "executable")
+			if len(errFiles) > 0 {
+				errorReport["failed_executable"] = errFiles
+			}
+		}
+	}
+	
+	if len(errorReport) > 0 {
+		return jsonResponse(c, http.StatusPartialContent, "Some errors occur", errorReport)
+	}
+
+	return jsonResponse(c, http.StatusOK, "", "")
 }
