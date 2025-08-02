@@ -14,8 +14,12 @@ import 'package:gameverse/config/url_protocol/api.dart';
 import 'package:gameverse/utils/deeplink.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
+// import 'package:flutter/rendering.dart';
+
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // debugPaintSizeEnabled = true;
 
   try {
     await dotenv.load();
