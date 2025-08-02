@@ -32,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, homeViewModel, child) {
           return Column(
             children: [
-              // this is not in Padding because the key art's width
-              // is the window's width
+              // this is not in Padding because the background key art
+              // fills the window's width
               GameSectionFancy(title: 'Popular Games', gameList: Provider.of<HomeViewModel>(context, listen: false).popularGames,),
 
               Padding(

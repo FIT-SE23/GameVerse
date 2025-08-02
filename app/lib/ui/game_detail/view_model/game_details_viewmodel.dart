@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 
-enum GameDetailState { initial, loading, success, error }
+enum GameDetailsState { initial, loading, success, error }
 
-class GameDetailViewModel extends ChangeNotifier {
+class GameDetailsViewModel extends ChangeNotifier {
   final GameRepository _gameRepository;
   
-  GameDetailViewModel({required GameRepository gameRepository}) 
+  GameDetailsViewModel({required GameRepository gameRepository}) 
       : _gameRepository = gameRepository;
 
   // State management
-  GameDetailState _state = GameDetailState.initial;
-  GameDetailState get state => _state;
+  GameDetailsState _state = GameDetailsState.initial;
+  GameDetailsState get state => _state;
 
   GameModel? _gameDetail;
   GameModel? get gameDetail => _gameDetail;
@@ -39,7 +39,7 @@ class GameDetailViewModel extends ChangeNotifier {
 
   Future<void> loadGameDetails(String gameId) async {
     try {
-      _state = GameDetailState.loading;
+      _state = GameDetailsState.loading;
       notifyListeners();
 
       _gameDetail = await _gameRepository.getGameDetails(gameId);
@@ -48,13 +48,13 @@ class GameDetailViewModel extends ChangeNotifier {
         _isInLibrary = _gameDetail!.isOwned;
         _isFavorite = _gameDetail!.favorite;
         _loadMockReviews();
-        _state = GameDetailState.success;
+        _state = GameDetailsState.success;
       } else {
-        _state = GameDetailState.error;
+        _state = GameDetailsState.error;
         _errorMessage = 'Game not found';
       }
     } catch (e) {
-      _state = GameDetailState.error;
+      _state = GameDetailsState.error;
       _errorMessage = 'Failed to load game details: $e';
     } finally {
       notifyListeners();

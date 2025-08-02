@@ -77,3 +77,81 @@ Future<Response> listUser(String username) async {
 
   return Response(code: response.code, message: response.message, data: users);
 }
+
+Future<Response> login(String email, String password) async {
+  final bytePassword = utf8.encode(password);
+  final hashPassword = sha256.convert(bytePassword).toString();
+
+  final raw = await http.post(
+    Uri.parse(serverURL + "login"),
+    body: <String, String>{"email": email, "hashpassword": hashPassword},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> addGameWithStatus(
+  String token,
+  String userid,
+  String gameid,
+  String status,
+) async {
+  Uri uri = Uri();
+  if (status == "In library") {
+    uri = Uri.parse(serverURL + "addtolibrary");
+  } else if (status == "In wishlist") {
+    uri = Uri.parse(serverURL + "addtowishlist");
+  } else if (status == "In cart") {
+    uri = Uri.parse(serverURL + "addtocart");
+  }
+  final raw = await http.post(
+    uri,
+    body: <String, String>{"token": token, "userid": userid, "gameid": gameid},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> listGamesInCart(String token, String userid) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "user/cart"),
+    body: <String, String>{"token": token, "userid": userid},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> listGamesInLibraryOrWishlist(
+  String userid,
+  String status,
+) async {
+  String url = serverURL + "user/" + userid + "/";
+  if (status == "In library") {
+    url += "library";
+  } else if (status == "In wishlist") {
+    url += "wishlist";
+  }
+  final raw = await http.get(Uri.parse(url));
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}

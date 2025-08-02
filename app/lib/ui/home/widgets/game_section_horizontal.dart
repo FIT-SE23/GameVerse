@@ -21,13 +21,13 @@ class GameSectionHorizontal extends StatefulWidget {
 class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
   final ScrollController _scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -78,13 +78,12 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
             children: [
               SizedBox(
                 height: 240,
-                child: ScrollConfiguration(
-                  // thumbVisibility: true,
-                  // scrollbarOrientation: ScrollbarOrientation.bottom,
-                  // thickness: 8,
-                  // radius: const Radius.circular(8),
-                  // controller: _scrollController,
-                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                child: Scrollbar(
+                  thumbVisibility: false,
+                  scrollbarOrientation: ScrollbarOrientation.bottom,
+                  thickness: 8,
+                  radius: const Radius.circular(0),
+                  controller: _scrollController,
                   child: ListView.separated(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
@@ -97,11 +96,11 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                         width: cardWidth(context),
                       );
                     },
-                    separatorBuilder:(context, index) => const SizedBox(width: spaceCardHorizontal),
+                    separatorBuilder: (context, index) => const SizedBox(width: spaceCardHorizontal),
                   ),
                 ),
               ),
-              // const SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -117,7 +116,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
         else
           const SizedBox(
             height: 200,
-            child: Center(child: Text('No special offers available')),
+            child: Center(child: Text('Something went wrong :(')),
           )
       ],
     );

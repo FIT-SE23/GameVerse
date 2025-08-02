@@ -5,7 +5,8 @@ class StatusCard extends StatelessWidget {
   final String label;
   final String value;
 
-  const StatusCard({super.key, 
+  const StatusCard({
+    super.key,
     required this.icon,
     required this.label,
     required this.value,

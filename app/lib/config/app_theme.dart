@@ -155,9 +155,9 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: DarkThemeColors.text, letterSpacing: 0.25),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: DarkThemeColors.text, letterSpacing: 0.25),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: DarkThemeColors.text, letterSpacing: 0.25),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: DarkThemeColors.text, letterSpacing: 0.25),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: DarkThemeColors.text, letterSpacing: 0.25),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: DarkThemeColors.text, letterSpacing: 0.25),
       
       titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: DarkThemeColors.text, letterSpacing: 0.25),
       titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DarkThemeColors.text, letterSpacing: 0.25),
@@ -283,9 +283,9 @@ class AppTheme {
     
     // Text theme
     textTheme: const TextTheme(
-      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: LightThemeColors.text, letterSpacing: 0.25),
-      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: LightThemeColors.text, letterSpacing: 0.25),
-      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: LightThemeColors.text, letterSpacing: 0.25),
+      displayLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: LightThemeColors.text, letterSpacing: 0.25),
+      displayMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: LightThemeColors.text, letterSpacing: 0.25),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: LightThemeColors.text, letterSpacing: 0.25),
       
       titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: LightThemeColors.text, letterSpacing: 0.25),
       titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: LightThemeColors.text, letterSpacing: 0.25),

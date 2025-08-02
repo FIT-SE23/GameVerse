@@ -53,4 +53,24 @@ void main() async {
       ),
     );
   }
+  if (true) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data.toString();
+
+    print(
+      await addGameWithStatus(
+        token,
+        "d8915c91-71e6-4a45-84de-a12d0256ffc2",
+        "60ce4bab-c05d-4d71-9f4a-028f545c6cb0",
+        "In cart",
+      ),
+    );
+    print(await listGamesInCart(token, "d8915c91-71e6-4a45-84de-a12d0256ffc2"));
+    print(
+      await listGamesInLibraryOrWishlist(
+        "d8915c91-71e6-4a45-84de-a12d0256ffc2",
+        "In library",
+      ),
+    );
+  }
 }

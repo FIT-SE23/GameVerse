@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/ui/home/view_model/home_viewmodel.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
-import 'package:gameverse/ui/game_detail/view_model/game_detail_viewmodel.dart';
+import 'package:gameverse/ui/game_detail/view_model/game_details_viewmodel.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
 import 'package:gameverse/ui/profile/view_model/profile_viewmodel.dart';
 import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
@@ -42,8 +42,8 @@ List<SingleChildWidget> appProviders() {
         gameRepository: context.read<GameRepository>(),
       ),
     ),
-    ChangeNotifierProvider<GameDetailViewModel>(
-      create: (context) => GameDetailViewModel(
+    ChangeNotifierProvider<GameDetailsViewModel>(
+      create: (context) => GameDetailsViewModel(
         gameRepository: context.read<GameRepository>(),
       ),
     ),

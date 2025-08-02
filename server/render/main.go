@@ -51,6 +51,81 @@ func main() {
 	e.PATCH("/user/:id", func(c echo.Context) error {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
 	})
+	e.GET("/user/:id/library", func(c echo.Context) error {
+		userid := c.Param("id")
+		return getGamesWithStatus(c, client, userid, "In library")
+	})
+	e.GET("/user/:id/wishlist", func(c echo.Context) error {
+		userid := c.Param("id")
+		return getGamesWithStatus(c, client, userid, "In wishlist")
+	})
+	e.POST("/user/cart", func(c echo.Context) error {
+		token := c.FormValue("token")
+		err := verifyUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+
+		userid := c.FormValue("userid")
+		return getGamesWithStatus(c, client, userid, "In cart")
+	})
+
+	e.POST("/addtolibrary", func(c echo.Context) error {
+		token := c.FormValue("token")
+		err := verifyUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+
+		userid := c.FormValue("userid")
+		gameid := c.FormValue("gameid")
+
+		userGame := map[string]string{
+			"userid": userid,
+			"gameid": gameid,
+			"status": "In library",
+		}
+
+		return addGameWithStatus(c, client, userGame)
+	})
+	e.POST("/addtowishlist", func(c echo.Context) error {
+		token := c.FormValue("token")
+		err := verifyUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+
+		userid := c.FormValue("userid")
+		gameid := c.FormValue("gameid")
+		userGame := map[string]string{
+			"userid": userid,
+			"gameid": gameid,
+			"status": "In wishlist",
+		}
+
+		return addGameWithStatus(c, client, userGame)
+	})
+	e.POST("/addtocart", func(c echo.Context) error {
+		token := c.FormValue("token")
+		err := verifyUserToken(token)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+		}
+
+		userid := c.FormValue("userid")
+		gameid := c.FormValue("gameid")
+		userGame := map[string]string{
+			"userid": userid,
+			"gameid": gameid,
+			"status": "In cart",
+		}
+
+		return addGameWithStatus(c, client, userGame)
+	})
 
 	e.POST("/game", func(c echo.Context) error {
 		return addGame(c, client, bucketId)
