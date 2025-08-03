@@ -9,33 +9,48 @@ class Game {
   final String? publisherid;
   final String? name;
   final String? description;
+  final double? price;
+  final int? upvote;
   final List<Category>? categories;
   final List<Resource>? resources;
 
-  const Game({this.gameid, this.publisherid, this.name, this.description, this.categories, this.resources});
+  const Game({
+    this.gameid,
+    this.publisherid,
+    this.name,
+    this.description,
+    this.categories,
+    this.resources,
+    this.price,
+    this.upvote,
+  });
 
   factory Game.fromJson(Map<String, dynamic> json) {
     final gameid = json["gameid"] as String?;
     final publisherid = json["publisherid"] as String?;
     final name = json["name"] as String?;
     final description = json["description"] as String?;
+    final price = json["price"]?.toDouble();
+    final upvote = json["upvote"]?.toInt();
     final categories = <Category>[];
-	for (var category in json["Category"] as List<dynamic>) {
-		categories.add(Category.fromJson(category as Map<String, dynamic>));
-	}
+    for (var category in json["Category"] as List<dynamic>) {
+      categories.add(Category.fromJson(category as Map<String, dynamic>));
+    }
 
     final resources = <Resource>[];
-	for (var resource in json["Resource"] as List<dynamic>) {
-		resources.add(Resource.fromJson(resource as Map<String, dynamic>));
-	}
+    for (var resource in json["Resource"] as List<dynamic>) {
+      resources.add(Resource.fromJson(resource as Map<String, dynamic>));
+    }
 
     return Game(
       gameid: gameid,
       publisherid: publisherid,
       name: name,
       description: description,
-	  categories: categories,
-	  resources: resources,
+      price: price,
+      upvote: upvote,
+      categories: categories,
+      resources: resources,
     );
   }
 
@@ -49,8 +64,14 @@ class Game {
         (this.name ?? "\"\"") +
         ", description: " +
         (this.description ?? "\"\"") +
+        ", price: " +
+        this.price.toString() +
+        ", upvote: " +
+        this.upvote.toString() +
         ", categories: " +
-        (this.categories.toString() ?? "\"\"") +
+        this.categories.toString() +
+        ", resources: " +
+        this.resources.toString() +
         "}";
   }
 }
@@ -96,7 +117,7 @@ Future<Response> addGame(
     if (err is Response) return err;
     return Response.fromJson(400, {
       'message': 'File processing error: ${err.toString()}',
-      'return': null
+      'return': null,
     });
   }
 
@@ -119,7 +140,10 @@ Future<Response> updateGame({
   List<String>? medias,
   List<String>? exes,
 }) async {
-  final request = http.MultipartRequest('PATCH', Uri.parse(serverURL + 'game/$gameId'),);
+  final request = http.MultipartRequest(
+    'PATCH',
+    Uri.parse(serverURL + 'game/$gameId'),
+  );
 
   if (name != null) {
     request.fields['gamename'] = name;
@@ -131,8 +155,12 @@ Future<Response> updateGame({
     request.fields['categories'] = categories;
   }
   if (resourceids != null && resourceids.isNotEmpty) {
-    final validResourceIDs = resourceids.map((id) => id.trim()).where((id) => id.isNotEmpty).toList();
-        
+    final validResourceIDs =
+        resourceids
+            .map((id) => id.trim())
+            .where((id) => id.isNotEmpty)
+            .toList();
+
     if (validResourceIDs.isNotEmpty) {
       request.fields['resourceids'] = jsonEncode(validResourceIDs);
     }
@@ -146,7 +174,7 @@ Future<Response> updateGame({
     if (err is Response) return err;
     return Response.fromJson(400, {
       'message': 'File processing error: ${err.toString()}',
-      'return': null
+      'return': null,
     });
   }
 
@@ -202,12 +230,12 @@ Future<Response> listGames(String gamename) async {
     jsonBody as Map<String, dynamic>,
   );
 
-  final users = <Game>[];
-  for (var user in response.data as List<dynamic>) {
-    users.add(Game.fromJson(user as Map<String, dynamic>));
+  final games = <Game>[];
+  for (var game in response.data as List<dynamic>) {
+    games.add(Game.fromJson(game as Map<String, dynamic>));
   }
 
-  return Response(code: response.code, message: response.message, data: users);
+  return Response(code: response.code, message: response.message, data: games);
 }
 
 class Category {
@@ -233,9 +261,9 @@ class Category {
   String toString() {
     return "Category {categoryid: " +
         (this.categoryid ?? "\"\"") +
-        ", publisherid: " +
-        (this.categoryName ?? "\"\"") +
         ", name: " +
+        (this.categoryName ?? "\"\"") +
+        ", sensitive: " +
         this.isSensitive.toString() +
         "}";
   }
@@ -263,7 +291,6 @@ class Resource {
   final String? url;
   final String? type;
 
-
   const Resource({this.resourceid, this.userid, this.url, this.type});
 
   factory Resource.fromJson(Map<String, dynamic> json) {
@@ -276,7 +303,7 @@ class Resource {
       resourceid: resourceid,
       userid: userid,
       url: url,
-	  type: type,
+      type: type,
     );
   }
 

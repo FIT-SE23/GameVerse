@@ -83,7 +83,6 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 	var toDelete []string
 
 	rep, _, err := client.From("Resource").Select("resourceid, url", "", false).In("resourceid", resourceIDs).ExecuteString()
-
 	if err != nil {
 		fmt.Println("Error: Could not fetch resource data:", err)
 		return resourceIDs
@@ -115,7 +114,7 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 			errorResources = append(errorResources, resID)
 			continue
 		}
-		
+
 		pathWithQuery := urlStr[pathIndex+len(prefix):]
 		filePath := pathWithQuery
 		if queryIndex := strings.Index(pathWithQuery, "?"); queryIndex != -1 {
@@ -202,7 +201,7 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	
+
 	var knownCategories []map[string]any
 	err = json.Unmarshal([]byte(rep), &knownCategories)
 	if err != nil {
@@ -256,7 +255,7 @@ func getGame(c echo.Context, client *supabase.Client) error {
 	// userid := c.Param("id")
 
 	// TODO: check game status if user already signed in
-	rep, _, err := client.From("Game").Select("publisherid, name, description, Category(categoryname), Resource(url, type)", "", false).Eq("gameid", gameID).ExecuteString()
+	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Eq("gameid", gameID).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -271,7 +270,7 @@ func getGame(c echo.Context, client *supabase.Client) error {
 
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
-	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url)", "", false).Like("name", "%"+gamename+"%").ExecuteString()
+	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Like("name", "%"+gamename+"%").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -324,24 +323,24 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	if catsRaw != "" {
 		newCats := slices.DeleteFunc(strings.Split(catsRaw, ","), func(s string) bool { return strings.TrimSpace(s) == "" })
 		_, _, _ = client.From("Game_Category").Delete("", "").Eq("gameid", gameID).ExecuteString()
-		
+
 		if len(newCats) > 0 {
 			rep, _, err := client.From("Category").Select("", "", false).ExecuteString()
 			if err != nil {
 				return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch categories!", err.Error())
 			}
-			
+
 			var knownCategories []map[string]any
 			err = json.Unmarshal([]byte(rep), &knownCategories)
 			if err != nil {
 				return jsonResponse(c, http.StatusInternalServerError, "Failed to parse categories!", err.Error())
 			}
-			
+
 			errCat := []string{}
-			
+
 			for _, category := range newCats {
 				categoryName := strings.TrimSpace(category)
-				index := slices.IndexFunc(knownCategories, func(knownCategory map[string]any) bool {return knownCategory["categoryname"] == categoryName})
+				index := slices.IndexFunc(knownCategories, func(knownCategory map[string]any) bool { return knownCategory["categoryname"] == categoryName })
 				if index == -1 {
 					errCat = append(errCat, categoryName)
 					continue
@@ -351,7 +350,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 					"gameid":     gameID,
 					"categoryid": knownCategories[index]["categoryid"],
 				}
-				
+
 				_, _, err := client.From("Game_Category").Insert(pair, true, "", "", "").ExecuteString()
 				if err != nil {
 					errCat = append(errCat, categoryName)
@@ -366,7 +365,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 
 	replaceRaw := c.FormValue("resourceids")
 	var toDelete []string
-	
+
 	if replaceRaw != "" {
 		err := json.Unmarshal([]byte(replaceRaw), &toDelete)
 		if err != nil {
@@ -380,12 +379,12 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 			} else {
 				var gameResources []map[string]string
 				json.Unmarshal([]byte(rep), &gameResources)
-				
+
 				toDelete := make([]string, 0, len(gameResources))
 				for _, res := range gameResources {
 					toDelete = append(toDelete, res["resourceid"])
 				}
-				
+
 				if len(toDelete) > 0 {
 					failed := deleteResources(client, bucketId, toDelete)
 					if len(failed) > 0 {
@@ -425,7 +424,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 			}
 		}
 	}
-	
+
 	if len(errorReport) > 0 {
 		return jsonResponse(c, http.StatusPartialContent, "Some errors occur", errorReport)
 	}
