@@ -5,10 +5,8 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"log"
 
 	"github.com/labstack/echo/v4"
-	"github.com/joho/godotenv"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -27,11 +25,6 @@ func jsonResponse(c echo.Context, code int, message string, returnVal any) error
 }
 
 func main() {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
-
 	supabaseURL := os.Getenv("SUPABASE_URL")
 	supabaseKEY := os.Getenv("SUPABASE_KEY")
 	client, err := supabase.NewClient(supabaseURL, supabaseKEY, nil)
