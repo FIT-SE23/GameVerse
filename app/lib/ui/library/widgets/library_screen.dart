@@ -441,7 +441,7 @@ class _GameListTile extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => context.push('/game-details/${game.appId}'),
+        onTap: () => context.push('/game-details/${game.gameId}'),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -526,10 +526,10 @@ class _GameListTile extends StatelessWidget {
                   final libraryViewModel = Provider.of<LibraryViewModel>(context, listen: false);
                   switch (value) {
                     case 'favorite':
-                      libraryViewModel.toggleFavorite(game.appId);
+                      libraryViewModel.toggleFavorite(game.gameId);
                       break;
                     case 'uninstall':
-                      libraryViewModel.toggleInstalled(game.appId);
+                      libraryViewModel.toggleInstalled(game.gameId);
                       break;
                   }
                 },

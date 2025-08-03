@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameModel {
 
- String get appId; String get name; int get recommended; String get briefDescription; String get description; String get requirements; String get headerImage; List<String>? get screenshots; Map<String, dynamic>? get price; List<String> get categoriesID;// Sale related fields
+ String get gameId; String get name; int get recommended; String get briefDescription; String get description; String get requirements; String get headerImage; List<String>? get screenshots; Map<String, dynamic>? get price; List<String> get categoriesID;// Sale related fields
  bool? get isSale; double? get discountPercent; DateTime? get saleStartDate; DateTime? get saleEndDate;// Field for User only
  bool get isOwned; bool get installed; bool get favorite; double? get playtimeHours;
 /// Create a copy of GameModel
@@ -31,16 +31,16 @@ $GameModelCopyWith<GameModel> get copyWith => _$GameModelCopyWithImpl<GameModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.appId, appId) || other.appId == appId)&&(identical(other.name, name) || other.name == name)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&const DeepCollectionEquality().equals(other.screenshots, screenshots)&&const DeepCollectionEquality().equals(other.price, price)&&const DeepCollectionEquality().equals(other.categoriesID, categoriesID)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.installed, installed) || other.installed == installed)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.name, name) || other.name == name)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&const DeepCollectionEquality().equals(other.screenshots, screenshots)&&const DeepCollectionEquality().equals(other.price, price)&&const DeepCollectionEquality().equals(other.categoriesID, categoriesID)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.installed, installed) || other.installed == installed)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,appId,name,recommended,briefDescription,description,requirements,headerImage,const DeepCollectionEquality().hash(screenshots),const DeepCollectionEquality().hash(price),const DeepCollectionEquality().hash(categoriesID),isSale,discountPercent,saleStartDate,saleEndDate,isOwned,installed,favorite,playtimeHours);
+int get hashCode => Object.hash(runtimeType,gameId,name,recommended,briefDescription,description,requirements,headerImage,const DeepCollectionEquality().hash(screenshots),const DeepCollectionEquality().hash(price),const DeepCollectionEquality().hash(categoriesID),isSale,discountPercent,saleStartDate,saleEndDate,isOwned,installed,favorite,playtimeHours);
 
 @override
 String toString() {
-  return 'GameModel(appId: $appId, name: $name, recommended: $recommended, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, screenshots: $screenshots, price: $price, categoriesID: $categoriesID, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, isOwned: $isOwned, installed: $installed, favorite: $favorite, playtimeHours: $playtimeHours)';
+  return 'GameModel(appId: $gameId, name: $name, recommended: $recommended, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, screenshots: $screenshots, price: $price, categoriesID: $categoriesID, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, isOwned: $isOwned, installed: $installed, favorite: $favorite, playtimeHours: $playtimeHours)';
 }
 
 
@@ -70,7 +70,7 @@ class _$GameModelCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? appId = null,Object? name = null,Object? recommended = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? screenshots = freezed,Object? price = freezed,Object? categoriesID = null,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? isOwned = null,Object? installed = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
   return _then(_self.copyWith(
-appId: null == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
+appId: null == appId ? _self.gameId : appId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
 as int,briefDescription: null == briefDescription ? _self.briefDescription : briefDescription // ignore: cast_nullable_to_non_nullable
@@ -99,10 +99,10 @@ as double?,
 @JsonSerializable()
 
 class _GameModel implements GameModel {
-  const _GameModel({required this.appId, required this.name, required this.recommended, required this.briefDescription, required this.description, required this.requirements, required this.headerImage, final  List<String>? screenshots, final  Map<String, dynamic>? price, required final  List<String> categoriesID, this.isSale, this.discountPercent, this.saleStartDate, this.saleEndDate, this.isOwned = false, this.installed = false, this.favorite = false, this.playtimeHours}): _screenshots = screenshots,_price = price,_categoriesID = categoriesID;
+  const _GameModel({required this.gameId, required this.name, required this.recommended, required this.briefDescription, required this.description, required this.requirements, required this.headerImage, final  List<String>? screenshots, final  Map<String, dynamic>? price, required final  List<String> categoriesID, this.isSale, this.discountPercent, this.saleStartDate, this.saleEndDate, this.isOwned = false, this.installed = false, this.favorite = false, this.playtimeHours}): _screenshots = screenshots,_price = price,_categoriesID = categoriesID;
   factory _GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
 
-@override final  String appId;
+@override final  String gameId;
 @override final  String name;
 @override final  int recommended;
 @override final  String briefDescription;
@@ -158,16 +158,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.appId, appId) || other.appId == appId)&&(identical(other.name, name) || other.name == name)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&const DeepCollectionEquality().equals(other._screenshots, _screenshots)&&const DeepCollectionEquality().equals(other._price, _price)&&const DeepCollectionEquality().equals(other._categoriesID, _categoriesID)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.installed, installed) || other.installed == installed)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.name, name) || other.name == name)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&const DeepCollectionEquality().equals(other._screenshots, _screenshots)&&const DeepCollectionEquality().equals(other._price, _price)&&const DeepCollectionEquality().equals(other._categoriesID, _categoriesID)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.installed, installed) || other.installed == installed)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,appId,name,recommended,briefDescription,description,requirements,headerImage,const DeepCollectionEquality().hash(_screenshots),const DeepCollectionEquality().hash(_price),const DeepCollectionEquality().hash(_categoriesID),isSale,discountPercent,saleStartDate,saleEndDate,isOwned,installed,favorite,playtimeHours);
+int get hashCode => Object.hash(runtimeType,gameId,name,recommended,briefDescription,description,requirements,headerImage,const DeepCollectionEquality().hash(_screenshots),const DeepCollectionEquality().hash(_price),const DeepCollectionEquality().hash(_categoriesID),isSale,discountPercent,saleStartDate,saleEndDate,isOwned,installed,favorite,playtimeHours);
 
 @override
 String toString() {
-  return 'GameModel(appId: $appId, name: $name, recommended: $recommended, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, screenshots: $screenshots, price: $price, categoriesID: $categoriesID, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, isOwned: $isOwned, installed: $installed, favorite: $favorite, playtimeHours: $playtimeHours)';
+  return 'GameModel(appId: $gameId, name: $name, recommended: $recommended, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, screenshots: $screenshots, price: $price, categoriesID: $categoriesID, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, isOwned: $isOwned, installed: $installed, favorite: $favorite, playtimeHours: $playtimeHours)';
 }
 
 
@@ -197,7 +197,7 @@ class __$GameModelCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? appId = null,Object? name = null,Object? recommended = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? screenshots = freezed,Object? price = freezed,Object? categoriesID = null,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? isOwned = null,Object? installed = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
   return _then(_GameModel(
-appId: null == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
+gameId: null == appId ? _self.gameId : appId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
 as int,briefDescription: null == briefDescription ? _self.briefDescription : briefDescription // ignore: cast_nullable_to_non_nullable

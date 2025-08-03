@@ -40,7 +40,7 @@ class LibraryViewModel extends ChangeNotifier {
       _games.where((game) => game.installed).toList();
 
   List<GameModel> get favoriteGames => 
-      _games.where((game) => _isFavorite(game.appId)).toList();
+      _games.where((game) => _isFavorite(game.gameId)).toList();
 
   List<GameModel> get recentGames => 
       _games.where((game) => game.playtimeHours != null && game.playtimeHours! > 0)
@@ -107,7 +107,7 @@ class LibraryViewModel extends ChangeNotifier {
   }
 
   void toggleInstalled(String gameId) {
-    final gameIndex = _games.indexWhere((game) => game.appId == gameId);
+    final gameIndex = _games.indexWhere((game) => game.gameId == gameId);
     if (gameIndex != -1) {
       _games[gameIndex] = _games[gameIndex].copyWith(
         installed: !_games[gameIndex].installed,

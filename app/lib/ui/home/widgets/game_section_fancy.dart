@@ -170,7 +170,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                                   selectedIndex: currentGameIndex,
                                   onSelect: (index) {
                                     if (index == currentGameIndex) {
-                                      context.push('/game-details/${widget.gameList[index].appId}');
+                                      context.push('/game-details/${widget.gameList[index].gameId}');
                                     } else {
                                       setState(() => currentGameIndex = index);
                                     }

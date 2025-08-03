@@ -37,7 +37,7 @@ class GameCard extends StatelessWidget {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
-          context.push('/game-details/${game.appId}');
+          context.push('/game-details/${game.gameId}');
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

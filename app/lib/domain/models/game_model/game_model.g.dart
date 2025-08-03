@@ -7,7 +7,7 @@ part of 'game_model.dart';
 // **************************************************************************
 
 _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
-  appId: json['appId'] as String,
+  gameId: json['gameid'] as String,
   name: json['name'] as String,
   recommended: (json['recommended'] as num).toInt(),
   briefDescription: json['briefDescription'] as String,
@@ -37,7 +37,7 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
 
 Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
     <String, dynamic>{
-      'appId': instance.appId,
+      'appId': instance.gameId,
       'name': instance.name,
       'recommended': instance.recommended,
       'briefDescription': instance.briefDescription,

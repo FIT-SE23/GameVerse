@@ -210,7 +210,7 @@ class _GameForumCard extends StatelessWidget {
       elevation: 2,
       child: InkWell(
         onTap: () {
-          context.push('/forum-posts/${game.appId}/${Uri.encodeComponent(game.name)}');
+          context.push('/forum-posts/${game.gameId}/${Uri.encodeComponent(game.name)}');
         },
         child: SizedBox(
           height: 120,
