@@ -221,15 +221,13 @@ Future<Response> getGame(String gameid) async {
 Future<Response> listGames(
   String gamename,
   int sortByReleaseDate,
-  /*
   int sortByUpvote,
   int sortByPrice,
-  */
 ) async {
   final raw = await http.get(
     Uri.parse(
       serverURL +
-          "search?entity=game&gamename=$gamename&date=$sortByReleaseDate",
+          "search?entity=game&gamename=$gamename&date=$sortByReleaseDate&upvote=$sortByUpvote&price=$sortByPrice",
     ),
   );
 
@@ -252,6 +250,19 @@ Future<Response> listGames(
   }
 
   return Response(code: response.code, message: response.message, data: games);
+}
+
+Future<Response> upvoteGame(String gameId, int incr) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "upvote/game"),
+    body: <String, String>{"gameid": gameId, "incr": incr.toString()},
+  );
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(await raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
 }
 
 class Category {

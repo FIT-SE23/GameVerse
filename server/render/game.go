@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"mime/multipart"
@@ -272,10 +273,16 @@ func getGame(c echo.Context, client *supabase.Client) error {
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortByReleaseDate := c.QueryParam("date")
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Like("name", "%"+gamename+"%")
+	sortByUpvote := c.QueryParam("upvote")
+	sortByPrice := c.QueryParam("price")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%")
 
 	if sortByReleaseDate == "1" {
 		filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false})
+	}
+
+	if sortByUpvote == "1" {
+		filter.Order("upvote", &postgrest.OrderOpts{Ascending: false})
 	}
 
 	rep, _, err := filter.ExecuteString()
@@ -286,6 +293,34 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	err = json.Unmarshal([]byte(rep), &games)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	if sortByPrice == "1" {
+		slices.SortFunc(games, func(a map[string]any, b map[string]any) int {
+			var priceA float64 = 0
+			var priceB float64 = 0
+			switch price := a["price"].(type) {
+			case float64:
+				priceA = price
+			default:
+				priceA = -1
+			}
+			switch price := b["price"].(type) {
+			case float64:
+				priceB = price
+			default:
+				priceB = -1
+			}
+
+			/*
+				if a["Game_Sale"] == nil {
+				}
+			*/
+
+			return cmp.Compare(priceA, priceB)
+		})
+		fmt.Println(games[0]["Game_Sale"], games[0]["price"])
+		filter.Order("price", &postgrest.OrderOpts{Ascending: true})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", games)
@@ -438,4 +473,16 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	}
 
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func upvoteGame(c echo.Context, client *supabase.Client) error {
+	incr := c.FormValue("incr")
+	gameId := c.FormValue("gameid")
+	params := map[string]string{
+		"incr": incr,
+		"id":   gameId,
+	}
+	fmt.Println(params)
+	resp := client.Rpc("gameupvote", "", params)
+	return jsonResponse(c, http.StatusOK, "", resp)
 }

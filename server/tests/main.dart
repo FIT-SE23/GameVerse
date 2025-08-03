@@ -94,7 +94,15 @@ void main() async {
     );
   }
 
+  if (false) {
+    print(await listGames("Gamer Simulator 2", 1, 1, 1));
+  }
+
+  if (false) {
+    print(await listGames("Gamer Simulator 2", 1, 1, 1));
+  }
+
   if (true) {
-    print(await listGames("Gamer Simulator 2", 1));
+    print(await upvoteGame("60ce4bab-c05d-4d71-9f4a-028f545c6cb0", 123));
   }
 }
