@@ -30,7 +30,7 @@ class GameRepository {
         if (data['featured_win'] != null) {
           for (var item in data['featured_win']) {
             games.add(GameModel(
-              appId: item['id'].toString(),
+              gameId: item['id'].toString(),
               name: item['name'] ?? 'Unknown Game',
               recommended: item['recommended'] ?? 0,
               briefDescription: item['brief_description'] ?? '',
@@ -54,7 +54,7 @@ class GameRepository {
         if (data['specials'] != null) {
           for (var item in data['specials']) {
             games.add(GameModel(
-              appId: item['id'].toString(),
+              gameId: item['id'].toString(),
               name: item['name'] ?? 'Special Offer',
               recommended: item['recommended'] ?? 0,
               briefDescription: item['brief_description'] ?? '',
@@ -92,22 +92,24 @@ class GameRepository {
 
   Future<GameModel?> getGameDetails(String gameId) async {
     await Future.delayed(const Duration(milliseconds: 300));
+
+
     
     // First check in featured games
     final featuredGames = await getFeaturedGames();
     final featuredGame = featuredGames.firstWhere(
-      (game) => game.appId == gameId,
+      (game) => game.gameId == gameId,
       orElse: () => _createDetailedMockGame(gameId),
     );
     
-    if (featuredGame.appId == gameId) {
+    if (featuredGame.gameId == gameId) {
       return featuredGame;
     }
     
     // Check in owned games
     final ownedGames = await getOwnedGames('user');
     try {
-      return ownedGames.firstWhere((game) => game.appId == gameId);
+      return ownedGames.firstWhere((game) => game.gameId == gameId);
     } catch (e) {
       // Return detailed mock game if not found
       return _createDetailedMockGame(gameId);
@@ -135,7 +137,7 @@ class GameRepository {
   List<GameModel> _getMockFeaturedGames() {
     return [
       GameModel(
-        appId: '1',
+        gameId: '1',
         name: 'Cyberpunk 2077',
         recommended: 95,
         briefDescription: 'An open-world, action-adventure story set in Night City.',
@@ -158,7 +160,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: '2',
+        gameId: '2',
         name: 'Red Dead Redemption 2',
         recommended: 97,
         briefDescription: 'An epic tale of life in America\'s unforgiving heartland.',
@@ -177,7 +179,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: '3',
+        gameId: '3',
         name: 'The Witcher 3: Wild Hunt',
         recommended: 98,
         briefDescription: 'The most awarded game of a generation is now enhanced for the next!',
@@ -199,7 +201,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: '4',
+        gameId: '4',
         name: 'Grand Theft Auto V',
         recommended: 94,
         briefDescription: 'Grand Theft Auto V for PC offers players the option to explore the award-winning world of Los Santos and Blaine County.',
@@ -223,7 +225,7 @@ class GameRepository {
   List<GameModel> _getMockOwnedGames() {
     return [
       GameModel(
-        appId: '5',
+        gameId: '5',
         name: 'Dota 2',
         recommended: 92,
         briefDescription: 'Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes.',
@@ -243,7 +245,7 @@ class GameRepository {
         playtimeHours: 156.7,
       ),
       GameModel(
-        appId: '6',
+        gameId: '6',
         name: 'Counter-Strike 2',
         recommended: 89,
         briefDescription: 'Counter-Strike 2 marks the beginning of a new chapter in the legendary FPS series.',
@@ -263,7 +265,7 @@ class GameRepository {
         playtimeHours: 234.2,
       ),
       GameModel(
-        appId: '7',
+        gameId: '7',
         name: 'Team Fortress 2',
         recommended: 88,
         briefDescription: 'Nine distinct classes provide a broad range of tactical abilities and personalities.',
@@ -283,7 +285,7 @@ class GameRepository {
         playtimeHours: 67.8,
       ),
       GameModel(
-        appId: '8',
+        gameId: '8',
         name: 'The Elder Scrolls V: Skyrim',
         recommended: 96,
         briefDescription: 'EPIC FANTASY REBORN - The next chapter in the highly anticipated Elder Scrolls saga.',
@@ -308,7 +310,7 @@ class GameRepository {
   List<GameModel> _getMockAdditionalGames() {
     return [
       GameModel(
-        appId: '9',
+        gameId: '9',
         name: 'Baldur\'s Gate 3',
         recommended: 96,
         briefDescription: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.',
@@ -326,7 +328,7 @@ class GameRepository {
         favorite: false,
       ),
       GameModel(
-        appId: '10',
+        gameId: '10',
         name: 'Call of Duty®: Modern Warfare® III',
         recommended: 82,
         briefDescription: 'In the direct sequel to the record-breaking Call of Duty®: Modern Warfare® II.',
@@ -348,7 +350,7 @@ class GameRepository {
 
   GameModel _createDetailedMockGame(String gameId) {
     return GameModel(
-      appId: gameId,
+      gameId: gameId,
       name: 'Game $gameId',
       recommended: 85,
       briefDescription: 'An exciting gaming experience that will keep you engaged for hours.',

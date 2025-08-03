@@ -151,7 +151,7 @@ class GameCardBig extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.push('/game-details/${game.appId}');
+        context.push('/game-details/${game.gameId}');
       },
       child: _rawCard(context),
     );
