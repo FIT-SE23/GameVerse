@@ -5,9 +5,7 @@ import "package:gameverse_server/controller/payment.dart";
 
 void main() async {
   if (false) {
-    print(
-      await addUser("idontknow", "helloworld@gmail.com", "nooneknow"),
-    );
+    print(await addUser("idontknow", "helloworld@gmail.com", "nooneknow"));
   }
 
   if (false) {
@@ -94,5 +92,9 @@ void main() async {
         description: "We hate game",
       ),
     );
+  }
+
+  if (true) {
+    print(await listGames("Gamer Simulator 2", 1));
   }
 }

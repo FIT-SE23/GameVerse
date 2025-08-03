@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/supabase-community/postgrest-go"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -270,7 +271,14 @@ func getGame(c echo.Context, client *supabase.Client) error {
 
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
-	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Like("name", "%"+gamename+"%").ExecuteString()
+	sortByReleaseDate := c.QueryParam("date")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Like("name", "%"+gamename+"%")
+
+	if sortByReleaseDate == "1" {
+		filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false})
+	}
+
+	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

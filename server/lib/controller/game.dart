@@ -11,6 +11,7 @@ class Game {
   final String? description;
   final double? price;
   final int? upvote;
+  final DateTime? releaseDate;
   final List<Category>? categories;
   final List<Resource>? resources;
 
@@ -23,6 +24,7 @@ class Game {
     this.resources,
     this.price,
     this.upvote,
+    this.releaseDate,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -30,8 +32,9 @@ class Game {
     final publisherid = json["publisherid"] as String?;
     final name = json["name"] as String?;
     final description = json["description"] as String?;
-    final price = json["price"]?.toDouble();
-    final upvote = json["upvote"]?.toInt();
+    final price = json["price"]?.toDouble() as double?;
+    final upvote = json["upvote"]?.toInt() as int?;
+    final releaseDate = DateTime.parse(json["releasedate"] as String? ?? "");
     final categories = <Category>[];
     for (var category in json["Category"] as List<dynamic>) {
       categories.add(Category.fromJson(category as Map<String, dynamic>));
@@ -49,6 +52,7 @@ class Game {
       description: description,
       price: price,
       upvote: upvote,
+      releaseDate: releaseDate,
       categories: categories,
       resources: resources,
     );
@@ -68,6 +72,8 @@ class Game {
         this.price.toString() +
         ", upvote: " +
         this.upvote.toString() +
+        ", releasedate: " +
+        this.releaseDate.toString() +
         ", categories: " +
         this.categories.toString() +
         ", resources: " +
@@ -212,9 +218,19 @@ Future<Response> getGame(String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(String gamename) async {
+Future<Response> listGames(
+  String gamename,
+  int sortByReleaseDate,
+  /*
+  int sortByUpvote,
+  int sortByPrice,
+  */
+) async {
   final raw = await http.get(
-    Uri.parse(serverURL + "search?entity=game&gamename=$gamename"),
+    Uri.parse(
+      serverURL +
+          "search?entity=game&gamename=$gamename&date=$sortByReleaseDate",
+    ),
   );
 
   var jsonBody;
