@@ -218,16 +218,10 @@ Future<Response> getGame(String token, String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(
-  String gamename,
-  int sortByReleaseDate,
-  int sortByUpvote,
-  int sortByPrice,
-) async {
+Future<Response> listGames(String gamename, int sortBy) async {
   final raw = await http.get(
     Uri.parse(
-      serverURL +
-          "search?entity=game&gamename=$gamename&date=$sortByReleaseDate&upvote=$sortByUpvote&price=$sortByPrice",
+      serverURL + "search?entity=game&gamename=$gamename&sortby=$sortBy",
     ),
   );
 

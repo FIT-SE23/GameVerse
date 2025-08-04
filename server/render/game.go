@@ -1,12 +1,14 @@
 package main
 
 import (
-	"cmp"
 	"encoding/json"
 	"fmt"
+	"math"
 	"mime/multipart"
 	"net/http"
 	"slices"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -272,20 +274,39 @@ func getGame(c echo.Context, client *supabase.Client) error {
 
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
-	sortByReleaseDate := c.QueryParam("date")
-	sortByUpvote := c.QueryParam("upvote")
-	sortByPrice := c.QueryParam("price")
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%")
-
-	if sortByReleaseDate == "1" {
-		filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false})
+	sortBy := c.QueryParam("sortby")
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil {
+		limit = 0
+		err = nil
 	}
 
-	if sortByUpvote == "1" {
-		filter.Order("upvote", &postgrest.OrderOpts{Ascending: false})
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").Limit(limit, "")
+
+	var rep string
+	if sortBy == "price" {
+		limit := map[string]int{
+			"lim": limit,
+		}
+		rep = client.Rpc("sortgamebyprice", "", limit)
+		var raw []map[string]string
+		err = json.Unmarshal([]byte(rep), &raw)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		gameids := []string{}
+		for _, info := range raw {
+			gameids = append(gameids, info["gameid"])
+		}
+		rep, _, err = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).ExecuteString()
+		// return jsonResponse(c, http.StatusOK, "", resp)
+	} else if sortBy == "date" {
+		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
+	} else if sortBy == "upvote" {
+		rep, _, err = filter.Order("upvote", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
 	}
 
-	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -295,32 +316,30 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	if sortByPrice == "1" {
-		slices.SortFunc(games, func(a map[string]any, b map[string]any) int {
-			var priceA float64 = 0
-			var priceB float64 = 0
-			switch price := a["price"].(type) {
-			case float64:
-				priceA = price
-			default:
-				priceA = -1
-			}
-			switch price := b["price"].(type) {
-			case float64:
-				priceB = price
-			default:
-				priceB = -1
-			}
-
-			/*
-				if a["Game_Sale"] == nil {
+	if sortBy == "price" {
+		sort.Slice(games, func(i, j int) bool {
+			priceI, ok := games[i]["price"].(float64)
+			if !ok {
+				priceI = math.MaxFloat64
+			} else if games[i]["Game_Sale"] != nil {
+				gameSale := games[i]["Game_Sale"].(map[string]any)
+				discount, ok := gameSale["discountpercentage"].(float64)
+				if ok {
+					priceI = priceI * (100 - discount) / 100
 				}
-			*/
-
-			return cmp.Compare(priceA, priceB)
+			}
+			priceJ, ok := games[j]["price"].(float64)
+			if !ok {
+				priceJ = math.MaxFloat64
+			} else if games[j]["Game_Sale"] != nil {
+				gameSale := games[j]["Game_Sale"].(map[string]any)
+				discount, ok := gameSale["discountpercentage"].(float64)
+				if ok {
+					priceJ = priceJ * (100 - discount) / 100
+				}
+			}
+			return priceI < priceJ
 		})
-		fmt.Println(games[0]["Game_Sale"], games[0]["price"])
-		filter.Order("price", &postgrest.OrderOpts{Ascending: true})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", games)
