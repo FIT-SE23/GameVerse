@@ -176,7 +176,7 @@ class SidePanel extends StatelessWidget {
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
-          runSpacing: 4,
+          runSpacing: 8,
           children: [
             for (String category in game.categoriesID)
             CategoryChip(name: category, onSelect: () {})
