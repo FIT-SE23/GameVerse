@@ -6,6 +6,8 @@ import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/ui/shared/widgets/game_card.dart';
 
+import 'package:gameverse/config/app_theme.dart';
+
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
 
@@ -46,247 +48,259 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
         builder: (context, libraryViewModel, child) {
           return SizedBox(
             height: 1600,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header Section
-                Container(
-                  padding: EdgeInsets.all(isWideScreen ? 24 : 16),
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title and Stats
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Your Library',
-                                  style: theme.textTheme.headlineMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: getNegativeSpacePadding(context),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 64),
+                  // Header Section
+                  SizedBox(
+                    // decoration: BoxDecoration(
+                    //   color: theme.cardColor,
+                    //   boxShadow: [
+                    //     BoxShadow(
+                    //       color: Colors.black.withValues(alpha: 0.1),
+                    //       blurRadius: 8,
+                    //       offset: const Offset(0, 2),
+                    //     ),
+                    //   ],
+                    // ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title and Stats
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Your Library',
+                                    style: theme.textTheme.displayLarge,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${libraryViewModel.games.length} games • ${libraryViewModel.downloadedCount} downloaded',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            // Add game button
+                            if (isWideScreen) ...[
+                              ElevatedButton.icon(
+                                onPressed: () => context.push('/add-game'),
+                                icon: const Icon(Icons.add),
+                                label: const Text('Add Game'),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${libraryViewModel.games.length} games • ${libraryViewModel.downloadedCount} downloaded',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          
-                          // Add game button
-                          if (isWideScreen) ...[
-                            ElevatedButton.icon(
-                              onPressed: () => context.push('/add-game'),
-                              icon: const Icon(Icons.add),
-                              label: const Text('Add Game'),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
                               ),
-                            ),
-                          ] else ...[
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () => context.push('/add-game'),
-                              tooltip: 'Add Game',
-                              style: IconButton.styleFrom(
-                                padding: const EdgeInsets.all(12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 24),
-                      
-                      // Search Bar
-                      Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: _searchFocusNode.hasFocus 
-                                ? theme.colorScheme.primary 
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        child: TextField(
-                          controller: _searchController,
-                          focusNode: _searchFocusNode,
-                          decoration: InputDecoration(
-                            hintText: 'Search your games...',
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: _searchController.text.isNotEmpty
-                                ? IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      libraryViewModel.searchGames('');
-                                    },
-                                  )
-                                : null,
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                          ),
-                          onChanged: libraryViewModel.searchGames,
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Tags Filter
-                      if (libraryViewModel.availableTags.isNotEmpty) ...[
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _TagChip(
-                                label: 'All',
-                                isSelected: libraryViewModel.selectedTags.isEmpty,
-                                onTap: () => libraryViewModel.clearTagFilters(),
-                              ),
-                              const SizedBox(width: 8),
-                              ...libraryViewModel.availableTags.map(
-                                (tag) => Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: _TagChip(
-                                    label: tag,
-                                    isSelected: libraryViewModel.selectedTags.contains(tag),
-                                    onTap: () => libraryViewModel.toggleTag(tag),
+                            ] else ...[
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () => context.push('/add-game'),
+                                tooltip: 'Add Game',
+                                style: IconButton.styleFrom(
+                                  padding: const EdgeInsets.all(12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                               ),
                             ],
+                          ],
+                        ),
+                        
+                        const SizedBox(height: 24),
+                        
+                        // Search Bar
+                        SizedBox(
+                          height: 48,
+                          // decoration: BoxDecoration(
+                          //   color: theme.colorScheme.surfaceContainerHighest,
+                          //   borderRadius: BorderRadius.circular(12),
+                          //   border: Border.all(
+                          //     color: _searchFocusNode.hasFocus 
+                          //         ? theme.colorScheme.primary 
+                          //         : Colors.transparent,
+                          //     width: 2,
+                          //   ),
+                          // ),
+                          child: TextField(
+                            controller: _searchController,
+                            focusNode: _searchFocusNode,
+                            decoration: InputDecoration(
+                              hintText: 'Search your games...',
+                              prefixIcon: Icon(Icons.search, color: AppTheme.currentThemeColors(theme.brightness).getText),
+                              suffixIcon: _searchController.text.isNotEmpty
+                                  ? IconButton(
+                                      icon: const Icon(Icons.clear),
+                                      onPressed: () {
+                                        _searchController.clear();
+                                        libraryViewModel.searchGames('');
+                                      },
+                                    )
+                                  : null,
+                              border: InputBorder.none,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                                borderRadius: BorderRadius.zero
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                                borderRadius: BorderRadius.zero
+                              ),
+                              filled: false,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                            ),
+                            onChanged: libraryViewModel.searchGames,
                           ),
                         ),
+                        
                         const SizedBox(height: 16),
-                      ],
-                      
-                      // Category Tabs
-                      TabBar(
-                        controller: _tabController,
-                        isScrollable: true,
-                        tabAlignment: TabAlignment.start,
-                        onTap: libraryViewModel.setActiveCategory,
-                        tabs: const [
-                          Tab(text: 'All Games'),
-                          Tab(text: 'Downloaded'),
-                          Tab(text: 'Favorites'),
-                          Tab(text: 'Recently Played'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                  
-                const SizedBox(height: 8),
-                
-                // View Mode Toggle
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          _ViewToggleButton(
-                            icon: Icons.view_list,
-                            isSelected: libraryViewModel.viewMode == LibraryViewMode.list,
-                            onTap: () => libraryViewModel.setViewMode(LibraryViewMode.list),
-                          ),
-                          _ViewToggleButton(
-                            icon: Icons.grid_view,
-                            isSelected: libraryViewModel.viewMode == LibraryViewMode.grid,
-                            onTap: () => libraryViewModel.setViewMode(LibraryViewMode.grid),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Games Content
-                Expanded(
-                  child: libraryViewModel.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : libraryViewModel.filteredGames.isEmpty
-                          ? _buildEmptyState(context)
-                          : TabBarView(
-                              controller: _tabController,
-                              physics: const NeverScrollableScrollPhysics(),
+                        
+                        // Tags Filter
+                        if (libraryViewModel.availableTags.isNotEmpty) ...[
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
                               children: [
-                                _buildGamesList(libraryViewModel.filteredGames, libraryViewModel.viewMode),
-                                _buildGamesList(libraryViewModel.downloadedGames, libraryViewModel.viewMode),
-                                _buildGamesList(libraryViewModel.favoriteGames, libraryViewModel.viewMode),
-                                _buildGamesList(libraryViewModel.recentGames, libraryViewModel.viewMode),
+                                _TagChip(
+                                  label: 'All',
+                                  isSelected: libraryViewModel.selectedTags.isEmpty,
+                                  onTap: () => libraryViewModel.clearTagFilters(),
+                                ),
+                                const SizedBox(width: 8),
+                                ...libraryViewModel.availableTags.map(
+                                  (tag) => Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: _TagChip(
+                                      label: tag,
+                                      isSelected: libraryViewModel.selectedTags.contains(tag),
+                                      onTap: () => libraryViewModel.toggleTag(tag),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                ),
-
-                // Load more button
-                if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Load more functionality can be implemented here
-                          debugPrint('Load more games');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(200, 60),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
                           ),
+                          const SizedBox(height: 16),
+                        ],
+                        
+                        // Category Tabs
+                        TabBar(
+                          controller: _tabController,
+                          isScrollable: true,
+                          tabAlignment: TabAlignment.start,
+                          onTap: libraryViewModel.setActiveCategory,
+                          tabs: const [
+                            Tab(text: 'All Games'),
+                            Tab(text: 'Downloaded'),
+                            Tab(text: 'Favorites'),
+                            Tab(text: 'Recently Played'),
+                          ],
+                          labelColor: AppTheme.currentThemeColors(theme.brightness).getCyan,
+                          unselectedLabelColor: AppTheme.currentThemeColors(theme.brightness).getText,
                         ),
-                        child: Column(
+                      ],
+                    ),
+                  ),
+                    
+                  const SizedBox(height: 8),
+                  
+                  // View Mode Toggle
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                        child: Row(
                           children: [
-                            const Text('Load More'),
-                            const SizedBox(height: 4),
-                            Icon(
-                              Icons.arrow_downward,
-                              size: 20,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                            _ViewToggleButton(
+                              icon: Icons.view_list,
+                              isSelected: libraryViewModel.viewMode == LibraryViewMode.list,
+                              onTap: () => libraryViewModel.setViewMode(LibraryViewMode.list),
+                            ),
+                            _ViewToggleButton(
+                              icon: Icons.grid_view,
+                              isSelected: libraryViewModel.viewMode == LibraryViewMode.grid,
+                              onTap: () => libraryViewModel.setViewMode(LibraryViewMode.grid),
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+              
+                  // Games Content
+                  Expanded(
+                    child: libraryViewModel.isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : libraryViewModel.filteredGames.isEmpty
+                            ? _buildEmptyState(context)
+                            : TabBarView(
+                                controller: _tabController,
+                                physics: const NeverScrollableScrollPhysics(),
+                                children: [
+                                  _buildGamesList(libraryViewModel.filteredGames, libraryViewModel.viewMode),
+                                  _buildGamesList(libraryViewModel.downloadedGames, libraryViewModel.viewMode),
+                                  _buildGamesList(libraryViewModel.favoriteGames, libraryViewModel.viewMode),
+                                  _buildGamesList(libraryViewModel.recentGames, libraryViewModel.viewMode),
+                                ],
+                              ),
+                  ),
+              
+                  // Load more button
+                  if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            // Load more functionality can be implemented here
+                            debugPrint('Load more games');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 60),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              const Text('Load More'),
+                              const SizedBox(height: 4),
+                              Icon(
+                                Icons.arrow_downward,
+                                size: 20,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -301,6 +315,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
 
     if (viewMode == LibraryViewMode.list) {
       return ListView.separated(
+        physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: games.length,
         separatorBuilder: (context, index) => const SizedBox(height: 12),
@@ -312,17 +327,19 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       
       // Using game_card.dart for grid tiles
       return GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
-          crossAxisSpacing: 16,
+          crossAxisSpacing: spaceCardHorizontal,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.8,
+          childAspectRatio: 1,
         ),
         itemCount: games.length,
         itemBuilder: (context, index) => GameCard(
           game: games[index],
-          width: cardWidth(context)
+          width: cardWidth(context),
+          showPrice: false,
         ),
       );
     }
@@ -377,7 +394,7 @@ class _ViewToggleButton extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected ? Theme.of(context).colorScheme.primary : null,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(0),
         ),
         child: Icon(
           icon,

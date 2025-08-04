@@ -35,7 +35,9 @@ class AppRouter {
         if (!isLoggedIn && 
             (state.matchedLocation == Routes.settings ||
              state.matchedLocation == Routes.profile ||
-             state.matchedLocation == Routes.transactions)) {
+             state.matchedLocation == Routes.transactions
+            //  || state.matchedLocation == Routes.library
+             )) {
           return Routes.login;
         }
         
