@@ -5,8 +5,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -79,7 +81,18 @@ func createUserToken(userid string) string {
 	return token
 }
 
-func verifyUserToken(token string) error {
+func verifyUserToken(c echo.Context) error {
+	header := c.Request().Header
+	auth := header["Authorization"]
+	if len(auth) == 0 {
+		return jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+	}
+
+	rawToken := strings.Split(auth[0], " ")
+	if len(rawToken) < 2 {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
+	}
+	token := rawToken[1]
 	raw, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		gvSecret := os.Getenv("GV_SERECT")
 		return []byte(gvSecret), nil
@@ -87,6 +100,8 @@ func verifyUserToken(token string) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(raw.Claims)
 
 	if !raw.Valid {
 		return errors.New("invalid token")

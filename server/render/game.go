@@ -476,6 +476,11 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 }
 
 func upvoteGame(c echo.Context, client *supabase.Client) error {
+	err := verifyUserToken(c)
+	if err != nil {
+		return err
+	}
+
 	incr := c.FormValue("incr")
 	gameId := c.FormValue("gameid")
 	params := map[string]string{
