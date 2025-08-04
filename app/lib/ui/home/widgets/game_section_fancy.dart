@@ -152,14 +152,14 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 4,
+                          flex: 7,
                           child: GameCardBig(game: widget.gameList[currentGameIndex], height: defaultHeight),
                         ),
                   
                         const SizedBox(width: 32),
                         
                         Expanded(
-                          flex: 1,
+                          flex: 2,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: List.generate(

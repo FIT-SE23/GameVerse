@@ -59,11 +59,10 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In wishlist")
 	})
 	e.POST("/user/cart", func(c echo.Context) error {
-		token := c.FormValue("token")
-		err := verifyUserToken(token)
+		err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+			return err
 		}
 
 		userid := c.FormValue("userid")
@@ -71,11 +70,10 @@ func main() {
 	})
 
 	e.POST("/addtolibrary", func(c echo.Context) error {
-		token := c.FormValue("token")
-		err := verifyUserToken(token)
+		err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+			return err
 		}
 
 		userid := c.FormValue("userid")
@@ -90,11 +88,10 @@ func main() {
 		return addGameWithStatus(c, client, userGame)
 	})
 	e.POST("/addtowishlist", func(c echo.Context) error {
-		token := c.FormValue("token")
-		err := verifyUserToken(token)
+		err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+			return err
 		}
 
 		userid := c.FormValue("userid")
@@ -108,11 +105,10 @@ func main() {
 		return addGameWithStatus(c, client, userGame)
 	})
 	e.POST("/addtocart", func(c echo.Context) error {
-		token := c.FormValue("token")
-		err := verifyUserToken(token)
+		err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusBadRequest, "Invalid token", "")
+			return err
 		}
 
 		userid := c.FormValue("userid")
@@ -154,15 +150,15 @@ func main() {
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported entity", "")
 	})
 
-	e.POST("category", func(c echo.Context) error {
+	e.POST("/category", func(c echo.Context) error {
 		return addCategory(c, client)
 	})
 
-	e.POST("payment", func(c echo.Context) error {
+	e.POST("/payment", func(c echo.Context) error {
 		return addPaymentMethod(c, client)
 	})
 
-	e.POST("publisher", func(c echo.Context) error {
+	e.POST("/publisher", func(c echo.Context) error {
 		return addPublisher(c, client)
 	})
 	e.GET("/publisher/:id", func(c echo.Context) error {
@@ -180,6 +176,10 @@ func main() {
 	})
 	e.GET("/checkout/return", func(c echo.Context) error {
 		return approvePayment(c)
+	})
+
+	e.POST("/upvote/game", func(c echo.Context) error {
+		return upvoteGame(c, client)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))

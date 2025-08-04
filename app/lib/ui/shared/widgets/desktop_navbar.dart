@@ -70,7 +70,7 @@ class DesktopNavbar extends StatelessWidget {
                   ),
                   onTap: () => controller.openView(),
                   onChanged: (_) => controller.openView(),
-                  leading: Icon(Icons.search, size: 20, color: AppTheme.themeColors(theme.brightness).getText),
+                  leading: Icon(Icons.search, size: 20, color: AppTheme.currentThemeColors(theme.brightness).getText),
                   hintText: 'Search games...',
                   hintStyle: const WidgetStatePropertyAll<TextStyle>(
                     TextStyle(color: Color.fromARGB(179, 150, 150, 150), fontSize: 14),
@@ -79,7 +79,7 @@ class DesktopNavbar extends StatelessWidget {
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       // borderRadius: BorderRadius.circular(0),
-                      side: BorderSide(color: AppTheme.themeColors(theme.brightness).getText, width: 1)
+                      side: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText, width: 1)
                     )
                   ),
                   backgroundColor: WidgetStateProperty.all(theme.appBarTheme.backgroundColor),
@@ -227,7 +227,7 @@ class DesktopNavbar extends StatelessWidget {
                 ),
                 child: const Text('Log In'),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: () => context.push('/signup'),
                 style: ElevatedButton.styleFrom(

@@ -77,7 +77,7 @@ void main() async {
             'Step into the heart of a medieval world where you build, manage, and protect your own village against evil creatures',
         categories: 'Indie, Open World',
         resourceids: ['c0313600-7205-40ed-857c-72136cbc80f0'],
-        medias: [
+        media: [
           'C:/Users/TPComputer/Pictures/brightness.png',
           "D:/SE/resource/game/MedivalV/OBJ/WindowShutters_Wide_Flat_Open.obj",
         ],
@@ -94,7 +94,13 @@ void main() async {
     );
   }
 
-  if (true) {
-    print(await listGames("Gamer Simulator 2", 1));
+  if (false) {
+    print(await listGames("Gamer Simulator 2", 1, 1, 1));
+  }
+
+  if (false) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data.toString();
+    print(await upvoteGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0", 123));
   }
 }

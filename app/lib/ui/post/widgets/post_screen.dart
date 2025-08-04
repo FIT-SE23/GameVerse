@@ -330,7 +330,7 @@ class _CommentCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'User ${comment.id.substring(0, 4)}',
+                'User ${comment.commentId.substring(0, 4)}',
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),

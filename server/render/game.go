@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"mime/multipart"
 	"net/http"
 	"slices"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -271,14 +274,39 @@ func getGame(c echo.Context, client *supabase.Client) error {
 
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
-	sortByReleaseDate := c.QueryParam("date")
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Like("name", "%"+gamename+"%")
-
-	if sortByReleaseDate == "1" {
-		filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false})
+	sortBy := c.QueryParam("sortby")
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil {
+		limit = 0
+		err = nil
 	}
 
-	rep, _, err := filter.ExecuteString()
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").Limit(limit, "")
+
+	var rep string
+	if sortBy == "price" {
+		limit := map[string]int{
+			"lim": limit,
+		}
+		rep = client.Rpc("sortgamebyprice", "", limit)
+		var raw []map[string]string
+		err = json.Unmarshal([]byte(rep), &raw)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		gameids := []string{}
+		for _, info := range raw {
+			gameids = append(gameids, info["gameid"])
+		}
+		rep, _, err = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).ExecuteString()
+		// return jsonResponse(c, http.StatusOK, "", resp)
+	} else if sortBy == "date" {
+		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
+	} else if sortBy == "upvote" {
+		rep, _, err = filter.Order("upvote", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
+	}
+
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -286,6 +314,32 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	err = json.Unmarshal([]byte(rep), &games)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	if sortBy == "price" {
+		sort.Slice(games, func(i, j int) bool {
+			priceI, ok := games[i]["price"].(float64)
+			if !ok {
+				priceI = math.MaxFloat64
+			} else if games[i]["Game_Sale"] != nil {
+				gameSale := games[i]["Game_Sale"].(map[string]any)
+				discount, ok := gameSale["discountpercentage"].(float64)
+				if ok {
+					priceI = priceI * (100 - discount) / 100
+				}
+			}
+			priceJ, ok := games[j]["price"].(float64)
+			if !ok {
+				priceJ = math.MaxFloat64
+			} else if games[j]["Game_Sale"] != nil {
+				gameSale := games[j]["Game_Sale"].(map[string]any)
+				discount, ok := gameSale["discountpercentage"].(float64)
+				if ok {
+					priceJ = priceJ * (100 - discount) / 100
+				}
+			}
+			return priceI < priceJ
+		})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", games)
@@ -438,4 +492,21 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	}
 
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func upvoteGame(c echo.Context, client *supabase.Client) error {
+	err := verifyUserToken(c)
+	if err != nil {
+		return err
+	}
+
+	incr := c.FormValue("incr")
+	gameId := c.FormValue("gameid")
+	params := map[string]string{
+		"incr": incr,
+		"id":   gameId,
+	}
+	fmt.Println(params)
+	resp := client.Rpc("gameupvote", "", params)
+	return jsonResponse(c, http.StatusOK, "", resp)
 }

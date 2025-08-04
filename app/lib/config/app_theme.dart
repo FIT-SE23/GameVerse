@@ -41,6 +41,13 @@ class LightThemeColors implements ThemeColors {
   @override Color get getOnCyan => onCyan;
 }
 
+ThemeData getCurrentTheme(ThemeData theme) {
+  if (theme.brightness == Brightness.dark) {
+    return AppTheme.darkTheme;
+  }
+  return AppTheme.lightTheme;
+}
+
 ThemeData getOppositeTheme(ThemeData theme) {
   if (theme.brightness == Brightness.dark) {
     return AppTheme.lightTheme;
@@ -49,11 +56,19 @@ ThemeData getOppositeTheme(ThemeData theme) {
 }
 
 class AppTheme {
-  static ThemeColors themeColors(Brightness brightness) {
+  static ThemeColors currentThemeColors(Brightness brightness) {
     if (brightness == Brightness.dark) {
       return DarkThemeColors();
     } else {
       return LightThemeColors();
+    }
+  }
+
+  static ThemeColors oppositeThemeColors(Brightness brightness) {
+    if (brightness == Brightness.dark) {
+      return LightThemeColors();
+    } else {
+      return DarkThemeColors();
     }
   }
   
@@ -117,7 +132,7 @@ class AppTheme {
         foregroundColor: DarkThemeColors.onCyan,           // Button text
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       ),
     ),
     
@@ -135,7 +150,7 @@ class AppTheme {
         foregroundColor: DarkThemeColors.cyan, // Text color
         side: const BorderSide(color: Color(0xFF444444)), // Border color
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       ),
     ),
     
@@ -245,7 +260,7 @@ class AppTheme {
         foregroundColor: LightThemeColors.onCyan,           // Button text
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       ),
     ),
     
@@ -263,7 +278,7 @@ class AppTheme {
         foregroundColor: LightThemeColors.cyan, // Text color
         side: const BorderSide(color: Color(0xFFDDDDDD)), // Border color
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       ),
     ),
     

@@ -268,7 +268,7 @@ class MobileNavbar extends StatelessWidget {
                     child: TextField(
                       autofocus: true,
                       decoration: InputDecoration(
-                        hintText: 'Search games, categories, etc...',
+                        hintText: 'Search games...',
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),

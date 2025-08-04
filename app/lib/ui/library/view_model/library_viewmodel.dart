@@ -157,7 +157,7 @@ class LibraryViewModel extends ChangeNotifier {
     if (game.installed) tags.add('Downloaded');
     if (game.playtimeHours != null && game.playtimeHours! > 50) tags.add('Favorite');
     if (game.playtimeHours != null && game.playtimeHours! > 0) tags.add('Played');
-    if (game.price == null) tags.add('Free to Play');
+    if (game.price == 0) tags.add('Free to Play');
     
     // Mock genre tags
     final gameNameLower = game.name.toLowerCase();
