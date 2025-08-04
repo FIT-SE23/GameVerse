@@ -1,18 +1,22 @@
 import 'dart:async';
-// import 'dart:math';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gameverse/utils/response.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// import 'package:url_launcher/url_launcher.dart';
-import 'package:gameverse/domain/models/user_model/user_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-enum AuthProvider { supabase, google, facebook }
+import 'package:gameverse/domain/models/user_model/user_model.dart';
+import 'package:gameverse/data/services/auth_api_client.dart';
+import 'package:gameverse/data/services/secure_storage_service.dart';
+
+
+enum AuthProvider { server, google, facebook }
 
 class AuthRepository {
-  AuthProvider? _lastUsedProvider;
+  final AuthApiClient _apiClient;
   UserModel? _currentUser;
   String? _accessToken;
+  
+  AuthRepository({AuthApiClient? apiClient}) : _apiClient = apiClient ?? AuthApiClient();
   
   // Getters
   String? get accessToken => _accessToken;
@@ -42,58 +46,68 @@ class AuthRepository {
     );
   }
 
-  // Check if user is already logged in
   Future<UserModel?> checkSession() async {
     try {
-      // Try restoring Supabase session
-      final session = supabase.auth.currentSession;
-      if (session != null) {
-        final user = supabase.auth.currentUser;
-        if (user != null) {
-          _currentUser = UserModel(
-            id: user.id,
-            name: user.userMetadata?['full_name'] ?? user.email?.split('@')[0] ?? 'User',
-            email: user.email ?? '',
-          );
-          _lastUsedProvider = AuthProvider.supabase;
-          _accessToken = session.accessToken;
-          return _currentUser;
-        }
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        return null;
       }
-      
+
+      final isValid = await _apiClient.verifyToken(token);
+      if (!isValid) {
+        await SecureStorageService.clearAuthData();
+        return null;
+      }
+
+      // Get stored user data
+      final userData = await SecureStorageService.getUserId();
+      if (userData != null) {
+        _currentUser = UserModel(
+          id: userData,
+          username: '', // Fetch from server
+          email: '', // Fetch from server
+        );
+        _accessToken = token;
+        return _currentUser;
+      }
+
       return null;
     } catch (e) {
       debugPrint('Error restoring session: $e');
+      await SecureStorageService.clearAuthData();
       return null;
     }
   }
 
-  // Login with Supabase (email/password)
-  Future<void> loginWithSupabase(String email, String password) async {
+  // Login with server
+  Future<UserModel?> loginWithServer(String email, String password) async {
     try {
-      final response = await supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-      
-      // Print debug info
-      debugPrint('Supabase login response: $response');
+      final Response result = await _apiClient.login(email, password);
+      if (result.code == 200) {
+        final token = result.data['token'] as String;
+        final userId = result.data['userid'] as String;
 
-      if (response.user != null) {
-        _currentUser = UserModel(
-          id: response.user!.id,
-          name: response.user!.userMetadata?['full_name'] ?? email.split('@')[0],
-          email: email,
+        // Save to secure storage
+        await SecureStorageService.saveAuthData(
+          token: token,
+          userId: userId,
         );
-        _lastUsedProvider = AuthProvider.supabase;
-        _accessToken = response.session?.accessToken;
+        final response = await _apiClient.getProfile(token, userId);
+        if (response.code == 200) {
+          _currentUser = UserModel.fromJson(response.data);
+          _accessToken = token;
+          return _currentUser;
+        } else {
+          debugPrint('Get profile error: ${response.message}');
+        }
       }
+      return null;
     } catch (e) {
-      debugPrint('Supabase login error: $e');
+      debugPrint('Server login error: $e');
+      rethrow;
     }
   }
 
-  // Login with Google
   Future<void> loginWithGoogle() async {
     try {
       debugPrint('Starting Google OAuth...');
@@ -110,7 +124,8 @@ class AuthRepository {
       debugPrint('Google login error: $e');
     }
   }
-  // Login with Facebook
+
+    // Login with Facebook
   Future<void> loginWithFacebook() async {
     try {
       debugPrint('Starting Facebook OAuth...');
@@ -129,71 +144,49 @@ class AuthRepository {
   }
 
   // Generic login that selects appropriate method
-  Future<void> login(AuthProvider provider, {
+  Future<UserModel?> login(AuthProvider provider, {
     String email = '',
     String password = '',
   }) async {
     switch (provider) {
-      case AuthProvider.supabase:
-        return await loginWithSupabase(email, password);
+      case AuthProvider.server:
+        return await loginWithServer(email, password);
       case AuthProvider.google:
-        return await loginWithGoogle();
+        await loginWithGoogle();
+        // Wait for deep link callback to handle session
+        return null; // Session will be handled in the callback
       case AuthProvider.facebook:
-        return await loginWithFacebook();
+        await loginWithFacebook();
+        // Wait for deep link callback to handle session
+        return null; // Session will be handled in the callback
     }
   }
 
   Future<void> logout() async {
     try {
-      switch (_lastUsedProvider) {
-        case AuthProvider.supabase:
-          await supabase.auth.signOut();
-          break;
-        case AuthProvider.google:
-          await supabase.auth.signOut();
-          break;
-        default:
-          await supabase.auth.signOut();
-          break;
-      }
-      
+      // Clear local data
       _currentUser = null;
       _accessToken = null;
-      _lastUsedProvider = null;
+      
+      // Clear secure storage
+      await SecureStorageService.clearAuthData();
+      await supabase.auth.signOut();
     } catch (e) {
       debugPrint('Logout error: $e');
     }
   }
   
-  // Register new user with Supabase
-  Future<UserModel?> register(String email, String password, String name) async {
+  // Register new user with server
+  Future<bool> register(String username, String email, String password) async {
     try {
-      final response = await supabase.auth.signUp(
-        email: email, 
-        password: password,
-        data: {'full_name': name},
-      );
-      
-      if (response.user != null) {
-        _currentUser = UserModel(
-          id: response.user!.id,
-          name: name,
-          email: email,
-        );
-        _lastUsedProvider = AuthProvider.supabase;
-        _accessToken = response.session?.accessToken;
-        return _currentUser;
+      final Response result = await _apiClient.register(username, email, password);
+      if (result.code == 200) {
+        return true;
       }
-      return null;
+      return false;
     } catch (e) {
       debugPrint('Register error: $e');
-      return null;
+      return false;
     }
   }
-  
-  // String _generateRandomString(int length) {
-  //   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  //   final random = Random.secure();
-  //   return List.generate(length, (_) => chars[random.nextInt(chars.length)]).join();
-  // }
 }

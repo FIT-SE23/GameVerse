@@ -7,7 +7,7 @@ part 'forum_model.g.dart';
 @freezed
 abstract class ForumModel with _$ForumModel {
   const factory ForumModel({
-    required String id,
+    required String forumId,
     required String relatedGameId,
     List<String>? postsId,
   }) = _ForumModel;

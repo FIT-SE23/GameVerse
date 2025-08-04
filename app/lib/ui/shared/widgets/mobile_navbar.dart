@@ -176,7 +176,7 @@ class MobileNavbar extends StatelessWidget {
                               children: [
                                 ListTile(
                                   leading: const Icon(Icons.account_circle),
-                                  title: Text(authProvider.user?.name ?? 'Guest'),
+                                  title: Text(authProvider.user?.username ?? 'Guest'),
                                   subtitle: Text(authProvider.user?.email ?? ''),
                                   onTap: () {
                                     context.push('/profile');
@@ -324,7 +324,7 @@ class MobileNavbar extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.account_circle),
-                  title: Text(authProvider.user?.name ?? 'Guest'),
+                  title: Text(authProvider.user?.username ?? 'Guest'),
                   subtitle: Text(authProvider.user?.email ?? ''),
                 ),
                 const Divider(),

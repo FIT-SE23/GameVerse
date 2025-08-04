@@ -36,7 +36,7 @@ Future<Response> addUser(String username, String email, String password) async {
   final hashPassword = sha256.convert(bytePassword).toString();
 
   final raw = await http.post(
-    Uri.parse(serverURL + "user"),
+    Uri.parse(serverURL + "user"),  
     body: <String, String>{
       "username": username,
       "email": email,

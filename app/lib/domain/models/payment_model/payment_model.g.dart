@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'comment_model.dart';
+part of 'payment_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_CommentModel _$CommentModelFromJson(Map<String, dynamic> json) =>
-    _CommentModel(
-      commentId: json['commentId'] as String,
+_PaymentModel _$PaymentModelFromJson(Map<String, dynamic> json) =>
+    _PaymentModel(
+      forumId: json['forumId'] as String,
       relatedGameId: json['relatedGameId'] as String,
       postsId:
           (json['postsId'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$CommentModelToJson(_CommentModel instance) =>
+Map<String, dynamic> _$PaymentModelToJson(_PaymentModel instance) =>
     <String, dynamic>{
-      'commentId': instance.commentId,
+      'forumId': instance.forumId,
       'relatedGameId': instance.relatedGameId,
       'postsId': instance.postsId,
     };

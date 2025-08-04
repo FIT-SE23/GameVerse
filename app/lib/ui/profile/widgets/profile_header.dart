@@ -36,7 +36,7 @@ class ProfileHeader extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add Friend'),
-        content: Text('Send friend request to ${user.name}?'),
+        content: Text('Send friend request to ${user.username}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -49,7 +49,7 @@ class ProfileHeader extends StatelessWidget {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Friend request sent to ${user.name}'),
+                  content: Text('Friend request sent to ${user.username}'),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -82,7 +82,7 @@ class ProfileHeader extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Messaging ${user.name}',
+                'Messaging ${user.username}',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -188,7 +188,7 @@ class ProfileHeader extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                user.name,
+                                user.username,
                                 style: theme.textTheme.headlineMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary,
                                   fontWeight: FontWeight.bold,

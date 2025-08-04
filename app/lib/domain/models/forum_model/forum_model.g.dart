@@ -7,7 +7,7 @@ part of 'forum_model.dart';
 // **************************************************************************
 
 _ForumModel _$ForumModelFromJson(Map<String, dynamic> json) => _ForumModel(
-  id: json['id'] as String,
+  forumId: json['forumId'] as String,
   relatedGameId: json['relatedGameId'] as String,
   postsId:
       (json['postsId'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -15,7 +15,7 @@ _ForumModel _$ForumModelFromJson(Map<String, dynamic> json) => _ForumModel(
 
 Map<String, dynamic> _$ForumModelToJson(_ForumModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'forumId': instance.forumId,
       'relatedGameId': instance.relatedGameId,
       'postsId': instance.postsId,
     };

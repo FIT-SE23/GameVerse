@@ -7,18 +7,19 @@ part of 'game_model.dart';
 // **************************************************************************
 
 _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
-  gameId: json['gameid'] as String,
+  gameId: json['gameId'] as String,
+  publisherId: json['publisherId'] as String,
   name: json['name'] as String,
   recommended: (json['recommended'] as num).toInt(),
   briefDescription: json['briefDescription'] as String,
   description: json['description'] as String,
   requirements: json['requirements'] as String,
   headerImage: json['headerImage'] as String,
+  price: (json['price'] as num).toDouble(),
   screenshots:
       (json['screenshots'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  price: json['price'] as Map<String, dynamic>?,
-  categoriesID:
-      (json['categoriesID'] as List<dynamic>).map((e) => e as String).toList(),
+  categoriesId:
+      (json['categoriesId'] as List<dynamic>).map((e) => e as String).toList(),
   isSale: json['isSale'] as bool?,
   discountPercent: (json['discountPercent'] as num?)?.toDouble(),
   saleStartDate:
@@ -37,16 +38,17 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
 
 Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
     <String, dynamic>{
-      'appId': instance.gameId,
+      'gameId': instance.gameId,
+      'publisherId': instance.publisherId,
       'name': instance.name,
       'recommended': instance.recommended,
       'briefDescription': instance.briefDescription,
       'description': instance.description,
       'requirements': instance.requirements,
       'headerImage': instance.headerImage,
-      'screenshots': instance.screenshots,
       'price': instance.price,
-      'categoriesID': instance.categoriesID,
+      'screenshots': instance.screenshots,
+      'categoriesId': instance.categoriesId,
       'isSale': instance.isSale,
       'discountPercent': instance.discountPercent,
       'saleStartDate': instance.saleStartDate?.toIso8601String(),

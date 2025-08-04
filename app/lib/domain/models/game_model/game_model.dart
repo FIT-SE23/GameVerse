@@ -7,15 +7,16 @@ part 'game_model.g.dart';
 abstract class GameModel with _$GameModel {
   const factory GameModel({
     required String gameId,
+    required String publisherId,
     required String name,
     required int recommended,
     required String briefDescription,
     required String description,
     required String requirements,
     required String headerImage,
+    required double price,
     List<String>? screenshots,
-    Map<String, dynamic>? price,
-    required List<String> categoriesID,
+    required List<String> categoriesId,
 
     // Sale related fields
     bool? isSale,
