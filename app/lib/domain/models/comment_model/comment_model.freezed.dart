@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -16,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CommentModel {
 
- String get id; String get relatedGameId; List<String>? get postsId;
+ String get commentId; String get relatedGameId; List<String>? get postsId;
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +28,16 @@ $CommentModelCopyWith<CommentModel> get copyWith => _$CommentModelCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.relatedGameId, relatedGameId) || other.relatedGameId == relatedGameId)&&const DeepCollectionEquality().equals(other.postsId, postsId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentModel&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.relatedGameId, relatedGameId) || other.relatedGameId == relatedGameId)&&const DeepCollectionEquality().equals(other.postsId, postsId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,relatedGameId,const DeepCollectionEquality().hash(postsId));
+int get hashCode => Object.hash(runtimeType,commentId,relatedGameId,const DeepCollectionEquality().hash(postsId));
 
 @override
 String toString() {
-  return 'CommentModel(id: $id, relatedGameId: $relatedGameId, postsId: $postsId)';
+  return 'CommentModel(commentId: $commentId, relatedGameId: $relatedGameId, postsId: $postsId)';
 }
 
 
@@ -49,7 +48,7 @@ abstract mixin class $CommentModelCopyWith<$Res>  {
   factory $CommentModelCopyWith(CommentModel value, $Res Function(CommentModel) _then) = _$CommentModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String relatedGameId, List<String>? postsId
+ String commentId, String relatedGameId, List<String>? postsId
 });
 
 
@@ -66,9 +65,9 @@ class _$CommentModelCopyWithImpl<$Res>
 
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? relatedGameId = null,Object? postsId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? commentId = null,Object? relatedGameId = null,Object? postsId = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+commentId: null == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
 as String,relatedGameId: null == relatedGameId ? _self.relatedGameId : relatedGameId // ignore: cast_nullable_to_non_nullable
 as String,postsId: freezed == postsId ? _self.postsId : postsId // ignore: cast_nullable_to_non_nullable
 as List<String>?,
@@ -78,14 +77,144 @@ as List<String>?,
 }
 
 
+/// Adds pattern-matching-related methods to [CommentModel].
+extension CommentModelPatterns on CommentModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CommentModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CommentModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CommentModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _CommentModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CommentModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CommentModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String commentId,  String relatedGameId,  List<String>? postsId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CommentModel() when $default != null:
+return $default(_that.commentId,_that.relatedGameId,_that.postsId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String commentId,  String relatedGameId,  List<String>? postsId)  $default,) {final _that = this;
+switch (_that) {
+case _CommentModel():
+return $default(_that.commentId,_that.relatedGameId,_that.postsId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String commentId,  String relatedGameId,  List<String>? postsId)?  $default,) {final _that = this;
+switch (_that) {
+case _CommentModel() when $default != null:
+return $default(_that.commentId,_that.relatedGameId,_that.postsId);case _:
+  return null;
+
+}
+}
+
+}
+
 /// @nodoc
 @JsonSerializable()
 
 class _CommentModel implements CommentModel {
-  const _CommentModel({required this.id, required this.relatedGameId, final  List<String>? postsId}): _postsId = postsId;
+  const _CommentModel({required this.commentId, required this.relatedGameId, final  List<String>? postsId}): _postsId = postsId;
   factory _CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);
 
-@override final  String id;
+@override final  String commentId;
 @override final  String relatedGameId;
  final  List<String>? _postsId;
 @override List<String>? get postsId {
@@ -110,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.relatedGameId, relatedGameId) || other.relatedGameId == relatedGameId)&&const DeepCollectionEquality().equals(other._postsId, _postsId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentModel&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.relatedGameId, relatedGameId) || other.relatedGameId == relatedGameId)&&const DeepCollectionEquality().equals(other._postsId, _postsId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,relatedGameId,const DeepCollectionEquality().hash(_postsId));
+int get hashCode => Object.hash(runtimeType,commentId,relatedGameId,const DeepCollectionEquality().hash(_postsId));
 
 @override
 String toString() {
-  return 'CommentModel(id: $id, relatedGameId: $relatedGameId, postsId: $postsId)';
+  return 'CommentModel(commentId: $commentId, relatedGameId: $relatedGameId, postsId: $postsId)';
 }
 
 
@@ -130,7 +259,7 @@ abstract mixin class _$CommentModelCopyWith<$Res> implements $CommentModelCopyWi
   factory _$CommentModelCopyWith(_CommentModel value, $Res Function(_CommentModel) _then) = __$CommentModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String relatedGameId, List<String>? postsId
+ String commentId, String relatedGameId, List<String>? postsId
 });
 
 
@@ -147,9 +276,9 @@ class __$CommentModelCopyWithImpl<$Res>
 
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? relatedGameId = null,Object? postsId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? commentId = null,Object? relatedGameId = null,Object? postsId = freezed,}) {
   return _then(_CommentModel(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+commentId: null == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
 as String,relatedGameId: null == relatedGameId ? _self.relatedGameId : relatedGameId // ignore: cast_nullable_to_non_nullable
 as String,postsId: freezed == postsId ? _self._postsId : postsId // ignore: cast_nullable_to_non_nullable
 as List<String>?,

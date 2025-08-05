@@ -7,11 +7,13 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 class GameCard extends StatelessWidget {
   final GameModel game;
   final double width;
+  final bool showPrice;
 
   const GameCard({
     super.key,
     required this.game,
-    required this.width
+    required this.width,
+    this.showPrice = true,
   });
 
   @override
@@ -112,13 +114,14 @@ class GameCard extends StatelessWidget {
                   ),
                   
                   const SizedBox(height: 8),
+                  if (showPrice)
                   // Price
-                  Text(
-                    game.price != null 
-                      ? '${(game.price!['final'] as int) / 100} VND' 
-                      : 'Free to Play',
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                    Text(
+                      game.price != 0 
+                        ? '${(game.price) / 100} VND' 
+                        : 'Free to Play',
+                      style: theme.textTheme.bodyMedium,
+                    ),
                 ],
               ),
             ),

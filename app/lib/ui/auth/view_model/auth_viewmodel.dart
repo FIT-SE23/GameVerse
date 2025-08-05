@@ -16,6 +16,8 @@ class AuthViewModel extends ChangeNotifier {
   
   UserModel? _user;
   UserModel? get user => _user;
+
+  bool _isRegistered = false;
   
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
@@ -46,34 +48,45 @@ class AuthViewModel extends ChangeNotifier {
       _errorMessage = '';
       notifyListeners();
 
-      await _authRepository.login(provider, email: email, password: password);
-      // No need to assign _status because deep linking will handle it
+      _user = await _authRepository.login(provider, email: email, password: password);
+      debugPrint('Login successful: $_user');
+      if (_user != null) {
+        _status = AuthStatus.authenticated;
+      } else {
+        _status = AuthStatus.unauthenticated;
+        _errorMessage = 'Login failed: Invalid credentials';
+      }
+
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = 'Login failed: $e';
-      debugPrint('Authentication error: $_errorMessage');
+      debugPrint('Authentication error: $e');
     } finally {
       notifyListeners();
     }
   }
   
   // Register new user
-  Future<void> register(String email, String password, String name) async {
+  Future<bool> register(String username, String email, String password) async {
     try {
       _status = AuthStatus.loading;
       notifyListeners();
       
-      _user = await _authRepository.register(email, password, name);
+      _isRegistered = await _authRepository.register(username, email, password);
       
-      if (_user != null) {
-        _status = AuthStatus.authenticated;
-      } else {
-        _status = AuthStatus.unauthenticated;
+      if (!_isRegistered) {
         _errorMessage = 'Registration failed: Email already exists or invalid data';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
       }
+      return true;
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = 'Registration failed: $e';
+      debugPrint('Registration failed: $e');
+      notifyListeners();
+      return false;
     } finally {
       notifyListeners();
     }

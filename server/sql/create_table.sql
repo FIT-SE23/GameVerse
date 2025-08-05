@@ -24,7 +24,7 @@ create table if not exists "Resource" (
   ResourceID uuid default gen_random_uuid() primary key,
   UserID uuid,
   URL text,
-  type text check (type = 'binary' or type = 'media' or type = 'executable'),
+  type text check (type = 'binary' or type = 'media' or type = 'media_header' or type = 'executable'),
 
   foreign key (UserID) references "User" (UserID) on delete cascade
 );

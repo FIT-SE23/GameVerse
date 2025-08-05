@@ -28,6 +28,7 @@ func getUser(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, "Invalid userid" /*err.Error()*/, "")
 	}
+	user["id"] = userid
 	return jsonResponse(c, http.StatusOK, "", user)
 }
 
@@ -44,6 +45,7 @@ func addUser(c echo.Context, client *supabase.Client) error {
 	}
 	_, _, err := client.From("User").Insert(data, false, "", "", "").ExecuteString()
 	if err != nil {
+		fmt.Println("Error inserting user:", err)
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
@@ -101,8 +103,10 @@ func verifyUserToken(c echo.Context) (string, error) {
 		return "", err
 	}
 
+	// fmt.Println(raw.Claims)
+
 	if !raw.Valid {
-		return "", errors.New("invalid token")
+		return "", errors.New("Invalid token")
 	}
 
 	claims, ok := raw.Claims.(jwt.MapClaims)
@@ -133,7 +137,12 @@ func login(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	return jsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
+	// return jsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
+	// Return the user ID and token
+	return jsonResponse(c, http.StatusOK, "", map[string]string{
+		"userid": userid["userid"],
+		"token":  createUserToken(userid["userid"]),
+	})
 }
 
 func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
@@ -152,6 +161,16 @@ func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, 
 
 func addGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
 	_, _, err := client.From("User_Game").Insert(userGame, false, "", "", "").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	// TODO: "return" field
+	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func removeGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
+	_, _, err := client.From("User_Game").Delete("", "").Eq("userid", userGame["userid"]).Eq("gameid", userGame["gameid"]).Eq("status", userGame["status"]).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

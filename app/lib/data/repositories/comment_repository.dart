@@ -19,12 +19,12 @@ class CommentRepository {
       case 'cp_post_1':
         return [
           CommentModel(
-            id: 'cp_comment_1',
+            commentId: 'cp_comment_1',
             relatedGameId: '1091500',
             postsId: ['cp_post_1'],
           ),
           CommentModel(
-            id: 'cp_comment_2',
+            commentId: 'cp_comment_2',
             relatedGameId: '1091500',
             postsId: ['cp_post_1'],
           ),
@@ -32,7 +32,7 @@ class CommentRepository {
       case 'cp_post_2':
         return [
           CommentModel(
-            id: 'cp_comment_3',
+            commentId: 'cp_comment_3',
             relatedGameId: '1091500',
             postsId: ['cp_post_2'],
           ),
@@ -40,12 +40,12 @@ class CommentRepository {
       case 'cs_post_1':
         return [
           CommentModel(
-            id: 'cs_comment_1',
+            commentId: 'cs_comment_1',
             relatedGameId: '730',
             postsId: ['cs_post_1'],
           ),
           CommentModel(
-            id: 'cs_comment_2',
+            commentId: 'cs_comment_2',
             relatedGameId: '730',
             postsId: ['cs_post_1'],
           ),
@@ -53,7 +53,7 @@ class CommentRepository {
       case 'cs_post_2':
         return [
           CommentModel(
-            id: 'cs_comment_3',
+            commentId: 'cs_comment_3',
             relatedGameId: '730',
             postsId: ['cs_post_2'],
           ),
@@ -61,12 +61,12 @@ class CommentRepository {
       case 'dota_post_1':
         return [
           CommentModel(
-            id: 'dota_comment_1',
+            commentId: 'dota_comment_1',
             relatedGameId: '570',
             postsId: ['dota_post_1'],
           ),
           CommentModel(
-            id: 'dota_comment_2',
+            commentId: 'dota_comment_2',
             relatedGameId: '570',
             postsId: ['dota_post_1'],
           ),
@@ -74,7 +74,7 @@ class CommentRepository {
       case 'dota_post_2':
         return [
           CommentModel(
-            id: 'dota_comment_3',
+            commentId: 'dota_comment_3',
             relatedGameId: '570',
             postsId: ['dota_post_2'],
           ),

@@ -13,8 +13,9 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
   upvotes: (json['upvotes'] as num).toInt(),
   forumId: json['forumId'] as String,
   authorId: json['authorId'] as String,
-  commentsId:
-      (json['commentsId'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  commentsId: (json['commentsId'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
 );
 
 Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>

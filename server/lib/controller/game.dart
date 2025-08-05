@@ -10,10 +10,11 @@ class Game {
   final String? name;
   final String? description;
   final double? price;
-  final int? upvote;
+  final int? recommend;
   final DateTime? releaseDate;
   final List<Category>? categories;
   final List<Resource>? resources;
+  final GameSale? gameSale;
 
   const Game({
     this.gameid,
@@ -23,8 +24,9 @@ class Game {
     this.categories,
     this.resources,
     this.price,
-    this.upvote,
+    this.recommend,
     this.releaseDate,
+    this.gameSale,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -33,7 +35,7 @@ class Game {
     final name = json["name"] as String?;
     final description = json["description"] as String?;
     final price = json["price"]?.toDouble() as double?;
-    final upvote = json["upvote"]?.toInt() as int?;
+    final recommend = json["recommend"]?.toInt() as int?;
     final releaseDate = DateTime.parse(json["releasedate"] as String? ?? "");
     final categories = <Category>[];
     for (var category in json["Category"] as List<dynamic>) {
@@ -45,16 +47,21 @@ class Game {
       resources.add(Resource.fromJson(resource as Map<String, dynamic>));
     }
 
+    final gameSale = GameSale.fromJson(
+      json["Game_Sale"] as Map<String, dynamic>,
+    );
+
     return Game(
       gameid: gameid,
       publisherid: publisherid,
       name: name,
       description: description,
       price: price,
-      upvote: upvote,
+      recommend: recommend,
       releaseDate: releaseDate,
       categories: categories,
       resources: resources,
+      gameSale: gameSale,
     );
   }
 
@@ -70,14 +77,16 @@ class Game {
         (this.description ?? "\"\"") +
         ", price: " +
         this.price.toString() +
-        ", upvote: " +
-        this.upvote.toString() +
+        ", recommend: " +
+        this.recommend.toString() +
         ", releasedate: " +
         this.releaseDate.toString() +
         ", categories: " +
         this.categories.toString() +
         ", resources: " +
         this.resources.toString() +
+        ", gamesale: " +
+        this.gameSale.toString() +
         "}";
   }
 }
@@ -105,6 +114,7 @@ Future<Response> addGame(
   String description,
   List<String> binaries,
   List<String> media,
+  List<String> media_header,
   List<String> exes,
   String categories,
 ) async {
@@ -118,6 +128,7 @@ Future<Response> addGame(
   try {
     await _addFiles(request, 'binary', binaries);
     await _addFiles(request, 'media', media);
+    await _addFiles(request, 'media_header', media_header);
     await _addFiles(request, 'executable', exes);
   } catch (err) {
     if (err is Response) return err;
@@ -218,16 +229,10 @@ Future<Response> getGame(String token, String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(
-  String gamename,
-  int sortByReleaseDate,
-  int sortByUpvote,
-  int sortByPrice,
-) async {
+Future<Response> listGames(String gamename, String sortBy) async {
   final raw = await http.get(
     Uri.parse(
-      serverURL +
-          "search?entity=game&gamename=$gamename&date=$sortByReleaseDate&upvote=$sortByUpvote&price=$sortByPrice",
+      serverURL + "search?entity=game&gamename=$gamename&sortby=$sortBy",
     ),
   );
 
@@ -254,7 +259,7 @@ Future<Response> listGames(
 
 Future<Response> recommendGame(String token, String gameId) async {
   final raw = await http.post(
-    Uri.parse(serverURL + "upvote/game"),
+    Uri.parse(serverURL + "recommend/game"),
     headers: <String, String>{"Authorization": "Bearer " + token},
     body: <String, String>{"gameid": gameId},
   );
@@ -366,3 +371,44 @@ Future<Response> addResource(String categoryName, bool isSensitive) async {
   return response;
 }
 */
+
+class GameSale {
+  final String? gameid;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int? discountPercentage;
+
+  const GameSale({
+    this.gameid,
+    this.startDate,
+    this.endDate,
+    this.discountPercentage,
+  });
+
+  factory GameSale.fromJson(Map<String, dynamic> json) {
+    final gameid = json["gameid"] as String?;
+    final startDate = DateTime.parse(json["startdate"] as String);
+    final endDate = DateTime.parse(json["enddate"] as String);
+    final discountPercentage = json["discountpercentage"].toInt() as int?;
+
+    return GameSale(
+      gameid: gameid,
+      startDate: startDate,
+      endDate: endDate,
+      discountPercentage: discountPercentage,
+    );
+  }
+
+  @override
+  String toString() {
+    return "GameSale {gameid: " +
+        (this.gameid ?? "\"\"") +
+        ", startdate: " +
+        this.startDate.toString() +
+        ", enddate: " +
+        this.endDate.toString() +
+        ", discountpercentage: " +
+        this.discountPercentage.toString() +
+        "}";
+  }
+}

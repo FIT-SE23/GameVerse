@@ -41,18 +41,18 @@ class _SignUpFormState extends State<SignupForm> {
       
       try {
         final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-        
-        await authViewModel.register(
+        bool isRegistered = await authViewModel.register(
+          _nameController.text.trim(),
           _emailController.text.trim(),
           _passwordController.text,
-          _nameController.text.trim(),
         );
         
         if (!mounted) return;
         
-        if (authViewModel.status == AuthStatus.authenticated) {
-          context.pop();
+        if (isRegistered) {
+          context.pushReplacement('/login');
         } else {
+          // Show error message
           _showErrorSnackBar(authViewModel.errorMessage);
         }
       } finally {
@@ -74,7 +74,7 @@ class _SignUpFormState extends State<SignupForm> {
           TextFormField(
             controller: _nameController,
             decoration: const InputDecoration(
-              labelText: 'Full Name',
+              labelText: 'User Name',
               prefixIcon: Icon(Icons.person),
             ),
             validator: (value) {

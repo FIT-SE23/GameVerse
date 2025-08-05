@@ -143,12 +143,18 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            flex: 7,
+                            flex: 8,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                GameMediaCarousel(media: <String>[]),
-                                const SizedBox(height: 32),
+                                if (viewModel.gameDetail!.media != null)
+                                  if (viewModel.gameDetail!.media!.isNotEmpty)
+                                    Column(
+                                      children: [
+                                        GameMediaCarousel(media: viewModel.gameDetail!.media!),
+                                        const SizedBox(height: 32),
+                                      ],
+                                    ),
                                 Text(
                                   'About this game',
                                   style: theme.textTheme.displayMedium
@@ -185,7 +191,7 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                           const SizedBox(width: 32),
 
                           Expanded(
-                            flex: 2,
+                            flex: 3,
                             child: SidePanel(game: viewModel.gameDetail!),
                           )
                         ],

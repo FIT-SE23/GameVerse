@@ -143,10 +143,9 @@ class TransactionService {
   }
 
   double _getGamePrice(GameModel game) {
-    if (game.price != null) {
-      return (game.price!['final'] as int) / 100.0;
-    }
-    return 0.0;
+    return game.isSale == true && game.discountPercent != null
+        ? game.price * (1 - (game.discountPercent! / 100))
+        : game.price;
   }
 
   Future<void> resetBalance() async {

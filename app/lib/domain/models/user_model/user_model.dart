@@ -8,12 +8,13 @@ part 'user_model.g.dart';
 abstract class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
-    required String name,
+    required String username,
     required String email,
-    String? avatarUrl,
+    String? avatar,
     String? bio,
     String? typeUser,
 
+    // Optional fields for user preferences
     List<String>? ownedGamesID,
     List<String>? favoriteGamesID,
     List<String>? installedGamesID,

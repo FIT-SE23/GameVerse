@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"runtime"
 
 	"github.com/labstack/echo/v4"
@@ -25,8 +24,8 @@ func jsonResponse(c echo.Context, code int, message string, returnVal any) error
 }
 
 func main() {
-	supabaseURL := os.Getenv("SUPABASE_URL")
-	supabaseKEY := os.Getenv("SUPABASE_KEY")
+	supabaseURL := "https://vvarlrikusfwrlxshmdj.supabase.co"
+	supabaseKEY := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2YXJscmlrdXNmd3JseHNobWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxNzU3OTIsImV4cCI6MjA2NTc1MTc5Mn0.aAqTNT13eh1nDTlRRUd_Nnf2tFwuwSrIBMj1iSiLgjg"
 	client, err := supabase.NewClient(supabaseURL, supabaseKEY, nil)
 	if err != nil {
 		fmt.Println("cannot initalize client", err)
@@ -68,53 +67,48 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
-	e.POST("/addtolibrary", func(c echo.Context) error {
+	e.POST("/addgameto", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return err
 		}
 
+		status := c.FormValue("list")
+		if status != "library" && status != "wishlist" && status != "cart" {
+			return jsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
+		}
+
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
 			"gameid": gameid,
-			"status": "In library",
+			"status": status,
 		}
 
 		return addGameWithStatus(c, client, userGame)
 	})
-	e.POST("/addtowishlist", func(c echo.Context) error {
+
+	e.POST("/removegamefrom", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return err
 		}
 
-		gameid := c.FormValue("gameid")
-		userGame := map[string]string{
-			"userid": userid,
-			"gameid": gameid,
-			"status": "In wishlist",
-		}
-
-		return addGameWithStatus(c, client, userGame)
-	})
-	e.POST("/addtocart", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
-		if err != nil {
-			// TODO: Redirect to login page
-			return err
+		status := c.FormValue("status")
+		if status != "In wishlist" && status != "In cart" {
+			return jsonResponse(c, http.StatusBadRequest, "Allow remove games from wishlist/cart only", "")
 		}
 
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
 			"gameid": gameid,
-			"status": "In cart",
+			"status": status,
 		}
 
-		return addGameWithStatus(c, client, userGame)
+		return removeGameWithStatus(c, client, userGame)
 	})
 
 	e.POST("/game", func(c echo.Context) error {
@@ -173,12 +167,14 @@ func main() {
 		return approvePayment(c)
 	})
 
-	e.POST("/upvote/game", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+	e.POST("/recommend/game", func(c echo.Context) error {
+		userid, err = verifyUserToken(c)
 		if err != nil {
+			// TODO: Redirect to login page
 			return err
 		}
-		return upvoteGame(c, client, userid)
+
+		return recommendGame(c, client, userid)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))

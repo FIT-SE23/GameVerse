@@ -55,17 +55,17 @@ class PayPalService {
             ],
             note: "Contact us for any questions on your order.",
             onSuccess: (Map params) {
-              print("PayPal Payment Success: $params");
+              debugPrint("PayPal Payment Success: $params");
               result = PayPalResult.success(params, amount);
               context.pop();
             },
             onError: (error) {
-              print("PayPal Payment Error: $error");
+              debugPrint("PayPal Payment Error: $error");
               result = PayPalResult.error('Payment failed: $error');
               context.pop();
             },
             onCancel: () {
-              print('PayPal Payment Cancelled');
+              debugPrint('PayPal Payment Cancelled');
               result = PayPalResult.cancelled();
               context.pop();
             },
@@ -74,7 +74,7 @@ class PayPalService {
       );
       return result ?? PayPalResult.cancelled();
     } catch (e) {
-      print('PayPal Exception: $e');
+      debugPrint('PayPal Exception: $e');
       return PayPalResult.error('Payment failed: $e');
     }
   }
