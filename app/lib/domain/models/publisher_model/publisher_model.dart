@@ -8,9 +8,9 @@ part 'publisher_model.g.dart';
 abstract class PublisherModel with _$PublisherModel {
   const factory PublisherModel({
     required String id,
-    List<String>? gamesPublishedID,
     required String description,
     required String name,
+    List<String>? gamesPublishedID,
   }) = _PublisherModel;
 
   factory PublisherModel.fromJson(Map<String, Object?> json) => 

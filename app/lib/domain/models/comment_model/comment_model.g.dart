@@ -10,8 +10,9 @@ _CommentModel _$CommentModelFromJson(Map<String, dynamic> json) =>
     _CommentModel(
       commentId: json['commentId'] as String,
       relatedGameId: json['relatedGameId'] as String,
-      postsId:
-          (json['postsId'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      postsId: (json['postsId'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$CommentModelToJson(_CommentModel instance) =>

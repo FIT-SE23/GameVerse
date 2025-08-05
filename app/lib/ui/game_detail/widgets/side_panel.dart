@@ -26,7 +26,7 @@ class SidePanel extends StatelessWidget {
         AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.network(
-            game.headerImage,
+            game.headerImage.url,
             fit: BoxFit.cover
           ),
         ),
@@ -178,8 +178,8 @@ class SidePanel extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (String category in game.categoriesId)
-            CategoryChip(name: category, onSelect: () {})
+            for (String name in game.categories.map((e) => e.name))
+              CategoryChip(name: name, onSelect: () {}),
           ]
         ),
       ],

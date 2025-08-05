@@ -46,7 +46,7 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
               left: 0,
               right: 0,
               child: Image.network(
-                viewModel.gameDetail!.headerImage,
+                viewModel.gameDetail!.headerImage.url,
                 width: double.infinity,
                 height: backgroundKeyArtHeight,
                 fit: BoxFit.cover,

@@ -40,7 +40,7 @@ class GameCardBig extends StatelessWidget {
                     width: double.infinity,
                     height: height,
                     key: ValueKey(game.headerImage),
-                    game.headerImage,
+                    game.headerImage.url,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(

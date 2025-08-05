@@ -10,21 +10,20 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: json['id'] as String,
   username: json['username'] as String,
   email: json['email'] as String,
-  avatarUrl: json['avatarUrl'] as String?,
+  avatar: json['avatar'] == null
+      ? null
+      : ResourceModel.fromJson(json['avatar'] as Map<String, dynamic>),
   bio: json['bio'] as String?,
   typeUser: json['typeUser'] as String?,
-  ownedGamesID:
-      (json['ownedGamesID'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-  favoriteGamesID:
-      (json['favoriteGamesID'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-  installedGamesID:
-      (json['installedGamesID'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+  ownedGamesID: (json['ownedGamesID'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  favoriteGamesID: (json['favoriteGamesID'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  installedGamesID: (json['installedGamesID'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -32,7 +31,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'id': instance.id,
       'username': instance.username,
       'email': instance.email,
-      'avatarUrl': instance.avatarUrl,
+      'avatar': instance.avatar,
       'bio': instance.bio,
       'typeUser': instance.typeUser,
       'ownedGamesID': instance.ownedGamesID,

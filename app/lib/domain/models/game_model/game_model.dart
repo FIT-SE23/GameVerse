@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/domain/models/resource_model/resource_model.dart';
 
 part 'game_model.freezed.dart';
 part 'game_model.g.dart';
@@ -13,16 +16,21 @@ abstract class GameModel with _$GameModel {
     required String briefDescription,
     required String description,
     required String requirements,
-    required String headerImage,
+    required ResourceModel headerImage,
     required double price,
-    List<String>? screenshots,
-    required List<String> categoriesId,
+    required List<CategoryModel> categories,
+    required List<ResourceModel>? resources,
+    required DateTime releaseDate,
 
     // Sale related fields
     bool? isSale,
     double? discountPercent,
     DateTime? saleStartDate,
     DateTime? saleEndDate,
+
+    // Download related fields
+    List<String>? binaries,
+    List<String>? exes,
 
     // Field for User only
     @Default(false) bool isOwned,

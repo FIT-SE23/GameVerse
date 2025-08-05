@@ -14,22 +14,29 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
   briefDescription: json['briefDescription'] as String,
   description: json['description'] as String,
   requirements: json['requirements'] as String,
-  headerImage: json['headerImage'] as String,
+  headerImage: ResourceModel.fromJson(
+    json['headerImage'] as Map<String, dynamic>,
+  ),
   price: (json['price'] as num).toDouble(),
-  screenshots:
-      (json['screenshots'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  categoriesId:
-      (json['categoriesId'] as List<dynamic>).map((e) => e as String).toList(),
+  categories: (json['categories'] as List<dynamic>)
+      .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  resources: (json['resources'] as List<dynamic>?)
+      ?.map((e) => ResourceModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  releaseDate: DateTime.parse(json['releaseDate'] as String),
   isSale: json['isSale'] as bool?,
   discountPercent: (json['discountPercent'] as num?)?.toDouble(),
-  saleStartDate:
-      json['saleStartDate'] == null
-          ? null
-          : DateTime.parse(json['saleStartDate'] as String),
-  saleEndDate:
-      json['saleEndDate'] == null
-          ? null
-          : DateTime.parse(json['saleEndDate'] as String),
+  saleStartDate: json['saleStartDate'] == null
+      ? null
+      : DateTime.parse(json['saleStartDate'] as String),
+  saleEndDate: json['saleEndDate'] == null
+      ? null
+      : DateTime.parse(json['saleEndDate'] as String),
+  binaries: (json['binaries'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  exes: (json['exes'] as List<dynamic>?)?.map((e) => e as String).toList(),
   isOwned: json['isOwned'] as bool? ?? false,
   installed: json['installed'] as bool? ?? false,
   favorite: json['favorite'] as bool? ?? false,
@@ -47,12 +54,15 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'requirements': instance.requirements,
       'headerImage': instance.headerImage,
       'price': instance.price,
-      'screenshots': instance.screenshots,
-      'categoriesId': instance.categoriesId,
+      'categories': instance.categories,
+      'resources': instance.resources,
+      'releaseDate': instance.releaseDate.toIso8601String(),
       'isSale': instance.isSale,
       'discountPercent': instance.discountPercent,
       'saleStartDate': instance.saleStartDate?.toIso8601String(),
       'saleEndDate': instance.saleEndDate?.toIso8601String(),
+      'binaries': instance.binaries,
+      'exes': instance.exes,
       'isOwned': instance.isOwned,
       'installed': instance.installed,
       'favorite': instance.favorite,

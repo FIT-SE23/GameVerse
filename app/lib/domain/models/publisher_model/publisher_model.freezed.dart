@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PublisherModel {
 
- String get id; List<String>? get gamesPublishedID; String get description; String get name;
+ String get id; String get description; String get name; List<String>? get gamesPublishedID;
 /// Create a copy of PublisherModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PublisherModelCopyWith<PublisherModel> get copyWith => _$PublisherModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublisherModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.gamesPublishedID, gamesPublishedID)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublisherModel&&(identical(other.id, id) || other.id == id)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.gamesPublishedID, gamesPublishedID));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(gamesPublishedID),description,name);
+int get hashCode => Object.hash(runtimeType,id,description,name,const DeepCollectionEquality().hash(gamesPublishedID));
 
 @override
 String toString() {
-  return 'PublisherModel(id: $id, gamesPublishedID: $gamesPublishedID, description: $description, name: $name)';
+  return 'PublisherModel(id: $id, description: $description, name: $name, gamesPublishedID: $gamesPublishedID)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PublisherModelCopyWith<$Res>  {
   factory $PublisherModelCopyWith(PublisherModel value, $Res Function(PublisherModel) _then) = _$PublisherModelCopyWithImpl;
 @useResult
 $Res call({
- String id, List<String>? gamesPublishedID, String description, String name
+ String id, String description, String name, List<String>? gamesPublishedID
 });
 
 
@@ -65,13 +65,13 @@ class _$PublisherModelCopyWithImpl<$Res>
 
 /// Create a copy of PublisherModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? gamesPublishedID = freezed,Object? description = null,Object? name = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? description = null,Object? name = null,Object? gamesPublishedID = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,gamesPublishedID: freezed == gamesPublishedID ? _self.gamesPublishedID : gamesPublishedID // ignore: cast_nullable_to_non_nullable
-as List<String>?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
+as String,gamesPublishedID: freezed == gamesPublishedID ? _self.gamesPublishedID : gamesPublishedID // ignore: cast_nullable_to_non_nullable
+as List<String>?,
   ));
 }
 
@@ -156,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  List<String>? gamesPublishedID,  String description,  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String description,  String name,  List<String>? gamesPublishedID)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PublisherModel() when $default != null:
-return $default(_that.id,_that.gamesPublishedID,_that.description,_that.name);case _:
+return $default(_that.id,_that.description,_that.name,_that.gamesPublishedID);case _:
   return orElse();
 
 }
@@ -177,10 +177,10 @@ return $default(_that.id,_that.gamesPublishedID,_that.description,_that.name);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  List<String>? gamesPublishedID,  String description,  String name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String description,  String name,  List<String>? gamesPublishedID)  $default,) {final _that = this;
 switch (_that) {
 case _PublisherModel():
-return $default(_that.id,_that.gamesPublishedID,_that.description,_that.name);case _:
+return $default(_that.id,_that.description,_that.name,_that.gamesPublishedID);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +197,10 @@ return $default(_that.id,_that.gamesPublishedID,_that.description,_that.name);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  List<String>? gamesPublishedID,  String description,  String name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String description,  String name,  List<String>? gamesPublishedID)?  $default,) {final _that = this;
 switch (_that) {
 case _PublisherModel() when $default != null:
-return $default(_that.id,_that.gamesPublishedID,_that.description,_that.name);case _:
+return $default(_that.id,_that.description,_that.name,_that.gamesPublishedID);case _:
   return null;
 
 }
@@ -212,10 +212,12 @@ return $default(_that.id,_that.gamesPublishedID,_that.description,_that.name);ca
 @JsonSerializable()
 
 class _PublisherModel implements PublisherModel {
-  const _PublisherModel({required this.id, final  List<String>? gamesPublishedID, required this.description, required this.name}): _gamesPublishedID = gamesPublishedID;
+  const _PublisherModel({required this.id, required this.description, required this.name, final  List<String>? gamesPublishedID}): _gamesPublishedID = gamesPublishedID;
   factory _PublisherModel.fromJson(Map<String, dynamic> json) => _$PublisherModelFromJson(json);
 
 @override final  String id;
+@override final  String description;
+@override final  String name;
  final  List<String>? _gamesPublishedID;
 @override List<String>? get gamesPublishedID {
   final value = _gamesPublishedID;
@@ -225,8 +227,6 @@ class _PublisherModel implements PublisherModel {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  String description;
-@override final  String name;
 
 /// Create a copy of PublisherModel
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublisherModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._gamesPublishedID, _gamesPublishedID)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublisherModel&&(identical(other.id, id) || other.id == id)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other._gamesPublishedID, _gamesPublishedID));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_gamesPublishedID),description,name);
+int get hashCode => Object.hash(runtimeType,id,description,name,const DeepCollectionEquality().hash(_gamesPublishedID));
 
 @override
 String toString() {
-  return 'PublisherModel(id: $id, gamesPublishedID: $gamesPublishedID, description: $description, name: $name)';
+  return 'PublisherModel(id: $id, description: $description, name: $name, gamesPublishedID: $gamesPublishedID)';
 }
 
 
@@ -261,7 +261,7 @@ abstract mixin class _$PublisherModelCopyWith<$Res> implements $PublisherModelCo
   factory _$PublisherModelCopyWith(_PublisherModel value, $Res Function(_PublisherModel) _then) = __$PublisherModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, List<String>? gamesPublishedID, String description, String name
+ String id, String description, String name, List<String>? gamesPublishedID
 });
 
 
@@ -278,13 +278,13 @@ class __$PublisherModelCopyWithImpl<$Res>
 
 /// Create a copy of PublisherModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? gamesPublishedID = freezed,Object? description = null,Object? name = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? description = null,Object? name = null,Object? gamesPublishedID = freezed,}) {
   return _then(_PublisherModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,gamesPublishedID: freezed == gamesPublishedID ? _self._gamesPublishedID : gamesPublishedID // ignore: cast_nullable_to_non_nullable
-as List<String>?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
+as String,gamesPublishedID: freezed == gamesPublishedID ? _self._gamesPublishedID : gamesPublishedID // ignore: cast_nullable_to_non_nullable
+as List<String>?,
   ));
 }
 
