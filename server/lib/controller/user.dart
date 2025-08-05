@@ -40,7 +40,7 @@ Future<Response> addUser(String username, String email, String password) async {
     body: <String, String>{
       "username": username,
       "email": email,
-      "hashpassword": hashPassword,
+      "password": hashPassword,
     },
   );
 
@@ -84,7 +84,7 @@ Future<Response> login(String email, String password) async {
 
   final raw = await http.post(
     Uri.parse(serverURL + "login"),
-    body: <String, String>{"email": email, "hashpassword": hashPassword},
+    body: <String, String>{"email": email, "password": hashPassword},
   );
 
   final response = Response.fromJson(
