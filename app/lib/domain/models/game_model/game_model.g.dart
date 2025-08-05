@@ -14,16 +14,12 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
   briefDescription: json['briefDescription'] as String,
   description: json['description'] as String,
   requirements: json['requirements'] as String,
-  headerImage: ResourceModel.fromJson(
-    json['headerImage'] as Map<String, dynamic>,
-  ),
+  headerImage: json['headerImage'] as String,
   price: (json['price'] as num).toDouble(),
   categories: (json['categories'] as List<dynamic>)
       .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
       .toList(),
-  resources: (json['resources'] as List<dynamic>?)
-      ?.map((e) => ResourceModel.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  media: (json['media'] as List<dynamic>?)?.map((e) => e as String).toList(),
   releaseDate: DateTime.parse(json['releaseDate'] as String),
   isSale: json['isSale'] as bool?,
   discountPercent: (json['discountPercent'] as num?)?.toDouble(),
@@ -33,6 +29,7 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
   saleEndDate: json['saleEndDate'] == null
       ? null
       : DateTime.parse(json['saleEndDate'] as String),
+  path: json['path'] as String?,
   binaries: (json['binaries'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
@@ -55,12 +52,13 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'headerImage': instance.headerImage,
       'price': instance.price,
       'categories': instance.categories,
-      'resources': instance.resources,
+      'media': instance.media,
       'releaseDate': instance.releaseDate.toIso8601String(),
       'isSale': instance.isSale,
       'discountPercent': instance.discountPercent,
       'saleStartDate': instance.saleStartDate?.toIso8601String(),
       'saleEndDate': instance.saleEndDate?.toIso8601String(),
+      'path': instance.path,
       'binaries': instance.binaries,
       'exes': instance.exes,
       'isOwned': instance.isOwned,

@@ -10,9 +10,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: json['id'] as String,
   username: json['username'] as String,
   email: json['email'] as String,
-  avatar: json['avatar'] == null
-      ? null
-      : ResourceModel.fromJson(json['avatar'] as Map<String, dynamic>),
+  avatar: json['avatar'] as String?,
   bio: json['bio'] as String?,
   typeUser: json['typeUser'] as String?,
   ownedGamesID: (json['ownedGamesID'] as List<dynamic>?)

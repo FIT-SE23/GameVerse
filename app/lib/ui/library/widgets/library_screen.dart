@@ -470,7 +470,7 @@ class _GameListTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  game.headerImage.url,
+                  game.headerImage,
                   width: 80,
                   height: 60,
                   fit: BoxFit.cover,

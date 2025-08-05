@@ -35,7 +35,7 @@ class _GameTitleCardState extends State<GameTitleCard> {
         children: [
           Positioned.fill(
             child: Image.network(
-              widget.game.headerImage.url,
+              widget.game.headerImage,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
