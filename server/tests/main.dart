@@ -42,6 +42,7 @@ void main() async {
           "Absolutely/path/file3",
         ],
         ["MediaPath/pic1", "MediaPath/pic2"],
+        ["MediaPath/header_pic2"],
         ["main.exe"],
         "Indie",
       ),
@@ -95,12 +96,14 @@ void main() async {
   }
 
   if (false) {
-    print(await listGames("Gamer Simulator 2", 1, 1, 1));
+    print(await listGames("Gamer Simulator 2", "upvote"));
   }
 
-  if (false) {
+  if (true) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
-    final token = resp.data.toString();
+    final token = resp.data["token"].toString();
+    final userid = resp.data["userid"].toString();
+    print(token + "\n" + userid);
     print(await upvoteGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0", 123));
   }
 }
