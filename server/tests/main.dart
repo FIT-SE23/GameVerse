@@ -42,6 +42,7 @@ void main() async {
           "Absolutely/path/file3",
         ],
         ["MediaPath/pic1", "MediaPath/pic2"],
+        ["MediaPath/header_pic2"],
         ["main.exe"],
         "Indie",
       ),

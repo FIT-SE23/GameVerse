@@ -195,6 +195,12 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
+	files = form.File["media_header"]
+	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "media_header")
+	if len(errFiles) > 0 {
+		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+	}
+
 	files = form.File["executable"]
 	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "executable")
 	if len(errFiles) > 0 {
@@ -259,7 +265,7 @@ func getGame(c echo.Context, client *supabase.Client) error {
 	// userid := c.Param("id")
 
 	// TODO: check game status if user already signed in
-	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Eq("gameid", gameID).ExecuteString()
+	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Eq("gameid", gameID).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -317,27 +323,22 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	}
 
 	if sortBy == "price" {
+		calcuateNewPrice := func(game map[string]any) float64 {
+			price, ok := game["price"].(float64)
+			if !ok {
+				price = math.MaxFloat64
+			} else if game["Game_Sale"] != nil {
+				gameSale := game["Game_Sale"].(map[string]any)
+				discount, ok := gameSale["discountpercentage"].(float64)
+				if ok {
+					price = price * (100 - discount) / 100
+				}
+			}
+			return price
+		}
 		sort.Slice(games, func(i, j int) bool {
-			priceI, ok := games[i]["price"].(float64)
-			if !ok {
-				priceI = math.MaxFloat64
-			} else if games[i]["Game_Sale"] != nil {
-				gameSale := games[i]["Game_Sale"].(map[string]any)
-				discount, ok := gameSale["discountpercentage"].(float64)
-				if ok {
-					priceI = priceI * (100 - discount) / 100
-				}
-			}
-			priceJ, ok := games[j]["price"].(float64)
-			if !ok {
-				priceJ = math.MaxFloat64
-			} else if games[j]["Game_Sale"] != nil {
-				gameSale := games[j]["Game_Sale"].(map[string]any)
-				discount, ok := gameSale["discountpercentage"].(float64)
-				if ok {
-					priceJ = priceJ * (100 - discount) / 100
-				}
-			}
+			priceI := calcuateNewPrice(games[i])
+			priceJ := calcuateNewPrice(games[j])
 			return priceI < priceJ
 		})
 	}

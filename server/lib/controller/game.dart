@@ -105,6 +105,7 @@ Future<Response> addGame(
   String description,
   List<String> binaries,
   List<String> media,
+  List<String> media_header,
   List<String> exes,
   String categories,
 ) async {
@@ -118,6 +119,7 @@ Future<Response> addGame(
   try {
     await _addFiles(request, 'binary', binaries);
     await _addFiles(request, 'media', media);
+    await _addFiles(request, 'media_header', media_header);
     await _addFiles(request, 'executable', exes);
   } catch (err) {
     if (err is Response) return err;
@@ -218,7 +220,7 @@ Future<Response> getGame(String token, String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(String gamename, int sortBy) async {
+Future<Response> listGames(String gamename, String sortBy) async {
   final raw = await http.get(
     Uri.parse(
       serverURL + "search?entity=game&gamename=$gamename&sortby=$sortBy",
