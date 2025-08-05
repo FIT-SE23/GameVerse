@@ -5,9 +5,7 @@ import "package:gameverse_server/controller/payment.dart";
 
 void main() async {
   if (false) {
-    print(
-      await addUser("idontknow", "helloworld@gmail.com", "nooneknow"),
-    );
+    print(await addUser("idontknow", "helloworld@gmail.com", "nooneknow"));
   }
 
   if (false) {
@@ -56,12 +54,11 @@ void main() async {
     print(
       await addGameWithStatus(
         token,
-        "d8915c91-71e6-4a45-84de-a12d0256ffc2",
         "60ce4bab-c05d-4d71-9f4a-028f545c6cb0",
         "In cart",
       ),
     );
-    print(await listGamesInCart(token, "d8915c91-71e6-4a45-84de-a12d0256ffc2"));
+    print(await listGamesInCart(token));
     print(
       await listGamesInLibraryOrWishlist(
         "d8915c91-71e6-4a45-84de-a12d0256ffc2",
@@ -79,7 +76,7 @@ void main() async {
             'Step into the heart of a medieval world where you build, manage, and protect your own village against evil creatures',
         categories: 'Indie, Open World',
         resourceids: ['c0313600-7205-40ed-857c-72136cbc80f0'],
-        medias: [
+        media: [
           'C:/Users/TPComputer/Pictures/brightness.png',
           "D:/SE/resource/game/MedivalV/OBJ/WindowShutters_Wide_Flat_Open.obj",
         ],
@@ -94,5 +91,15 @@ void main() async {
         description: "We hate game",
       ),
     );
+  }
+
+  if (false) {
+    print(await listGames("Gamer Simulator 2", 1, 1, 1));
+  }
+
+  if (false) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data.toString();
+    print(await recommendGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
   }
 }

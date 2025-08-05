@@ -11,6 +11,7 @@ class Game {
   final String? description;
   final double? price;
   final int? upvote;
+  final DateTime? releaseDate;
   final List<Category>? categories;
   final List<Resource>? resources;
 
@@ -23,6 +24,7 @@ class Game {
     this.resources,
     this.price,
     this.upvote,
+    this.releaseDate,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -30,8 +32,9 @@ class Game {
     final publisherid = json["publisherid"] as String?;
     final name = json["name"] as String?;
     final description = json["description"] as String?;
-    final price = json["price"]?.toDouble();
-    final upvote = json["upvote"]?.toInt();
+    final price = json["price"]?.toDouble() as double?;
+    final upvote = json["upvote"]?.toInt() as int?;
+    final releaseDate = DateTime.parse(json["releasedate"] as String? ?? "");
     final categories = <Category>[];
     for (var category in json["Category"] as List<dynamic>) {
       categories.add(Category.fromJson(category as Map<String, dynamic>));
@@ -49,6 +52,7 @@ class Game {
       description: description,
       price: price,
       upvote: upvote,
+      releaseDate: releaseDate,
       categories: categories,
       resources: resources,
     );
@@ -68,6 +72,8 @@ class Game {
         this.price.toString() +
         ", upvote: " +
         this.upvote.toString() +
+        ", releasedate: " +
+        this.releaseDate.toString() +
         ", categories: " +
         this.categories.toString() +
         ", resources: " +
@@ -98,7 +104,7 @@ Future<Response> addGame(
   String name,
   String description,
   List<String> binaries,
-  List<String> medias,
+  List<String> media,
   List<String> exes,
   String categories,
 ) async {
@@ -111,7 +117,7 @@ Future<Response> addGame(
 
   try {
     await _addFiles(request, 'binary', binaries);
-    await _addFiles(request, 'media', medias);
+    await _addFiles(request, 'media', media);
     await _addFiles(request, 'executable', exes);
   } catch (err) {
     if (err is Response) return err;
@@ -137,7 +143,7 @@ Future<Response> updateGame({
   String? categories,
   List<String>? resourceids,
   List<String>? binaries,
-  List<String>? medias,
+  List<String>? media,
   List<String>? exes,
 }) async {
   final request = http.MultipartRequest(
@@ -168,7 +174,7 @@ Future<Response> updateGame({
 
   try {
     await _addFiles(request, 'binary', binaries);
-    await _addFiles(request, 'media', medias);
+    await _addFiles(request, 'media', media);
     await _addFiles(request, 'executable', exes);
   } catch (err) {
     if (err is Response) return err;
@@ -187,10 +193,10 @@ Future<Response> updateGame({
   return response;
 }
 
-Future<Response> getGame(String gameid) async {
+Future<Response> getGame(String token, String gameid) async {
   final raw = await http.get(
     Uri.parse(serverURL + "game/" + gameid),
-    // headers: {"Autorization": "Bearer " + ""},
+    headers: <String, String>{"Authorization": "Bearer " + token},
   );
   var jsonBody;
 
@@ -212,9 +218,17 @@ Future<Response> getGame(String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(String gamename) async {
+Future<Response> listGames(
+  String gamename,
+  int sortByReleaseDate,
+  int sortByUpvote,
+  int sortByPrice,
+) async {
   final raw = await http.get(
-    Uri.parse(serverURL + "search?entity=game&gamename=$gamename"),
+    Uri.parse(
+      serverURL +
+          "search?entity=game&gamename=$gamename&date=$sortByReleaseDate&upvote=$sortByUpvote&price=$sortByPrice",
+    ),
   );
 
   var jsonBody;
@@ -236,6 +250,20 @@ Future<Response> listGames(String gamename) async {
   }
 
   return Response(code: response.code, message: response.message, data: games);
+}
+
+Future<Response> recommendGame(String token, String gameId) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "upvote/game"),
+    headers: <String, String>{"Authorization": "Bearer " + token},
+    body: <String, String>{"gameid": gameId},
+  );
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(await raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
 }
 
 class Category {

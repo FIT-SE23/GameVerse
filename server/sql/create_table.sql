@@ -24,7 +24,7 @@ create table if not exists "Resource" (
   ResourceID uuid default gen_random_uuid() primary key,
   UserID uuid,
   URL text,
-  type text,
+  type text check (type = 'binary' or type = 'media' or type = 'executable'),
 
   foreign key (UserID) references "User" (UserID) on delete cascade
 );
@@ -34,8 +34,19 @@ create table if not exists "Game" (
   PublisherID uuid,
   Name text unique,
   Description text,
+  Price float4 Check (Price > 0.0),
+  Upvote int4,
+  ReleaseDate date default now(),
 
   foreign key (PublisherID) references "Publisher" (PublisherID) on delete cascade
+);
+
+create table if not exists "User_Game" (
+  UserID uuid,
+  GameID uuid,
+  Status text check (Status = 'In library' or Status = 'In wishlist' or Status = 'In cart'),
+
+  primary key(UserID, GameID)
 );
 
 create table if not exists "Category" (

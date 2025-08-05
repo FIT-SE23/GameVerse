@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -79,20 +80,42 @@ func createUserToken(userid string) string {
 	return token
 }
 
-func verifyUserToken(token string) error {
+func verifyUserToken(c echo.Context) (string, error) {
+	header := c.Request().Header
+	auth := header["Authorization"]
+	if len(auth) == 0 {
+		return "", jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+	}
+
+	rawToken := strings.Split(auth[0], " ")
+	if len(rawToken) < 2 {
+		return "", jsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
+	}
+
+	token := rawToken[1]
 	raw, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		gvSecret := os.Getenv("GV_SERECT")
 		return []byte(gvSecret), nil
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if !raw.Valid {
-		return errors.New("invalid token")
+		return "", errors.New("invalid token")
 	}
 
-	return nil
+	claims, ok := raw.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", errors.New("invalid token claims")
+	}
+
+	userID, ok := claims["user"].(string)
+	if !ok {
+		return "", errors.New("user not found in token")
+	}
+
+	return userID, nil
 }
 
 func login(c echo.Context, client *supabase.Client) error {

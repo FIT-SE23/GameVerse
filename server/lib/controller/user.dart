@@ -36,7 +36,7 @@ Future<Response> addUser(String username, String email, String password) async {
   final hashPassword = sha256.convert(bytePassword).toString();
 
   final raw = await http.post(
-    Uri.parse(serverURL + "user"),
+    Uri.parse(serverURL + "register"),
     body: <String, String>{
       "username": username,
       "email": email,
@@ -97,7 +97,6 @@ Future<Response> login(String email, String password) async {
 
 Future<Response> addGameWithStatus(
   String token,
-  String userid,
   String gameid,
   String status,
 ) async {
@@ -111,7 +110,8 @@ Future<Response> addGameWithStatus(
   }
   final raw = await http.post(
     uri,
-    body: <String, String>{"token": token, "userid": userid, "gameid": gameid},
+    headers: <String, String>{"Authorization": "Bearer " + token},
+    body: <String, String>{"gameid": gameid},
   );
 
   final response = Response.fromJson(
@@ -122,10 +122,10 @@ Future<Response> addGameWithStatus(
   return response;
 }
 
-Future<Response> listGamesInCart(String token, String userid) async {
+Future<Response> listGamesInCart(String token) async {
   final raw = await http.post(
     Uri.parse(serverURL + "user/cart"),
-    body: <String, String>{"token": token, "userid": userid},
+    headers: <String, String>{"Authorization": "Bearer " + token},
   );
 
   final response = Response.fromJson(

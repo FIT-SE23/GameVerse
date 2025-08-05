@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"mime/multipart"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/supabase-community/postgrest-go"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -270,7 +272,20 @@ func getGame(c echo.Context, client *supabase.Client) error {
 
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
-	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type)", "", false).Like("name", "%"+gamename+"%").ExecuteString()
+	sortByReleaseDate := c.QueryParam("date")
+	sortByUpvote := c.QueryParam("upvote")
+	sortByPrice := c.QueryParam("price")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%")
+
+	if sortByReleaseDate == "1" {
+		filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false})
+	}
+
+	if sortByUpvote == "1" {
+		filter.Order("upvote", &postgrest.OrderOpts{Ascending: false})
+	}
+
+	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -278,6 +293,34 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	err = json.Unmarshal([]byte(rep), &games)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	if sortByPrice == "1" {
+		slices.SortFunc(games, func(a map[string]any, b map[string]any) int {
+			var priceA float64 = 0
+			var priceB float64 = 0
+			switch price := a["price"].(type) {
+			case float64:
+				priceA = price
+			default:
+				priceA = -1
+			}
+			switch price := b["price"].(type) {
+			case float64:
+				priceB = price
+			default:
+				priceB = -1
+			}
+
+			/*
+				if a["Game_Sale"] == nil {
+				}
+			*/
+
+			return cmp.Compare(priceA, priceB)
+		})
+		fmt.Println(games[0]["Game_Sale"], games[0]["price"])
+		filter.Order("price", &postgrest.OrderOpts{Ascending: true})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", games)
@@ -430,4 +473,44 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	}
 
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func upvoteGame(c echo.Context, client *supabase.Client, userID string) error {
+	gameID := c.FormValue("gameid")
+	if gameID == "" {
+		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+	}
+
+	vote := map[string]string{
+		"userid": userID,
+		"gameid": gameID,
+	}
+
+	_, _, err := client.
+		From("Game_Upvote").
+		Select("*", "", false).
+		Match(vote).
+		Single().
+		ExecuteString()
+
+	if err == nil {
+		_, _, err = client.
+			From("Game_Upvote").
+			Delete("", "").
+			Match(vote).
+			ExecuteString()
+		if err != nil {
+			return jsonResponse(c, http.StatusInternalServerError, "Failed to remove upvote", err.Error())
+		}
+		return jsonResponse(c, http.StatusOK, "Removed", "")
+	}
+
+	_, _, err = client.
+		From("Game_Upvote").
+		Insert(vote, false, "", "", "").
+		ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to add upvote", err.Error())
+	}
+	return jsonResponse(c, http.StatusOK, "Added", "")
 }

@@ -5,6 +5,7 @@ import 'package:gameverse/config/spacing_config.dart';
 
 import '../view_model/game_details_viewmodel.dart';
 import 'game_media_carousel.dart';
+import 'side_panel.dart';
 
 class GameDetailsLayout extends StatefulWidget {
   final String gameId;
@@ -142,7 +143,7 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            flex: 3,
+                            flex: 7,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -154,7 +155,8 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Welcome to the official description of this game. This is where you can talk about the gameplay, the story, the mechanics, or anything else that makes your game unique. Feel free to elaborate on the features, style, or goals—whatever helps players understand what they\'re about to dive into.\n\nThis is the description of this game. Here you can write about what the game is, what players can expect, and any key features or gameplay elements. Use this section to give a brief overview that captures interest and explains what makes the game worth playing.\n\nThis section is reserved for an exciting and detailed summary of the game. Here, you\'ll describe what players can do, what makes the game fun, and why they should try it. Think of this as your game\'s elevator pitch—but longer.\n\nThis is where the game description goes. Talk about the world, the characters, the gameplay, or just write something to fill space until the real text is ready. Make it sound cool—or don\'t, it\'s just a placeholder!',
+                                  // 'Welcome to the official description of this game. This is where you can talk about the gameplay, the story, the mechanics, or anything else that makes your game unique. Feel free to elaborate on the features, style, or goals—whatever helps players understand what they\'re about to dive into.\n\nThis is the description of this game. Here you can write about what the game is, what players can expect, and any key features or gameplay elements. Use this section to give a brief overview that captures interest and explains what makes the game worth playing.\n\nThis section is reserved for an exciting and detailed summary of the game. Here, you\'ll describe what players can do, what makes the game fun, and why they should try it. Think of this as your game\'s elevator pitch—but longer.\n\nThis is where the game description goes. Talk about the world, the characters, the gameplay, or just write something to fill space until the real text is ready. Make it sound cool—or don\'t, it\'s just a placeholder!',
+                                  viewModel.gameDetail!.description,
                                   style: theme.textTheme.bodyLarge,
                                 ),
                                 const SizedBox(height: 32),
@@ -183,28 +185,8 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                           const SizedBox(width: 32),
 
                           Expanded(
-                            flex: 1,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Image.network(
-                                    viewModel.gameDetail!.headerImage,
-                                    fit: BoxFit.cover
-                                  ),
-                                ),
-
-                                const SizedBox(height: 8),
-
-                                Text(
-                                  viewModel.gameDetail!.price != null 
-                                    ? '${(viewModel.gameDetail!.price!['final'] as int) / 100} VND' 
-                                    : 'Free to Play',
-                                  style: theme.textTheme.bodyLarge,
-                                )
-                              ],
-                            ),
+                            flex: 2,
+                            child: SidePanel(game: viewModel.gameDetail!),
                           )
                         ],
                       ),
