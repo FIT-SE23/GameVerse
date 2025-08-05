@@ -99,11 +99,17 @@ void main() async {
     print(await listGames("Gamer Simulator 2", "upvote"));
   }
 
-  if (true) {
+  if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
     final userid = resp.data["userid"].toString();
     print(token + "\n" + userid);
-    print(await upvoteGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0", 123));
+    print(
+      await recommendGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0", 123),
+    );
+  }
+
+  if (true) {
+    print(await getGame("", "12de500f-9810-4428-b217-d606b6847dac"));
   }
 }

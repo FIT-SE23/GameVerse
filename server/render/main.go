@@ -178,8 +178,8 @@ func main() {
 		return approvePayment(c)
 	})
 
-	e.POST("/upvote/game", func(c echo.Context) error {
-		return upvoteGame(c, client)
+	e.POST("/recommend/game", func(c echo.Context) error {
+		return recommendGame(c, client)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))

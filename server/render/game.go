@@ -309,8 +309,8 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		// return jsonResponse(c, http.StatusOK, "", resp)
 	} else if sortBy == "date" {
 		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
-	} else if sortBy == "upvote" {
-		rep, _, err = filter.Order("upvote", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
+	} else if sortBy == "recommend" {
+		rep, _, err = filter.Order("recommend", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
 	}
 
 	if err != nil {
@@ -495,7 +495,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
-func upvoteGame(c echo.Context, client *supabase.Client) error {
+func recommendGame(c echo.Context, client *supabase.Client) error {
 	err := verifyUserToken(c)
 	if err != nil {
 		return err
@@ -508,6 +508,6 @@ func upvoteGame(c echo.Context, client *supabase.Client) error {
 		"id":   gameId,
 	}
 	fmt.Println(params)
-	resp := client.Rpc("gameupvote", "", params)
+	resp := client.Rpc("gamerecommend", "", params)
 	return jsonResponse(c, http.StatusOK, "", resp)
 }

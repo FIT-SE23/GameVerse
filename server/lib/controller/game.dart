@@ -10,7 +10,7 @@ class Game {
   final String? name;
   final String? description;
   final double? price;
-  final int? upvote;
+  final int? recommend;
   final DateTime? releaseDate;
   final List<Category>? categories;
   final List<Resource>? resources;
@@ -24,7 +24,7 @@ class Game {
     this.categories,
     this.resources,
     this.price,
-    this.upvote,
+    this.recommend,
     this.releaseDate,
     this.gameSale,
   });
@@ -35,7 +35,7 @@ class Game {
     final name = json["name"] as String?;
     final description = json["description"] as String?;
     final price = json["price"]?.toDouble() as double?;
-    final upvote = json["upvote"]?.toInt() as int?;
+    final recommend = json["recommend"]?.toInt() as int?;
     final releaseDate = DateTime.parse(json["releasedate"] as String? ?? "");
     final categories = <Category>[];
     for (var category in json["Category"] as List<dynamic>) {
@@ -47,16 +47,21 @@ class Game {
       resources.add(Resource.fromJson(resource as Map<String, dynamic>));
     }
 
+    final gameSale = GameSale.fromJson(
+      json["Game_Sale"] as Map<String, dynamic>,
+    );
+
     return Game(
       gameid: gameid,
       publisherid: publisherid,
       name: name,
       description: description,
       price: price,
-      upvote: upvote,
+      recommend: recommend,
       releaseDate: releaseDate,
       categories: categories,
       resources: resources,
+      gameSale: gameSale,
     );
   }
 
@@ -72,8 +77,8 @@ class Game {
         (this.description ?? "\"\"") +
         ", price: " +
         this.price.toString() +
-        ", upvote: " +
-        this.upvote.toString() +
+        ", recommend: " +
+        this.recommend.toString() +
         ", releasedate: " +
         this.releaseDate.toString() +
         ", categories: " +
@@ -252,9 +257,9 @@ Future<Response> listGames(String gamename, String sortBy) async {
   return Response(code: response.code, message: response.message, data: games);
 }
 
-Future<Response> upvoteGame(String token, String gameId, int incr) async {
+Future<Response> recommendGame(String token, String gameId, int incr) async {
   final raw = await http.post(
-    Uri.parse(serverURL + "upvote/game"),
+    Uri.parse(serverURL + "recommend/game"),
     headers: <String, String>{"Authorization": "Bearer " + token},
     body: <String, String>{"gameid": gameId, "incr": incr.toString()},
   );
@@ -384,7 +389,7 @@ class GameSale {
     final gameid = json["gameid"] as String?;
     final startDate = DateTime.parse(json["startdate"] as String);
     final endDate = DateTime.parse(json["enddate"] as String);
-    final discountPercentage = json["discountpercentage"] as int?;
+    final discountPercentage = json["discountpercentage"].toInt() as int?;
 
     return GameSale(
       gameid: gameid,
