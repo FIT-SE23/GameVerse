@@ -96,7 +96,7 @@ void main() async {
   }
 
   if (false) {
-    print(await listGames("Gamer Simulator 2", "upvote"));
+    print(await listGames("Gamer Simulator 2", "recommend"));
   }
 
   if (false) {

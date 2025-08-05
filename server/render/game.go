@@ -311,6 +311,8 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
 	} else if sortBy == "recommend" {
 		rep, _, err = filter.Order("recommend", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
+	} else {
+		rep, _, err = filter.ExecuteString()
 	}
 
 	if err != nil {
