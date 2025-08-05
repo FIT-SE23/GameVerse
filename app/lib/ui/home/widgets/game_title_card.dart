@@ -79,10 +79,10 @@ class _GameTitleCardState extends State<GameTitleCard> {
                   colors: 
                   widget.selectedIndex != widget.index
                     ? [
-                    theme.scaffoldBackgroundColor.withValues(alpha: 0.5),
+                    theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
                     theme.scaffoldBackgroundColor
                   ] : [
-                    getOppositeTheme(theme).scaffoldBackgroundColor.withValues(alpha: 0.5),
+                    getOppositeTheme(theme).scaffoldBackgroundColor.withValues(alpha: 0.6),
                     getOppositeTheme(theme).scaffoldBackgroundColor
                   ]
                 )
@@ -92,7 +92,7 @@ class _GameTitleCardState extends State<GameTitleCard> {
 
           Positioned.fill(
             child: Padding(
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+              padding: EdgeInsetsGeometry.only(right: 16, left: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,

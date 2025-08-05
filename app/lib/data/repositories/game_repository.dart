@@ -73,9 +73,9 @@ class GameRepository {
         requirements: 'Minimum: OS: Windows 10 64-bit, Processor: Intel Core i5-3570K or AMD FX-8310, Memory: 8 GB RAM, Graphics: NVIDIA GeForce GTX 780 or AMD Radeon RX 470',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/1091500/header.jpg',
         media: [
-          'https://cdn.akamai.steamstatic.com/steam/apps/1091500/ss_814c156a6df96984349177d2e5df5b63a65b7321.jpg',
-          'https://cdn.akamai.steamstatic.com/steam/apps/1091500/ss_67ba98b7f1dd3c54086b76f7d9dba97f7b19c3f3.jpg',
-          'https://cdn.akamai.steamstatic.com/steam/apps/1091500/ss_8e5d17cc8cfcbc3e6dc1b7c93f3b6d6c0e1e46cd.jpg',
+          'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_2f649b68d579bf87011487d29bc4ccbfdd97d34f.1920x1080.jpg?t=1753355628',
+          'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_0e64170751e1ae20ff8fdb7001a8892fd48260e7.1920x1080.jpg?t=1753355628',
+          'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_af2804aa4bf35d4251043744412ce3b359a125ef.1920x1080.jpg?t=1753355628',
         ],
         price: 29.99,
         categories: [

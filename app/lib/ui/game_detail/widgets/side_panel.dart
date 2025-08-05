@@ -58,7 +58,7 @@ class SidePanel extends StatelessWidget {
 
         const SizedBox(height: 8),
 
-        // 'Add to cart', 'Add to wishlist' and 'Upvote' button
+        // 'Add to cart', 'Add to wishlist' and 'Recommend' button
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -87,7 +87,7 @@ class SidePanel extends StatelessWidget {
                   ),
                   onPressed: () => context.push(Routes.transactions),
                   child: Icon(
-                    Icons.add_box_outlined,
+                    Icons.bookmark_add_outlined,
                     color: AppTheme.currentThemeColors(theme.brightness).getText,
                   )
                 ),
@@ -96,7 +96,7 @@ class SidePanel extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Tooltip(
-                message: 'Upvote',
+                message: 'Recommend',
                 child: ElevatedButton(
                   style: theme.elevatedButtonTheme.style!.copyWith(
                     backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
@@ -117,7 +117,7 @@ class SidePanel extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Upvote',
+              'Recommend',
               style: theme.textTheme.bodyLarge,
             ),
             Spacer(),

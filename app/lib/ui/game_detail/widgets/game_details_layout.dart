@@ -147,8 +147,14 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                GameMediaCarousel(media: <String>[]),
-                                const SizedBox(height: 32),
+                                if (viewModel.gameDetail!.media != null)
+                                  if (viewModel.gameDetail!.media!.isNotEmpty)
+                                    Column(
+                                      children: [
+                                        GameMediaCarousel(media: viewModel.gameDetail!.media!),
+                                        const SizedBox(height: 32),
+                                      ],
+                                    ),
                                 Text(
                                   'About this game',
                                   style: theme.textTheme.displayMedium

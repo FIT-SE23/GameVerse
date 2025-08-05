@@ -89,10 +89,10 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
 
           // Gradient
           Positioned(
-            top: 0,
-            bottom: -2,
-            left: 0,
-            right: 0,
+            top: -1,
+            bottom: -1,
+            left: -1,
+            right: -1,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
