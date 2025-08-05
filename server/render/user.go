@@ -125,7 +125,12 @@ func login(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	return jsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
+
+	returnVal := map[string]string{
+		"userid": userid["userid"],
+		"token":  createUserToken(userid["userid"]),
+	}
+	return jsonResponse(c, http.StatusOK, "", returnVal)
 }
 
 func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
