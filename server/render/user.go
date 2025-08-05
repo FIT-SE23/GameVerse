@@ -87,12 +87,12 @@ func verifyUserToken(c echo.Context) error {
 	header := c.Request().Header
 	auth := header["Authorization"]
 	if len(auth) == 0 {
-		return jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+		return errors.New("Require Authorization header")
 	}
 
 	rawToken := strings.Split(auth[0], " ")
 	if len(rawToken) < 2 {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
+		return errors.New("Invalid Authorization header")
 	}
 	token := rawToken[1]
 	raw, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
@@ -103,10 +103,10 @@ func verifyUserToken(c echo.Context) error {
 		return err
 	}
 
-	fmt.Println(raw.Claims)
+	// fmt.Println(raw.Claims)
 
 	if !raw.Valid {
-		return errors.New("invalid token")
+		return errors.New("Invalid token")
 	}
 
 	return nil
@@ -151,6 +151,16 @@ func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, 
 
 func addGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
 	_, _, err := client.From("User_Game").Insert(userGame, false, "", "", "").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	// TODO: "return" field
+	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func removeGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
+	_, _, err := client.From("User_Game").Delete("", "").Eq("userid", userGame["userid"]).Eq("gameid", userGame["gameid"]).Eq("status", userGame["status"]).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

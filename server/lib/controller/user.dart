@@ -36,7 +36,7 @@ Future<Response> addUser(String username, String email, String password) async {
   final hashPassword = sha256.convert(bytePassword).toString();
 
   final raw = await http.post(
-    Uri.parse(serverURL + "register"),  
+    Uri.parse(serverURL + "register"),
     body: <String, String>{
       "username": username,
       "email": email,
@@ -101,18 +101,38 @@ Future<Response> addGameWithStatus(
   String gameid,
   String status,
 ) async {
-  Uri uri = Uri();
-  if (status == "In library") {
-    uri = Uri.parse(serverURL + "addtolibrary");
-  } else if (status == "In wishlist") {
-    uri = Uri.parse(serverURL + "addtowishlist");
-  } else if (status == "In cart") {
-    uri = Uri.parse(serverURL + "addtocart");
-  }
   final raw = await http.post(
-    uri,
+    Uri.parse(serverURL + "addgameto"),
     headers: <String, String>{"Authorization": "Bearer " + token},
-    body: <String, String>{"userid": userid, "gameid": gameid},
+    body: <String, String>{
+      "userid": userid,
+      "gameid": gameid,
+      "status": status,
+    },
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> removeGameWithStatus(
+  String token,
+  String userid,
+  String gameid,
+  String status,
+) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "removegamefrom"),
+    headers: <String, String>{"Authorization": "Bearer " + token},
+    body: <String, String>{
+      "userid": userid,
+      "gameid": gameid,
+      "status": status,
+    },
   );
 
   final response = Response.fromJson(

@@ -69,57 +69,48 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
-	e.POST("/addtolibrary", func(c echo.Context) error {
+	e.POST("/addgameto", func(c echo.Context) error {
 		err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return err
 		}
 
+		status := c.FormValue("list")
+		if status != "library" && status != "wishlist" && status != "cart" {
+			return jsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
+		}
 		userid := c.FormValue("userid")
 		gameid := c.FormValue("gameid")
-
 		userGame := map[string]string{
 			"userid": userid,
 			"gameid": gameid,
-			"status": "In library",
+			"status": status,
 		}
 
 		return addGameWithStatus(c, client, userGame)
 	})
-	e.POST("/addtowishlist", func(c echo.Context) error {
+
+	e.POST("/removegamefrom", func(c echo.Context) error {
 		err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return err
 		}
 
+		status := c.FormValue("status")
+		if status != "In wishlist" && status != "In cart" {
+			return jsonResponse(c, http.StatusBadRequest, "Allow remove games from wishlist/cart only", "")
+		}
 		userid := c.FormValue("userid")
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
 			"gameid": gameid,
-			"status": "In wishlist",
+			"status": status,
 		}
 
-		return addGameWithStatus(c, client, userGame)
-	})
-	e.POST("/addtocart", func(c echo.Context) error {
-		err := verifyUserToken(c)
-		if err != nil {
-			// TODO: Redirect to login page
-			return err
-		}
-
-		userid := c.FormValue("userid")
-		gameid := c.FormValue("gameid")
-		userGame := map[string]string{
-			"userid": userid,
-			"gameid": gameid,
-			"status": "In cart",
-		}
-
-		return addGameWithStatus(c, client, userGame)
+		return removeGameWithStatus(c, client, userGame)
 	})
 
 	e.POST("/game", func(c echo.Context) error {
