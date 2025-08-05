@@ -14,6 +14,7 @@ class Game {
   final DateTime? releaseDate;
   final List<Category>? categories;
   final List<Resource>? resources;
+  final GameSale? gameSale;
 
   const Game({
     this.gameid,
@@ -25,6 +26,7 @@ class Game {
     this.price,
     this.upvote,
     this.releaseDate,
+    this.gameSale,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -78,6 +80,8 @@ class Game {
         this.categories.toString() +
         ", resources: " +
         this.resources.toString() +
+        ", gamesale: " +
+        this.gameSale.toString() +
         "}";
   }
 }
@@ -362,3 +366,44 @@ Future<Response> addResource(String categoryName, bool isSensitive) async {
   return response;
 }
 */
+
+class GameSale {
+  final String? gameid;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int? discountPercentage;
+
+  const GameSale({
+    this.gameid,
+    this.startDate,
+    this.endDate,
+    this.discountPercentage,
+  });
+
+  factory GameSale.fromJson(Map<String, dynamic> json) {
+    final gameid = json["gameid"] as String?;
+    final startDate = DateTime.parse(json["startdate"] as String);
+    final endDate = DateTime.parse(json["enddate"] as String);
+    final discountPercentage = json["discountpercentage"] as int?;
+
+    return GameSale(
+      gameid: gameid,
+      startDate: startDate,
+      endDate: endDate,
+      discountPercentage: discountPercentage,
+    );
+  }
+
+  @override
+  String toString() {
+    return "GameSale {gameid: " +
+        (this.gameid ?? "\"\"") +
+        ", startdate: " +
+        this.startDate.toString() +
+        ", enddate: " +
+        this.endDate.toString() +
+        ", discountpercentage: " +
+        this.discountPercentage.toString() +
+        "}";
+  }
+}
