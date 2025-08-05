@@ -48,7 +48,7 @@ class GameCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: 16 / 9,
               child: Image.network(
-                game.headerImage,
+                game.headerImage.url,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -117,8 +117,8 @@ class GameCard extends StatelessWidget {
                   if (showPrice)
                   // Price
                     Text(
-                      game.price != null 
-                        ? '${(game.price!['final'] as int) / 100} VND' 
+                      game.price != 0 
+                        ? '${(game.price) / 100} VND' 
                         : 'Free to Play',
                       style: theme.textTheme.bodyMedium,
                     ),

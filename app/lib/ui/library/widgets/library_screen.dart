@@ -47,7 +47,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       child: Consumer<LibraryViewModel>(
         builder: (context, libraryViewModel, child) {
           return SizedBox(
-            height: 1600,
+            height: 1200,
             child: Padding(
               padding: getNegativeSpacePadding(context),
               child: Column(
@@ -80,10 +80,10 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                                     'Your Library',
                                     style: theme.textTheme.displayLarge,
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 8),
                                   Text(
                                     '${libraryViewModel.games.length} games • ${libraryViewModel.downloadedCount} downloaded',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                    style: theme.textTheme.bodyLarge?.copyWith(
                                       color: theme.colorScheme.onSurfaceVariant,
                                     ),
                                   ),
@@ -140,7 +140,10 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                             focusNode: _searchFocusNode,
                             decoration: InputDecoration(
                               hintText: 'Search your games...',
-                              prefixIcon: Icon(Icons.search, color: AppTheme.currentThemeColors(theme.brightness).getText),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: AppTheme.currentThemeColors(theme.brightness).getText
+                              ),
                               suffixIcon: _searchController.text.isNotEmpty
                                   ? IconButton(
                                       icon: const Icon(Icons.clear),
@@ -467,7 +470,7 @@ class _GameListTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  game.headerImage,
+                  game.headerImage.url,
                   width: 80,
                   height: 60,
                   fit: BoxFit.cover,

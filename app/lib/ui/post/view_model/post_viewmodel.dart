@@ -51,7 +51,7 @@ class PostViewModel extends ChangeNotifier {
     if (_post == null) return;
 
     final newComment = CommentModel(
-      id: 'comment_${DateTime.now().millisecondsSinceEpoch}',
+      commentId: 'comment_${DateTime.now().millisecondsSinceEpoch}',
       relatedGameId: _post!.forumId.replaceFirst('forum_', ''),
       postsId: [_post!.id],
     );

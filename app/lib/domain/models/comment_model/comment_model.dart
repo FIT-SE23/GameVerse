@@ -7,7 +7,7 @@ part 'comment_model.g.dart';
 @freezed
 abstract class CommentModel with _$CommentModel {
   const factory CommentModel({
-    required String id,
+    required String commentId,
     required String relatedGameId,
     List<String>? postsId,
   }) = _CommentModel;

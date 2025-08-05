@@ -85,10 +85,10 @@ class TransactionViewModel extends ChangeNotifier {
         description: 'GameVerse - Add Funds',
       );
 
-      print('PayPal result: Success=${paypalResult.success}, Message=${paypalResult.message}');
+      debugPrint('PayPal result: Success=${paypalResult.success}, Message=${paypalResult.message}');
 
       if (paypalResult.success && paypalResult.data != null) {
-        print('Processing PayPal success with data: ${paypalResult.data}');
+        debugPrint('Processing PayPal success with data: ${paypalResult.data}');
         
         final result = await _transactionService.addFundsWithPayPal(
           amount: paypalResult.amount ?? amount, // Use amount from PayPal result or fallback
@@ -102,24 +102,24 @@ class TransactionViewModel extends ChangeNotifier {
           _transactions = await _transactionService.getTransactionHistory();
           _state = TransactionState.success;
           
-          print('PayPal payment processed successfully. New balance: \$${_balance.toStringAsFixed(2)}');
+          debugPrint('PayPal payment processed successfully. New balance: \$${_balance.toStringAsFixed(2)}');
           return true;
         } else {
           _errorMessage = result.message;
           _state = TransactionState.error;
-          print('Failed to process PayPal payment: ${result.message}');
+          debugPrint('Failed to process PayPal payment: ${result.message}');
           return false;
         }
       } else {
         _errorMessage = paypalResult.message;
         _state = TransactionState.error;
-        print('PayPal payment failed: ${paypalResult.message}');
+        debugPrint('PayPal payment failed: ${paypalResult.message}');
         return false;
       }
     } catch (e) {
       _errorMessage = 'PayPal payment failed: $e';
       _state = TransactionState.error;
-      print('PayPal payment exception: $e');
+      debugPrint('PayPal payment exception: $e');
       return false;
     } finally {
       _isProcessingTransaction = false;

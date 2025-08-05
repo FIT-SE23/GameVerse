@@ -40,7 +40,7 @@ class GameCardBig extends StatelessWidget {
                     width: double.infinity,
                     height: height,
                     key: ValueKey(game.headerImage),
-                    game.headerImage,
+                    game.headerImage.url,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -124,8 +124,8 @@ class GameCardBig extends StatelessWidget {
                           width: double.infinity,
                           child:
                             Text(
-                              game.price != null 
-                                ? '${(game.price!['final'] as int) / 100} VND' 
+                              game.price != 0
+                                ? '${(game.price) / 100} VND' 
                                 : 'Free to Play',
                               style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
                             ),

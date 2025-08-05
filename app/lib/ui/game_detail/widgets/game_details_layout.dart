@@ -46,7 +46,7 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
               left: 0,
               right: 0,
               child: Image.network(
-                viewModel.gameDetail!.headerImage,
+                viewModel.gameDetail!.headerImage.url,
                 width: double.infinity,
                 height: backgroundKeyArtHeight,
                 fit: BoxFit.cover,
@@ -143,7 +143,7 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            flex: 7,
+                            flex: 8,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -185,7 +185,7 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                           const SizedBox(width: 32),
 
                           Expanded(
-                            flex: 2,
+                            flex: 3,
                             child: SidePanel(game: viewModel.gameDetail!),
                           )
                         ],

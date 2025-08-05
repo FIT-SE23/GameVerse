@@ -40,7 +40,7 @@ class _LoginFormState extends State<LoginForm> {
       try {
         final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
         
-        await authViewModel.login(AuthProvider.supabase,
+        await authViewModel.login(AuthProvider.server,
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );

@@ -26,7 +26,7 @@ class SidePanel extends StatelessWidget {
         AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.network(
-            game.headerImage,
+            game.headerImage.url,
             fit: BoxFit.cover
           ),
         ),
@@ -34,9 +34,9 @@ class SidePanel extends StatelessWidget {
         const SizedBox(height: 8),
 
         Text(
-          game.price != null 
-            ? '${(game.price!['final'] as int) / 100} VND' 
-            : 'Free to Play',
+          game.isSale == true && game.discountPercent != null
+              ? '\$${(game.price * (1 - (game.discountPercent! / 100))).toStringAsFixed(2)} VND'
+              : '\$${game.price.toStringAsFixed(2)} VND',
           style: theme.textTheme.bodyLarge,
         ),
 
@@ -176,10 +176,10 @@ class SidePanel extends StatelessWidget {
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
-          runSpacing: 4,
+          runSpacing: 8,
           children: [
-            for (String category in game.categoriesID)
-            CategoryChip(name: category, onSelect: () {})
+            for (String name in game.categories.map((e) => e.name))
+              CategoryChip(name: name, onSelect: () {}),
           ]
         ),
       ],

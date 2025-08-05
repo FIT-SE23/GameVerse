@@ -160,7 +160,7 @@ class DesktopNavbar extends StatelessWidget {
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 100),
                     child: Text(
-                      authProvider.user?.name ?? 'Guest',
+                      authProvider.user?.username ?? 'Guest',
                       style: TextStyle(
                         color: Theme.of(context).appBarTheme.foregroundColor,
                         fontSize: 14,
