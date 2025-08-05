@@ -53,7 +53,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                   child: child
                 ),
                 child: Image.network(
-                  widget.gameList[currentGameIndex].headerImage.url,
+                  widget.gameList[currentGameIndex].headerImage,
                   key: ValueKey(widget.gameList[currentGameIndex].headerImage),
                   width: double.infinity,
                   height: 640,

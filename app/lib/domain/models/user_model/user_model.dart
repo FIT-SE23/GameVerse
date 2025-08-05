@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gameverse/domain/models/resource_model/resource_model.dart';
 
 part 'user_model.freezed.dart';
 
@@ -11,7 +10,7 @@ abstract class UserModel with _$UserModel {
     required String id,
     required String username,
     required String email,
-    ResourceModel? avatar,
+    String? avatar,
     String? bio,
     String? typeUser,
 

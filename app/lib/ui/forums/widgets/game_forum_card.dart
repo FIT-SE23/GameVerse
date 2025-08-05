@@ -113,7 +113,7 @@ class GameForumCard extends StatelessWidget {
                         width: double.infinity,
                         height: double.infinity,
                         child: Image.network(
-                          game.headerImage.url,
+                          game.headerImage,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(

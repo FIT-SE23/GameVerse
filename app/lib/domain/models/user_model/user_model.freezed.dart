@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get username; String get email; ResourceModel? get avatar; String? get bio; String? get typeUser;// Optional fields for user preferences
+ String get id; String get username; String get email; String? get avatar; String? get bio; String? get typeUser;// Optional fields for user preferences
  List<String>? get ownedGamesID; List<String>? get favoriteGamesID; List<String>? get installedGamesID;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -49,11 +49,11 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String username, String email, ResourceModel? avatar, String? bio, String? typeUser, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
+ String id, String username, String email, String? avatar, String? bio, String? typeUser, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
 });
 
 
-$ResourceModelCopyWith<$Res>? get avatar;
+
 
 }
 /// @nodoc
@@ -72,7 +72,7 @@ id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as ResourceModel?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
+as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,typeUser: freezed == typeUser ? _self.typeUser : typeUser // ignore: cast_nullable_to_non_nullable
 as String?,ownedGamesID: freezed == ownedGamesID ? _self.ownedGamesID : ownedGamesID // ignore: cast_nullable_to_non_nullable
 as List<String>?,favoriteGamesID: freezed == favoriteGamesID ? _self.favoriteGamesID : favoriteGamesID // ignore: cast_nullable_to_non_nullable
@@ -80,19 +80,7 @@ as List<String>?,installedGamesID: freezed == installedGamesID ? _self.installed
 as List<String>?,
   ));
 }
-/// Create a copy of UserModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ResourceModelCopyWith<$Res>? get avatar {
-    if (_self.avatar == null) {
-    return null;
-  }
 
-  return $ResourceModelCopyWith<$Res>(_self.avatar!, (value) {
-    return _then(_self.copyWith(avatar: value));
-  });
-}
 }
 
 
@@ -174,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String email,  ResourceModel? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.typeUser,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
@@ -195,7 +183,7 @@ return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String email,  ResourceModel? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.typeUser,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
@@ -215,7 +203,7 @@ return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String email,  ResourceModel? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.typeUser,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
@@ -236,7 +224,7 @@ class _UserModel implements UserModel {
 @override final  String id;
 @override final  String username;
 @override final  String email;
-@override final  ResourceModel? avatar;
+@override final  String? avatar;
 @override final  String? bio;
 @override final  String? typeUser;
 // Optional fields for user preferences
@@ -302,11 +290,11 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String username, String email, ResourceModel? avatar, String? bio, String? typeUser, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
+ String id, String username, String email, String? avatar, String? bio, String? typeUser, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
 });
 
 
-@override $ResourceModelCopyWith<$Res>? get avatar;
+
 
 }
 /// @nodoc
@@ -325,7 +313,7 @@ id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as ResourceModel?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
+as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,typeUser: freezed == typeUser ? _self.typeUser : typeUser // ignore: cast_nullable_to_non_nullable
 as String?,ownedGamesID: freezed == ownedGamesID ? _self._ownedGamesID : ownedGamesID // ignore: cast_nullable_to_non_nullable
 as List<String>?,favoriteGamesID: freezed == favoriteGamesID ? _self._favoriteGamesID : favoriteGamesID // ignore: cast_nullable_to_non_nullable
@@ -334,19 +322,7 @@ as List<String>?,
   ));
 }
 
-/// Create a copy of UserModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ResourceModelCopyWith<$Res>? get avatar {
-    if (_self.avatar == null) {
-    return null;
-  }
 
-  return $ResourceModelCopyWith<$Res>(_self.avatar!, (value) {
-    return _then(_self.copyWith(avatar: value));
-  });
-}
 }
 
 // dart format on
