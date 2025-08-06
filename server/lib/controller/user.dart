@@ -97,7 +97,6 @@ Future<Response> login(String email, String password) async {
 
 Future<Response> addGameWithStatus(
   String token,
-  String userid,
   String gameid,
   String status,
 ) async {
@@ -105,7 +104,6 @@ Future<Response> addGameWithStatus(
     Uri.parse(serverURL + "addgameto"),
     headers: <String, String>{"Authorization": "Bearer " + token},
     body: <String, String>{
-      "userid": userid,
       "gameid": gameid,
       "status": status,
     },
@@ -121,7 +119,6 @@ Future<Response> addGameWithStatus(
 
 Future<Response> removeGameWithStatus(
   String token,
-  String userid,
   String gameid,
   String status,
 ) async {
@@ -129,7 +126,6 @@ Future<Response> removeGameWithStatus(
     Uri.parse(serverURL + "removegamefrom"),
     headers: <String, String>{"Authorization": "Bearer " + token},
     body: <String, String>{
-      "userid": userid,
       "gameid": gameid,
       "status": status,
     },
@@ -143,11 +139,10 @@ Future<Response> removeGameWithStatus(
   return response;
 }
 
-Future<Response> listGamesInCart(String token, String userid) async {
+Future<Response> listGamesInCart(String token) async {
   final raw = await http.post(
     Uri.parse(serverURL + "user/cart"),
     headers: <String, String>{"Authorization": "Bearer " + token},
-    body: <String, String>{"userid": userid},
   );
 
   final response = Response.fromJson(

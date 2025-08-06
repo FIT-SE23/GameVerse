@@ -90,8 +90,8 @@ create table if not exists "Forum" (
 
 create table if not exists "Post" (
   PostID uuid default gen_random_uuid() primary key,
-  UserID uuid,
-  ForumID uuid,
+  UserID uuid not null,
+  ForumID uuid not null,
   Content text,
   Upvote int4,
   PostDate timestamp default now(),
@@ -103,7 +103,7 @@ create table if not exists "Post" (
 create table if not exists "Comment" (
   CommentID uuid default gen_random_uuid(),
   UserID uuid,
-  ForumID uuid,
+  PostID uuid,
   Content text,
   Upvote int4,
   CommentDate timestamp default now(),
@@ -125,4 +125,41 @@ create table if not exists "Transaction" (
   foreign key (PaymentMethodID) references "PaymentMethod" (PaymentMethodID) on delete cascade,
   foreign key (SenderID) references "User" (UserID) on delete cascade,
   foreign key (ReceiverID) references "User" (UserID) on delete cascade
+);
+
+create table if not exists "User_Game" (
+  UserID uuid,
+  GameID uuid,
+  status text,
+
+  primary key (UserID, GameID),
+  foreign key (GameID) references "Game" (GameID) on delete cascade,
+  foreign key (UserID) references "User" (UserID) on delete cascade
+);
+
+create table if not exists "Game_Upvote" (
+  UserID uuid,
+  GameID uuid,
+  
+  primary key (UserID, GameID),
+  foreign key (UserID) references "User"(UserID) on delete cascade,
+  foreign key (GameID) references "Game"(GameID) on delete cascade
+);
+
+create table if not exists "Post_Upvote" (
+  UserID uuid,
+  PostID uuid,
+
+  primary key (UserID, PostID),
+  foreign key (UserID) references "User"(UserID) on delete cascade,
+  foreign key (PostID) references "Post"(PostID) on delete cascade
+);
+
+create table if not exists "Comment_Upvote" (
+  UserID uuid,
+  CommentID uuid,
+
+  primary key (UserID, CommentID),
+  foreign key (UserID) references "User"(UserID) on delete cascade,
+  foreign key (CommentID) references "Comment"(CommentID) on delete cascade
 );

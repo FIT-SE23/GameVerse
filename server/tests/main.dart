@@ -56,12 +56,11 @@ void main() async {
     print(
       await addGameWithStatus(
         token,
-        "d8915c91-71e6-4a45-84de-a12d0256ffc2",
         "60ce4bab-c05d-4d71-9f4a-028f545c6cb0",
         "In cart",
       ),
     );
-    print(await listGamesInCart(token, "d8915c91-71e6-4a45-84de-a12d0256ffc2"));
+    print(await listGamesInCart(token));
     print(
       await listGamesInLibraryOrWishlist(
         "d8915c91-71e6-4a45-84de-a12d0256ffc2",
@@ -106,7 +105,7 @@ void main() async {
     final userid = resp.data["userid"].toString();
     print(token + "\n" + userid);
     print(
-      await recommendGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0", 123),
+      await recommendGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"),
     );
   }
 

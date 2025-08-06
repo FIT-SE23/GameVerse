@@ -257,11 +257,11 @@ Future<Response> listGames(String gamename, String sortBy) async {
   return Response(code: response.code, message: response.message, data: games);
 }
 
-Future<Response> recommendGame(String token, String gameId, int incr) async {
+Future<Response> recommendGame(String token, String gameId) async {
   final raw = await http.post(
     Uri.parse(serverURL + "recommend/game"),
     headers: <String, String>{"Authorization": "Bearer " + token},
-    body: <String, String>{"gameid": gameId, "incr": incr.toString()},
+    body: <String, String>{"gameid": gameId},
   );
   final response = Response.fromJson(
     raw.statusCode,

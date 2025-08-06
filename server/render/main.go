@@ -59,18 +59,16 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In wishlist")
 	})
 	e.POST("/user/cart", func(c echo.Context) error {
-		_, err := verifyUserToken(c)
+		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
-
-		userid := c.FormValue("userid")
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
 	e.POST("/addgameto", func(c echo.Context) error {
-		_, err := verifyUserToken(c)
+		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
@@ -80,7 +78,7 @@ func main() {
 		if status != "library" && status != "wishlist" && status != "cart" {
 			return jsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
 		}
-		userid := c.FormValue("userid")
+
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
@@ -92,7 +90,7 @@ func main() {
 	})
 
 	e.POST("/removegamefrom", func(c echo.Context) error {
-		_, err := verifyUserToken(c)
+		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
 			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
@@ -102,7 +100,7 @@ func main() {
 		if status != "In wishlist" && status != "In cart" {
 			return jsonResponse(c, http.StatusBadRequest, "Allow remove games from wishlist/cart only", "")
 		}
-		userid := c.FormValue("userid")
+
 		gameid := c.FormValue("gameid")
 		userGame := map[string]string{
 			"userid": userid,
@@ -176,7 +174,13 @@ func main() {
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {
-		return recommendGame(c, client)
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			// TODO: Redirect to login page
+			return err
+		}
+
+		return recommendGame(c, client, userid)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))

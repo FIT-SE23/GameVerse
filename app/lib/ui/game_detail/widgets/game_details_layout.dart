@@ -5,7 +5,7 @@ import 'package:gameverse/config/spacing_config.dart';
 
 import '../view_model/game_details_viewmodel.dart';
 import 'game_media_carousel.dart';
-import 'side_panel.dart';
+import 'game_info_sidebar.dart';
 
 class GameDetailsLayout extends StatefulWidget {
   final String gameId;
@@ -33,6 +33,8 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
     final viewModel = Provider.of<GameDetailsViewModel>(context, listen: false);
     final status = viewModel.state;
     final theme = Theme.of(context);
+
+    final double sidebarWidth = 280;
 
     return SizedBox(
       width: double.infinity,
@@ -143,7 +145,6 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            flex: 8,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -161,7 +162,6 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  // 'Welcome to the official description of this game. This is where you can talk about the gameplay, the story, the mechanics, or anything else that makes your game unique. Feel free to elaborate on the features, style, or goals—whatever helps players understand what they\'re about to dive into.\n\nThis is the description of this game. Here you can write about what the game is, what players can expect, and any key features or gameplay elements. Use this section to give a brief overview that captures interest and explains what makes the game worth playing.\n\nThis section is reserved for an exciting and detailed summary of the game. Here, you\'ll describe what players can do, what makes the game fun, and why they should try it. Think of this as your game\'s elevator pitch—but longer.\n\nThis is where the game description goes. Talk about the world, the characters, the gameplay, or just write something to fill space until the real text is ready. Make it sound cool—or don\'t, it\'s just a placeholder!',
                                   viewModel.gameDetail!.description,
                                   style: theme.textTheme.bodyLarge,
                                 ),
@@ -190,9 +190,9 @@ class _GameDetailsLayoutState extends State<GameDetailsLayout> {
 
                           const SizedBox(width: 32),
 
-                          Expanded(
-                            flex: 3,
-                            child: SidePanel(game: viewModel.gameDetail!),
+                          SizedBox(
+                            width: sidebarWidth,
+                            child: GameInfoSidebar(game: viewModel.gameDetail!),
                           )
                         ],
                       ),

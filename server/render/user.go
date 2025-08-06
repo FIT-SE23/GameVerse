@@ -94,6 +94,7 @@ func verifyUserToken(c echo.Context) (string, error) {
 	if len(rawToken) < 2 {
 		return "", errors.New("Invalid Authorization header")
 	}
+
 	token := rawToken[1]
 	raw, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		gvSecret := os.Getenv("GV_SERECT")
