@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'window_buttons.dart';
 
 import 'navigation_topbar.dart';
-import 'page_footer.dart';
+// import 'page_footer.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;
@@ -35,25 +35,31 @@ class MainLayout extends StatelessWidget {
           NavigationTopbar(),
           
           Expanded(
-            child: CustomScrollView(
-              slivers: [
-                // Main content (this changes based on route)
-                SliverToBoxAdapter(
-                  // Minimum height to ensure that the footer is always at the bottom
-                  // even if the content is short
-                  child: Container(
-                    constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height, // Adjust as needed
-                    ),
-                    child: child,
-                  ),
-                ),
-                // Footer
-                SliverToBoxAdapter(
-                  child: PageFooter(),
-                ),
-              ],
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height, // Adjust as needed
+              ),
+              child: child,
             ),
+            // CustomScrollView(
+            //   slivers: [
+            //     // Main content (this changes based on route)
+            //     SliverToBoxAdapter(
+            //       // Minimum height to ensure that the footer is always at the bottom
+            //       // even if the content is short
+            //       child: Container(
+            //         constraints: BoxConstraints(
+            //           minHeight: MediaQuery.of(context).size.height, // Adjust as needed
+            //         ),
+            //         child: child,
+            //       ),
+            //     ),
+            //     // Footer
+            //     // SliverToBoxAdapter(
+            //     //   child: PageFooter(),
+            //     // ),
+            //   ],
+            // ),
           ),
         ],
       ),

@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import '../view_model/game_details_viewmodel.dart';
 import 'game_details_layout.dart';
 
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+
 
 class GameDetailsScreen extends StatefulWidget {
   final String gameId;
@@ -33,7 +35,12 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
     return SingleChildScrollView(
       child: Consumer<GameDetailsViewModel>(
         builder: (context, gameDetailsViewModel, child) {
-          return GameDetailsLayout(gameId: widget.gameId);
+          return Column(
+            children: [
+              GameDetailsLayout(gameId: widget.gameId),
+              PageFooter(),
+            ],
+          );
         },
       ),
     );
