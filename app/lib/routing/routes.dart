@@ -9,11 +9,14 @@ abstract final class Routes {
   static const profile = '/profile';
   static const settings = '/settings';
   static const about = '/about';
+  static const transactions = '/transactions';
   static const contact = '/contact';
+  static const authCallback = '/auth-callback';
+  static const operatorPanel = '/operator-panel';
+  static const faqs = '/faqs';
+  // Legal routes
   static const privacyPolicy = '/privacy-policy';
   static const termsOfService = '/terms-of-service';
-  static const faqs = '/faqs';
-  static const authCallback = '/auth-callback';
-  static const transactions = '/transactions';
-  static const operatorPanel = '/operator-panel';
+  static const cookiesPolicy = '/cookies-policy';
+  static const eula = '/eula';
 }

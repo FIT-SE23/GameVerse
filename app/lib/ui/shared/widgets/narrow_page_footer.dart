@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gameverse/routing/routes.dart';
 
 class NarrowPageFooter extends StatelessWidget {
   const NarrowPageFooter({
@@ -97,18 +98,10 @@ class NarrowPageFooter extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        _buildFooterLink(context, 'Home', () {
-                          context.push('/');
-                        }),
-                        _buildFooterLink(context, 'Library', () {
-                          context.push('/library');
-                        }),
-                        _buildFooterLink(context, 'Forums', () {
-                          context.push('/forums');
-                        }),
-                        _buildFooterLink(context, 'Downloads', () {
-                          context.push('/downloads');
-                        }),
+                        _buildFooterLink(context, 'Home', Routes.home),
+                        _buildFooterLink(context, 'Library', Routes.library),
+                        _buildFooterLink(context, 'Forums', Routes.forums),
+                        _buildFooterLink(context, 'Search', Routes.advanceSearch),
                       ],
                     ),
                   )
@@ -139,10 +132,10 @@ class NarrowPageFooter extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        _buildFooterLink(context, 'Terms of Service', () {}),
-                        _buildFooterLink(context, 'Privacy Policy', () {}),
-                        _buildFooterLink(context, 'Cookie Policy', () {}),
-                        _buildFooterLink(context, 'EULA', () {}),
+                        _buildFooterLink(context, 'Terms of Service', Routes.termsOfService),
+                        _buildFooterLink(context, 'Privacy Policy', Routes.privacyPolicy),
+                        _buildFooterLink(context, 'Cookie Policy', Routes.cookiesPolicy),
+                        _buildFooterLink(context, 'EULA', Routes.eula),
                       ],
                     ),
                   )
@@ -173,8 +166,8 @@ class NarrowPageFooter extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        _buildFooterLink(context, 'About Us', () {}),
-                        _buildFooterLink(context, 'FAQs', () {}),
+                        _buildFooterLink(context, 'About Us', Routes.about),
+                        _buildFooterLink(context, 'FAQs', Routes.faqs),
                       ],
                     ),
                   )
@@ -196,11 +189,13 @@ class NarrowPageFooter extends StatelessWidget {
     );
   }
   
-  Widget _buildFooterLink(BuildContext context, String title, VoidCallback onPressed) {
+  Widget _buildFooterLink(BuildContext context, String title, String routes) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: TextButton(
-        onPressed: onPressed,
+        onPressed: () {
+          context.push(routes);
+        },
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           minimumSize: const Size(0, 32),
