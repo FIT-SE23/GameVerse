@@ -12,7 +12,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   email: json['email'] as String,
   avatar: json['avatar'] as String?,
   bio: json['bio'] as String?,
-  typeUser: json['typeUser'] as String?,
+  type: json['type'] as String?,
   ownedGamesID: (json['ownedGamesID'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
@@ -31,7 +31,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'email': instance.email,
       'avatar': instance.avatar,
       'bio': instance.bio,
-      'typeUser': instance.typeUser,
+      'type': instance.type,
       'ownedGamesID': instance.ownedGamesID,
       'favoriteGamesID': instance.favoriteGamesID,
       'installedGamesID': instance.installedGamesID,

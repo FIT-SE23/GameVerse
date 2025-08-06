@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get username; String get email; String? get avatar; String? get bio; String? get typeUser;// Optional fields for user preferences
+ String get id; String get username; String get email; String? get avatar; String? get bio; String? get type;// e.g., 'user', 'operator'
+// Optional fields for user preferences
  List<String>? get ownedGamesID; List<String>? get favoriteGamesID; List<String>? get installedGamesID;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -29,16 +30,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.typeUser, typeUser) || other.typeUser == typeUser)&&const DeepCollectionEquality().equals(other.ownedGamesID, ownedGamesID)&&const DeepCollectionEquality().equals(other.favoriteGamesID, favoriteGamesID)&&const DeepCollectionEquality().equals(other.installedGamesID, installedGamesID));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.ownedGamesID, ownedGamesID)&&const DeepCollectionEquality().equals(other.favoriteGamesID, favoriteGamesID)&&const DeepCollectionEquality().equals(other.installedGamesID, installedGamesID));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,email,avatar,bio,typeUser,const DeepCollectionEquality().hash(ownedGamesID),const DeepCollectionEquality().hash(favoriteGamesID),const DeepCollectionEquality().hash(installedGamesID));
+int get hashCode => Object.hash(runtimeType,id,username,email,avatar,bio,type,const DeepCollectionEquality().hash(ownedGamesID),const DeepCollectionEquality().hash(favoriteGamesID),const DeepCollectionEquality().hash(installedGamesID));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, email: $email, avatar: $avatar, bio: $bio, typeUser: $typeUser, ownedGamesID: $ownedGamesID, favoriteGamesID: $favoriteGamesID, installedGamesID: $installedGamesID)';
+  return 'UserModel(id: $id, username: $username, email: $email, avatar: $avatar, bio: $bio, type: $type, ownedGamesID: $ownedGamesID, favoriteGamesID: $favoriteGamesID, installedGamesID: $installedGamesID)';
 }
 
 
@@ -49,7 +50,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String username, String email, String? avatar, String? bio, String? typeUser, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
+ String id, String username, String email, String? avatar, String? bio, String? type, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
 });
 
 
@@ -66,14 +67,14 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? email = null,Object? avatar = freezed,Object? bio = freezed,Object? typeUser = freezed,Object? ownedGamesID = freezed,Object? favoriteGamesID = freezed,Object? installedGamesID = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? email = null,Object? avatar = freezed,Object? bio = freezed,Object? type = freezed,Object? ownedGamesID = freezed,Object? favoriteGamesID = freezed,Object? installedGamesID = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
-as String?,typeUser: freezed == typeUser ? _self.typeUser : typeUser // ignore: cast_nullable_to_non_nullable
+as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,ownedGamesID: freezed == ownedGamesID ? _self.ownedGamesID : ownedGamesID // ignore: cast_nullable_to_non_nullable
 as List<String>?,favoriteGamesID: freezed == favoriteGamesID ? _self.favoriteGamesID : favoriteGamesID // ignore: cast_nullable_to_non_nullable
 as List<String>?,installedGamesID: freezed == installedGamesID ? _self.installedGamesID : installedGamesID // ignore: cast_nullable_to_non_nullable
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? type,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.typeUser,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
+return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.type,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? type,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.typeUser,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
+return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.type,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? typeUser,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String email,  String? avatar,  String? bio,  String? type,  List<String>? ownedGamesID,  List<String>? favoriteGamesID,  List<String>? installedGamesID)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.typeUser,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
+return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that.type,_that.ownedGamesID,_that.favoriteGamesID,_that.installedGamesID);case _:
   return null;
 
 }
@@ -218,7 +219,7 @@ return $default(_that.id,_that.username,_that.email,_that.avatar,_that.bio,_that
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.username, required this.email, this.avatar, this.bio, this.typeUser, final  List<String>? ownedGamesID, final  List<String>? favoriteGamesID, final  List<String>? installedGamesID}): _ownedGamesID = ownedGamesID,_favoriteGamesID = favoriteGamesID,_installedGamesID = installedGamesID;
+  const _UserModel({required this.id, required this.username, required this.email, this.avatar, this.bio, this.type, final  List<String>? ownedGamesID, final  List<String>? favoriteGamesID, final  List<String>? installedGamesID}): _ownedGamesID = ownedGamesID,_favoriteGamesID = favoriteGamesID,_installedGamesID = installedGamesID;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String id;
@@ -226,9 +227,11 @@ class _UserModel implements UserModel {
 @override final  String email;
 @override final  String? avatar;
 @override final  String? bio;
-@override final  String? typeUser;
+@override final  String? type;
+// e.g., 'user', 'operator'
 // Optional fields for user preferences
  final  List<String>? _ownedGamesID;
+// e.g., 'user', 'operator'
 // Optional fields for user preferences
 @override List<String>? get ownedGamesID {
   final value = _ownedGamesID;
@@ -270,16 +273,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.typeUser, typeUser) || other.typeUser == typeUser)&&const DeepCollectionEquality().equals(other._ownedGamesID, _ownedGamesID)&&const DeepCollectionEquality().equals(other._favoriteGamesID, _favoriteGamesID)&&const DeepCollectionEquality().equals(other._installedGamesID, _installedGamesID));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._ownedGamesID, _ownedGamesID)&&const DeepCollectionEquality().equals(other._favoriteGamesID, _favoriteGamesID)&&const DeepCollectionEquality().equals(other._installedGamesID, _installedGamesID));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,email,avatar,bio,typeUser,const DeepCollectionEquality().hash(_ownedGamesID),const DeepCollectionEquality().hash(_favoriteGamesID),const DeepCollectionEquality().hash(_installedGamesID));
+int get hashCode => Object.hash(runtimeType,id,username,email,avatar,bio,type,const DeepCollectionEquality().hash(_ownedGamesID),const DeepCollectionEquality().hash(_favoriteGamesID),const DeepCollectionEquality().hash(_installedGamesID));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, email: $email, avatar: $avatar, bio: $bio, typeUser: $typeUser, ownedGamesID: $ownedGamesID, favoriteGamesID: $favoriteGamesID, installedGamesID: $installedGamesID)';
+  return 'UserModel(id: $id, username: $username, email: $email, avatar: $avatar, bio: $bio, type: $type, ownedGamesID: $ownedGamesID, favoriteGamesID: $favoriteGamesID, installedGamesID: $installedGamesID)';
 }
 
 
@@ -290,7 +293,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String username, String email, String? avatar, String? bio, String? typeUser, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
+ String id, String username, String email, String? avatar, String? bio, String? type, List<String>? ownedGamesID, List<String>? favoriteGamesID, List<String>? installedGamesID
 });
 
 
@@ -307,14 +310,14 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? email = null,Object? avatar = freezed,Object? bio = freezed,Object? typeUser = freezed,Object? ownedGamesID = freezed,Object? favoriteGamesID = freezed,Object? installedGamesID = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? email = null,Object? avatar = freezed,Object? bio = freezed,Object? type = freezed,Object? ownedGamesID = freezed,Object? favoriteGamesID = freezed,Object? installedGamesID = freezed,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
-as String?,typeUser: freezed == typeUser ? _self.typeUser : typeUser // ignore: cast_nullable_to_non_nullable
+as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,ownedGamesID: freezed == ownedGamesID ? _self._ownedGamesID : ownedGamesID // ignore: cast_nullable_to_non_nullable
 as List<String>?,favoriteGamesID: freezed == favoriteGamesID ? _self._favoriteGamesID : favoriteGamesID // ignore: cast_nullable_to_non_nullable
 as List<String>?,installedGamesID: freezed == installedGamesID ? _self._installedGamesID : installedGamesID // ignore: cast_nullable_to_non_nullable

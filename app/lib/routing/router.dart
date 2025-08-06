@@ -8,7 +8,6 @@ import 'package:gameverse/ui/game_detail/widgets/game_details_screen.dart';
 import 'package:gameverse/ui/home/widgets/home_screen.dart';
 import 'package:gameverse/ui/library/widgets/library_screen.dart';
 import 'package:gameverse/ui/forums/widgets/forums_screen.dart';
-import 'package:gameverse/ui/downloads/widgets/downloads_screen.dart';
 import 'package:gameverse/ui/shared/widgets/main_layout.dart';
 import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
 import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
@@ -64,10 +63,6 @@ class AppRouter {
             GoRoute(
               path: Routes.forums,
               builder: (context, state) => const ForumsScreen(),
-            ),
-            GoRoute(
-              path: Routes.downloads,
-              builder: (context, state) => const DownloadsScreen(),
             ),
             GoRoute(
               path: Routes.settings,

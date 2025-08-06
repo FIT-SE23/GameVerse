@@ -12,7 +12,7 @@ abstract class UserModel with _$UserModel {
     required String email,
     String? avatar,
     String? bio,
-    String? typeUser,
+    String? type, // e.g., 'user', 'operator'
 
     // Optional fields for user preferences
     List<String>? ownedGamesID,

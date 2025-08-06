@@ -143,7 +143,6 @@ class MobileNavbar extends StatelessWidget {
                       _buildMobileNavItem(context, '/', 'Home', Icons.home, currentLocation),
                       _buildMobileNavItem(context, '/library', 'Library', Icons.games, currentLocation),
                       _buildMobileNavItem(context, '/forums', 'Forums', Icons.forum, currentLocation),
-                      _buildMobileNavItem(context, '/downloads', 'Downloads', Icons.download, currentLocation),
                       
                       const Divider(height: 32),
                       
@@ -379,8 +378,7 @@ class MobileNavbar extends StatelessWidget {
           ),
         ),
         onTap: () {
-          Navigator.pop(context);
-          context.go(route);
+          context.push(route);
         },
       ),
     );

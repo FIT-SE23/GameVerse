@@ -6,7 +6,6 @@ abstract final class Routes {
   static const library = '/library';
   static const advanceSearch = '/advance-search';
   static const forums = '/forums';
-  static const downloads = '/downloads';
   static const profile = '/profile';
   static const settings = '/settings';
   static const about = '/about';
@@ -16,4 +15,5 @@ abstract final class Routes {
   static const faqs = '/faqs';
   static const authCallback = '/auth-callback';
   static const transactions = '/transactions';
+  static const operatorPanel = '/operator-panel';
 }
