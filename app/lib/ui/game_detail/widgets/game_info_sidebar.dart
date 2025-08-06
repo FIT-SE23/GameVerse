@@ -8,10 +8,10 @@ import 'package:gameverse/config/app_theme.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 
-class SidePanel extends StatelessWidget {
+class GameInfoSidebar extends StatelessWidget {
   final GameModel game;
 
-  const SidePanel({
+  const GameInfoSidebar({
     super.key,
     required this.game,
   });

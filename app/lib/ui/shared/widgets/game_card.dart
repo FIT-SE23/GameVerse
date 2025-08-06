@@ -36,7 +36,7 @@ class GameCard extends StatelessWidget {
       // clipBehavior: Clip.antiAlias,
       child: InkWell(
         hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
+        // splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
           context.push('/game-details/${game.gameId}');
