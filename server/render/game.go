@@ -258,14 +258,20 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 }
 
 func getGame(c echo.Context, client *supabase.Client) error {
-	fmt.Println(c.Response().Header())
-	// userid := c.Get("userid").(*jwt.Token)
-	// claims := userid.Claims.(jwt.MapClaims)
+	columns := "*, Category(categoryname), Resource(url, type), Game_Sale(*)"
+	_, err := verifyUserToken(c)
+	if err == nil {
+		columns += ", User_Game(status)"
+	}
+
 	gameID := c.Param("id")
-	// userid := c.Param("id")
 
 	// TODO: check game status if user already signed in
-	rep, _, err := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Eq("gameid", gameID).ExecuteString()
+	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID)
+	if err == nil {
+		filter = filter.In("Resource.type", []string{"media_header", "media"})
+	}
+	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -287,7 +293,7 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		err = nil
 	}
 
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").Limit(limit, "")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Limit(limit, "")
 
 	var rep string
 	if sortBy == "price" {
@@ -305,7 +311,7 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		for _, info := range raw {
 			gameids = append(gameids, info["gameid"])
 		}
-		rep, _, err = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).ExecuteString()
+		rep, _, err = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
 		// return jsonResponse(c, http.StatusOK, "", resp)
 	} else if sortBy == "date" {
 		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
@@ -498,7 +504,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 }
 
 func recommendGame(c echo.Context, client *supabase.Client) error {
-	err := verifyUserToken(c)
+	_, err := verifyUserToken(c)
 	if err != nil {
 		return err
 	}
@@ -509,7 +515,6 @@ func recommendGame(c echo.Context, client *supabase.Client) error {
 		"incr": incr,
 		"id":   gameId,
 	}
-	fmt.Println(params)
-	resp := client.Rpc("gamerecommend", "", params)
+	resp := client.Rpc("recommendgame", "", params)
 	return jsonResponse(c, http.StatusOK, "", resp)
 }
