@@ -71,7 +71,7 @@ class DesktopNavbar extends StatelessWidget {
                 _buildNavItem(context, '/operator-panel', 'Operator Panel', currentLocation),
             ],
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
           // Search bar
           Container(
             width: 300,
