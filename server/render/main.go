@@ -224,5 +224,47 @@ func main() {
 		}
 		return deletePost(c, client, userid)
 	})
+
+	e.GET("/post/:id/comment", func(c echo.Context) error {
+		postid := c.Param("id")
+		return listComments(c, client, postid)
+	})
+
+	e.POST("/comment", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return addComment(c, client, userid)
+	})
+
+	e.GET("/comment/:id", func(c echo.Context) error {
+		return getComment(c, client)
+	})
+
+	e.PATCH("/comment/:id", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return updateComment(c, client, userid)
+	})
+
+	e.POST("/recommend/comment", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return recommendComment(c, client, userid)
+	})
+
+	e.DELETE("/comment/:id", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return deleteComment(c, client, userid)
+	})
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

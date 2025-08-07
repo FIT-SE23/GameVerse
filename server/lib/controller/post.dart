@@ -161,19 +161,16 @@ Future<Response> listPosts(String title, String sortBy, {int limit = 20}) async 
   return Response(code: response.code, message: response.message, data: posts);
 }
 
-Future<Response> getOwnedPosts(String userId, {int limit = 20}) async {
+Future<Response> listComments(String postId, String sortBy, {int limit = 20}) async {
   final raw = await http.get(
-    Uri.parse(serverURL + "user/$userId/post?limit=$limit")
+    Uri.parse(serverURL +
+        "post/$postId/comment?sortby=$sortBy&limit=$limit")
   );
 
-  var jsonBody;
-  try {
-    jsonBody = jsonDecode(raw.body);
-  } on FormatException catch (e) {
-    return Response.fromJson(400, {"message": e.message});
-  }
+  final response = Response.fromJson(
+    raw.statusCode, 
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 
-  final response = Response.fromJson(raw.statusCode, jsonBody as Map<String, dynamic>);
-  final posts = (response.data as List).map((e) => Post.fromJson(e)).toList();
-  return Response(code: response.code, message: response.message, data: posts);
+  return response;
 }

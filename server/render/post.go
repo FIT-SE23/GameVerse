@@ -212,7 +212,7 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 	case "date":
 		filter = filter.Order("postdate", &postgrest.OrderOpts{Ascending: false})
 	default:
-		filter = filter.Order("postdate", &postgrest.OrderOpts{Ascending: false})
+		filter = filter.Order("recommend", &postgrest.OrderOpts{Ascending: false})
 	}
 
 	rep, _, err := filter.ExecuteString()
@@ -229,7 +229,8 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 	return jsonResponse(c, http.StatusOK, "", posts)
 }
 
-func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error {
+func listComments(c echo.Context, client *supabase.Client, postid string) error {
+	sortBy := c.QueryParam("sortby")
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
 	if err != nil || limit <= 0 {
 		limit = 10
@@ -238,23 +239,29 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 		limit = 100
 	}
 
-	rep, _, err := client.
-		From("Post").
-		Select("*", "", false).
-		Eq("userid", userid).
-		Order("postdate", &postgrest.OrderOpts{Ascending: false}).
-		Limit(limit, "").
-		ExecuteString()
+	filter := client.
+		From("Comment").
+		Select("*, User(username)", "", false).
+		Eq("postid", postid).
+		Limit(limit, "")
 
+	switch sortBy {
+	case "date":
+		filter = filter.Order("commentdate", &postgrest.OrderOpts{Ascending: false})
+	default:
+		filter = filter.Order("recommend", &postgrest.OrderOpts{Ascending: false})
+	}
+
+	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	var posts []map[string]any
-	err = json.Unmarshal([]byte(rep), &posts)
+	var comments []map[string]any
+	err = json.Unmarshal([]byte(rep), &comments)
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse posts", "")
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse comments", "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", posts)
+	return jsonResponse(c, http.StatusOK, "", comments)
 }
