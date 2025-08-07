@@ -497,7 +497,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
-func upvoteGame(c echo.Context, client *supabase.Client, userID string) error {
+func recommendGame(c echo.Context, client *supabase.Client, userID string) error {
 	gameID := c.FormValue("gameid")
 	if gameID == "" {
 		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
@@ -509,7 +509,7 @@ func upvoteGame(c echo.Context, client *supabase.Client, userID string) error {
 	}
 
 	_, _, err := client.
-		From("Game_Upvote").
+		From("Game_Recommend").
 		Select("*", "", false).
 		Match(vote).
 		Single().
@@ -517,22 +517,22 @@ func upvoteGame(c echo.Context, client *supabase.Client, userID string) error {
 
 	if err == nil {
 		_, _, err = client.
-			From("Game_Upvote").
+			From("Game_Recommend").
 			Delete("", "").
 			Match(vote).
 			ExecuteString()
 		if err != nil {
-			return jsonResponse(c, http.StatusInternalServerError, "Failed to remove upvote", err.Error())
+			return jsonResponse(c, http.StatusInternalServerError, "Failed to remove recommend", err.Error())
 		}
 		return jsonResponse(c, http.StatusOK, "", "")
 	}
 
 	_, _, err = client.
-		From("Game_Upvote").
+		From("Game_Recommend").
 		Insert(vote, false, "", "", "").
 		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to add upvote", err.Error())
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to add recommend", err.Error())
 	}
 	return jsonResponse(c, http.StatusOK, "", "")
 }

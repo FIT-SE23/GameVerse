@@ -2,6 +2,7 @@ import "package:gameverse_server/controller/game.dart";
 import "package:gameverse_server/controller/user.dart";
 import "package:gameverse_server/controller/publisher.dart";
 import "package:gameverse_server/controller/payment.dart";
+import "package:gameverse_server/controller/post.dart";
 
 void main() async {
   if (false) {

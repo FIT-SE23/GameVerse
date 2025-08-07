@@ -58,6 +58,10 @@ func main() {
 		userid := c.Param("id")
 		return getGamesWithStatus(c, client, userid, "In wishlist")
 	})
+	e.GET("/user/:id/post", func(c echo.Context) error {
+		userid := c.Param("id")
+		return getOwnedPost(c, client, userid)
+	})
 	e.POST("/user/cart", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
@@ -134,6 +138,10 @@ func main() {
 			{
 				return searchGames(c, client)
 			}
+		case "post":
+			{
+				return searchPosts(c, client)
+			}
 		}
 
 		return jsonResponse(c, http.StatusBadRequest, "Unsupported entity", "")
@@ -168,14 +176,47 @@ func main() {
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {
-		userid, err = verifyUserToken(c)
+		userid, err := verifyUserToken(c)
 		if err != nil {
-			// TODO: Redirect to login page
 			return err
 		}
-
 		return recommendGame(c, client, userid)
 	})
 
+	e.POST("/post", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return addPost(c, client, userid)
+	})
+
+	e.GET("/post/:id", func(c echo.Context) error {
+		return getPost(c, client)
+	})
+
+	e.PATCH("/post/:id", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return updatePost(c, client, userid)
+	})
+
+	e.POST("/recommend/post", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return recommendPost(c, client, userid)
+	})
+
+	e.DELETE("/post/:id", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return deletePost(c, client, userid)
+	})
 	e.Logger.Fatal(e.Start(":1323"))
 }
