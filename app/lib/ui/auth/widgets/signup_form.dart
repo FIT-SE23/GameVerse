@@ -89,6 +89,14 @@ class _SignUpFormState extends State<SignupForm> {
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
                 borderRadius: BorderRadius.zero
               ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -112,6 +120,14 @@ class _SignUpFormState extends State<SignupForm> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
                 borderRadius: BorderRadius.zero
               ),
             ),
@@ -151,6 +167,14 @@ class _SignUpFormState extends State<SignupForm> {
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
                 borderRadius: BorderRadius.zero
               ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             obscureText: !_isPasswordVisible,
             validator: (value) {
@@ -185,6 +209,14 @@ class _SignUpFormState extends State<SignupForm> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
                 borderRadius: BorderRadius.zero
               ),
             ),

@@ -86,6 +86,14 @@ class _LoginFormState extends State<LoginForm> {
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
                 borderRadius: BorderRadius.zero
               ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
@@ -121,6 +129,14 @@ class _LoginFormState extends State<LoginForm> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
                 borderRadius: BorderRadius.zero
               ),
             ),
