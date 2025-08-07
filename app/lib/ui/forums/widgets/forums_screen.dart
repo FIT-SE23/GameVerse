@@ -90,7 +90,7 @@ class _ForumsScreenState extends State<ForumsScreen> {
                           hintText: 'Search game forums...',
                           prefixIcon: Icon(
                             Icons.search,
-                            color: AppTheme.currentThemeColors(theme.brightness).getText
+                            color: theme.colorScheme.onSurfaceVariant
                           ),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? IconButton(
