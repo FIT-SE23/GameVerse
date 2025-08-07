@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
+import 'package:gameverse/config/app_theme.dart';
+
 class SignupForm extends StatefulWidget {
   final Function(String) _showErrorSnackBar;
   const SignupForm({super.key, required Function(String) showErrorSnackBar})
@@ -65,6 +67,8 @@ class _SignUpFormState extends State<SignupForm> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -73,9 +77,18 @@ class _SignUpFormState extends State<SignupForm> {
           // Name field
           TextFormField(
             controller: _nameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'User Name',
               prefixIcon: Icon(Icons.person),
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -89,9 +102,18 @@ class _SignUpFormState extends State<SignupForm> {
           // Email field
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Email',
               prefixIcon: Icon(Icons.email),
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
@@ -120,6 +142,15 @@ class _SignUpFormState extends State<SignupForm> {
                   });
                 },
               ),
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             obscureText: !_isPasswordVisible,
             validator: (value) {
@@ -146,6 +177,15 @@ class _SignUpFormState extends State<SignupForm> {
                     _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                   });
                 },
+              ),
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
               ),
             ),
             obscureText: !_isConfirmPasswordVisible,
@@ -213,7 +253,7 @@ class _SignUpFormState extends State<SignupForm> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isLoading ? null : _handleRegister,
-              child: const Text('Register'),
+              child: const Text('Sign up'),
             ),
           ),
         ],

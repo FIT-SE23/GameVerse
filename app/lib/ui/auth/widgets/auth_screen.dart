@@ -8,6 +8,8 @@ import 'signup_form.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 class AuthScreen extends StatefulWidget {
   // Login tab or Register tab
   final String initialTab;
@@ -33,8 +35,8 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     // Set initial tab based on widget parameter
-    if (widget.initialTab == 'register') {
-      _tabController.index = 1; // Switch to Register tab
+    if (widget.initialTab == 'signup') {
+      _tabController.index = 1; // Switch to Sign up tab
     } else {
       _tabController.index = 0; // Default to Login tab
     }
@@ -85,6 +87,23 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
+    final tabList = const [
+      Tab(text: 'Log in'),
+      Tab(text: 'Sign up'),
+    ];
+
+    final formList = [
+      LoginForm(showErrorSnackBar: _showErrorSnackBar),
+      SignupForm(showErrorSnackBar: _showErrorSnackBar),
+    ];
+
+    String logoAddr;
+    if (Theme.brightnessOf(context) == Brightness.dark) {
+      logoAddr = 'assets/logo/logo_vertical_white.svg';
+    } else {
+      logoAddr = 'assets/logo/logo_vertical_black.svg';
+    }
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -93,21 +112,23 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
               constraints: const BoxConstraints(maxWidth: 500),
               padding: const EdgeInsets.all(24),
               child: Card(
-                elevation: 8,
+                shape: RoundedRectangleBorder(),
+                shadowColor: Colors.transparent,
                 child: Padding(
                   padding: const EdgeInsets.all(32),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Logo and title
-                      Text(
-                        'GameVerse',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
+                      const SizedBox(height: 32),
+                      Center(
+                        child: Transform.scale(
+                          scale: 2.4,
+                          origin: Offset(0, 0),
+                          child: SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 80,)
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 40),
                       Text(
                         'Welcome to the ultimate gaming platform',
                         style: theme.textTheme.bodyMedium,
@@ -118,24 +139,39 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
                       // Tab bar for Login/Register
                       TabBar(
                         controller: _tabController,
-                        tabs: const [
-                          Tab(text: 'Login'),
-                          Tab(text: 'Register'),
-                        ],
+                        onTap: (int index) {
+                          setState(() {});
+                        },
+                        tabs: tabList,
                       ),
                       const SizedBox(height: 16),
                       
                       // Tab content
-                      SizedBox(
-                        height: 410,
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            LoginForm(showErrorSnackBar: _showErrorSnackBar),
-                            SignupForm(showErrorSnackBar: _showErrorSnackBar),
-                          ],
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (Widget child, Animation<double> animation) {
+                          // print('index: ${_tabController.index}');
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        child: Container(
+                          key: ValueKey(_tabController.index),
+                          constraints: BoxConstraints(minHeight: 360),
+                          child: formList[_tabController.index],
                         ),
                       ),
+                      // SizedBox(
+                      //   height: 410,
+                      //   child: TabBarView(
+                      //     controller: _tabController,
+                      //     children: [
+                      //       LoginForm(showErrorSnackBar: _showErrorSnackBar),
+                      //       SignupForm(showErrorSnackBar: _showErrorSnackBar),
+                      //     ],
+                      //   ),
+                      // ),
                       
                       const SizedBox(height: 24),
                       
