@@ -48,6 +48,20 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
     return SingleChildScrollView(
       child: Consumer<LibraryViewModel>(
         builder: (context, libraryViewModel, child) {
+          final tabList = const [
+            Tab(text: 'All Games'),
+            Tab(text: 'Downloaded'),
+            Tab(text: 'Favorites'),
+            Tab(text: 'Recently Played'),
+          ];
+
+          final gameLists = [
+            libraryViewModel.filteredGames,
+            libraryViewModel.downloadedGames,
+            libraryViewModel.favoriteGames,
+            libraryViewModel.recentGames
+          ];
+
           return Column(
             children: [
               Padding(
@@ -144,7 +158,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                                 hintText: 'Search your games...',
                                 prefixIcon: Icon(
                                   Icons.search,
-                                  color: AppTheme.currentThemeColors(theme.brightness).getText
+                                  color: theme.colorScheme.onSurfaceVariant
                                 ),
                                 suffixIcon: _searchController.text.isNotEmpty
                                     ? IconButton(
@@ -209,13 +223,11 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                             controller: _tabController,
                             isScrollable: true,
                             tabAlignment: TabAlignment.start,
-                            onTap: libraryViewModel.setActiveCategory,
-                            tabs: const [
-                              Tab(text: 'All Games'),
-                              Tab(text: 'Downloaded'),
-                              Tab(text: 'Favorites'),
-                              Tab(text: 'Recently Played'),
-                            ],
+                            // onTap: libraryViewModel.setActiveCategory,
+                            onTap: (int index) {
+                              setState(() {});
+                            },
+                            tabs: tabList,
                             labelColor: AppTheme.currentThemeColors(theme.brightness).getCyan,
                             unselectedLabelColor: AppTheme.currentThemeColors(theme.brightness).getText,
                           ),
@@ -260,26 +272,31 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                         : libraryViewModel.filteredGames.isEmpty
                             ? _buildEmptyState(context)
                             : AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              transitionBuilder: (Widget child, Animation<double> animation) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              child: IndexedStack(
-                                key: ValueKey(_tabController.index),
-                                // controller: _tabController,
-                                // physics: const NeverScrollableScrollPhysics(),
-                                index: _tabController.index,
-                                children: [
-                                  _buildGamesList(libraryViewModel.filteredGames, libraryViewModel.viewMode),
-                                  _buildGamesList(libraryViewModel.downloadedGames, libraryViewModel.viewMode),
-                                  _buildGamesList(libraryViewModel.favoriteGames, libraryViewModel.viewMode),
-                                  _buildGamesList(libraryViewModel.recentGames, libraryViewModel.viewMode),
-                                ],
+                                duration: const Duration(milliseconds: 300),
+                                transitionBuilder: (Widget child, Animation<double> animation) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                                child: Container(
+                                  key: ValueKey(_tabController.index),
+                                  constraints: BoxConstraints(minHeight: 320),
+                                  child: _buildGamesList(gameLists[_tabController.index], libraryViewModel.viewMode),
+                                ),
+                                // child: IndexedStack(
+                                //   key: ValueKey(_tabController.index),
+                                //   // controller: _tabController,
+                                //   // physics: const NeverScrollableScrollPhysics(),
+                                //   index: _tabController.index,
+                                //   children: [
+                                //     _buildGamesList(libraryViewModel.filteredGames, libraryViewModel.viewMode),
+                                //     _buildGamesList(libraryViewModel.downloadedGames, libraryViewModel.viewMode),
+                                //     _buildGamesList(libraryViewModel.favoriteGames, libraryViewModel.viewMode),
+                                //     _buildGamesList(libraryViewModel.recentGames, libraryViewModel.viewMode),
+                                //   ],
+                                // ),
                               ),
-                            ),
                 
                     // Load more button
                     if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)

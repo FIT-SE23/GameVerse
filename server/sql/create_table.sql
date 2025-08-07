@@ -35,7 +35,7 @@ create table if not exists "Game" (
   Name text unique,
   Description text,
   Price float4 Check (Price > 0.0),
-  Upvote int4,
+  Recommend int4,
   ReleaseDate date default now(),
 
   foreign key (PublisherID) references "Publisher" (PublisherID) on delete cascade
@@ -92,8 +92,10 @@ create table if not exists "Post" (
   PostID uuid default gen_random_uuid() primary key,
   UserID uuid not null,
   ForumID uuid not null,
+  Title text not null,
   Content text,
-  Upvote int4,
+  Recommend int4,
+  Comments int4,
   PostDate timestamp default now(),
 
   foreign key (UserID) references "User" (UserID) on delete cascade,
@@ -101,16 +103,15 @@ create table if not exists "Post" (
 );
 
 create table if not exists "Comment" (
-  CommentID uuid default gen_random_uuid(),
-  UserID uuid,
-  PostID uuid,
+  CommentID uuid default gen_random_uuid() primary key,
+  UserID uuid not null,
+  PostID uuid not null,
   Content text,
-  Upvote int4,
+  Recommend int4,
   CommentDate timestamp default now(),
 
-  primary key (CommentID),
   foreign key (UserID) references "User" (UserID) on delete cascade,
-  foreign key (ForumID) references "Forum" (ForumID) on delete cascade
+  foreign key (PostID) references "Post" (PostID) on delete cascade
 );
 
 create table if not exists "Transaction" (
@@ -137,7 +138,7 @@ create table if not exists "User_Game" (
   foreign key (UserID) references "User" (UserID) on delete cascade
 );
 
-create table if not exists "Game_Upvote" (
+create table if not exists "Game_Recommend" (
   UserID uuid,
   GameID uuid,
   
@@ -146,7 +147,7 @@ create table if not exists "Game_Upvote" (
   foreign key (GameID) references "Game"(GameID) on delete cascade
 );
 
-create table if not exists "Post_Upvote" (
+create table if not exists "Post_Recommend" (
   UserID uuid,
   PostID uuid,
 
@@ -155,7 +156,7 @@ create table if not exists "Post_Upvote" (
   foreign key (PostID) references "Post"(PostID) on delete cascade
 );
 
-create table if not exists "Comment_Upvote" (
+create table if not exists "Comment_Recommend" (
   UserID uuid,
   CommentID uuid,
 

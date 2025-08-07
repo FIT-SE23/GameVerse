@@ -92,7 +92,7 @@ class DesktopNavbar extends StatelessWidget {
                   ),
                   onTap: () => controller.openView(),
                   onChanged: (_) => controller.openView(),
-                  leading: Icon(Icons.search, size: 20, color: AppTheme.currentThemeColors(theme.brightness).getText),
+                  leading: Icon(Icons.search, size: 20, color: theme.colorScheme.onSurfaceVariant),
                   hintText: 'Search games...',
                   hintStyle: const WidgetStatePropertyAll<TextStyle>(
                     TextStyle(color: Color.fromARGB(179, 150, 150, 150), fontSize: 14),

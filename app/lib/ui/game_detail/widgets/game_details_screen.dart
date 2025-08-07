@@ -68,33 +68,56 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<GameDetailsViewModel>(context, listen: false);
-    final status = viewModel.state;
+    // final viewModel = Provider.of<GameDetailsViewModel>(context, listen: false);
+    // final status = viewModel.state;
     final theme = Theme.of(context);
 
     final double sidebarWidth = 280;
 
     return Consumer<GameDetailsViewModel>(
       builder: (context, gameDetailsViewModel, child) {
-        return Stack(
-          children: [
-            SingleChildScrollView(
-              controller: _scrollController,
+        if (gameDetailsViewModel.state == GameDetailsState.loading || gameDetailsViewModel.state == GameDetailsState.initial) {
+          return const SizedBox(
+            height: 640,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        } else if (gameDetailsViewModel.state == GameDetailsState.error) {
+          return SizedBox(
+            height: 640,
+            child: Center(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    // height: 2000,
-                    child: Stack(
-                      children: [
-                        // Game's key art
-                        if (status == GameDetailsState.success)
+                  Text(gameDetailsViewModel.errorMessage),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => gameDetailsViewModel.loadGameDetails(widget.gameId),
+                    child: const Text('Retry'),
+                  )
+                ],
+              ),
+            )
+          );
+        } else {
+          // state == success
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      // height: 2000,
+                      child: Stack(
+                        children: [
+                          // Game's key art
                           Positioned(
                             top: 0,
                             left: 0,
                             right: 0,
                             child: Image.network(
-                              viewModel.gameDetail!.headerImage,
+                              gameDetailsViewModel.gameDetail!.headerImage,
                               width: double.infinity,
                               height: backgroundKeyArtHeight,
                               fit: BoxFit.cover,
@@ -125,153 +148,119 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                               },
                             ),
                           ),
-                          
-                        // Gradient
-                        Positioned(
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            height: backgroundKeyArtHeight + 2,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment(0, -1),
-                                end: Alignment(0, 0.8),
-                                colors: [
-                                  theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
-                                  theme.scaffoldBackgroundColor
-                                ]
-                              )
-                            ),
-                          )
-                        ),
-                  
-                        Padding(
-                          padding: getNegativeSpacePadding(context),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (status == GameDetailsState.loading)
-                                const SizedBox(
-                                  height: 640,
-                                  child: Center(child: CircularProgressIndicator()),
+                            
+                          // Gradient
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: backgroundKeyArtHeight + 2,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment(0, -1),
+                                  end: Alignment(0, 0.8),
+                                  colors: [
+                                    theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
+                                    theme.scaffoldBackgroundColor
+                                  ]
                                 )
-                              
-                              else if (status == GameDetailsState.error)
-                                SizedBox(
-                                  height: 640,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(viewModel.errorMessage),
-                                        const SizedBox(height: 16),
-                                        ElevatedButton(
-                                          onPressed: () => viewModel.loadGameDetails(widget.gameId),
-                                          child: const Text('Retry'),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                )
-                              
-                              else if (status == GameDetailsState.success)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 64),
-                                    Text(
-                                      viewModel.gameDetail!.name,
-                                      style: theme.textTheme.displayLarge,
-                                    ),
-                  
-                                    const SizedBox(height: 32),
-                                    
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              if (viewModel.gameDetail!.media != null)
-                                                if (viewModel.gameDetail!.media!.isNotEmpty)
-                                                  Column(
-                                                    children: [
-                                                      GameMediaCarousel(media: viewModel.gameDetail!.media!),
-                                                      const SizedBox(height: 32),
-                                                    ],
-                                                  ),
-                                              Text(
-                                                'About this game',
-                                                style: theme.textTheme.displayMedium
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                viewModel.gameDetail!.description,
-                                                style: theme.textTheme.bodyLarge,
-                                              ),
-                                              const SizedBox(height: 32),
-                                              Text(
-                                                'System requirements',
-                                                style: theme.textTheme.displayMedium
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(),
-                                                  ),
-                                                  const SizedBox(width: 16),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          )
-                                        ),
-                  
-                                        SizedBox(width: 32 + sidebarWidth),
-                                      ],
-                                    ),
-                  
-                                    const SizedBox(height: 96), // Extra space before footer
-                                  ],
-                                )
-                          
-                              else
-                                const SizedBox(
-                                  height: 640,
-                                  child: Center(
-                                    child: Text(
-                                      'Something went wrong :('
-                                    ),
-                                  ),
-                                )
-                            ],
+                              ),
+                            )
                           ),
-                        ),
-                      ],
+                    
+                          Padding(
+                            padding: getNegativeSpacePadding(context),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 64),
+                                      Text(
+                                        gameDetailsViewModel.gameDetail!.name,
+                                        style: theme.textTheme.displayLarge,
+                                      ),
+                    
+                                      const SizedBox(height: 32),
+                                      
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                if (gameDetailsViewModel.gameDetail!.media != null)
+                                                  if (gameDetailsViewModel.gameDetail!.media!.isNotEmpty)
+                                                    Column(
+                                                      children: [
+                                                        GameMediaCarousel(media: gameDetailsViewModel.gameDetail!.media!),
+                                                        const SizedBox(height: 32),
+                                                      ],
+                                                    ),
+                                                Text(
+                                                  'About this game',
+                                                  style: theme.textTheme.displayMedium
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  gameDetailsViewModel.gameDetail!.description,
+                                                  style: theme.textTheme.bodyLarge,
+                                                ),
+                                                const SizedBox(height: 32),
+                                                Text(
+                                                  'System requirements',
+                                                  style: theme.textTheme.displayMedium
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Center(),
+                                                    ),
+                                                    const SizedBox(width: 16),
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Center(),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            )
+                                          ),
+                    
+                                          SizedBox(width: 32 + sidebarWidth),
+                                        ],
+                                      ),
+                    
+                                      const SizedBox(height: 96), // Extra space before footer
+                                    ],
+                                  )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  PageFooter(),
-                ],
+                    PageFooter(),
+                  ],
+                ),
               ),
-            ),
 
-            Positioned(
-              top: _sidebarTop,
-              right: negativeSpaceWidth(context),
-              child: SizedBox(
-                width: sidebarWidth,
-                child: GameInfoSidebar(game: viewModel.gameDetail!),
+              Positioned(
+                top: _sidebarTop,
+                right: negativeSpaceWidth(context),
+                child: SizedBox(
+                  width: sidebarWidth,
+                  child: GameInfoSidebar(game: gameDetailsViewModel.gameDetail!),
+                ),
               ),
-            ),
-          ],
-        );
+            ],
+          );
+        }
       },
     );
   }
