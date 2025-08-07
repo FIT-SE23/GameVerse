@@ -2,6 +2,7 @@ import 'package:gameverse/ui/advance_search/widgets/advance_search_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
+
 import 'package:gameverse/ui/auth/widgets/auth_screen.dart';
 import 'package:gameverse/ui/auth/widgets/auth_callback_screen.dart';
 import 'package:gameverse/ui/game_detail/widgets/game_details_screen.dart';
@@ -14,6 +15,8 @@ import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
 import 'package:gameverse/ui/post/widgets/post_screen.dart';
 import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
 import 'package:gameverse/ui/transactions/widgets/transaction_screen.dart';
+import 'package:gameverse/ui/publisher/widgets/publisher_registration_screen.dart';
+import 'package:gameverse/ui/publisher/widgets/publisher_dashboard_screen.dart';
 
 import 'package:gameverse/ui/policy/widgets/terms_of_service_screen.dart';
 import 'package:gameverse/ui/policy/widgets/privacy_policy_screen.dart';
@@ -42,6 +45,13 @@ class AppRouter {
             //  || state.matchedLocation == Routes.library
              )) {
           return Routes.login;
+        }
+
+        // Guard against accessing publisher routes when not type of publisher
+        if (!authViewModel.isPublisher &&
+            (state.matchedLocation == Routes.publisherRegistration ||
+             state.matchedLocation == Routes.publisherDashboard)) {
+          return Routes.publisherRegistration;
         }
         
         return null;
@@ -140,6 +150,14 @@ class AppRouter {
             GoRoute(
               path: Routes.eula,
               builder: (context, state) => const EulaScreen(),
+            ),
+            GoRoute(
+              path: Routes.publisherRegistration,
+              builder: (context, state) => const PublisherRegistrationScreen(),
+            ),
+            GoRoute(
+              path: Routes.publisherDashboard,
+              builder: (context, state) => const PublisherDashboardScreen(),
             ),
           ],
         ),

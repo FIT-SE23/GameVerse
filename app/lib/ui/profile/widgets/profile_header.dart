@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/domain/models/user_model/user_model.dart';
 import 'package:gameverse/ui/profile/view_model/profile_viewmodel.dart';
@@ -263,15 +264,33 @@ class ProfileHeader extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Type: ${profileViewModel.userType}',
+                                    'Type: ${user.type.toUpperCase()}',
                                     style: TextStyle(
-                                      color: theme.colorScheme.onSecondary,
+                                      color: _getStatusColor(user.type),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                            const SizedBox(width: 12),
+                            // Publisher registration if user is not a publisher
+                            if (user.type != 'publisher') ...[
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Navigate to publisher registration
+                                  context.push('/publisher-registration');
+                                },
+                                // Style must border round
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                ),
+                                child: const Text('Become a Publisher'),
+                              ),
+                            ]
                           ],
                         ),
                       ],
@@ -351,5 +370,15 @@ class ProfileHeader extends StatelessWidget {
         ),
       ),
     );
+  }
+  Color _getStatusColor(String type) {
+    switch (type.toLowerCase()) {
+      case 'publisher':
+        return Colors.orange;
+      case 'operator':
+        return Colors.red;
+      default:
+        return Colors.blue;
+    }
   }
 }

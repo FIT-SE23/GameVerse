@@ -69,6 +69,9 @@ class DesktopNavbar extends StatelessWidget {
               // If the user type is operator, show the admin panel
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
                 _buildNavItem(context, '/operator-panel', 'Operator Panel', currentLocation),
+              // If the user type is publisher, show the publisher dashboard
+              if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
+                _buildNavItem(context, '/publisher-dashboard', 'Publisher Dashboard', currentLocation),
             ],
           ),
           const SizedBox(width: 16),
@@ -215,7 +218,6 @@ class DesktopNavbar extends StatelessWidget {
                   title: Text('Transactions'),
                 ),
               ),
-              
               const PopupMenuItem(
                 value: 'settings',
                 mouseCursor: SystemMouseCursors.click,
@@ -223,6 +225,15 @@ class DesktopNavbar extends StatelessWidget {
                   leading: Icon(Icons.settings),
                   title: Text('Settings'),
                 ),
+              ),
+              if (authProvider.user?.type == 'user')
+                const PopupMenuItem(
+                  value: 'publisher-registration',
+                  mouseCursor: SystemMouseCursors.click,
+                  child: ListTile(
+                    leading: Icon(Icons.business),
+                    title: Text('Publisher Registration'),
+                  ),
               ),
               const PopupMenuDivider(),
               const PopupMenuItem(

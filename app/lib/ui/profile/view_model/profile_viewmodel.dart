@@ -8,9 +8,6 @@ class ProfileViewModel extends ChangeNotifier {
   final bool isOnline = true;
   bool get onlineStatus => isOnline;
 
-  final String typeUser = 'Gamer';
-  String get userType => typeUser;
-
   final int _gamesOwned = 47;
   int get gamesOwned => _gamesOwned;
 

@@ -1,0 +1,274 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:gameverse/domain/models/game_model/game_model.dart';
+import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
+import 'package:gameverse/domain/models/user_model/user_model.dart';
+
+enum PublisherViewState { loading, success, error }
+
+class PublisherViewModel extends ChangeNotifier {
+  PublisherViewState _state = PublisherViewState.loading;
+  String _errorMessage = '';
+  List<GameModel> _publishedGames = [];
+  List<GameRequestModel> _pendingRequests = [];
+  UserModel? _publisherProfile;
+
+  // Getters
+  PublisherViewState get state => _state;
+  String get errorMessage => _errorMessage;
+  List<GameModel> get publishedGames => _publishedGames;
+  List<GameRequestModel> get pendingRequests => _pendingRequests;
+  UserModel? get publisherProfile => _publisherProfile;
+
+  // Register as publisher
+  Future<bool> registerAsPublisher({
+    required String userId,
+    required String description,
+    required String paymentMethodId,
+  }) async {
+    try {
+      _state = PublisherViewState.loading;
+      notifyListeners();
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Create mock publisher profile
+      _publisherProfile = UserModel(
+        id: userId,
+        username: 'Publisher_$userId',
+        email: '123@gmail.com',
+        description: description,
+        paymentMethod: PaymentMethodModel(
+          paymentMethodId: 'pm_${DateTime.now().millisecondsSinceEpoch}',
+          type: 'Banking',
+          information: 'Paypal',
+        ),
+        registrationDate: DateTime.now(),
+        gamesPublishedID: [],
+      );
+
+      _state = PublisherViewState.success;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _state = PublisherViewState.error;
+      _errorMessage = 'Registration failed: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // Load publisher data with mock data
+  Future<void> loadPublisherData(String publisherId) async {
+    try {
+      _state = PublisherViewState.loading;
+      notifyListeners();
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Create mock publisher profile
+      _publisherProfile = UserModel(
+        id: publisherId,
+        username: 'MockPublisher',
+        email: '123@gmail.com',
+        description: 'Indie game developer passionate about creating immersive gaming experiences',
+        paymentMethod: PaymentMethodModel(
+          paymentMethodId: 'pm_mock_001',
+          type: 'Banking',
+          information: 'PayPal',
+        ),
+        registrationDate: DateTime.now().subtract(const Duration(days: 90)),
+        gamesPublishedID: ['game_001', 'game_002'],
+      );
+
+      // Create mock published games
+      _publishedGames = [
+        GameModel(
+          gameId: 'game_001',
+          publisherId: publisherId,
+          name: 'Mystery Adventure',
+          recommended: 156,
+          briefDescription: 'An exciting mystery adventure game',
+          description: 'Embark on a thrilling mystery adventure where every choice matters. Solve puzzles, uncover secrets, and experience a story that adapts to your decisions.',
+          requirements: 'Windows 10, 4GB RAM, DirectX 11',
+          headerImage: 'https://picsum.photos/800/400?random=1',
+          price: 19.99,
+          categories: [
+            CategoryModel(categoryId: '1', name: 'Adventure', isSensitive: false),
+            CategoryModel(categoryId: '2', name: 'Mystery', isSensitive: false),
+          ],
+          media: [
+            'https://picsum.photos/1920/1080?random=2',
+            'https://picsum.photos/1920/1080?random=3',
+          ],
+          releaseDate: DateTime.now().subtract(const Duration(days: 30)),
+          isSale: true,
+          discountPercent: 20.0,
+          saleStartDate: DateTime.now().subtract(const Duration(days: 5)),
+          saleEndDate: DateTime.now().add(const Duration(days: 10)),
+          isOwned: false,
+          installed: false,
+          favorite: false,
+        ),
+        GameModel(
+          gameId: 'game_002',
+          publisherId: publisherId,
+          name: 'Space Explorer',
+          recommended: 89,
+          briefDescription: 'Explore the vast universe',
+          description: 'Build your spaceship, explore distant galaxies, and discover new civilizations in this epic space exploration game.',
+          requirements: 'Windows 10, 6GB RAM, DirectX 12',
+          headerImage: 'https://picsum.photos/800/400?random=4',
+          price: 29.99,
+          categories: [
+            CategoryModel(categoryId: '3', name: 'Simulation', isSensitive: false),
+            CategoryModel(categoryId: '4', name: 'Space', isSensitive: false),
+          ],
+          media: [
+            'https://picsum.photos/1920/1080?random=5',
+            'https://picsum.photos/1920/1080?random=6',
+          ],
+          releaseDate: DateTime.now().subtract(const Duration(days: 60)),
+          isSale: false,
+          isOwned: false,
+          installed: false,
+          favorite: false,
+        ),
+      ];
+
+      // Create mock pending requests
+      _pendingRequests = [
+        GameRequestModel(
+          requestId: 'req_001',
+          publisherId: publisherId,
+          gameName: 'Pixel Warriors',
+          description: 'A retro-style pixel art fighting game with local multiplayer support.',
+          briefDescription: 'A retro-style pixel art fighting game with local multiplayer support.',
+          requirements: 'Windows 7, 2GB RAM, OpenGL 2.0',
+          headerImage: 'https://picsum.photos/800/400?random=7',
+          media: [
+            'https://picsum.photos/1920/1080?random=8',
+            'https://picsum.photos/1920/1080?random=9',
+          ],
+          categories: [
+            CategoryModel(categoryId: '5', name: 'Action', isSensitive: false),
+            CategoryModel(categoryId: '6', name: 'Fighting', isSensitive: false),
+          ],
+          price: 14.99,
+          requestStatus: 'pending',
+          requestDate: DateTime.now().subtract(const Duration(days: 3)),
+        ),
+        GameRequestModel(
+          requestId: 'req_002',
+          gameName: 'Farm Simulator Pro',
+          publisherId: publisherId,
+          briefDescription: 'The ultimate farming experience with realistic farming mechanics.',
+          description: 'The ultimate farming experience with realistic farming mechanics.',
+          requirements: 'Windows 10, 8GB RAM, DirectX 11',
+          headerImage: 'https://picsum.photos/800/400?random=10',
+          media: [
+            'https://picsum.photos/1920/1080?random=11',
+            'https://picsum.photos/1920/1080?random=12',
+          ],
+          categories: [
+            CategoryModel(categoryId: '7', name: 'Simulation', isSensitive: false),
+            CategoryModel(categoryId: '8', name: 'Farming', isSensitive: false),
+          ],
+          price: 24.99,
+          requestStatus: 'pending',
+          requestDate: DateTime.now().subtract(const Duration(days: 7)),
+        ),
+      ];
+
+      _state = PublisherViewState.success;
+    } catch (e) {
+      _state = PublisherViewState.error;
+      _errorMessage = 'Failed to load publisher data: $e';
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  // Request game publication
+  Future<bool> requestGamePublication({
+    required String publisherId,
+    required String gameName,
+    required String description,
+    List<CategoryModel> categories = const [],
+    required double price,
+    String briefDescription = 'This is a brief description of the game.',
+    String requirements = 'Minimum requirements for the game.',
+    String headerImage = 'https://picsum.photos/800/400?random=13',
+    List<String> media = const [],
+    String requestMessage = 'Requesting publication for the game.',
+    List<String>? binaries,
+    List<String>? exes,
+  }) async {
+    try {
+      // Simulate API call
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      final newRequest = GameRequestModel(
+        gameName: gameName,
+        publisherId: publisherId,
+        description: description,
+        briefDescription: briefDescription,
+        requirements: requirements,
+        headerImage: headerImage,
+        media: media,
+        categories: categories,
+        price: price,
+        requestStatus: 'pending',
+        requestDate: DateTime.now(),
+        requestMessage: requestMessage,
+      );
+
+      _pendingRequests.insert(0, newRequest);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = 'Request failed: $e';
+      return false;
+    }
+  }
+
+  // Cancel game request
+  Future<bool> cancelGameRequest(String requestId) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+      _pendingRequests.removeWhere((request) => request.requestId == requestId);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = 'Failed to cancel request: $e';
+      return false;
+    }
+  }
+}
+
+// Game request model for publisher
+class GameRequest {
+  final String id;
+  final String gameName;
+  final String description;
+  final String categories;
+  final double price;
+  final String status; // 'pending', 'under_review', 'approved', 'rejected'
+  final DateTime requestDate;
+  final String? rejectionReason;
+
+  const GameRequest({
+    required this.id,
+    required this.gameName,
+    required this.description,
+    required this.categories,
+    required this.price,
+    required this.status,
+    required this.requestDate,
+    this.rejectionReason,
+  });
+}

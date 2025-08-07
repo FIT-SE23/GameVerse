@@ -18,6 +18,9 @@ class AuthViewModel extends ChangeNotifier {
   UserModel? get user => _user;
 
   bool _isRegistered = false;
+
+  bool _isPublisher = false;
+  bool get isPublisher => _isPublisher;
   
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
@@ -52,6 +55,7 @@ class AuthViewModel extends ChangeNotifier {
       debugPrint('Login successful: $_user');
       if (_user != null) {
         _status = AuthStatus.authenticated;
+        _isPublisher = (_user?.type == 'publisher');
       } else {
         _status = AuthStatus.unauthenticated;
         _errorMessage = 'Login failed: Invalid credentials';

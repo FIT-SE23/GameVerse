@@ -14,6 +14,8 @@ abstract final class Routes {
   static const authCallback = '/auth-callback';
   static const operatorPanel = '/operator-panel';
   static const faqs = '/faqs';
+  static const publisherRegistration = '/publisher-registration';
+  static const publisherDashboard = '/publisher-dashboard';
   // Legal routes
   static const privacyPolicy = '/privacy-policy';
   static const termsOfService = '/terms-of-service';

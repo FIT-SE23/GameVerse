@@ -21,6 +21,11 @@ abstract class GameModel with _$GameModel {
     required List<String>? media,
     required DateTime releaseDate,
 
+    // Request related fields
+    String? requestId,
+    String? requestStatus, // e.g., 'pending', 'approved', 'rejected
+    String? requestMessage, // Message from the publisher regarding the request
+
     // Sale related fields
     bool? isSale,
     double? discountPercent,
