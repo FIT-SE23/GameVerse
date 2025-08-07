@@ -66,7 +66,7 @@ func main() {
 		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return err
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
@@ -75,7 +75,7 @@ func main() {
 		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return err
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
 		status := c.FormValue("list")
@@ -97,7 +97,7 @@ func main() {
 		userid, err := verifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return err
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
 		status := c.FormValue("status")
@@ -165,14 +165,20 @@ func main() {
 		return updatePublisher(c, client)
 	})
 
-	e.POST("/checkout/create", func(c echo.Context) error {
-		return jsonResponse(c, http.StatusBadRequest, "Unsupported method", "")
+	e.POST("/paypal/create", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			// TODO: Redirect to login page
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+
+		return createPaypalReceipt(c, client, userid)
 	})
-	e.GET("/checkout/cancel", func(c echo.Context) error {
+	e.GET("/paypal/cancel", func(c echo.Context) error {
 		return c.String(http.StatusOK, "No")
 	})
-	e.GET("/checkout/return", func(c echo.Context) error {
-		return approvePayment(c)
+	e.GET("/paypal/return", func(c echo.Context) error {
+		return checkoutPaypal(c, client)
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {

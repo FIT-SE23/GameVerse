@@ -15,7 +15,7 @@ class AuthApiClient {
     final bytePassword = utf8.encode(password);
     final hashPassword = sha256.convert(bytePassword).toString();
 
-    final raw = await http.post(
+    final raw = await _client.post(
       Uri.parse(ApiEndpoint.loginUrl),
       body: <String, String>{"email": email, "password": hashPassword},
     );
@@ -32,7 +32,7 @@ class AuthApiClient {
     final bytePassword = utf8.encode(password);
     final hashPassword = sha256.convert(bytePassword).toString();
 
-    final raw = await http.post(
+    final raw = await _client.post(
       Uri.parse(ApiEndpoint.registerUrl),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: <String, String>{

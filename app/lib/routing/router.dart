@@ -8,7 +8,6 @@ import 'package:gameverse/ui/game_detail/widgets/game_details_screen.dart';
 import 'package:gameverse/ui/home/widgets/home_screen.dart';
 import 'package:gameverse/ui/library/widgets/library_screen.dart';
 import 'package:gameverse/ui/forums/widgets/forums_screen.dart';
-import 'package:gameverse/ui/downloads/widgets/downloads_screen.dart';
 import 'package:gameverse/ui/shared/widgets/main_layout.dart';
 import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
 import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
@@ -16,6 +15,10 @@ import 'package:gameverse/ui/post/widgets/post_screen.dart';
 import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
 import 'package:gameverse/ui/transactions/widgets/transaction_screen.dart';
 
+import 'package:gameverse/ui/policy/widgets/terms_of_service_screen.dart';
+import 'package:gameverse/ui/policy/widgets/privacy_policy_screen.dart';
+import 'package:gameverse/ui/policy/widgets/cookie_policy_screen.dart';
+import 'package:gameverse/ui/policy/widgets/eula_screen.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -66,10 +69,6 @@ class AppRouter {
               builder: (context, state) => const ForumsScreen(),
             ),
             GoRoute(
-              path: Routes.downloads,
-              builder: (context, state) => const DownloadsScreen(),
-            ),
-            GoRoute(
               path: Routes.settings,
               builder: (context, state) => const SettingsScreen(),
             ),
@@ -111,26 +110,39 @@ class AppRouter {
               path: Routes.transactions,
               builder: (context, state) => const TransactionScreen(),
             ),
+            GoRoute(
+              path: '/forum-posts/:gameId/:gameName',
+              builder: (context, state) {
+                final gameId = state.pathParameters['gameId']!;
+                final gameName = Uri.decodeComponent(state.pathParameters['gameName']!);
+                return ForumPostsScreen(gameId: gameId, gameName: gameName);
+              },
+            ),
+            GoRoute(
+              path: '/post/:postId',
+              builder: (context, state) {
+                final postId = state.pathParameters['postId']!;
+                return PostScreen(postId: postId);
+              },
+            ),
+            GoRoute(
+              path: Routes.termsOfService,
+              builder: (context, state) => const TermsOfServiceScreen(),
+            ),
+            GoRoute(
+              path: Routes.privacyPolicy,
+              builder: (context, state) => const PrivacyPolicyScreen(),
+            ),
+            GoRoute(
+              path: Routes.cookiesPolicy,
+              builder: (context, state) => const CookiePolicyScreen(),
+            ),
+            GoRoute(
+              path: Routes.eula,
+              builder: (context, state) => const EulaScreen(),
+            ),
           ],
         ),
-        
-        // Forum routes (outside main layout for better navigation)
-        GoRoute(
-          path: '/forum-posts/:gameId/:gameName',
-          builder: (context, state) {
-            final gameId = state.pathParameters['gameId']!;
-            final gameName = Uri.decodeComponent(state.pathParameters['gameName']!);
-            return ForumPostsScreen(gameId: gameId, gameName: gameName);
-          },
-        ),
-        GoRoute(
-          path: '/post/:postId',
-          builder: (context, state) {
-            final postId = state.pathParameters['postId']!;
-            return PostScreen(postId: postId);
-          },
-        ),
-        
         // Auth routes
         GoRoute(
           path: Routes.authCallback,

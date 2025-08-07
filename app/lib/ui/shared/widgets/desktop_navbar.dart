@@ -32,6 +32,21 @@ class DesktopNavbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Previous page buttons
+          IconButton(
+            tooltip: 'Go back',
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              size: 20,
+            ),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              }
+            },
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
+
           // Logo/header
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -42,6 +57,7 @@ class DesktopNavbar extends StatelessWidget {
               SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 50,)
             ),
           ),
+
           
           // Navigation items
           Row(
@@ -49,10 +65,13 @@ class DesktopNavbar extends StatelessWidget {
               _buildNavItem(context, '/', 'Home', currentLocation),
               _buildNavItem(context, '/library', 'Library', currentLocation),
               _buildNavItem(context, '/forums', 'Forums', currentLocation),
-              _buildNavItem(context, '/downloads', 'Downloads', currentLocation),
+              _buildNavItem(context, '/advance-search', 'Search', currentLocation),
+              // If the user type is operator, show the admin panel
+              if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
+                _buildNavItem(context, '/operator-panel', 'Operator Panel', currentLocation),
             ],
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
           // Search bar
           Container(
             width: 300,
@@ -244,7 +263,11 @@ class DesktopNavbar extends StatelessWidget {
 
     // Desktop navigation item
   Widget _buildNavItem(BuildContext context, String route, String title, String currentLocation) {
-    final isSelected = currentLocation == route;
+    // Check inside the current location to see if route is present
+    bool isSelected = currentLocation.contains(route);
+    if (route == '/' && currentLocation != '/') {
+      isSelected = false;
+    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -257,7 +280,7 @@ class DesktopNavbar extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: () => context.go(route),
+        onTap: () => context.push(route),
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -8,6 +8,8 @@ import 'game_section_horizontal.dart';
 import 'game_section_fancy.dart';
 import 'genres_game.dart';
 
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,10 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(height: 32),
                     GameSectionHorizontal(title: 'Explore New Games', gameList: Provider.of<HomeViewModel>(context, listen: false).newReleases,),
               
-                    SizedBox(height: 96), // Extra space before footer
+                    const SizedBox(height: 96), // Extra space before footer
                   ],
                 ),
               ),
+
+              PageFooter(),
             ],
           );
         },

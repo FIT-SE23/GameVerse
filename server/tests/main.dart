@@ -1,3 +1,4 @@
+import "package:gameverse_server/controller/checkout.dart";
 import "package:gameverse_server/controller/game.dart";
 import "package:gameverse_server/controller/user.dart";
 import "package:gameverse_server/controller/publisher.dart";
@@ -111,5 +112,11 @@ void main() async {
 
   if (false) {
     print(await getGame("", "12de500f-9810-4428-b217-d606b6847dac"));
+  }
+
+  if (true) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data["token"].toString();
+    print(await createReceipt(token));
   }
 }

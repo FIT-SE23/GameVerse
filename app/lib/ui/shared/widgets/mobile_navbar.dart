@@ -29,6 +29,21 @@ class MobileNavbar extends StatelessWidget {
       color: Theme.of(context).appBarTheme.backgroundColor,
       child: Row(
         children: [
+          // Previous page button
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).appBarTheme.foregroundColor,
+            ),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
+
           // Menu button
           IconButton(
             icon: Icon(
@@ -143,7 +158,6 @@ class MobileNavbar extends StatelessWidget {
                       _buildMobileNavItem(context, '/', 'Home', Icons.home, currentLocation),
                       _buildMobileNavItem(context, '/library', 'Library', Icons.games, currentLocation),
                       _buildMobileNavItem(context, '/forums', 'Forums', Icons.forum, currentLocation),
-                      _buildMobileNavItem(context, '/downloads', 'Downloads', Icons.download, currentLocation),
                       
                       const Divider(height: 32),
                       
@@ -379,8 +393,7 @@ class MobileNavbar extends StatelessWidget {
           ),
         ),
         onTap: () {
-          Navigator.pop(context);
-          context.go(route);
+          context.push(route);
         },
       ),
     );

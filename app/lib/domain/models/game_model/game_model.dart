@@ -41,4 +41,6 @@ abstract class GameModel with _$GameModel {
 
   factory GameModel.fromJson(Map<String, dynamic> json) => 
       _$GameModelFromJson(json);
+
+  
 }

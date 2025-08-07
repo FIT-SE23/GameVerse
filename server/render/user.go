@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -73,7 +74,7 @@ func searchUsers(c echo.Context, client *supabase.Client) error {
 func createUserToken(userid string) string {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"user":       userid,
+			"userid":     userid,
 			"authorized": true,
 			"exp":        time.Now().Add(time.Hour * 24).Unix(),
 		})
@@ -87,12 +88,12 @@ func verifyUserToken(c echo.Context) (string, error) {
 	header := c.Request().Header
 	auth := header["Authorization"]
 	if len(auth) == 0 {
-		return "", jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+		return "", errors.New("Require Authorization header")
 	}
 
 	rawToken := strings.Split(auth[0], " ")
 	if len(rawToken) < 2 {
-		return "", jsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
+		return "", errors.New("Invalid Authorization header")
 	}
 
 	token := rawToken[1]
@@ -104,23 +105,23 @@ func verifyUserToken(c echo.Context) (string, error) {
 		return "", err
 	}
 
-	// fmt.Println(raw.Claims)
-
 	if !raw.Valid {
 		return "", errors.New("Invalid token")
 	}
 
 	claims, ok := raw.Claims.(jwt.MapClaims)
 	if !ok {
-		return "", errors.New("invalid token claims")
+		return "", nil
 	}
+	// fmt.Println("claims", claims)
 
-	userID, ok := claims["user"].(string)
+	userid, ok := claims["userid"].(string)
 	if !ok {
-		return "", errors.New("user not found in token")
+		return "", nil
 	}
+	// fmt.Println("userid", userid)
 
-	return userID, nil
+	return userid, nil
 }
 
 func login(c echo.Context, client *supabase.Client) error {

@@ -6,6 +6,8 @@ import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'login_form.dart';
 import 'signup_form.dart';
 
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+
 class AuthScreen extends StatefulWidget {
   // Login tab or Register tab
   final String initialTab;
@@ -84,120 +86,126 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
     final theme = Theme.of(context);
     
     return SingleChildScrollView(
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 500),
-          padding: const EdgeInsets.all(24),
-          child: Card(
-            elevation: 8,
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Logo and title
-                  Text(
-                    'GameVerse',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Welcome to the ultimate gaming platform',
-                    style: theme.textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Tab bar for Login/Register
-                  TabBar(
-                    controller: _tabController,
-                    tabs: const [
-                      Tab(text: 'Login'),
-                      Tab(text: 'Register'),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Tab content
-                  SizedBox(
-                    height: 410,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        LoginForm(showErrorSnackBar: _showErrorSnackBar),
-                        SignupForm(showErrorSnackBar: _showErrorSnackBar),
-                      ],
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 24),
-                  
-                  // Divider
-                  Row(
+      child: Column(
+        children: [
+          Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 500),
+              padding: const EdgeInsets.all(24),
+              child: Card(
+                elevation: 8,
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'OR',
-                          style: theme.textTheme.bodySmall,
+                      // Logo and title
+                      Text(
+                        'GameVerse',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Expanded(child: Divider()),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Welcome to the ultimate gaming platform',
+                        style: theme.textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Tab bar for Login/Register
+                      TabBar(
+                        controller: _tabController,
+                        tabs: const [
+                          Tab(text: 'Login'),
+                          Tab(text: 'Register'),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Tab content
+                      SizedBox(
+                        height: 410,
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            LoginForm(showErrorSnackBar: _showErrorSnackBar),
+                            SignupForm(showErrorSnackBar: _showErrorSnackBar),
+                          ],
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Divider
+                      Row(
+                        children: [
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              'OR',
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ),
+                          const Expanded(child: Divider()),
+                        ],
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Google Sign In
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.google),
+                          icon: const Icon(Icons.g_mobiledata, size: 24),
+                          label: const Text('Continue with Google'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 16),
+          
+                      // Facebook Sign In
+                      // SizedBox(
+                      //   width: double.infinity,
+                      //   child: OutlinedButton.icon(
+                      //     onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.facebook),
+                      //     icon: const Icon(Icons.facebook_rounded, size: 24),
+                      //     label: const Text('Continue with Facebook'),
+                      //     style: OutlinedButton.styleFrom(
+                      //       padding: const EdgeInsets.symmetric(vertical: 12),
+                      //     ),
+                      //   ),
+                      // ),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // Back to home
+                      TextButton(
+                        onPressed: () => context.push('/'),
+                        child: const Text('Continue as Guest'),
+                      ),
+                      
+                      if (_isLoading)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: CircularProgressIndicator(),
+                        ),
                     ],
                   ),
-                  
-                  const SizedBox(height: 24),
-                  
-                  // Google Sign In
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.google),
-                      icon: const Icon(Icons.g_mobiledata, size: 24),
-                      label: const Text('Continue with Google'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 16),
-
-                  // Facebook Sign In
-                  // SizedBox(
-                  //   width: double.infinity,
-                  //   child: OutlinedButton.icon(
-                  //     onPressed: _isLoading ? null : () => _handleLogin(AuthProvider.facebook),
-                  //     icon: const Icon(Icons.facebook_rounded, size: 24),
-                  //     label: const Text('Continue with Facebook'),
-                  //     style: OutlinedButton.styleFrom(
-                  //       padding: const EdgeInsets.symmetric(vertical: 12),
-                  //     ),
-                  //   ),
-                  // ),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Back to home
-                  TextButton(
-                    onPressed: () => context.push('/'),
-                    child: const Text('Continue as Guest'),
-                  ),
-                  
-                  if (_isLoading)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: CircularProgressIndicator(),
-                    ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+
+          PageFooter()
+        ],
       ),
     );
   }
