@@ -19,7 +19,7 @@ import (
 func getUser(c echo.Context, client *supabase.Client) error {
 	userid := c.Param("id")
 
-	rep, _, err := client.From("User").Select("username, email", "", false).Eq("userid", userid).Single().ExecuteString()
+	rep, _, err := client.From("User").Select("userid, username, email", "", false).Eq("userid", userid).Single().ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
