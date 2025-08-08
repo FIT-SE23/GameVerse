@@ -8,7 +8,7 @@ import 'signup_form.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 class AuthScreen extends StatefulWidget {
   // Login tab or Register tab
@@ -97,12 +97,12 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
       SignupForm(showErrorSnackBar: _showErrorSnackBar),
     ];
 
-    String logoAddr;
-    if (Theme.brightnessOf(context) == Brightness.dark) {
-      logoAddr = 'assets/logo/logo_horizontal_white.svg';
-    } else {
-      logoAddr = 'assets/logo/logo_horizontal_black.svg';
-    }
+    // String logoAddr;
+    // if (Theme.brightnessOf(context) == Brightness.dark) {
+    //   logoAddr = 'assets/logo/logo_horizontal_white.svg';
+    // } else {
+    //   logoAddr = 'assets/logo/logo_horizontal_black.svg';
+    // }
 
     return SingleChildScrollView(
       child: Column(

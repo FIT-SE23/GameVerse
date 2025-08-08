@@ -72,7 +72,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
     // final status = viewModel.state;
     final theme = Theme.of(context);
 
-    final double sidebarWidth = 280;
+    const double sidebarWidth = 280;
 
     return Consumer<GameDetailsViewModel>(
       builder: (context, gameDetailsViewModel, child) {
@@ -238,7 +238,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                             )
                                           ),
                     
-                                          SizedBox(width: 32 + sidebarWidth),
+                                          const SizedBox(width: 32 + sidebarWidth),
                                         ],
                                       ),
                     

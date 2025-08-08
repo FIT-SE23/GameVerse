@@ -10,7 +10,7 @@ class GameMediaCarousel extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _GameMediaCarouselState();
+  State<GameMediaCarousel> createState() => _GameMediaCarouselState();
 }
 
 class _GameMediaCarouselState extends State<GameMediaCarousel> {

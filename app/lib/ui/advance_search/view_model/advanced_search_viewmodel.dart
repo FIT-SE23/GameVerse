@@ -8,12 +8,25 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
 
   String _searchQuery = '';
   String get searchQuery => _searchQuery;
+  void setSearchQuery(String query) {
+    _searchQuery = query.trim().toLowerCase();
+  }
 
   bool _onlyDiscounted = false;
   bool get onlyDiscounted => _onlyDiscounted;
 
   Map<String, bool> _categoryMap = {};
   Map<String, bool> get categoryMap => _categoryMap;
+  void switchCategorySelectState(String categoryName) {
+    if (_categoryMap.containsKey(categoryName)) {
+      if (_categoryMap[categoryName] == true) {
+        _categoryMap[categoryName] = false;
+      } else {
+        _categoryMap[categoryName] = true;
+      }
+      notifyListeners();
+    }
+  }
 
   Set<String> _selectedCategories = {};
   Set<String> get selectedCategories => _selectedCategories;
@@ -25,36 +38,47 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   List<GameModel> get games => _games;
 
   List<GameModel> _filteredGames = [];
-  List<GameModel> get filterGames => _filteredGames;
+  List<GameModel> get filteredGames => _filteredGames;
 
   AdvancedSearchViewmodel({
     required GameRepository gameRepository,
-    String searchQuery = '',
-    bool onlyDiscounted = false,
-    Set<String> selectedCategories = const {}
-  }) : _gameRepository = gameRepository {
-    _searchQuery = searchQuery.toLowerCase();
-    _onlyDiscounted = onlyDiscounted;
-
-    _selectedCategories = selectedCategories;
-
-    updateCategoryMap();
-  }
+  }) : _gameRepository = gameRepository;
 
   void updateCategoryMap() {
-    for (final categoryName in _selectedCategories) {
-      _categoryMap[categoryName] = true;
+    for (final categoryName in _categoryMap.keys) {
+      if (_selectedCategories.contains(categoryName)) {
+        _categoryMap[categoryName] = true;
+      } else {
+        _categoryMap[categoryName] = false;
+      }
+    }
+  }
+  void updateSelectedCategories() {
+    _selectedCategories = {};
+    for (final categoryName in _categoryMap.keys) {
+      if (_categoryMap[categoryName] == true) {
+        _selectedCategories.add(categoryName);
+      }
     }
   }
 
-  Future<void> loadData() async {
+  Future<void> loadData({
+    String searchQuery = '',
+    bool onlyDiscounted = false,
+    Set<String> selectedCategories = const {}
+  }) async {
     _isLoading = true;
     notifyListeners();
+
+    _searchQuery = searchQuery.toLowerCase();
+    _onlyDiscounted = onlyDiscounted;
+    _selectedCategories = selectedCategories;
+    updateCategoryMap();
 
     try {
       _games = await _gameRepository.searchGames('');
       _categoryMap = _getCategories(_games);
-      _applyFilters();
+      applyFilters();
     } catch (e) {
       debugPrint('Error loading advanced search: $e');
     } finally {
@@ -76,7 +100,8 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
     );
   }
 
-  void _applyFilters() {
+  void applyFilters() {
+    updateSelectedCategories();
     _filteredGames = _games.where((game) {
       // Keyword filter
       if (_searchQuery.isNotEmpty) {
