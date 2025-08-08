@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
@@ -74,8 +75,8 @@ func main() {
 			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
-		status := c.FormValue("list")
-		if status != "library" && status != "wishlist" && status != "cart" {
+		status := c.FormValue("status")
+		if status != "In library" && status != "In wishlist" && status != "In cart" {
 			return jsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
 		}
 
@@ -171,6 +172,30 @@ func main() {
 	})
 	e.GET("/paypal/return", func(c echo.Context) error {
 		return checkoutPaypal(c, client)
+	})
+
+	e.POST("/vnpay/create", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+
+		return createVnpayReceipt(c, client, userid)
+	})
+	e.GET("/vnpay/return", func(c echo.Context) error {
+		responseCode := c.QueryParam("vnp_ResponseCode")
+		if responseCode == "00" {
+			txnRef := c.QueryParam("vnp_TxnRef")
+			refList := strings.Split(txnRef, "|")
+			if len(refList) != 2 {
+				return jsonResponse(c, http.StatusBadGateway, "Vnpay response is missing vnp_TxnRef field", "")
+			}
+
+			userid := refList[0]
+			return moveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
+		}
+		transactionStatus := c.QueryParam("vnp_TransactionStatus")
+		return jsonResponse(c, http.StatusBadGateway, "", map[string]string{"responsecode": responseCode, "transactionstatus": transactionStatus})
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {
