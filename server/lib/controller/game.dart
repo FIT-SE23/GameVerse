@@ -109,7 +109,7 @@ Future<void> _addFiles(
 }
 
 Future<Response> addGame(
-  String publisherid,
+  String token,
   String name,
   String description,
   double price,
@@ -121,11 +121,11 @@ Future<Response> addGame(
 ) async {
   final request =
       http.MultipartRequest("POST", Uri.parse(serverURL + "game"))
-        ..fields["publisherid"] = publisherid
         ..fields["gamename"] = name
         ..fields["description"] = description
         ..fields["price"] = price.toString()
-        ..fields["categories"] = categories;
+        ..fields["categories"] = categories
+        ..headers["Authorization"] = token;
 
   try {
     await _addFiles(request, 'binary', binaries);

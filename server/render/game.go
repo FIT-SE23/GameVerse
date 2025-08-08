@@ -159,7 +159,11 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 }
 
 func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
-	publisherID := c.FormValue("publisherid")
+	userid, err := verifyUserToken(c)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	publisherID := userid
 	if publisherID == "" {
 		return jsonResponse(c, http.StatusBadRequest, "Require publisherID", "")
 	}
@@ -175,7 +179,7 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 		"description": description,
 		"price":       price,
 	}
-	_, _, err := client.From("Game").Insert(game, false, "", "", "").ExecuteString()
+	_, _, err = client.From("Game").Insert(game, false, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

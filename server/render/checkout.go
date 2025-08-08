@@ -15,6 +15,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -309,8 +310,8 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 
 	serverURL := "http://localhost:1323/"
 	vnpayUrl := "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?"
-	vnpCode := "PX1TC5P1"
-	vnpHashSecret := "XCUZD9M7ACRAFZSTCFMBRPMPGARJ8981"
+	vnpCode := os.Getenv("VNP_CODE")
+	vnpHashSecret := os.Getenv("VNP_SECRET")
 	utc := time.Now().UTC()
 	now := utc.Add(time.Hour * 7)
 	expireTime := now.Add(time.Minute * 15)
@@ -370,4 +371,20 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 	}
 
 	return jsonResponse(c, http.StatusOK, "", vnpayUrl+queryString)
+}
+
+func checkoutVnpay(c echo.Context, client *supabase.Client) error {
+	responseCode := c.QueryParam("vnp_ResponseCode")
+	if responseCode == "00" {
+		txnRef := c.QueryParam("vnp_TxnRef")
+		refList := strings.Split(txnRef, "|")
+		if len(refList) != 2 {
+			return jsonResponse(c, http.StatusBadGateway, "Vnpay response is missing vnp_TxnRef field", "")
+		}
+
+		userid := refList[0]
+		return moveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
+	}
+	transactionStatus := c.QueryParam("vnp_TransactionStatus")
+	return jsonResponse(c, http.StatusBadGateway, "", map[string]string{"responsecode": responseCode, "transactionstatus": transactionStatus})
 }
