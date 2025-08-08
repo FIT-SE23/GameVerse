@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
 
+import 'package:gameverse/config/app_theme.dart';
+
 class LoginForm extends StatefulWidget {
   final Function(String) _showErrorSnackBar;
   const LoginForm({super.key, required Function(String) showErrorSnackBar})
@@ -62,6 +64,8 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -70,9 +74,26 @@ class _LoginFormState extends State<LoginForm> {
           // Email field
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Email',
               prefixIcon: Icon(Icons.email),
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
@@ -101,6 +122,23 @@ class _LoginFormState extends State<LoginForm> {
                   });
                 },
               ),
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                borderRadius: BorderRadius.zero
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red.shade300),
+                borderRadius: BorderRadius.zero
+              ),
             ),
             obscureText: !_isPasswordVisible,
             validator: (value) {
@@ -117,7 +155,7 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isLoading ? null : _handleLogin,
-              child: const Text('Login'),
+              child: const Text('Log in'),
             ),
           ),
           

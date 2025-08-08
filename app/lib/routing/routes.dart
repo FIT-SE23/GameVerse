@@ -6,14 +6,19 @@ abstract final class Routes {
   static const library = '/library';
   static const advanceSearch = '/advance-search';
   static const forums = '/forums';
-  static const downloads = '/downloads';
   static const profile = '/profile';
   static const settings = '/settings';
   static const about = '/about';
+  static const transactions = '/transactions';
   static const contact = '/contact';
+  static const authCallback = '/auth-callback';
+  static const operatorPanel = '/operator-panel';
+  static const faqs = '/faqs';
+  static const publisherRegistration = '/publisher-registration';
+  static const publisherDashboard = '/publisher-dashboard';
+  // Legal routes
   static const privacyPolicy = '/privacy-policy';
   static const termsOfService = '/terms-of-service';
-  static const faqs = '/faqs';
-  static const authCallback = '/auth-callback';
-  static const transactions = '/transactions';
+  static const cookiesPolicy = '/cookies-policy';
+  static const eula = '/eula';
 }

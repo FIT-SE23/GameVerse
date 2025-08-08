@@ -10,10 +10,12 @@ import (
 	"os"
 	"strings"
 	"time"
+	"strconv"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
+	"github.com/supabase-community/postgrest-go"
 )
 
 func getUser(c echo.Context, client *supabase.Client) error {
@@ -178,4 +180,34 @@ func removeGameWithStatus(c echo.Context, client *supabase.Client, userGame map[
 
 	// TODO: "return" field
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error {
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil || limit <= 0 {
+		limit = 10
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
+	rep, _, err := client.
+		From("Post").
+		Select("*", "", false).
+		Eq("userid", userid).
+		Order("postdate", &postgrest.OrderOpts{Ascending: false}).
+		Limit(limit, "").
+		ExecuteString()
+
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	var posts []map[string]any
+	err = json.Unmarshal([]byte(rep), &posts)
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse posts", "")
+	}
+
+	return jsonResponse(c, http.StatusOK, "", posts)
 }

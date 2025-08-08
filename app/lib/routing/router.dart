@@ -2,20 +2,26 @@ import 'package:gameverse/ui/advance_search/widgets/advance_search_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
+
 import 'package:gameverse/ui/auth/widgets/auth_screen.dart';
 import 'package:gameverse/ui/auth/widgets/auth_callback_screen.dart';
 import 'package:gameverse/ui/game_detail/widgets/game_details_screen.dart';
 import 'package:gameverse/ui/home/widgets/home_screen.dart';
 import 'package:gameverse/ui/library/widgets/library_screen.dart';
 import 'package:gameverse/ui/forums/widgets/forums_screen.dart';
-import 'package:gameverse/ui/downloads/widgets/downloads_screen.dart';
 import 'package:gameverse/ui/shared/widgets/main_layout.dart';
 import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
 import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
 import 'package:gameverse/ui/post/widgets/post_screen.dart';
 import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
 import 'package:gameverse/ui/transactions/widgets/transaction_screen.dart';
+import 'package:gameverse/ui/publisher/widgets/publisher_registration_screen.dart';
+import 'package:gameverse/ui/publisher/widgets/publisher_dashboard_screen.dart';
 
+import 'package:gameverse/ui/policy/widgets/terms_of_service_screen.dart';
+import 'package:gameverse/ui/policy/widgets/privacy_policy_screen.dart';
+import 'package:gameverse/ui/policy/widgets/cookie_policy_screen.dart';
+import 'package:gameverse/ui/policy/widgets/eula_screen.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -39,6 +45,13 @@ class AppRouter {
             //  || state.matchedLocation == Routes.library
              )) {
           return Routes.login;
+        }
+
+        // Guard against accessing publisher routes when not type of publisher
+        if (!authViewModel.isPublisher &&
+            (state.matchedLocation == Routes.publisherRegistration ||
+             state.matchedLocation == Routes.publisherDashboard)) {
+          return Routes.publisherRegistration;
         }
         
         return null;
@@ -64,10 +77,6 @@ class AppRouter {
             GoRoute(
               path: Routes.forums,
               builder: (context, state) => const ForumsScreen(),
-            ),
-            GoRoute(
-              path: Routes.downloads,
-              builder: (context, state) => const DownloadsScreen(),
             ),
             GoRoute(
               path: Routes.settings,
@@ -111,26 +120,47 @@ class AppRouter {
               path: Routes.transactions,
               builder: (context, state) => const TransactionScreen(),
             ),
+            GoRoute(
+              path: '/forum-posts/:gameId/:gameName',
+              builder: (context, state) {
+                final gameId = state.pathParameters['gameId']!;
+                final gameName = Uri.decodeComponent(state.pathParameters['gameName']!);
+                return ForumPostsScreen(gameId: gameId, gameName: gameName);
+              },
+            ),
+            GoRoute(
+              path: '/post/:postId',
+              builder: (context, state) {
+                final postId = state.pathParameters['postId']!;
+                return PostScreen(postId: postId);
+              },
+            ),
+            GoRoute(
+              path: Routes.termsOfService,
+              builder: (context, state) => const TermsOfServiceScreen(),
+            ),
+            GoRoute(
+              path: Routes.privacyPolicy,
+              builder: (context, state) => const PrivacyPolicyScreen(),
+            ),
+            GoRoute(
+              path: Routes.cookiesPolicy,
+              builder: (context, state) => const CookiePolicyScreen(),
+            ),
+            GoRoute(
+              path: Routes.eula,
+              builder: (context, state) => const EulaScreen(),
+            ),
+            GoRoute(
+              path: Routes.publisherRegistration,
+              builder: (context, state) => const PublisherRegistrationScreen(),
+            ),
+            GoRoute(
+              path: Routes.publisherDashboard,
+              builder: (context, state) => const PublisherDashboardScreen(),
+            ),
           ],
         ),
-        
-        // Forum routes (outside main layout for better navigation)
-        GoRoute(
-          path: '/forum-posts/:gameId/:gameName',
-          builder: (context, state) {
-            final gameId = state.pathParameters['gameId']!;
-            final gameName = Uri.decodeComponent(state.pathParameters['gameName']!);
-            return ForumPostsScreen(gameId: gameId, gameName: gameName);
-          },
-        ),
-        GoRoute(
-          path: '/post/:postId',
-          builder: (context, state) {
-            final postId = state.pathParameters['postId']!;
-            return PostScreen(postId: postId);
-          },
-        ),
-        
         // Auth routes
         GoRoute(
           path: Routes.authCallback,

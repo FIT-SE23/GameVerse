@@ -12,7 +12,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   email: json['email'] as String,
   avatar: json['avatar'] as String?,
   bio: json['bio'] as String?,
-  typeUser: json['typeUser'] as String?,
+  type: json['type'] as String? ?? 'publisher',
   ownedGamesID: (json['ownedGamesID'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
@@ -20,6 +20,18 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       ?.map((e) => e as String)
       .toList(),
   installedGamesID: (json['installedGamesID'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  description: json['description'] as String?,
+  paymentMethod: json['paymentMethod'] == null
+      ? null
+      : PaymentMethodModel.fromJson(
+          json['paymentMethod'] as Map<String, dynamic>,
+        ),
+  registrationDate: json['registrationDate'] == null
+      ? null
+      : DateTime.parse(json['registrationDate'] as String),
+  gamesPublishedID: (json['gamesPublishedID'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
 );
@@ -31,8 +43,12 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'email': instance.email,
       'avatar': instance.avatar,
       'bio': instance.bio,
-      'typeUser': instance.typeUser,
+      'type': instance.type,
       'ownedGamesID': instance.ownedGamesID,
       'favoriteGamesID': instance.favoriteGamesID,
       'installedGamesID': instance.installedGamesID,
+      'description': instance.description,
+      'paymentMethod': instance.paymentMethod,
+      'registrationDate': instance.registrationDate?.toIso8601String(),
+      'gamesPublishedID': instance.gamesPublishedID,
     };

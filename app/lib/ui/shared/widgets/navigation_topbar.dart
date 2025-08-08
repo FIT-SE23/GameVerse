@@ -24,7 +24,8 @@ class _NavigationTopbarState extends State<NavigationTopbar> {
 
   @override
   Widget build(BuildContext context) {
-    final currentLocation = GoRouterState.of(context).matchedLocation;
+    // Get the current location from the GoRouter
+    final currentLocation = GoRouterState.of(context).uri.toString();
 
     if (wideScreen) {
       return DesktopNavbar(

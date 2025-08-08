@@ -172,3 +172,16 @@ Future<Response> listGamesInLibraryOrWishlist(
 
   return response;
 }
+
+Future<Response> getOwnedPosts(String userId, {int limit = 20}) async {
+  final raw = await http.get(
+    Uri.parse(serverURL + "user/$userId/post?limit=$limit")
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode, 
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}

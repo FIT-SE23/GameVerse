@@ -32,6 +32,21 @@ class DesktopNavbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Previous page buttons
+          IconButton(
+            tooltip: 'Go back',
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              size: 20,
+            ),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              }
+            },
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
+
           // Logo/header
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -42,6 +57,7 @@ class DesktopNavbar extends StatelessWidget {
               SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 50,)
             ),
           ),
+
           
           // Navigation items
           Row(
@@ -49,10 +65,16 @@ class DesktopNavbar extends StatelessWidget {
               _buildNavItem(context, '/', 'Home', currentLocation),
               _buildNavItem(context, '/library', 'Library', currentLocation),
               _buildNavItem(context, '/forums', 'Forums', currentLocation),
-              _buildNavItem(context, '/downloads', 'Downloads', currentLocation),
+              _buildNavItem(context, '/advance-search', 'Search', currentLocation),
+              // If the user type is operator, show the admin panel
+              if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
+                _buildNavItem(context, '/operator-panel', 'Operator Panel', currentLocation),
+              // If the user type is publisher, show the publisher dashboard
+              if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
+                _buildNavItem(context, '/publisher-dashboard', 'Publisher Dashboard', currentLocation),
             ],
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
           // Search bar
           Container(
             width: 300,
@@ -70,7 +92,7 @@ class DesktopNavbar extends StatelessWidget {
                   ),
                   onTap: () => controller.openView(),
                   onChanged: (_) => controller.openView(),
-                  leading: Icon(Icons.search, size: 20, color: AppTheme.currentThemeColors(theme.brightness).getText),
+                  leading: Icon(Icons.search, size: 20, color: theme.colorScheme.onSurfaceVariant),
                   hintText: 'Search games...',
                   hintStyle: const WidgetStatePropertyAll<TextStyle>(
                     TextStyle(color: Color.fromARGB(179, 150, 150, 150), fontSize: 14),
@@ -196,7 +218,6 @@ class DesktopNavbar extends StatelessWidget {
                   title: Text('Transactions'),
                 ),
               ),
-              
               const PopupMenuItem(
                 value: 'settings',
                 mouseCursor: SystemMouseCursors.click,
@@ -204,6 +225,15 @@ class DesktopNavbar extends StatelessWidget {
                   leading: Icon(Icons.settings),
                   title: Text('Settings'),
                 ),
+              ),
+              if (authProvider.user?.type == 'user')
+                const PopupMenuItem(
+                  value: 'publisher-registration',
+                  mouseCursor: SystemMouseCursors.click,
+                  child: ListTile(
+                    leading: Icon(Icons.business),
+                    title: Text('Publisher Registration'),
+                  ),
               ),
               const PopupMenuDivider(),
               const PopupMenuItem(
@@ -244,7 +274,11 @@ class DesktopNavbar extends StatelessWidget {
 
     // Desktop navigation item
   Widget _buildNavItem(BuildContext context, String route, String title, String currentLocation) {
-    final isSelected = currentLocation == route;
+    // Check inside the current location to see if route is present
+    bool isSelected = currentLocation.contains(route);
+    if (route == '/' && currentLocation != '/') {
+      isSelected = false;
+    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -257,7 +291,7 @@ class DesktopNavbar extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: () => context.go(route),
+        onTap: () => context.push(route),
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

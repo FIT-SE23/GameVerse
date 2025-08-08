@@ -13,6 +13,7 @@ import 'package:gameverse/ui/forum_posts/view_model/forum_posts_viewmodel.dart';
 import 'package:gameverse/ui/forums/view_model/forum_viewmodel.dart';
 import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
 import 'package:gameverse/ui/transactions/view_model/transaction_viewmodel.dart';
+import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 
 
 import '../data/repositories/auth_repository.dart';
@@ -81,6 +82,9 @@ List<SingleChildWidget> appProviders() {
       create: (context) => TransactionViewModel(
         transactionService: context.read<TransactionService>(),
       ),
+    ),
+    ChangeNotifierProvider<PublisherViewModel>(
+      create: (_) => PublisherViewModel(),
     ),
   ];
 }
