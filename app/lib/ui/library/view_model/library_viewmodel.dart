@@ -39,8 +39,8 @@ class LibraryViewModel extends ChangeNotifier {
   List<GameModel> get downloadedGames => 
       _games.where((game) => game.installed).toList();
 
-  List<GameModel> get favoriteGames => 
-      _games.where((game) => _isFavorite(game.gameId)).toList();
+  List<GameModel> get wishlistGames => 
+      _games.where((game) => _isInWishlist(game.gameId)).toList();
 
   List<GameModel> get recentGames => 
       _games.where((game) => game.playtimeHours != null && game.playtimeHours! > 0)
@@ -48,8 +48,8 @@ class LibraryViewModel extends ChangeNotifier {
 
   int get downloadedCount => downloadedGames.length;
 
-  // Favorite games storage (in a real app, this would be persistent)
-  final Set<String> _favoriteGameIds = {};
+  // Wishlist games storage (in a real app, this would be persistent)
+  final Set<String> _wishlistGameIds = {};
 
   Future<void> loadLibrary() async {
     _isLoading = true;
@@ -97,11 +97,11 @@ class LibraryViewModel extends ChangeNotifier {
     _applyFilters();
   }
 
-  void toggleFavorite(String gameId) {
-    if (_favoriteGameIds.contains(gameId)) {
-      _favoriteGameIds.remove(gameId);
+  void toggleWishlist(String gameId) {
+    if (_wishlistGameIds.contains(gameId)) {
+      _wishlistGameIds.remove(gameId);
     } else {
-      _favoriteGameIds.add(gameId);
+      _wishlistGameIds.add(gameId);
     }
     notifyListeners();
   }
@@ -116,7 +116,7 @@ class LibraryViewModel extends ChangeNotifier {
     }
   }
 
-  bool _isFavorite(String gameId) => _favoriteGameIds.contains(gameId);
+  bool _isInWishlist(String gameId) => _wishlistGameIds.contains(gameId);
 
   void _applyFilters() {
     _filteredGames = _games.where((game) {
@@ -155,7 +155,7 @@ class LibraryViewModel extends ChangeNotifier {
     final tags = <String>[];
     
     if (game.installed) tags.add('Downloaded');
-    if (game.playtimeHours != null && game.playtimeHours! > 50) tags.add('Favorite');
+    if (game.playtimeHours != null && game.playtimeHours! > 50) tags.add('Wishlist');
     if (game.playtimeHours != null && game.playtimeHours! > 0) tags.add('Played');
     if (game.price == 0) tags.add('Free to Play');
     

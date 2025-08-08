@@ -99,9 +99,9 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
 
     String logoAddr;
     if (Theme.brightnessOf(context) == Brightness.dark) {
-      logoAddr = 'assets/logo/logo_vertical_white.svg';
+      logoAddr = 'assets/logo/logo_horizontal_white.svg';
     } else {
-      logoAddr = 'assets/logo/logo_vertical_black.svg';
+      logoAddr = 'assets/logo/logo_horizontal_black.svg';
     }
 
     return SingleChildScrollView(
@@ -121,20 +121,20 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
                     children: [
                       // Logo and title
                       const SizedBox(height: 32),
-                      Center(
-                        child: Transform.scale(
-                          scale: 2.4,
-                          origin: Offset(0, 0),
-                          child: SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 80,)
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                      Text(
-                        'Welcome to the ultimate gaming platform',
-                        style: theme.textTheme.bodyMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
+                      // Center(
+                      //   child: Transform.scale(
+                      //     scale: 1,
+                      //     origin: Offset(0, 0),
+                      //     child: SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 80,)
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 40),
+                      // Text(
+                      //   'Welcome to the ultimate gaming platform',
+                      //   style: theme.textTheme.bodyMedium,
+                      //   textAlign: TextAlign.center,
+                      // ),
+                      // const SizedBox(height: 16),
                       
                       // Tab bar for Login/Register
                       TabBar(

@@ -51,15 +51,13 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
           final tabList = const [
             Tab(text: 'All Games'),
             Tab(text: 'Downloaded'),
-            Tab(text: 'Favorites'),
-            Tab(text: 'Recently Played'),
+            Tab(text: 'Wishlist'),
           ];
 
           final gameLists = [
             libraryViewModel.filteredGames,
             libraryViewModel.downloadedGames,
-            libraryViewModel.favoriteGames,
-            libraryViewModel.recentGames
+            libraryViewModel.wishlistGames,
           ];
 
           return Column(
@@ -265,6 +263,8 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                         ),
                       ],
                     ),
+
+                    const SizedBox(height: 16),
                 
                     // Games Content
                     libraryViewModel.isLoading
@@ -579,7 +579,7 @@ class _GameListTile extends StatelessWidget {
                   final libraryViewModel = Provider.of<LibraryViewModel>(context, listen: false);
                   switch (value) {
                     case 'favorite':
-                      libraryViewModel.toggleFavorite(game.gameId);
+                      libraryViewModel.toggleWishlist(game.gameId);
                       break;
                     case 'uninstall':
                       libraryViewModel.toggleInstalled(game.gameId);
