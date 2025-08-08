@@ -112,6 +112,7 @@ Future<Response> addGame(
   String publisherid,
   String name,
   String description,
+  double price,
   List<String> binaries,
   List<String> media,
   List<String> media_header,
@@ -123,6 +124,7 @@ Future<Response> addGame(
         ..fields["publisherid"] = publisherid
         ..fields["gamename"] = name
         ..fields["description"] = description
+        ..fields["price"] = price.toString()
         ..fields["categories"] = categories;
 
   try {
