@@ -353,9 +353,8 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       return ListView.separated(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
         itemCount: games.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) => const SizedBox(height: spaceCardHorizontal),
         itemBuilder: (context, index) => _GameListTile(game: games[index]),
       );
     } else {
@@ -366,7 +365,6 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       return GridView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: spaceCardHorizontal,

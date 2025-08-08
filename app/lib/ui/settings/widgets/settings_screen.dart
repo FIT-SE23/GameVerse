@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+import 'package:gameverse/config/spacing_config.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -13,137 +16,145 @@ class SettingsScreen extends StatelessWidget {
         return SingleChildScrollView(
           child: Column(
             children: [
-              // Privacy Settings
-              _buildSectionHeader(context, 'Privacy Settings'),
-              _buildPrivacyToggle(
-                context,
-                'Show Activity',
-                'Display your recent gaming activity',
-                settingsViewModel.showActivity,
-                (value) => settingsViewModel.updateShowActivity(value),
-              ),
-              _buildPrivacyToggle(
-                context,
-                'Show Friends',
-                'Display your friends list',
-                settingsViewModel.showFriends,
-                (value) => settingsViewModel.updateShowFriends(value),
-              ),
-              _buildPrivacyToggle(
-                context,
-                'Show Gaming Stats',
-                'Display your gaming statistics',
-                settingsViewModel.showStats,
-                (value) => settingsViewModel.updateShowStats(value),
-              ),
-              _buildPrivacyToggle(
-                context,
-                'Show Preferences',
-                'Display your gaming preferences',
-                settingsViewModel.showPreferences,
-                (value) => settingsViewModel.updateShowPreferences(value),
-              ),
-              _buildPrivacyToggle(
-                context,
-                'Show Last Active',
-                'Display when you were last active',
-                settingsViewModel.showLastActive,
-                (value) => settingsViewModel.updateShowLastActive(value),
-              ),
-              _buildPrivacyToggle(
-                context,
-                'Show Location',
-                'Display your location',
-                settingsViewModel.showLocation,
-                (value) => settingsViewModel.updateShowLocation(value),
-              ),
-              _buildPrivacyToggle(
-                context,
-                'Show Bio',
-                'Display your bio/about section',
-                settingsViewModel.showBio,
-                (value) => settingsViewModel.updateShowBio(value),
-              ),
-          
-              const Divider(height: 32),
-          
-              // App Settings
-              _buildSectionHeader(context, 'App Settings'),
-              ListTile(
-                leading: Icon(
-                  themeViewModel.isDarkMode 
-                      ? Icons.dark_mode 
-                      : Icons.light_mode,
+              Padding(
+                padding: getNegativeSpacePadding(context),
+                child: Column(
+                  children: [
+                    // Privacy Settings
+                    _buildSectionHeader(context, 'Privacy Settings'),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Activity',
+                      'Display your recent gaming activity',
+                      settingsViewModel.showActivity,
+                      (value) => settingsViewModel.updateShowActivity(value),
+                    ),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Friends',
+                      'Display your friends list',
+                      settingsViewModel.showFriends,
+                      (value) => settingsViewModel.updateShowFriends(value),
+                    ),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Gaming Stats',
+                      'Display your gaming statistics',
+                      settingsViewModel.showStats,
+                      (value) => settingsViewModel.updateShowStats(value),
+                    ),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Preferences',
+                      'Display your gaming preferences',
+                      settingsViewModel.showPreferences,
+                      (value) => settingsViewModel.updateShowPreferences(value),
+                    ),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Last Active',
+                      'Display when you were last active',
+                      settingsViewModel.showLastActive,
+                      (value) => settingsViewModel.updateShowLastActive(value),
+                    ),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Location',
+                      'Display your location',
+                      settingsViewModel.showLocation,
+                      (value) => settingsViewModel.updateShowLocation(value),
+                    ),
+                    _buildPrivacyToggle(
+                      context,
+                      'Show Bio',
+                      'Display your bio/about section',
+                      settingsViewModel.showBio,
+                      (value) => settingsViewModel.updateShowBio(value),
+                    ),
+                
+                    const Divider(height: 32),
+                
+                    // App Settings
+                    _buildSectionHeader(context, 'App Settings'),
+                    ListTile(
+                      leading: Icon(
+                        themeViewModel.isDarkMode 
+                            ? Icons.dark_mode 
+                            : Icons.light_mode,
+                      ),
+                      title: const Text('Dark Mode'),
+                      subtitle: const Text('Switch between light and dark themes'),
+                      trailing: Switch(
+                        value: themeViewModel.isDarkMode,
+                        onChanged: (_) => themeViewModel.toggleTheme(),
+                      ),
+                      onTap: themeViewModel.toggleTheme,
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.notifications),
+                      title: const Text('Notifications'),
+                      subtitle: const Text('Configure notification preferences'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _showNotificationSettings(context),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.language),
+                      title: const Text('Language'),
+                      subtitle: const Text('Choose your preferred language'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _showLanguageSettings(context),
+                    ),
+                
+                    const Divider(height: 32),
+                
+                    // Account Settings
+                    _buildSectionHeader(context, 'Account Settings'),
+                    ListTile(
+                      leading: const Icon(Icons.download),
+                      title: const Text('Download Data'),
+                      subtitle: const Text('Download your account data'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _showDownloadData(context),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.delete_forever, color: Colors.red),
+                      title: const Text('Delete Account', style: TextStyle(color: Colors.red)),
+                      subtitle: const Text('Permanently delete your account'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _showDeleteAccount(context),
+                    ),
+                
+                    const Divider(height: 32),
+                
+                    // Support
+                    _buildSectionHeader(context, 'Support'),
+                    ListTile(
+                      leading: const Icon(Icons.help),
+                      title: const Text('Help & FAQ'),
+                      subtitle: const Text('Get help and find answers'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _showHelp(context),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.contact_support),
+                      title: const Text('Contact Support'),
+                      subtitle: const Text('Get in touch with our support team'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _contactSupport(context),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.info),
+                      title: const Text('About'),
+                      subtitle: const Text('App version and information'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => _showAbout(context),
+                    ),
+                
+                    const SizedBox(height: 32),
+                  ],
                 ),
-                title: const Text('Dark Mode'),
-                subtitle: const Text('Switch between light and dark themes'),
-                trailing: Switch(
-                  value: themeViewModel.isDarkMode,
-                  onChanged: (_) => themeViewModel.toggleTheme(),
-                ),
-                onTap: themeViewModel.toggleTheme,
               ),
-              ListTile(
-                leading: const Icon(Icons.notifications),
-                title: const Text('Notifications'),
-                subtitle: const Text('Configure notification preferences'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _showNotificationSettings(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: const Text('Language'),
-                subtitle: const Text('Choose your preferred language'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _showLanguageSettings(context),
-              ),
-          
-              const Divider(height: 32),
-          
-              // Account Settings
-              _buildSectionHeader(context, 'Account Settings'),
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('Download Data'),
-                subtitle: const Text('Download your account data'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _showDownloadData(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete_forever, color: Colors.red),
-                title: const Text('Delete Account', style: TextStyle(color: Colors.red)),
-                subtitle: const Text('Permanently delete your account'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _showDeleteAccount(context),
-              ),
-          
-              const Divider(height: 32),
-          
-              // Support
-              _buildSectionHeader(context, 'Support'),
-              ListTile(
-                leading: const Icon(Icons.help),
-                title: const Text('Help & FAQ'),
-                subtitle: const Text('Get help and find answers'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _showHelp(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.contact_support),
-                title: const Text('Contact Support'),
-                subtitle: const Text('Get in touch with our support team'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _contactSupport(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.info),
-                title: const Text('About'),
-                subtitle: const Text('App version and information'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _showAbout(context),
-              ),
-          
-              const SizedBox(height: 32),
+              PageFooter(),
             ],
           ),
         );

@@ -77,26 +77,32 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
     return Consumer<GameDetailsViewModel>(
       builder: (context, gameDetailsViewModel, child) {
         if (gameDetailsViewModel.state == GameDetailsState.loading || gameDetailsViewModel.state == GameDetailsState.initial) {
-          return const SizedBox(
-            height: 640,
-            child: Center(child: CircularProgressIndicator()),
+          return SingleChildScrollView(
+            controller: _scrollController,
+            child: const SizedBox(
+              height: 640,
+              child: Center(child: CircularProgressIndicator()),
+            ),
           );
         } else if (gameDetailsViewModel.state == GameDetailsState.error) {
-          return SizedBox(
-            height: 640,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(gameDetailsViewModel.errorMessage),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => gameDetailsViewModel.loadGameDetails(widget.gameId),
-                    child: const Text('Retry'),
-                  )
-                ],
-              ),
-            )
+          return SingleChildScrollView(
+            controller: _scrollController,
+            child: SizedBox(
+              height: 640,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(gameDetailsViewModel.errorMessage),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => gameDetailsViewModel.loadGameDetails(widget.gameId),
+                      child: const Text('Retry'),
+                    )
+                  ],
+                ),
+              )
+            ),
           );
         } else {
           // state == success
