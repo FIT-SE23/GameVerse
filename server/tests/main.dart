@@ -33,21 +33,19 @@ void main() async {
   }
 
   if (false) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data["token"].toString();
     print(
       await addGame(
-        "d8915c91-71e6-4a45-84de-a12d0256ffc2",
-        "Gamer Simulator",
-        "Giả lập cuộc sống của người chơi trò chơi",
-        12000.0,
-        [
-          "Absolutely/path/file1",
-          "Absolutely/path/file2",
-          "Absolutely/path/file3",
-        ],
-        ["MediaPath/pic1", "MediaPath/pic2"],
-        ["MediaPath/header_pic2"],
-        ["main.exe"],
-        "Indie",
+        "Bearer " + token,
+        "Gamer Simulator 2",
+        "Tiếp nối câu chuyện của giả lập cuộc sống người chơi game",
+        42000.0,
+        ["/home/nullgus/Downloads/raylib/lib/x86_64/libraylib.a"],
+        ["/home/nullgus/Downloads/raylib/logo/raylib_128x128.png"],
+        ["/home/nullgus/Downloads/raylib/logo/raylib_1024x1024.png"],
+        ["/home/nullgus/Code/win32/Calendar/calendar.exe"],
+        "Indie,Open World",
       ),
     );
   }
@@ -97,8 +95,8 @@ void main() async {
     );
   }
 
-  if (false) {
-    print(await listGames("Gamer Simulator 2", "recommend"));
+  if (true) {
+    print(await listGames("Gamer Simulator 2", "recommend", 0, 1));
   }
 
   if (false) {
@@ -116,7 +114,7 @@ void main() async {
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
-    print(await createPaypalReceipt(token));
+    print(await createVnpayReceipt(token));
   }
 
   if (false) {

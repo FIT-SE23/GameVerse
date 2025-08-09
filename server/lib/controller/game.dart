@@ -46,10 +46,10 @@ class Game {
     for (var resource in json["Resource"] as List<dynamic>) {
       resources.add(Resource.fromJson(resource as Map<String, dynamic>));
     }
-
-    final gameSale = GameSale.fromJson(
-      json["Game_Sale"] as Map<String, dynamic>,
-    );
+    GameSale? gameSale = null;
+    if (json["Game_Sale"] != null) {
+      gameSale = GameSale.fromJson(json["Game_Sale"] as Map<String, dynamic>);
+    }
 
     return Game(
       gameId: gameid,
@@ -231,10 +231,16 @@ Future<Response> getGame(String token, String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(String gamename, String sortBy) async {
+Future<Response> listGames(
+  String gamename,
+  String sortBy,
+  int start,
+  int cnt,
+) async {
   final raw = await http.get(
     Uri.parse(
-      serverURL + "search?entity=game&gamename=$gamename&sortby=$sortBy",
+      serverURL +
+          "search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt",
     ),
   );
 

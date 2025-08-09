@@ -302,20 +302,24 @@ func getGame(c echo.Context, client *supabase.Client) error {
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortBy := c.QueryParam("sortby")
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	start, err := strconv.Atoi(c.QueryParam("start"))
 	if err != nil {
-		limit = 0
-		err = nil
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	cnt, err := strconv.Atoi(c.QueryParam("cnt"))
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Limit(limit, "")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
 
 	var rep string
 	if sortBy == "price" {
-		limit := map[string]int{
-			"lim": limit,
+		rangeLimit := map[string]int{
+			"start": start,
+			"cnt":   cnt,
 		}
-		rep = client.Rpc("sortgamebyprice", "", limit)
+		rep = client.Rpc("sortgamebyprice", "", rangeLimit)
 		var raw []map[string]string
 		err = json.Unmarshal([]byte(rep), &raw)
 		if err != nil {
