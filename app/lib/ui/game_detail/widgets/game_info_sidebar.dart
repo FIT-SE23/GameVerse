@@ -109,6 +109,22 @@ class GameInfoSidebar extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Tooltip(
+                message: 'Go to forum',
+                child: ElevatedButton(
+                  style: theme.elevatedButtonTheme.style!.copyWith(
+                    backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                  ),
+                  onPressed: () => context.push('/forum-posts/${game.gameId}/${Uri.encodeComponent(game.name)}'),
+                  child: Icon(
+                    Icons.forum_outlined,
+                    color: AppTheme.currentThemeColors(theme.brightness).getText,
+                  )
+                ),
+              ),
+            ),
           ],
         ),
 
