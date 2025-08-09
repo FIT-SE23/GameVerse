@@ -33,15 +33,21 @@ func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid st
 
 	for _, item := range items {
 		price, err := strconv.ParseFloat(item["price"], 64)
-		fmt.Println("price", price)
+		// fmt.Println("price", price)
 		if err != nil {
 			continue
 		}
+
+		now := time.Now()
+		createDate := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second())
+
 		transaction := map[string]any{
 			"senderid":        userid,
-			"receiverid":      item["publisherid"],
+			"gameid":          item["sku"],
 			"paymentmethodid": paymentMethodId,
 			"moneyamount":     price,
+			"isrefundable":    true,
+			"transactiondate": createDate,
 		}
 		rep, _, err = client.From("Transaction").Insert(transaction, false, "", "", "").ExecuteString()
 		if err != nil {
@@ -128,7 +134,6 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 		if err == nil {
 			total += amount
 		}
-		delete(item, "publisherid")
 	}
 
 	paymentData := map[string]any{
@@ -201,9 +206,16 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 		fmt.Println(err)
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	fmt.Println(result)
 
-	return jsonResponse(c, http.StatusOK, "", result["links"])
+	if result["state"] == nil {
+		return jsonResponse(c, http.StatusBadRequest, "Cannot create receipt", result["details"])
+	}
+
+	links, ok := result["links"].([]map[string]any)
+	if !ok {
+		return jsonResponse(c, http.StatusOK, "", result["links"])
+	}
+	return jsonResponse(c, http.StatusOK, "", links[1])
 }
 
 func checkoutPaypal(c echo.Context, client *supabase.Client) error {

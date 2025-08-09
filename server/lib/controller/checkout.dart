@@ -13,6 +13,20 @@ Future<Response> createPaypalReceipt(String token) async {
     jsonDecode(await raw.body) as Map<String, dynamic>,
   );
 
+  if (response.code == 200) {
+    final links = response.data as List<dynamic>;
+    for (final link in links) {
+      final linkMap = link as Map<String, dynamic>;
+      if (linkMap["method"] == "REDIRECT") {
+        return Response(
+          code: response.code,
+          message: response.message,
+          data: linkMap["href"],
+        );
+      }
+    }
+  }
+
   return response;
 }
 
