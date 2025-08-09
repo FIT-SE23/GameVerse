@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
-	"github.com/supabase-community/supabase-go"
 	"github.com/supabase-community/postgrest-go"
+	"github.com/supabase-community/supabase-go"
 )
 
 func getUser(c echo.Context, client *supabase.Client) error {
@@ -130,21 +130,22 @@ func login(c echo.Context, client *supabase.Client) error {
 	password := c.FormValue("password")
 	checkSum := sha256.Sum256([]byte(password))
 	hashPassword := hex.EncodeToString(checkSum[:])
-	rep, _, err := client.From("User").Select("userid", "", false).Eq("email", email).Eq("hashpassword", hashPassword).Single().ExecuteString()
+	rep, _, err := client.From("User").Select("userid, type", "", false).Eq("email", email).Eq("hashpassword", hashPassword).Single().ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, "Invalid email or password" /*err.Error()*/, "")
 	}
 
-	var userid map[string]string
-	err = json.Unmarshal([]byte(rep), &userid)
+	var user map[string]string
+	err = json.Unmarshal([]byte(rep), &user)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	// return jsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
 	// Return the user ID and token
 	return jsonResponse(c, http.StatusOK, "", map[string]string{
-		"userid": userid["userid"],
-		"token":  createUserToken(userid["userid"]),
+		"userid": user["userid"],
+		"type":   user["type"],
+		"token":  createUserToken(user["userid"]),
 	})
 }
 
@@ -198,7 +199,6 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 		Order("postdate", &postgrest.OrderOpts{Ascending: false}).
 		Limit(limit, "").
 		ExecuteString()
-
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -211,3 +211,4 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 
 	return jsonResponse(c, http.StatusOK, "", posts)
 }
+

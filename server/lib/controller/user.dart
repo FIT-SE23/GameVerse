@@ -29,6 +29,8 @@ class User {
         (this.username ?? "\"\"") +
         ", email: " +
         (this.email ?? "\"\"") +
+        ", type: " +
+        (this.type ?? "\"\"") +
         "}";
   }
 }
