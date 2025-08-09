@@ -328,13 +328,13 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 	now := utc.Add(time.Hour * 7)
 	expireTime := now.Add(time.Minute * 15)
 	query := map[string]string{
-		"vnp_Amount":     strconv.FormatFloat(total, 'f', 2, 64),
+		"vnp_Amount":     strconv.FormatInt(int64(total*100*1000), 10),
 		"vnp_Command":    "pay",
 		"vnp_CreateDate": fmt.Sprintf("%d%02d%02d%02d%02d%02d", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second()),
 		"vnp_CurrCode":   "VND",
 		"vnp_ExpireDate": fmt.Sprintf("%d%02d%02d%02d%02d%02d", expireTime.Year(), int(expireTime.Month()), expireTime.Day(), expireTime.Hour(), expireTime.Minute(), expireTime.Second()),
 		"vnp_IpAddr":     ipAddr,
-		"vnp_Locale":     "en",
+		"vnp_Locale":     "vi",
 		"vnp_OrderInfo":  userid, // ?
 		"vnp_OrderType":  "billpayment",
 		"vnp_ReturnUrl":  serverURL + "vnpay/return",
