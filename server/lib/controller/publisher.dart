@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import "../config/config.dart";
 
 class Publisher {
-  final String? publisherid;
+  final String? publisherId;
   final String? paymentMethodId;
   final String? description;
 
-  const Publisher({this.publisherid, this.paymentMethodId, this.description});
+  const Publisher({this.publisherId, this.paymentMethodId, this.description});
 
   factory Publisher.fromJson(Map<String, dynamic> json) {
     final publisherid = json["publisherid"] as String?;
@@ -16,7 +16,7 @@ class Publisher {
     final description = json["description"] as String?;
 
     return Publisher(
-      publisherid: publisherid,
+      publisherId: publisherid,
       paymentMethodId: paymentMethodId,
       description: description,
     );
@@ -25,7 +25,7 @@ class Publisher {
   @override
   String toString() {
     return "Publisher {publisherid: " +
-        (this.publisherid ?? "\"\"") +
+        (this.publisherId ?? "\"\"") +
         ", paymentmethodid: " +
         (this.paymentMethodId ?? "\"\"") +
         ", description: " +
