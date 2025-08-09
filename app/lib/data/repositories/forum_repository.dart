@@ -5,22 +5,18 @@ import 'package:gameverse/domain/models/category_model/category_model.dart';
 class ForumRepository {
   
   Future<List<GameModel>> getGamesWithForums() async {
-    await Future.delayed(const Duration(milliseconds: 500));
     return _getMockGamesWithForums();
   }
 
   Future<void> createForum(ForumModel forum) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // In real app, save to database
   }
 
   Future<void> deleteForum(String forumId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // In real app, delete from database
   }
 
   Future<void> updateForum(ForumModel forum) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // In real app, update in database
   }
 
@@ -52,7 +48,7 @@ class ForumRepository {
         saleStartDate: DateTime.now().subtract(const Duration(days: 3)),
         saleEndDate: DateTime.now().add(const Duration(days: 4)),
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
       GameModel(
@@ -77,7 +73,7 @@ class ForumRepository {
         releaseDate: DateTime(2019, 11, 5),
         isSale: false,
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
       GameModel(
@@ -105,7 +101,7 @@ class ForumRepository {
         saleStartDate: DateTime.now().subtract(const Duration(days: 1)),
         saleEndDate: DateTime.now().add(const Duration(days: 6)),
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
     ];

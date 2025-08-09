@@ -22,9 +22,9 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
   final _requestMessageController = TextEditingController();
   
   bool _isLoading = false;
-  List<String> _selectedBinaries = [];
-  List<String> _selectedMedia = [];
-  List<String> _selectedExes = [];
+  final List<String> _selectedBinaries = [];
+  final List<String> _selectedMedia = [];
+  final List<String> _selectedExes = [];
   String? _headerImagePath;
 
   @override
@@ -291,6 +291,18 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
         
         const SizedBox(height: 12),
         
+        // Media files
+        _buildFilePickerTile(
+          context,
+          'Media Files',
+          _selectedMedia,
+          () => _pickFiles('images'),
+          Icons.photo_library,
+          'Select screenshots, videos, and other media',
+        ),
+
+        const SizedBox(height: 12),
+
         // Binary files
         _buildFilePickerTile(
           context,
@@ -299,18 +311,6 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
           () => _pickFiles('binaries'),
           Icons.folder,
           'Select game executable and binary files',
-        ),
-        
-        const SizedBox(height: 12),
-        
-        // Media files
-        _buildFilePickerTile(
-          context,
-          'Media Files',
-          _selectedMedia,
-          () => _pickFiles('media'),
-          Icons.photo_library,
-          'Select screenshots, videos, and other media',
         ),
         
         const SizedBox(height: 12),
@@ -435,6 +435,9 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
   Future<void> _pickFiles(String type) async {
     FileType fileType;
     switch (type) {
+      case 'images':
+        fileType = FileType.image;
+        break;
       case 'media':
         fileType = FileType.media;
         break;
@@ -456,6 +459,9 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
       setState(() {
         final paths = result.paths.where((path) => path != null).cast<String>().toList();
         switch (type) {
+          case 'images':
+            _selectedMedia.addAll(paths);
+            break;
           case 'binaries':
             _selectedBinaries.addAll(paths);
             break;
@@ -484,6 +490,18 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
       if (authViewModel.user == null) {
         throw Exception('User not authenticated');
       }
+      if (_headerImagePath == null) {
+        throw Exception('Header image is required');
+      }
+      if (_selectedMedia.isEmpty) {
+        throw Exception('At least one media file is required');
+      }
+      if (_selectedBinaries.isEmpty) {
+        throw Exception('At least one binary file is required');
+      }
+      if (_selectedExes.isEmpty) {
+        throw Exception('At least one executable file is required');
+      }
 
       final success = await publisherViewModel.requestGamePublication(
         publisherId: authViewModel.user!.id,
@@ -494,10 +512,11 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
         // categories: _categoriesController.text.trim(),
         categories: [],
         price: double.parse(_priceController.text),
-        binaries: _selectedBinaries.isEmpty ? null : _selectedBinaries,
+        binaries: _selectedBinaries,
         media: _selectedMedia,
-        exes: _selectedExes.isEmpty ? null : _selectedExes,
-        headerImage: _headerImagePath!, // Assuming this is the path to the header image
+        exes:  _selectedExes,
+        headerImage: _headerImagePath!,
+        requestMessage: _requestMessageController.text.trim(),
       );
 
       if (!mounted) return;

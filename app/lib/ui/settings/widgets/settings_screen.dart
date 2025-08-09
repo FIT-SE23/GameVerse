@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
+
 import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 
@@ -8,6 +10,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Consumer2<SettingsViewModel, ThemeViewModel>(
       builder: (context, settingsViewModel, themeViewModel, child) {
         return SingleChildScrollView(
@@ -65,6 +68,49 @@ class SettingsScreen extends StatelessWidget {
                 (value) => settingsViewModel.updateShowBio(value),
               ),
           
+              const Divider(height: 32),
+              _buildSectionHeader(context, 'Download Settings'), 
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.folder_open,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Current Path:',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          Text(
+                            settingsViewModel.downloadPath,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () => _changeDownloadPath(context, settingsViewModel),
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Change'),
+                      
+                    ),
+                  ],
+                ),
+              ),
               const Divider(height: 32),
           
               // App Settings
@@ -256,8 +302,25 @@ class SettingsScreen extends StatelessWidget {
     showAboutDialog(
       context: context,
       applicationName: 'GameVerse',
-      applicationVersion: '1.0.0',
+      applicationVersion: '1.0.0',  
       applicationLegalese: '© 2024 GameVerse. All rights reserved.',
     );
+  }
+
+  Future<void> _changeDownloadPath(BuildContext context, SettingsViewModel settingsViewModel) async {
+    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    
+    if (selectedDirectory != null) {
+      await settingsViewModel.setDownloadPath(selectedDirectory);
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Download path changed to: $selectedDirectory'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
   }
 }

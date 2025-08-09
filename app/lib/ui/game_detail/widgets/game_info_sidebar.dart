@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/config/app_theme.dart';
+import 'package:gameverse/ui/game_detail/widgets/game_download_button.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 
@@ -19,7 +20,6 @@ class GameInfoSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -41,76 +41,83 @@ class GameInfoSidebar extends StatelessWidget {
         ),
 
         const SizedBox(height: 8),
-
-        // 'Buy game' button
-        SizedBox(
-          width: double.infinity,
-          height: 36,
-          child: ElevatedButton(
-            style: theme.elevatedButtonTheme.style,
-            onPressed: () => context.push(Routes.transactions),
-            child: Text(
-              'Buy game',
-              style: theme.textTheme.bodyLarge!.copyWith(color: AppTheme.oppositeThemeColors(theme.brightness).getText, fontWeight: FontWeight.bold),
+        // If game is not owned by user, show 'Buy game' button and other buttons
+        if (!game.isOwned)
+        ...[
+          // 'Buy game' button
+          SizedBox(
+            width: double.infinity,
+            height: 36,
+            child: ElevatedButton(
+              style: theme.elevatedButtonTheme.style,
+              onPressed: () => context.push(Routes.transactions),
+              child: Text(
+                'Buy game',
+                style: theme.textTheme.bodyLarge!.copyWith(color: AppTheme.oppositeThemeColors(theme.brightness).getText, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-        // 'Add to cart', 'Add to wishlist' and 'Recommend' button
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Tooltip(
-                message: 'Add to cart',
-                child: ElevatedButton(
-                  style: theme.elevatedButtonTheme.style!.copyWith(
-                    backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+          // 'Add to cart', 'Add to wishlist' and 'Recommend' button
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Tooltip(
+                  message: 'Add to cart',
+                  child: ElevatedButton(
+                    style: theme.elevatedButtonTheme.style!.copyWith(
+                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                    ),
+                    onPressed: () => context.push(Routes.transactions),
+                    child: Icon(
+                      Icons.add_shopping_cart_rounded,
+                      color: AppTheme.currentThemeColors(theme.brightness).getText,
+                    )
                   ),
-                  onPressed: () => context.push(Routes.transactions),
-                  child: Icon(
-                    Icons.add_shopping_cart_rounded,
-                    color: AppTheme.currentThemeColors(theme.brightness).getText,
-                  )
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Tooltip(
-                message: 'Add to wishlist',
-                child: ElevatedButton(
-                  style: theme.elevatedButtonTheme.style!.copyWith(
-                    backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+              const SizedBox(width: 8),
+              Expanded(
+                child: Tooltip(
+                  message: 'Add to wishlist',
+                  child: ElevatedButton(
+                    style: theme.elevatedButtonTheme.style!.copyWith(
+                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                    ),
+                    onPressed: () => context.push(Routes.transactions),
+                    child: Icon(
+                      Icons.bookmark_add_outlined,
+                      color: AppTheme.currentThemeColors(theme.brightness).getText,
+                    )
                   ),
-                  onPressed: () => context.push(Routes.transactions),
-                  child: Icon(
-                    Icons.bookmark_add_outlined,
-                    color: AppTheme.currentThemeColors(theme.brightness).getText,
-                  )
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Tooltip(
-                message: 'Recommend',
-                child: ElevatedButton(
-                  style: theme.elevatedButtonTheme.style!.copyWith(
-                    backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+              const SizedBox(width: 8),
+              Expanded(
+                child: Tooltip(
+                  message: 'Recommend',
+                  child: ElevatedButton(
+                    style: theme.elevatedButtonTheme.style!.copyWith(
+                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                    ),
+                    onPressed: () => context.push(Routes.transactions),
+                    child: Icon(
+                      Icons.thumb_up_alt_outlined,
+                      color: AppTheme.currentThemeColors(theme.brightness).getText,
+                    )
                   ),
-                  onPressed: () => context.push(Routes.transactions),
-                  child: Icon(
-                    Icons.thumb_up_alt_outlined,
-                    color: AppTheme.currentThemeColors(theme.brightness).getText,
-                  )
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ] else
+        ...[
+          // If game is owned, show download button
+          GameDownloadButton(game: game),
+        ],
 
         const SizedBox(height: 16),
 

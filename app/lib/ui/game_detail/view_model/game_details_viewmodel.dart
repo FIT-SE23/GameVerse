@@ -68,7 +68,7 @@ class GameDetailsViewModel extends ChangeNotifier {
 
   void toggleInstalled() {
     if (_gameDetail != null && _isInLibrary) {
-      _gameDetail = _gameDetail!.copyWith(installed: !_gameDetail!.installed);
+      _gameDetail = _gameDetail!.copyWith(isInstalled: !_gameDetail!.isInstalled);
       notifyListeners();
     }
   }

@@ -8,7 +8,6 @@ class CommentRepository {
   CommentRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
 
   Future<List<CommentModel>> getCommentsForPost(String postId) async {
-    await Future.delayed(const Duration(milliseconds: 200));
     return _getMockCommentsForPost(postId);
   }
 
@@ -85,15 +84,12 @@ class CommentRepository {
   }
 
   Future<void> addComment(CommentModel comment) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // Simulate adding a comment
   }
   Future<void> deleteComment(String commentId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // Simulate deleting a comment
   }
   Future<void> updateComment(CommentModel comment) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // Simulate updating a comment
   }
 }

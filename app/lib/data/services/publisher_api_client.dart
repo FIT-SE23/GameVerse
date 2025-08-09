@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:gameverse/domain/models/game_model/game_model.dart';
-import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 import 'package:gameverse/config/api_endpoints.dart';
 
 class PublisherApiClient {
@@ -86,19 +87,30 @@ class PublisherApiClient {
     }
   }
 
-  Future<List<GameRequest>> getPendingRequests(String publisherId) async {
+  Future<List<GameRequestModel>> getPendingRequests(String publisherId) async {
     try {
       // This would need to be implemented on your server
       // For now, return mock data
       return [
-        GameRequest(
-          id: 'req_1',
+        GameRequestModel(
           gameName: 'My Awesome Game',
+          publisherId: publisherId,
+          briefDescription: 'A brief description of my awesome game',
           description: 'An epic adventure game',
-          categories: 'Adventure, Action',
+          requirements: 'Minimum requirements: 8GB RAM, 2GB VRAM',
+          categories: [
+            CategoryModel(categoryId: '1', name: 'Adventure', isSensitive: false),
+            CategoryModel(categoryId: '2', name: 'Action', isSensitive: false),
+
+          ],
           price: 29.99,
-          status: 'pending',
-          requestDate: DateTime.now().subtract(const Duration(days: 2)),
+          requestStatus: 'pending',
+          requestDate: DateTime.now(),
+          headerImage: 'https://example.com/header.jpg',
+          media: [
+            'https://example.com/media1.jpg',
+            'https://example.com/media2.jpg',
+          ],
         ),
       ];
     } catch (e) {

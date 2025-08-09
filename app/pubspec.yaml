@@ -74,6 +74,12 @@ dependencies:
   # Picking files from file explorer
   file_picker: ^10.2.2
 
+  # Path operations
+  path: ^1.9.1
+
+  # A http networking package, supports Request cancelation, File uploading/downloading
+  dio: ^5.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,5 @@
 import 'package:gameverse/domain/models/game_model/game_model.dart';
-import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
+import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:gameverse/data/services/publisher_api_client.dart';
 
 class PublisherRepository {
@@ -28,7 +28,7 @@ class PublisherRepository {
     return await _apiClient.getPublishedGames(publisherId);
   }
 
-  Future<List<GameRequest>> getPendingRequests(String publisherId) async {
+  Future<List<GameRequestModel>> getPendingRequests(String publisherId) async {
     return await _apiClient.getPendingRequests(publisherId);
   }
 

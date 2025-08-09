@@ -37,7 +37,7 @@ class LibraryViewModel extends ChangeNotifier {
 
   // Computed properties
   List<GameModel> get downloadedGames => 
-      _games.where((game) => game.installed).toList();
+      _games.where((game) => game.isInstalled).toList();
 
   List<GameModel> get favoriteGames => 
       _games.where((game) => _isFavorite(game.gameId)).toList();
@@ -57,7 +57,7 @@ class LibraryViewModel extends ChangeNotifier {
 
     try {
       // Load mock library data
-      _games = await _gameRepository.searchGames('');
+      _games = _gameRepository.allGames;
       _availableTags = _extractTags(_games);
       _applyFilters();
     } catch (e) {
@@ -110,7 +110,7 @@ class LibraryViewModel extends ChangeNotifier {
     final gameIndex = _games.indexWhere((game) => game.gameId == gameId);
     if (gameIndex != -1) {
       _games[gameIndex] = _games[gameIndex].copyWith(
-        installed: !_games[gameIndex].installed,
+        isInstalled: !_games[gameIndex].isInstalled,
       );
       _applyFilters();
     }
@@ -154,7 +154,7 @@ class LibraryViewModel extends ChangeNotifier {
     // For now, we'll generate some mock tags based on game properties
     final tags = <String>[];
     
-    if (game.installed) tags.add('Downloaded');
+    if (game.isInstalled) tags.add('Downloaded');
     if (game.playtimeHours != null && game.playtimeHours! > 50) tags.add('Favorite');
     if (game.playtimeHours != null && game.playtimeHours! > 0) tags.add('Played');
     if (game.price == 0) tags.add('Free to Play');

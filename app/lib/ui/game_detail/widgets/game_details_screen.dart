@@ -7,7 +7,6 @@ import '../view_model/game_details_viewmodel.dart';
 // import 'game_details_layout.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
-
 import 'package:gameverse/config/spacing_config.dart';
 import 'game_media_carousel.dart';
 import 'game_info_sidebar.dart';

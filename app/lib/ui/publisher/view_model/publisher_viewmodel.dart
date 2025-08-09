@@ -111,7 +111,7 @@ class PublisherViewModel extends ChangeNotifier {
           saleStartDate: DateTime.now().subtract(const Duration(days: 5)),
           saleEndDate: DateTime.now().add(const Duration(days: 10)),
           isOwned: false,
-          installed: false,
+          isInstalled: false,
           favorite: false,
         ),
         GameModel(
@@ -135,7 +135,7 @@ class PublisherViewModel extends ChangeNotifier {
           releaseDate: DateTime.now().subtract(const Duration(days: 60)),
           isSale: false,
           isOwned: false,
-          installed: false,
+          isInstalled: false,
           favorite: false,
         ),
       ];
@@ -200,13 +200,13 @@ class PublisherViewModel extends ChangeNotifier {
     required String description,
     List<CategoryModel> categories = const [],
     required double price,
-    String briefDescription = 'This is a brief description of the game.',
-    String requirements = 'Minimum requirements for the game.',
-    String headerImage = 'https://picsum.photos/800/400?random=13',
-    List<String> media = const [],
-    String requestMessage = 'Requesting publication for the game.',
-    List<String>? binaries,
-    List<String>? exes,
+    required String briefDescription,
+    required String requirements,
+    required String headerImage,
+    required List<String> media,
+    required String requestMessage,
+    required List<String> binaries,
+    required List<String> exes,
   }) async {
     try {
       // Simulate API call
@@ -226,6 +226,8 @@ class PublisherViewModel extends ChangeNotifier {
         requestDate: DateTime.now(),
         requestMessage: requestMessage,
       );
+
+      debugPrint('Requesting game publication: $newRequest');
 
       _pendingRequests.insert(0, newRequest);
       notifyListeners();
@@ -248,27 +250,4 @@ class PublisherViewModel extends ChangeNotifier {
       return false;
     }
   }
-}
-
-// Game request model for publisher
-class GameRequest {
-  final String id;
-  final String gameName;
-  final String description;
-  final String categories;
-  final double price;
-  final String status; // 'pending', 'under_review', 'approved', 'rejected'
-  final DateTime requestDate;
-  final String? rejectionReason;
-
-  const GameRequest({
-    required this.id,
-    required this.gameName,
-    required this.description,
-    required this.categories,
-    required this.price,
-    required this.status,
-    required this.requestDate,
-    this.rejectionReason,
-  });
 }

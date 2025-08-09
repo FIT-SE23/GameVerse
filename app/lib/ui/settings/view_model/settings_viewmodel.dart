@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'dart:io';
+import 'package:path/path.dart' as path;
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsViewModel extends ChangeNotifier {
   // Privacy settings
@@ -23,6 +25,47 @@ class SettingsViewModel extends ChangeNotifier {
 
   bool _showBio = true;
   bool get showBio => _showBio;
+
+  String _downloadPath = '';
+  String get downloadPath => _downloadPath;
+
+  SettingsViewModel() {
+    initialize();
+  }
+
+  Future<void> initialize() async {
+    _downloadPath = await _getDefaultDownloadPath();
+    notifyListeners();
+  }
+
+
+  Future<String> _getDefaultDownloadPath() async {
+    if (Platform.isWindows) {
+      final userProfile = Platform.environment['USERPROFILE'];
+      return path.join(userProfile!, 'Documents', 'GameVerse', 'Games');
+    } else if (Platform.isMacOS) {
+      final home = Platform.environment['HOME'];
+      return path.join(home!, 'Documents', 'GameVerse', 'Games');
+    } else if (Platform.isLinux) {
+      final home = Platform.environment['HOME'];
+      return path.join(home!, 'GameVerse', 'Games');
+    }
+    return path.join(Directory.current.path, 'GameVerse', 'Games');
+  }
+
+  Future<void> setDownloadPath(String newPath) async {
+    _downloadPath = newPath;
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.setString('download_path', newPath);
+    
+    // Create directory if it doesn't exist
+    final directory = Directory(newPath);
+    if (!await directory.exists()) {
+      await directory.create(recursive: true);
+    }
+    
+    notifyListeners();
+  }
 
     // Privacy settings updates
   void updateShowActivity(bool value) {

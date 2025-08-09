@@ -21,9 +21,7 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
       .toList(),
   media: (json['media'] as List<dynamic>?)?.map((e) => e as String).toList(),
   releaseDate: DateTime.parse(json['releaseDate'] as String),
-  requestId: json['requestId'] as String?,
   requestStatus: json['requestStatus'] as String?,
-  requestMessage: json['requestMessage'] as String?,
   isSale: json['isSale'] as bool?,
   discountPercent: (json['discountPercent'] as num?)?.toDouble(),
   saleStartDate: json['saleStartDate'] == null
@@ -38,7 +36,7 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
       .toList(),
   exes: (json['exes'] as List<dynamic>?)?.map((e) => e as String).toList(),
   isOwned: json['isOwned'] as bool? ?? false,
-  installed: json['installed'] as bool? ?? false,
+  isInstalled: json['isInstalled'] as bool? ?? false,
   favorite: json['favorite'] as bool? ?? false,
   playtimeHours: (json['playtimeHours'] as num?)?.toDouble(),
 );
@@ -57,9 +55,7 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'categories': instance.categories,
       'media': instance.media,
       'releaseDate': instance.releaseDate.toIso8601String(),
-      'requestId': instance.requestId,
       'requestStatus': instance.requestStatus,
-      'requestMessage': instance.requestMessage,
       'isSale': instance.isSale,
       'discountPercent': instance.discountPercent,
       'saleStartDate': instance.saleStartDate?.toIso8601String(),
@@ -68,7 +64,7 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'binaries': instance.binaries,
       'exes': instance.exes,
       'isOwned': instance.isOwned,
-      'installed': instance.installed,
+      'isInstalled': instance.isInstalled,
       'favorite': instance.favorite,
       'playtimeHours': instance.playtimeHours,
     };

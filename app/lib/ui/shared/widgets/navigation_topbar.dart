@@ -19,7 +19,7 @@ class _NavigationTopbarState extends State<NavigationTopbar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    wideScreen = MediaQuery.sizeOf(context).width > 1200;
+    wideScreen = MediaQuery.sizeOf(context).width > 1300;
   }
 
   @override

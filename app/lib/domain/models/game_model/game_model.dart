@@ -22,9 +22,7 @@ abstract class GameModel with _$GameModel {
     required DateTime releaseDate,
 
     // Request related fields
-    String? requestId,
-    String? requestStatus, // e.g., 'pending', 'approved', 'rejected
-    String? requestMessage, // Message from the publisher regarding the request
+    String? requestStatus, // e.g., 'pending', 'approved', 'rejected'
 
     // Sale related fields
     bool? isSale,
@@ -39,13 +37,11 @@ abstract class GameModel with _$GameModel {
 
     // Field for User only
     @Default(false) bool isOwned,
-    @Default(false) bool installed,
+    @Default(false) bool isInstalled,
     @Default(false) bool favorite,
     double? playtimeHours,
   }) = _GameModel;
 
   factory GameModel.fromJson(Map<String, dynamic> json) => 
       _$GameModelFromJson(json);
-
-  
 }

@@ -545,7 +545,7 @@ class _GameListTile extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        if (game.installed) ...[
+                        if (game.isInstalled) ...[
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
@@ -596,7 +596,7 @@ class _GameListTile extends StatelessWidget {
                       title: Text('Add to Favorites'),
                     ),
                   ),
-                  if (game.installed)
+                  if (game.isInstalled)
                     const PopupMenuItem(
                       value: 'uninstall',
                       child: ListTile(

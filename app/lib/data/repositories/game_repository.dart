@@ -1,4 +1,6 @@
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path/path.dart' as path;
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
@@ -6,58 +8,40 @@ import 'package:gameverse/domain/models/category_model/category_model.dart';
 class GameRepository {
   final http.Client client;
 
-  GameRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
+  void _initializeMockData() {
+    _allGames = [
+      ..._getMockFeaturedGames(),
+      ..._getMockOwnedGames(),
+      ..._getMockAdditionalGames(),
+    ];
+  }
+
+  List<GameModel> _allGames = [];
+  List<GameModel> get allGames => _allGames;
+
+  GameRepository({http.Client? httpClient}) : client = httpClient ?? http.Client() {
+    _initializeMockData();
+  }
 
   Future<List<GameModel>> getFeaturedGames() async {
     return _getMockFeaturedGames();
   }
 
   Future<List<GameModel>> getOwnedGames(String userId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     return _getMockOwnedGames();
   }
 
   Future<GameModel?> getGameDetails(String gameId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
 
-
-    
-    // First check in featured games
-    final featuredGames = await getFeaturedGames();
-    final featuredGame = featuredGames.firstWhere(
+    final result = _allGames.firstWhere(
       (game) => game.gameId == gameId,
-      orElse: () => _createDetailedMockGame(gameId),
     );
     
-    if (featuredGame.gameId == gameId) {
-      return featuredGame;
+    if (result.gameId == gameId) {
+      return result;
     }
-    
-    // Check in owned games
-    final ownedGames = await getOwnedGames('user');
-    try {
-      return ownedGames.firstWhere((game) => game.gameId == gameId);
-    } catch (e) {
-      // Return detailed mock game if not found
-      return _createDetailedMockGame(gameId);
-    }
-  }
 
-  Future<List<GameModel>> searchGames(String query) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    
-    final allGames = [
-      ..._getMockFeaturedGames(),
-      ..._getMockOwnedGames(),
-      ..._getMockAdditionalGames(),
-    ];
-    
-    if (query.isEmpty) return allGames;
-    
-    return allGames.where((game) => 
-      game.name.toLowerCase().contains(query.toLowerCase()) ||
-      game.description.toLowerCase().contains(query.toLowerCase())
-    ).toList();
+    return null;
   }
 
   // Mock Data Methods
@@ -89,7 +73,7 @@ class GameRepository {
         saleStartDate: DateTime.now().subtract(const Duration(days: 3)),
         saleEndDate: DateTime.now().add(const Duration(days: 4)),
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
       GameModel(
@@ -114,7 +98,7 @@ class GameRepository {
         releaseDate: DateTime(2019, 11, 5),
         isSale: false,
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
       GameModel(
@@ -142,7 +126,7 @@ class GameRepository {
         saleStartDate: DateTime.now().subtract(const Duration(days: 1)),
         saleEndDate: DateTime.now().add(const Duration(days: 6)),
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
       GameModel(
@@ -167,7 +151,7 @@ class GameRepository {
         releaseDate: DateTime(2015, 4, 14),
         isSale: false,
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
     ];
@@ -196,7 +180,7 @@ class GameRepository {
         releaseDate: DateTime(2013, 7, 9),
         isSale: false,
         isOwned: true,
-        installed: true,
+        isInstalled: true,
         favorite: true,
         playtimeHours: 156.7,
       ),
@@ -221,7 +205,7 @@ class GameRepository {
         releaseDate: DateTime(2023, 9, 27),
         isSale: false,
         isOwned: true,
-        installed: true,
+        isInstalled: true,
         favorite: false,
         playtimeHours: 234.2,
       ),
@@ -246,9 +230,16 @@ class GameRepository {
         releaseDate: DateTime(2007, 10, 10),
         isSale: false,
         isOwned: true,
-        installed: false,
+        isInstalled: false,
         favorite: false,
         playtimeHours: 67.8,
+
+        binaries: [
+          'https://vvarlrikusfwrlxshmdj.supabase.co/storage/v1/object/sign/root/84e58517-a951-4022-ab78-27d90a67b23d/res/2025-07-29T16-45-30ZT_Brick_BaseColor.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83MDBiYmQ2YS00ZjkzLTRjNTMtYjYzMS03ZTQ2NTJmYTQ1N2MiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyb290Lzg0ZTU4NTE3LWE5NTEtNDAyMi1hYjc4LTI3ZDkwYTY3YjIzZC9yZXMvMjAyNS0wNy0yOVQxNi00NS0zMFpUX0JyaWNrX0Jhc2VDb2xvci5wbmciLCJpYXQiOjE3NTM4MDc1MzIsImV4cCI6MTc4NTM0MzUzMn0.OyVSwVb2mDxlbv0d4kJTKHIgj5V66yCJavckOmw11Xw'
+        ],
+        exes: [
+          'https://vvarlrikusfwrlxshmdj.supabase.co/storage/v1/object/sign/root/84e58517-a951-4022-ab78-27d90a67b23d/res/2025-07-29T16-45-30ZT_Brick_BaseColor.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83MDBiYmQ2YS00ZjkzLTRjNTMtYjYzMS03ZTQ2NTJmYTQ1N2MiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyb290Lzg0ZTU4NTE3LWE5NTEtNDAyMi1hYjc4LTI3ZDkwYTY3YjIzZC9yZXMvMjAyNS0wNy0yOVQxNi00NS0zMFpUX0JyaWNrX0Jhc2VDb2xvci5wbmciLCJpYXQiOjE3NTM4MDc1MzIsImV4cCI6MTc4NTM0MzUzMn0.OyVSwVb2mDxlbv0d4kJTKHIgj5V66yCJavckOmw11Xw'
+        ],
       ),
       GameModel(
         gameId: '8',
@@ -272,7 +263,7 @@ class GameRepository {
         releaseDate: DateTime(2011, 11, 11),
         isSale: false,
         isOwned: true,
-        installed: true,
+        isInstalled: true,
         favorite: true,
         playtimeHours: 289.4,
       ),
@@ -302,7 +293,7 @@ class GameRepository {
         releaseDate: DateTime(2023, 8, 3),
         isSale: false,
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
       GameModel(
@@ -326,38 +317,48 @@ class GameRepository {
         releaseDate: DateTime(2023, 11, 10),
         isSale: false,
         isOwned: false,
-        installed: false,
+        isInstalled: false,
         favorite: false,
       ),
     ];
   }
 
-  GameModel _createDetailedMockGame(String gameId) {
-    return GameModel(
-      gameId: gameId,
-      publisherId: 'mock_publisher',
-      name: 'Game $gameId',
-      recommended: 85,
-      briefDescription: 'An exciting gaming experience that will keep you engaged for hours.',
-      description: 'This is a comprehensive description of Game $gameId. It features stunning graphics, immersive gameplay, and an engaging storyline that will captivate players of all skill levels. The game includes multiple game modes, extensive customization options, and regular content updates.',
-      requirements: 'Minimum: OS: Windows 10 64-bit, Processor: Intel Core i5-8400 / AMD Ryzen 5 2600, Memory: 8 GB RAM, Graphics: NVIDIA GeForce GTX 1060 / AMD Radeon RX 580, Storage: 50 GB available space',
-      headerImage: 'https://via.placeholder.com/460x215/2196F3/FFFFFF?text=Game+$gameId',
-      media: [
-        'https://via.placeholder.com/600x338/4CAF50/FFFFFF?text=Screenshot+1',
-        'https://via.placeholder.com/600x338/FF9800/FFFFFF?text=Screenshot+2',
-        'https://via.placeholder.com/600x338/9C27B0/FFFFFF?text=Screenshot+3',
-      ],
-      price: 29.99,
-      categories: [
-        CategoryModel(categoryId: 'mock_category', name: 'Action', isSensitive: false),
-        CategoryModel(categoryId: 'mock_category2', name: 'Adventure', isSensitive: false),
-      ],
-      releaseDate: DateTime.now().subtract(const Duration(days: 30)),
-      isSale: gameId == 'game1',
-      discountPercent: gameId == 'game1' ? 50.0 : null,
-      isOwned: false,
-      installed: false,
-      favorite: false,
-    );
+  // Set folder path for game installation
+  void setGameInstallationPath(String gameId, String path) {
+    final gameIndex = _allGames.indexWhere((game) => game.gameId == gameId);
+    if (gameIndex != -1) {
+      final game = _allGames[gameIndex];
+      _allGames[gameIndex] = game.copyWith(path: path);
+    }
+  }
+
+  // Check if the game is isInstalled, if yes, set the isInstalled field to true
+  Future<bool> setGameInstallation(String gameId) async {
+    final gameIndex = _allGames.indexWhere((game) => game.gameId == gameId);
+    if (gameIndex != -1 && _allGames[gameIndex].path != null) {
+      if (await checkGameInstallation(_allGames[gameIndex].path!)) {
+        final game = _allGames[gameIndex];
+        _allGames[gameIndex] = game.copyWith(isInstalled: true);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  
+  Future<bool> checkGameInstallation(String gamePath) async {
+    final gameDir = Directory(gamePath);
+    if (!await gameDir.exists()) return false;
+
+    await for (final entity in gameDir.list(recursive: true)) {
+      if (entity is File) {
+        final extension = path.extension(entity.path).toLowerCase();
+        if (extension == '.exe' || extension == '.app' || extension == '.deb') {
+          return true; // Found an executable
+        }
+      }
+    }
+
+    return false; // No executables found
   }
 }

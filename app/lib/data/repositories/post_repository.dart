@@ -8,16 +8,14 @@ class PostRepository {
   PostRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
 
   Future<List<PostModel>> getPostsForGame(String gameId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
     return _getMockPostsForGame(gameId);
   }
 
   Future<PostModel?> getPostById(String postId) async {
-    await Future.delayed(const Duration(milliseconds: 200));
     final allPosts = [
-      ..._getMockPostsForGame('1091500'),
-      ..._getMockPostsForGame('730'),
-      ..._getMockPostsForGame('570'),
+      ..._getMockPostsForGame('1'),
+      ..._getMockPostsForGame('2'),
+      ..._getMockPostsForGame('3'),
     ];
     
     try {
@@ -31,7 +29,7 @@ class PostRepository {
     final now = DateTime.now();
     
     switch (gameId) {
-      case '1091500': // Cyberpunk 2077
+      case '1': // Cyberpunk 2077
         return [
           PostModel(
             id: 'cp_post_1',
@@ -62,7 +60,7 @@ class PostRepository {
           ),
         ];
 
-      case '730': // Counter-Strike 2
+      case '2': // Counter-Strike 2
         return [
           PostModel(
             id: 'cs_post_1',
@@ -84,7 +82,7 @@ class PostRepository {
           ),
         ];
 
-      case '570': // Dota 2
+      case '3': // Dota 2
         return [
           PostModel(
             id: 'dota_post_1',
@@ -111,17 +109,14 @@ class PostRepository {
     }
   }
   Future<void> createPost(PostModel post) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // Simulate adding a post
   }
 
   Future<void> deletePost(String postId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // Simulate deleting a post
   }
 
   Future<void> updatePost(PostModel post) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     // Simulate updating a post
   }
 }
