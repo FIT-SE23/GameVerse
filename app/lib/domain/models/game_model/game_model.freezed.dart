@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameModel implements DiagnosticableTreeMixin {
 
- String get gameId; String get publisherId; String get name; int get recommended; String get briefDescription; String get description; String get requirements; String get headerImage; double get price; List<CategoryModel> get categories; List<String>? get media; DateTime get releaseDate;// Request related fields
+ String get gameId; String get publisherId; String get name; String get description; double get price; int get recommended; DateTime get releaseDate; List<CategoryModel> get categories; List<String>? get media; String get headerImage;// Request related fields
  String? get requestStatus;// e.g., 'pending', 'approved', 'rejected'
 // Sale related fields
  bool? get isSale; double? get discountPercent; DateTime? get saleStartDate; DateTime? get saleEndDate;// Download related fields
@@ -34,21 +34,21 @@ $GameModelCopyWith<GameModel> get copyWith => _$GameModelCopyWithImpl<GameModel>
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'GameModel'))
-    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('briefDescription', briefDescription))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('requirements', requirements))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('requestStatus', requestStatus))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('isInstalled', isInstalled))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
+    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('requestStatus', requestStatus))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('isInstalled', isInstalled))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.price, price) || other.price == price)&&const DeepCollectionEquality().equals(other.categories, categories)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&(identical(other.requestStatus, requestStatus) || other.requestStatus == requestStatus)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.binaries, binaries)&&const DeepCollectionEquality().equals(other.exes, exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.isInstalled, isInstalled) || other.isInstalled == isInstalled)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&const DeepCollectionEquality().equals(other.categories, categories)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.requestStatus, requestStatus) || other.requestStatus == requestStatus)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.binaries, binaries)&&const DeepCollectionEquality().equals(other.exes, exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.isInstalled, isInstalled) || other.isInstalled == isInstalled)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,recommended,briefDescription,description,requirements,headerImage,price,const DeepCollectionEquality().hash(categories),const DeepCollectionEquality().hash(media),releaseDate,requestStatus,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(binaries),const DeepCollectionEquality().hash(exes),isOwned,isInstalled,favorite,playtimeHours]);
+int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,description,price,recommended,releaseDate,const DeepCollectionEquality().hash(categories),const DeepCollectionEquality().hash(media),headerImage,requestStatus,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(binaries),const DeepCollectionEquality().hash(exes),isOwned,isInstalled,favorite,playtimeHours]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, recommended: $recommended, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, price: $price, categories: $categories, media: $media, releaseDate: $releaseDate, requestStatus: $requestStatus, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, isInstalled: $isInstalled, favorite: $favorite, playtimeHours: $playtimeHours)';
+  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, description: $description, price: $price, recommended: $recommended, releaseDate: $releaseDate, categories: $categories, media: $media, headerImage: $headerImage, requestStatus: $requestStatus, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, isInstalled: $isInstalled, favorite: $favorite, playtimeHours: $playtimeHours)';
 }
 
 
@@ -59,7 +59,7 @@ abstract mixin class $GameModelCopyWith<$Res>  {
   factory $GameModelCopyWith(GameModel value, $Res Function(GameModel) _then) = _$GameModelCopyWithImpl;
 @useResult
 $Res call({
- String gameId, String publisherId, String name, int recommended, String briefDescription, String description, String requirements, String headerImage, double price, List<CategoryModel> categories, List<String>? media, DateTime releaseDate, String? requestStatus, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes, bool isOwned, bool isInstalled, bool favorite, double? playtimeHours
+ String gameId, String publisherId, String name, String description, double price, int recommended, DateTime releaseDate, List<CategoryModel> categories, List<String>? media, String headerImage, String? requestStatus, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes, bool isOwned, bool isInstalled, bool favorite, double? playtimeHours
 });
 
 
@@ -76,21 +76,19 @@ class _$GameModelCopyWithImpl<$Res>
 
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? recommended = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = freezed,Object? releaseDate = null,Object? requestStatus = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? isInstalled = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? description = null,Object? price = null,Object? recommended = null,Object? releaseDate = null,Object? categories = null,Object? media = freezed,Object? headerImage = null,Object? requestStatus = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? isInstalled = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
   return _then(_self.copyWith(
 gameId: null == gameId ? _self.gameId : gameId // ignore: cast_nullable_to_non_nullable
 as String,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
-as int,briefDescription: null == briefDescription ? _self.briefDescription : briefDescription // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,requirements: null == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
-as String,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as double,categories: null == categories ? _self.categories : categories // ignore: cast_nullable_to_non_nullable
+as double,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
+as int,releaseDate: null == releaseDate ? _self.releaseDate : releaseDate // ignore: cast_nullable_to_non_nullable
+as DateTime,categories: null == categories ? _self.categories : categories // ignore: cast_nullable_to_non_nullable
 as List<CategoryModel>,media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,releaseDate: null == releaseDate ? _self.releaseDate : releaseDate // ignore: cast_nullable_to_non_nullable
-as DateTime,requestStatus: freezed == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
+as List<String>?,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
+as String,requestStatus: freezed == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
 as String?,isSale: freezed == isSale ? _self.isSale : isSale // ignore: cast_nullable_to_non_nullable
 as bool?,discountPercent: freezed == discountPercent ? _self.discountPercent : discountPercent // ignore: cast_nullable_to_non_nullable
 as double?,saleStartDate: freezed == saleStartDate ? _self.saleStartDate : saleStartDate // ignore: cast_nullable_to_non_nullable
@@ -187,10 +185,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String gameId,  String publisherId,  String name,  int recommended,  String briefDescription,  String description,  String requirements,  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media,  DateTime releaseDate,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String gameId,  String publisherId,  String name,  String description,  double price,  int recommended,  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media,  String headerImage,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameModel() when $default != null:
-return $default(_that.gameId,_that.publisherId,_that.name,_that.recommended,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.releaseDate,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
+return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
   return orElse();
 
 }
@@ -208,10 +206,10 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.recommended,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String gameId,  String publisherId,  String name,  int recommended,  String briefDescription,  String description,  String requirements,  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media,  DateTime releaseDate,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String gameId,  String publisherId,  String name,  String description,  double price,  int recommended,  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media,  String headerImage,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)  $default,) {final _that = this;
 switch (_that) {
 case _GameModel():
-return $default(_that.gameId,_that.publisherId,_that.name,_that.recommended,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.releaseDate,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
+return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -228,10 +226,10 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.recommended,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String gameId,  String publisherId,  String name,  int recommended,  String briefDescription,  String description,  String requirements,  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media,  DateTime releaseDate,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String gameId,  String publisherId,  String name,  String description,  double price,  int recommended,  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media,  String headerImage,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)?  $default,) {final _that = this;
 switch (_that) {
 case _GameModel() when $default != null:
-return $default(_that.gameId,_that.publisherId,_that.name,_that.recommended,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.releaseDate,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
+return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
   return null;
 
 }
@@ -243,18 +241,16 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.recommended,_tha
 @JsonSerializable()
 
 class _GameModel with DiagnosticableTreeMixin implements GameModel {
-  const _GameModel({required this.gameId, required this.publisherId, required this.name, required this.recommended, required this.briefDescription, required this.description, required this.requirements, required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String>? media, required this.releaseDate, this.requestStatus, this.isSale, this.discountPercent, this.saleStartDate, this.saleEndDate, this.path, final  List<String>? binaries, final  List<String>? exes, this.isOwned = false, this.isInstalled = false, this.favorite = false, this.playtimeHours}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
+  const _GameModel({required this.gameId, required this.publisherId, required this.name, required this.description, required this.price, required this.recommended, required this.releaseDate, required final  List<CategoryModel> categories, required final  List<String>? media, required this.headerImage, this.requestStatus, this.isSale, this.discountPercent, this.saleStartDate, this.saleEndDate, this.path, final  List<String>? binaries, final  List<String>? exes, this.isOwned = false, this.isInstalled = false, this.favorite = false, this.playtimeHours}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
   factory _GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
 
 @override final  String gameId;
 @override final  String publisherId;
 @override final  String name;
-@override final  int recommended;
-@override final  String briefDescription;
 @override final  String description;
-@override final  String requirements;
-@override final  String headerImage;
 @override final  double price;
+@override final  int recommended;
+@override final  DateTime releaseDate;
  final  List<CategoryModel> _categories;
 @override List<CategoryModel> get categories {
   if (_categories is EqualUnmodifiableListView) return _categories;
@@ -271,7 +267,7 @@ class _GameModel with DiagnosticableTreeMixin implements GameModel {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  DateTime releaseDate;
+@override final  String headerImage;
 // Request related fields
 @override final  String? requestStatus;
 // e.g., 'pending', 'approved', 'rejected'
@@ -320,21 +316,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'GameModel'))
-    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('briefDescription', briefDescription))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('requirements', requirements))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('requestStatus', requestStatus))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('isInstalled', isInstalled))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
+    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('requestStatus', requestStatus))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('isInstalled', isInstalled))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.price, price) || other.price == price)&&const DeepCollectionEquality().equals(other._categories, _categories)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&(identical(other.requestStatus, requestStatus) || other.requestStatus == requestStatus)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other._binaries, _binaries)&&const DeepCollectionEquality().equals(other._exes, _exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.isInstalled, isInstalled) || other.isInstalled == isInstalled)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&const DeepCollectionEquality().equals(other._categories, _categories)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.requestStatus, requestStatus) || other.requestStatus == requestStatus)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other._binaries, _binaries)&&const DeepCollectionEquality().equals(other._exes, _exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.isInstalled, isInstalled) || other.isInstalled == isInstalled)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,recommended,briefDescription,description,requirements,headerImage,price,const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_media),releaseDate,requestStatus,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(_binaries),const DeepCollectionEquality().hash(_exes),isOwned,isInstalled,favorite,playtimeHours]);
+int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,description,price,recommended,releaseDate,const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_media),headerImage,requestStatus,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(_binaries),const DeepCollectionEquality().hash(_exes),isOwned,isInstalled,favorite,playtimeHours]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, recommended: $recommended, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, price: $price, categories: $categories, media: $media, releaseDate: $releaseDate, requestStatus: $requestStatus, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, isInstalled: $isInstalled, favorite: $favorite, playtimeHours: $playtimeHours)';
+  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, description: $description, price: $price, recommended: $recommended, releaseDate: $releaseDate, categories: $categories, media: $media, headerImage: $headerImage, requestStatus: $requestStatus, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, isInstalled: $isInstalled, favorite: $favorite, playtimeHours: $playtimeHours)';
 }
 
 
@@ -345,7 +341,7 @@ abstract mixin class _$GameModelCopyWith<$Res> implements $GameModelCopyWith<$Re
   factory _$GameModelCopyWith(_GameModel value, $Res Function(_GameModel) _then) = __$GameModelCopyWithImpl;
 @override @useResult
 $Res call({
- String gameId, String publisherId, String name, int recommended, String briefDescription, String description, String requirements, String headerImage, double price, List<CategoryModel> categories, List<String>? media, DateTime releaseDate, String? requestStatus, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes, bool isOwned, bool isInstalled, bool favorite, double? playtimeHours
+ String gameId, String publisherId, String name, String description, double price, int recommended, DateTime releaseDate, List<CategoryModel> categories, List<String>? media, String headerImage, String? requestStatus, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes, bool isOwned, bool isInstalled, bool favorite, double? playtimeHours
 });
 
 
@@ -362,21 +358,19 @@ class __$GameModelCopyWithImpl<$Res>
 
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? recommended = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = freezed,Object? releaseDate = null,Object? requestStatus = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? isInstalled = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? description = null,Object? price = null,Object? recommended = null,Object? releaseDate = null,Object? categories = null,Object? media = freezed,Object? headerImage = null,Object? requestStatus = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? isInstalled = null,Object? favorite = null,Object? playtimeHours = freezed,}) {
   return _then(_GameModel(
 gameId: null == gameId ? _self.gameId : gameId // ignore: cast_nullable_to_non_nullable
 as String,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
-as int,briefDescription: null == briefDescription ? _self.briefDescription : briefDescription // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,requirements: null == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
-as String,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as double,categories: null == categories ? _self._categories : categories // ignore: cast_nullable_to_non_nullable
+as double,recommended: null == recommended ? _self.recommended : recommended // ignore: cast_nullable_to_non_nullable
+as int,releaseDate: null == releaseDate ? _self.releaseDate : releaseDate // ignore: cast_nullable_to_non_nullable
+as DateTime,categories: null == categories ? _self._categories : categories // ignore: cast_nullable_to_non_nullable
 as List<CategoryModel>,media: freezed == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,releaseDate: null == releaseDate ? _self.releaseDate : releaseDate // ignore: cast_nullable_to_non_nullable
-as DateTime,requestStatus: freezed == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
+as List<String>?,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
+as String,requestStatus: freezed == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
 as String?,isSale: freezed == isSale ? _self.isSale : isSale // ignore: cast_nullable_to_non_nullable
 as bool?,discountPercent: freezed == discountPercent ? _self.discountPercent : discountPercent // ignore: cast_nullable_to_non_nullable
 as double?,saleStartDate: freezed == saleStartDate ? _self.saleStartDate : saleStartDate // ignore: cast_nullable_to_non_nullable
