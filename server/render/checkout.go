@@ -2,18 +2,60 @@ package main
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha512"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
+	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
+
+func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid string, paymentMethodId string) error {
+	rep := client.Rpc("listgamesincart", "", map[string]string{"userid": userid})
+
+	var items []map[string]string
+	err := json.Unmarshal([]byte(rep), &items)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
+	}
+
+	for _, item := range items {
+		price, err := strconv.ParseFloat(item["price"], 64)
+		fmt.Println("price", price)
+		if err != nil {
+			continue
+		}
+		transaction := map[string]any{
+			"senderid":        userid,
+			"receiverid":      item["publisherid"],
+			"paymentmethodid": paymentMethodId,
+			"moneyamount":     price,
+		}
+		rep, _, err = client.From("Transaction").Insert(transaction, false, "", "", "").ExecuteString()
+		if err != nil {
+			fmt.Println(err.Error(), rep)
+		}
+	}
+
+	rep, _, err = client.From("User_Game").Update(map[string]string{"status": "In library"}, "", "").Eq("userid", userid).ExecuteString()
+	if err != nil {
+		fmt.Println(err.Error(), rep)
+	}
+
+	return jsonResponse(c, http.StatusOK, "", "")
+}
 
 func getAccessToken(id string, secret string) string {
 	url := "https://api-m.sandbox.paypal.com/v1/oauth2/token"
@@ -62,8 +104,8 @@ func getAccessToken(id string, secret string) string {
 func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
 	serverURL := "http://localhost:1323/"
 	url := "https://api-m.sandbox.paypal.com/v1/payments/payment"
-	id := os.Getenv("APP_ID")
-	secret := os.Getenv("APP_SECRET")
+	id := os.Getenv("PP_ID")
+	secret := os.Getenv("PP_SECRET")
 	accessToken := getAccessToken(id, secret)
 	if accessToken == "" {
 		return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
@@ -167,8 +209,8 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 	payerId := c.QueryParam("PayerID")
 	paymentId := c.QueryParam("paymentId")
-	id := os.Getenv("APP_ID")
-	secret := os.Getenv("APP_SECRET")
+	id := os.Getenv("PP_ID")
+	secret := os.Getenv("PP_SECRET")
 	url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId + "/execute"
 	accessToken := getAccessToken(id, secret)
 	if accessToken == "" {
@@ -235,36 +277,114 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, "Transaction failed: line1", "")
 	}
 
+	return moveBoughtGamesToLibrary(c, client, userid, "a2f4772b-38ac-4fe2-b5a6-bead806c1221")
+}
+
+func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) error {
 	rep := client.Rpc("listgamesincart", "", map[string]string{"userid": userid})
 
 	var items []map[string]string
-	err = json.Unmarshal([]byte(rep), &items)
+	err := json.Unmarshal([]byte(rep), &items)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
 	}
 
+	total := 0.0
 	for _, item := range items {
-		price, err := strconv.ParseFloat(item["price"], 64)
-		fmt.Println("price", price)
-		if err != nil {
-			continue
-		}
-		transaction := map[string]any{
-			"senderid":        userid,
-			"receiverid":      item["publisherid"],
-			"paymentmethodid": "a2f4772b-38ac-4fe2-b5a6-bead806c1221",
-			"moneyamount":     price,
-		}
-		rep, _, err = client.From("Transaction").Insert(transaction, false, "", "", "").ExecuteString()
-		if err != nil {
-			fmt.Println(err.Error(), rep)
+		amount, err := strconv.ParseFloat(item["price"], 64)
+		if err == nil {
+			total += amount
 		}
 	}
 
-	rep, _, err = client.From("User_Game").Update(map[string]string{"status": "In library"}, "", "").Eq("userid", userid).ExecuteString()
+	hostName, err := os.Hostname()
 	if err != nil {
-		fmt.Println(err.Error(), rep)
+		return err
 	}
 
-	return jsonResponse(c, http.StatusOK, "", result["links"])
+	ipAddrs, err := net.LookupIP(hostName)
+	if err != nil || len(ipAddrs) == 0 {
+		return err
+	}
+	ipAddr := ipAddrs[0].String()
+
+	serverURL := "http://localhost:1323/"
+	vnpayUrl := "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?"
+	vnpCode := os.Getenv("VNP_CODE")
+	vnpHashSecret := os.Getenv("VNP_SECRET")
+	utc := time.Now().UTC()
+	now := utc.Add(time.Hour * 7)
+	expireTime := now.Add(time.Minute * 15)
+	query := map[string]string{
+		"vnp_Amount":     strconv.FormatFloat(total, 'f', 2, 64),
+		"vnp_Command":    "pay",
+		"vnp_CreateDate": fmt.Sprintf("%d%02d%02d%02d%02d%02d", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second()),
+		"vnp_CurrCode":   "VND",
+		"vnp_ExpireDate": fmt.Sprintf("%d%02d%02d%02d%02d%02d", expireTime.Year(), int(expireTime.Month()), expireTime.Day(), expireTime.Hour(), expireTime.Minute(), expireTime.Second()),
+		"vnp_IpAddr":     ipAddr,
+		"vnp_Locale":     "en",
+		"vnp_OrderInfo":  userid, // ?
+		"vnp_OrderType":  "billpayment",
+		"vnp_ReturnUrl":  serverURL + "vnpay/return",
+		"vnp_TmnCode":    vnpCode,
+		"vnp_TxnRef":     userid + "|" + time.Now().Format(time.RFC3339),
+		"vnp_Version":    "2.1.1",
+	}
+
+	keys := make([]string, 0, len(query))
+	for k := range query {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	queryString := ""
+	for seq, key := range keys {
+		val := query[key]
+		if seq == 0 {
+			queryString = fmt.Sprintf("%s=%s", key, url.QueryEscape(fmt.Sprintf("%v", val)))
+		} else {
+			queryString += fmt.Sprintf("&%s=%s", key, url.QueryEscape(fmt.Sprintf("%v", val)))
+		}
+	}
+	hmac := hmac.New(sha512.New, []byte(vnpHashSecret))
+	hmac.Write([]byte(queryString))
+	sum := hmac.Sum(nil)
+	secureHash := hex.EncodeToString(sum)
+
+	queryString += "&vnp_SecureHash=" + secureHash
+	req, err := http.NewRequest("GET", vnpayUrl+queryString, bytes.NewBuffer([]byte{}))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("Error client do", err)
+		return err
+	}
+
+	defer res.Body.Close()
+	_, err = io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("IO read all", err)
+		return err
+	}
+
+	return jsonResponse(c, http.StatusOK, "", vnpayUrl+queryString)
+}
+
+func checkoutVnpay(c echo.Context, client *supabase.Client) error {
+	responseCode := c.QueryParam("vnp_ResponseCode")
+	if responseCode == "00" {
+		txnRef := c.QueryParam("vnp_TxnRef")
+		refList := strings.Split(txnRef, "|")
+		if len(refList) != 2 {
+			return jsonResponse(c, http.StatusBadGateway, "Vnpay response is missing vnp_TxnRef field", "")
+		}
+
+		userid := refList[0]
+		return moveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
+	}
+	transactionStatus := c.QueryParam("vnp_TransactionStatus")
+	return jsonResponse(c, http.StatusBadGateway, "", map[string]string{"responsecode": responseCode, "transactionstatus": transactionStatus})
 }

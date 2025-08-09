@@ -8,6 +8,9 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:gameverse/ui/publisher/widgets/game_request_dialog.dart';
 
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+import 'package:gameverse/config/spacing_config.dart';
+
 class PublisherDashboardScreen extends StatefulWidget {
   const PublisherDashboardScreen({super.key});
 
@@ -35,85 +38,94 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-        Consumer<PublisherViewModel>(
-          builder: (context, publisherViewModel, _) {
-            if (publisherViewModel.state == PublisherViewState.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-        
-            if (publisherViewModel.state == PublisherViewState.error) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      publisherViewModel.errorMessage,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => _refreshData(context),
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              );
-            }
-        
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Publisher info
-                  _buildPublisherInfo(context, publisherViewModel),
-
-                  const SizedBox(height: 16),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () => _showRequestGameDialog(context),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Request Game Publication'),
+          Padding(
+            padding: getNegativeSpacePadding(context),
+            child: Column(
+              children: [
+              Consumer<PublisherViewModel>(
+                builder: (context, publisherViewModel, _) {
+                  if (publisherViewModel.state == PublisherViewState.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+              
+                  if (publisherViewModel.state == PublisherViewState.error) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            publisherViewModel.errorMessage,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => _refreshData(context),
+                            child: const Text('Retry'),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      ElevatedButton.icon(
-                        onPressed: () => _refreshData(context),
-                        icon: const Icon(Icons.refresh),
-                        label: const Text('Refresh Data'),
-                      ),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Stats overview
-                  _buildStatsOverview(context, publisherViewModel),
-                  
-                  const SizedBox(height: 32),
-                  
-                  // Published games
-                  _buildPublishedGames(context, publisherViewModel),
-                  
-                  const SizedBox(height: 32),
-                  
-                  // Pending requests
-                  _buildPendingRequests(context, publisherViewModel),
-                ],
+                    );
+                  }
+              
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Publisher info
+                        _buildPublisherInfo(context, publisherViewModel),
+            
+                        const SizedBox(height: 16),
+            
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () => _showRequestGameDialog(context),
+                              icon: const Icon(Icons.add),
+                              label: const Text('Request Game Publication'),
+                            ),
+                            const SizedBox(width: 16),
+                            ElevatedButton.icon(
+                              onPressed: () => _refreshData(context),
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Refresh Data'),
+                            ),
+                          ],
+                        ),
+                        
+                        const SizedBox(height: 16),
+                        
+                        // Stats overview
+                        _buildStatsOverview(context, publisherViewModel),
+                        
+                        const SizedBox(height: 32),
+                        
+                        // Published games
+                        _buildPublishedGames(context, publisherViewModel),
+                        
+                        const SizedBox(height: 32),
+                        
+                        // Pending requests
+                        _buildPendingRequests(context, publisherViewModel),
+                      ],
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ]),
+            ]),
+          ),
+
+          PageFooter(),
+        ],
+      ),
     );
   }
 
@@ -376,7 +388,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.visibility),
+              icon: const Icon(Icons.arrow_forward_ios),
               onPressed: () => context.push('/game-details/${game.gameId}'),
               tooltip: 'View Game',
             ),

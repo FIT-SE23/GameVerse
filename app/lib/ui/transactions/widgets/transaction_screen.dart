@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:gameverse/ui/transactions/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/domain/models/transaction_model/transaction_model.dart';
 
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+import 'package:gameverse/config/spacing_config.dart';
+
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
 
@@ -84,81 +87,92 @@ class _TransactionScreenState extends State<TransactionScreen>
               ),
 
               // Quick Actions
-              Container(
-                margin: const EdgeInsets.all(20),
-                child: Row(
+              Padding(
+                padding: getNegativeSpacePadding(context),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: _ActionCard(
-                        title: 'Add Funds',
-                        subtitle: 'Top up wallet',
-                        icon: Icons.add_circle,
-                        color: Colors.green,
-                        onTap: () => _showAddFundsDialog(context, viewModel),
+                    Container(
+                      margin: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _ActionCard(
+                              title: 'Add Funds',
+                              subtitle: 'Top up wallet',
+                              icon: Icons.add_circle,
+                              color: Colors.green,
+                              onTap: () => _showAddFundsDialog(context, viewModel),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _ActionCard(
+                              title: 'Shopping Cart',
+                              subtitle: 'View cart items',
+                              icon: Icons.shopping_cart,
+                              color: Colors.blue,
+                              onTap: () => _tabController.animateTo(1),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _ActionCard(
+                              title: 'Refunds',
+                              subtitle: 'Request a refund',
+                              icon: Icons.money_off,
+                              color: Colors.purple,
+                              onTap: () => _tabController.animateTo(0),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _ActionCard(
-                        title: 'Shopping Cart',
-                        subtitle: 'View cart items',
-                        icon: Icons.shopping_cart,
-                        color: Colors.blue,
-                        onTap: () => _tabController.animateTo(1),
+                    
+                    // Stats Cards
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _StatsCard(
+                              title: 'Total Spent',
+                              value: '\$${_calculateTotalSpent(viewModel.transactions).toStringAsFixed(2)}',
+                              icon: Icons.shopping_bag,
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _StatsCard(
+                              title: 'Games Owned',
+                              value: '${_countGamePurchases(viewModel.transactions)}',
+                              icon: Icons.videogame_asset,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _ActionCard(
-                        title: 'Refunds',
-                        subtitle: 'Request a refund',
-                        icon: Icons.money_off,
-                        color: Colors.purple,
-                        onTap: () => _tabController.animateTo(0),
+                    const SizedBox(height: 20),
+                    // Transaction History
+                    Center(
+                      child: Text(
+                        'Transaction History',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    _buildHistoryTab(viewModel, theme),
+                    
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
 
-              // Stats Cards
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _StatsCard(
-                        title: 'Total Spent',
-                        value: '\$${_calculateTotalSpent(viewModel.transactions).toStringAsFixed(2)}',
-                        icon: Icons.shopping_bag,
-                        color: Colors.red,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _StatsCard(
-                        title: 'Games Owned',
-                        value: '${_countGamePurchases(viewModel.transactions)}',
-                        icon: Icons.videogame_asset,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Transaction History
-              Center(
-                child: Text(
-                  'Transaction History',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 8),
-              _buildHistoryTab(viewModel, theme)
+              PageFooter(),
             ]
           );
         },
@@ -172,36 +186,39 @@ class _TransactionScreenState extends State<TransactionScreen>
     }
 
     if (viewModel.transactions.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.receipt_long_outlined,
-              size: 80,
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No purchases yet',
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+      return Container(
+        constraints: BoxConstraints(minHeight: 400),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.receipt_long_outlined,
+                size: 80,
+                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Your game purchases will appear here',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+              const SizedBox(height: 16),
+              Text(
+                'No purchases yet',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => _tabController.animateTo(1),
-              icon: const Icon(Icons.shopping_cart),
-              label: const Text('Browse Games'),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                'Your game purchases will appear here',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => _tabController.animateTo(1),
+                icon: const Icon(Icons.shopping_cart),
+                label: const Text('Browse Games'),
+              ),
+            ],
+          ),
         ),
       );
     }

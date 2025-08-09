@@ -64,6 +64,7 @@ class GameDownloadService {
 
   Future<void> deleteGame(String gameId, String downloadPath) async {
     final gameDir = Directory(path.join(downloadPath, gameId));
+    debugPrint('Deleting game directory: ${gameDir.path}');
     if (await gameDir.exists()) {
       await gameDir.delete(recursive: true);
     }

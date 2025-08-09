@@ -23,7 +23,9 @@ class GameDownloadButton extends StatefulWidget {
 class _GameDownloadButtonState extends State<GameDownloadButton> {
   bool _isDownloading = false;
   bool _isInstalled = false;
+  bool _isUninstalling = false;
   double _downloadProgress = 0.0;
+  String _currentDownloadFile = '';
   GameModel get game => widget.game;
   final GameDownloadService _downloadService = GameDownloadService();
   final settingsViewModel = SettingsViewModel();
@@ -40,7 +42,23 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
           LinearProgressIndicator(value: _downloadProgress),
           const SizedBox(height: 8),
           Text(
-            'Downloading... ${(_downloadProgress * 100).toStringAsFixed(1)}%',
+            'Downloading $_currentDownloadFile... ${(_downloadProgress * 100).toStringAsFixed(1)}%',
+            style: theme.textTheme.bodySmall,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    }
+
+    if (_isUninstalling) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const LinearProgressIndicator(),
+          const SizedBox(height: 8),
+          Text(
+            'Uninstalling...',
             style: theme.textTheme.bodySmall,
           ),
         ],
@@ -93,40 +111,38 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
     setState(() {
       _isDownloading = true;
       _downloadProgress = 0.0;
+      _currentDownloadFile = '';
     });
 
     try {
-      // final downloadUrl = widget.game.binaries!.first;
-      // final success = await _downloadService.downloadGame(
-      //   gameId: widget.game.gameId,
-      //   downloadUrl: downloadUrl,
-      //   downloadPath: settingsViewModel.downloadPath,
-      //   onProgress: (progress) {
-      //     setState(() {
-      //       _downloadProgress = progress;
-      //     });
-      //   },
-      // );
-      // We download all binaries and executables
-      final numFiles = widget.game.binaries!.length + widget.game.exes!.length;
+      // Combine all files to download
       final downloadUrls = [...widget.game.binaries!, ...widget.game.exes!];
+      final numFiles = downloadUrls.length;
+      
       for (int i = 0; i < numFiles; i++) {
         final downloadUrl = downloadUrls[i];
         final baseName = path.basename(downloadUrl);
-        // Get name until the first string 'token' appear
+        
+        // Clean filename by removing token parameters
         final tokenIndex = baseName.indexOf('?token');
         String nameFile = baseName;
         if (tokenIndex != -1) {
           nameFile = baseName.substring(0, tokenIndex);
         }
+        
+        setState(() {
+          _currentDownloadFile = nameFile;
+        });
+
         final success = await _downloadService.downloadGame(
           nameFile: nameFile,
           gameId: widget.game.gameId,
           downloadUrl: downloadUrl,
           downloadPath: settingsViewModel.downloadPath,
-          onProgress: (progress) {
+          onProgress: (fileProgress) {
             setState(() {
-              _downloadProgress = (i + progress) / numFiles;
+              // Calculate total progress: completed files + current file progress
+              _downloadProgress = (i + fileProgress) / numFiles;
             });
           },
         );
@@ -134,8 +150,12 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
         if (!success) {
           throw Exception('Failed to download $nameFile');
         }
+        
+        // Update progress for completed file
+        setState(() {
+          _downloadProgress = (i + 1) / numFiles;
+        });
       }
-
 
       if (context.mounted) {
         final GameRepository gameRepository = Provider.of<GameRepository>(context, listen: false);
@@ -143,6 +163,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
           widget.game.gameId,
           path.join(settingsViewModel.downloadPath, widget.game.gameId),
         );
+        
         // Update game state in repository
         bool isInstalled = await gameRepository.setGameInstallation(widget.game.gameId);
 
@@ -156,8 +177,8 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
         } else if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Download failed'),
-              backgroundColor: Colors.red,
+              content: Text('Download completed but installation verification failed'),
+              backgroundColor: Colors.orange,
             ),
           );
         }
@@ -175,9 +196,10 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
       if (context.mounted) {
         setState(() {
           _isDownloading = false;
-          _isInstalled = true;
+          _currentDownloadFile = '';
+          // Only set installed if we successfully verified installation
         });
-          // Reload game details
+        // Reload game details to get updated state
         Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.game.gameId);
       }
     }
@@ -197,13 +219,14 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Uninstall Game'),
-        content: Text('Are you sure you want to uninstall "${widget.game.name}"?'),
+        content: Text('Are you sure you want to uninstall "${widget.game.name}"?\n\nThis will permanently delete all game files.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Uninstall'),
           ),
@@ -211,17 +234,75 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
       ),
     );
 
-    if (confirmed == true && context.mounted) {
-      final settingsViewModel = Provider.of<SettingsViewModel>(context, listen: false);
-      await _downloadService.deleteGame(widget.game.gameId, settingsViewModel.downloadPath);
-      
+    if (confirmed != true) return;
+
+    setState(() {
+      _isUninstalling = true;
+    });
+
+    try {
+      if (context.mounted) {
+        final GameRepository gameRepository = Provider.of<GameRepository>(context, listen: false);
+        
+        // First, update the game state in repository to mark as uninstalled
+        // This prevents other processes from accessing the files
+        await gameRepository.setGameInstallation(widget.game.gameId);
+        
+        // Small delay to ensure any file handles are released
+        await Future.delayed(const Duration(milliseconds: 500));
+        
+        // Try to delete the game directory
+        await _safeDeleteGame();
+        
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Game uninstalled successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Uninstall error: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Game uninstalled successfully'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: Text('Uninstall error: ${e.toString()}'),
+            backgroundColor: Colors.red,
           ),
         );
+      }
+    } finally {
+      if (context.mounted) {
+        setState(() {
+          _isUninstalling = false;
+        });
+        // Reload game details to get updated state
+        Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.game.gameId);
+      }
+    }
+  }
+
+  Future<void> _safeDeleteGame() async {
+    const maxRetries = 3;
+    const retryDelay = Duration(seconds: 1);
+    
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        await _downloadService.deleteGame(widget.game.gameId, settingsViewModel.downloadPath);
+        return; // Success
+      } catch (e) {
+        debugPrint('Delete attempt ${attempt + 1} failed: $e');
+        
+        if (attempt < maxRetries - 1) {
+          // Wait before retrying
+          await Future.delayed(retryDelay);
+
+        } else {
+          // Last attempt failed, rethrow the error
+          rethrow;
+        }
       }
     }
   }

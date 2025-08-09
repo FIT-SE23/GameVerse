@@ -19,7 +19,7 @@ void main() async {
     print(
       await addPublisher(
         "d8915c91-71e6-4a45-84de-a12d0256ffc2",
-        "0cabe94e-3eeb-4d78-b144-69d09b8bd445",
+        "a2f4772b-38ac-4fe2-b5a6-bead806c1221",
         "We love gaming!!!",
       ),
     );
@@ -38,6 +38,7 @@ void main() async {
         "d8915c91-71e6-4a45-84de-a12d0256ffc2",
         "Gamer Simulator",
         "Giả lập cuộc sống của người chơi trò chơi",
+        12000.0,
         [
           "Absolutely/path/file1",
           "Absolutely/path/file2",
@@ -105,18 +106,27 @@ void main() async {
     final token = resp.data["token"].toString();
     final userid = resp.data["userid"].toString();
     print(token + "\n" + userid);
-    print(
-      await recommendGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"),
-    );
+    print(await recommendGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
   }
 
   if (false) {
     print(await getGame("", "12de500f-9810-4428-b217-d606b6847dac"));
   }
 
-  if (true) {
+  if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
-    print(await createReceipt(token));
+    print(await createPaypalReceipt(token));
+  }
+
+  if (false) {
+    final resp = await listUser("");
+    print(resp);
+  }
+
+  if (false) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data["token"].toString();
+    print(await createVnpayReceipt(token));
   }
 }

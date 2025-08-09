@@ -78,8 +78,8 @@ func main() {
 			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
-		status := c.FormValue("list")
-		if status != "library" && status != "wishlist" && status != "cart" {
+		status := c.FormValue("status")
+		if status != "In library" && status != "In wishlist" && status != "In cart" {
 			return jsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
 		}
 
@@ -179,6 +179,18 @@ func main() {
 	})
 	e.GET("/paypal/return", func(c echo.Context) error {
 		return checkoutPaypal(c, client)
+	})
+
+	e.POST("/vnpay/create", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+
+		return createVnpayReceipt(c, client, userid)
+	})
+	e.GET("/vnpay/return", func(c echo.Context) error {
+		return checkoutVnpay(c, client)
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {

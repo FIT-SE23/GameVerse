@@ -6,6 +6,10 @@ import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/ui/profile/view_model/profile_viewmodel.dart';
 import 'profile_header.dart';
 import 'profile_body.dart';
+
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+import 'package:gameverse/config/spacing_config.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -27,10 +31,14 @@ class ProfileScreen extends StatelessWidget {
                 profileViewModel: profileViewModel,
               ),
               const SizedBox(height: 24),
-              ProfileBody(
-                user: user,
-                profileViewModel: profileViewModel,
+              Padding(
+                padding: getNegativeSpacePadding(context),
+                child: ProfileBody(
+                  user: user,
+                  profileViewModel: profileViewModel,
+                ),
               ),
+              PageFooter(),
             ],
           ),
         );

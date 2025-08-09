@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math"
 	"mime/multipart"
 	"net/http"
@@ -19,6 +22,7 @@ import (
 
 func addResources(client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
 	errFiles := []string{}
+	h := sha256.New()
 	for _, file := range files {
 		src, err := file.Open()
 		if err != nil {
@@ -27,6 +31,11 @@ func addResources(client *supabase.Client, userID string, gameID string, bucketI
 			continue
 		}
 		defer src.Close()
+		if _, err := io.Copy(h, src); err != nil {
+			errFiles = append(errFiles, file.Filename)
+			fmt.Println("Calculate checksum", err)
+			continue
+		}
 
 		filepath := userID + "/res/" + strings.ReplaceAll(time.Now().UTC().Format(time.RFC3339), ":", "-") + file.Filename
 		_, uplErr := client.Storage.UploadFile(bucketId, filepath, src)
@@ -44,10 +53,12 @@ func addResources(client *supabase.Client, userID string, gameID string, bucketI
 		}
 
 		resource := map[string]string{
-			"userid": userID,
-			"url":    signedURL.SignedURL,
-			"type":   resourceType,
+			"userid":   userID,
+			"url":      signedURL.SignedURL,
+			"type":     resourceType,
+			"checksum": hex.EncodeToString(h.Sum(nil)),
 		}
+		h.Reset()
 		_, _, err = client.From("Resource").Insert(resource, false, "", "", "").ExecuteString()
 		if err != nil {
 			fmt.Println("Insert into Resource table failed", file.Filename, err)
@@ -148,7 +159,11 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 }
 
 func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
-	publisherID := c.FormValue("publisherid")
+	userid, err := verifyUserToken(c)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	publisherID := userid
 	if publisherID == "" {
 		return jsonResponse(c, http.StatusBadRequest, "Require publisherID", "")
 	}
@@ -156,13 +171,15 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	// TODO: Check game's name length
 	gameName := c.FormValue("gamename")
 	description := c.FormValue("description")
+	price := c.FormValue("price")
 
 	game := map[string]string{
 		"publisherid": publisherID,
 		"name":        gameName,
 		"description": description,
+		"price":       price,
 	}
-	_, _, err := client.From("Game").Insert(game, false, "", "", "").ExecuteString()
+	_, _, err = client.From("Game").Insert(game, false, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

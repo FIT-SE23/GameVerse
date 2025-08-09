@@ -1,28 +1,115 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/advance_search/view_model/advanced_search_viewmodel.dart';
 
-class AdvanceSearchScreen extends StatelessWidget {
+import 'package:gameverse/config/spacing_config.dart';
+import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+import 'package:provider/provider.dart';
+
+import 'filter_sidebar.dart';
+import 'filtered_game_section.dart';
+
+class AdvanceSearchScreen extends StatefulWidget {
   const AdvanceSearchScreen({super.key});
 
   @override
+  State<AdvanceSearchScreen> createState() => _AdvanceSearchScreenState();
+}
+
+class _AdvanceSearchScreenState extends State<AdvanceSearchScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  double _sidebarTop = 127;
+
+  final double _footerHeight = 560;
+  final double _sidebarHeight = 200;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AdvancedSearchViewmodel>(context, listen: false).loadData();
+
+      _scrollController.addListener(() {
+        final scrollOffset = _scrollController.offset;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final contentHeight = _scrollController.position.maxScrollExtent + screenHeight;
+
+        const double stickyOffset = 127;
+
+        final maxTop = contentHeight - _footerHeight - _sidebarHeight;
+        final desiredTop = scrollOffset;
+
+        // Sidebar stays fixed at `stickyOffset`, unless it hits the footer
+        final sidebarTop = desiredTop < maxTop - stickyOffset
+            ? stickyOffset
+            : maxTop - desiredTop;
+
+        setState(() {
+          _sidebarTop = sidebarTop;
+        });
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Advanced Search',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 16),
-          // Placeholder for advanced search content
-          Text(
-            'Here you can perform advanced searches for games based on various criteria.',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 32), // Extra space before footer
-        ],
-      ),
+    const double sidebarWidth = 280;
+
+    return Consumer<AdvancedSearchViewmodel>(
+      builder: (context, advancedSearchViewmodel, child) {
+        return Stack(
+          children: [
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: getNegativeSpacePadding(context),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 64),
+                        Text(
+                          'Advanced Search',
+                          style: Theme.of(context).textTheme.displayLarge,
+                        ),
+                        const SizedBox(height: 32),
+                        
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: FilteredGameSection(gameList: advancedSearchViewmodel.filteredGames),
+                            ),
+                            const SizedBox(width: 32 + sidebarWidth),
+                          ],
+                        ),
+                        const SizedBox(height: 96), // Extra space before footer
+                      ],
+                    ),
+                  ),
+                  PageFooter(),
+                ],
+              ),
+            ),
+
+            Positioned(
+              top: _sidebarTop,
+              right: negativeSpaceWidth(context),
+              child: SizedBox(
+                width: sidebarWidth,
+                child: FilterSidebar(),
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 }

@@ -168,7 +168,7 @@ class DesktopNavbar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(0),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

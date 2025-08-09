@@ -5,24 +5,26 @@ import "package:crypto/crypto.dart";
 import "../config/config.dart";
 
 class User {
-  final String? userid;
+  final String? id;
   final String? username;
   final String? email;
+  final String? type;
 
-  const User({this.userid, this.username, this.email});
+  const User({this.id, this.username, this.email, this.type});
 
   factory User.fromJson(Map<String, dynamic> json) {
     final userid = json["userid"] as String?;
     final username = json["username"] as String?;
-    final email = json["password"] as String?;
+    final email = json["email"] as String?;
+    final type = json["type"] as String?;
 
-    return User(userid: userid, username: username, email: email);
+    return User(id: userid, username: username, email: email, type: type);
   }
 
   @override
   String toString() {
     return "User {userid: " +
-        (this.userid ?? "\"\"") +
+        (this.id ?? "\"\"") +
         ", username: " +
         (this.username ?? "\"\"") +
         ", email: " +
@@ -103,10 +105,7 @@ Future<Response> addGameWithStatus(
   final raw = await http.post(
     Uri.parse(serverURL + "addgameto"),
     headers: <String, String>{"Authorization": "Bearer " + token},
-    body: <String, String>{
-      "gameid": gameid,
-      "status": status,
-    },
+    body: <String, String>{"gameid": gameid, "status": status},
   );
 
   final response = Response.fromJson(
@@ -125,10 +124,7 @@ Future<Response> removeGameWithStatus(
   final raw = await http.post(
     Uri.parse(serverURL + "removegamefrom"),
     headers: <String, String>{"Authorization": "Bearer " + token},
-    body: <String, String>{
-      "gameid": gameid,
-      "status": status,
-    },
+    body: <String, String>{"gameid": gameid, "status": status},
   );
 
   final response = Response.fromJson(
@@ -175,13 +171,14 @@ Future<Response> listGamesInLibraryOrWishlist(
 
 Future<Response> getOwnedPosts(String userId, {int limit = 20}) async {
   final raw = await http.get(
-    Uri.parse(serverURL + "user/$userId/post?limit=$limit")
+    Uri.parse(serverURL + "user/$userId/post?limit=$limit"),
   );
 
   final response = Response.fromJson(
-    raw.statusCode, 
+    raw.statusCode,
     jsonDecode(raw.body) as Map<String, dynamic>,
   );
 
   return response;
 }
+

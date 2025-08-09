@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path/path.dart' as path;
@@ -21,6 +22,10 @@ class GameRepository {
 
   GameRepository({http.Client? httpClient}) : client = httpClient ?? http.Client() {
     _initializeMockData();
+  }
+  
+  Future<List<GameModel>> searchGames(List<String> name) async {
+    return _allGames;
   }
 
   Future<List<GameModel>> getFeaturedGames() async {
@@ -235,10 +240,10 @@ class GameRepository {
         playtimeHours: 67.8,
 
         binaries: [
-          'https://vvarlrikusfwrlxshmdj.supabase.co/storage/v1/object/sign/root/84e58517-a951-4022-ab78-27d90a67b23d/res/2025-07-29T16-45-30ZT_Brick_BaseColor.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83MDBiYmQ2YS00ZjkzLTRjNTMtYjYzMS03ZTQ2NTJmYTQ1N2MiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyb290Lzg0ZTU4NTE3LWE5NTEtNDAyMi1hYjc4LTI3ZDkwYTY3YjIzZC9yZXMvMjAyNS0wNy0yOVQxNi00NS0zMFpUX0JyaWNrX0Jhc2VDb2xvci5wbmciLCJpYXQiOjE3NTM4MDc1MzIsImV4cCI6MTc4NTM0MzUzMn0.OyVSwVb2mDxlbv0d4kJTKHIgj5V66yCJavckOmw11Xw'
+          'https://vvarlrikusfwrlxshmdj.supabase.co/storage/v1/object/sign/root/d8915c91-71e6-4a45-84de-a12d0256ffc2/res/2025-08-09T04-17-06Zcalendar.exe?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83MDBiYmQ2YS00ZjkzLTRjNTMtYjYzMS03ZTQ2NTJmYTQ1N2MiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyb290L2Q4OTE1YzkxLTcxZTYtNGE0NS04NGRlLWExMmQwMjU2ZmZjMi9yZXMvMjAyNS0wOC0wOVQwNC0xNy0wNlpjYWxlbmRhci5leGUiLCJpYXQiOjE3NTQ3MTMwMjYsImV4cCI6MTc4NjI0OTAyNn0.S2X9qk57ZQCdjsj6wKMfmG7Jpgow1QoykSncQGXbrR8'
         ],
         exes: [
-          'https://vvarlrikusfwrlxshmdj.supabase.co/storage/v1/object/sign/root/84e58517-a951-4022-ab78-27d90a67b23d/res/2025-07-29T16-45-30ZT_Brick_BaseColor.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83MDBiYmQ2YS00ZjkzLTRjNTMtYjYzMS03ZTQ2NTJmYTQ1N2MiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyb290Lzg0ZTU4NTE3LWE5NTEtNDAyMi1hYjc4LTI3ZDkwYTY3YjIzZC9yZXMvMjAyNS0wNy0yOVQxNi00NS0zMFpUX0JyaWNrX0Jhc2VDb2xvci5wbmciLCJpYXQiOjE3NTM4MDc1MzIsImV4cCI6MTc4NTM0MzUzMn0.OyVSwVb2mDxlbv0d4kJTKHIgj5V66yCJavckOmw11Xw'
+          'https://vvarlrikusfwrlxshmdj.supabase.co/storage/v1/object/sign/root/d8915c91-71e6-4a45-84de-a12d0256ffc2/res/2025-08-09T04-17-06Zcalendar.exe?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83MDBiYmQ2YS00ZjkzLTRjNTMtYjYzMS03ZTQ2NTJmYTQ1N2MiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyb290L2Q4OTE1YzkxLTcxZTYtNGE0NS04NGRlLWExMmQwMjU2ZmZjMi9yZXMvMjAyNS0wOC0wOVQwNC0xNy0wNlpjYWxlbmRhci5leGUiLCJpYXQiOjE3NTQ3MTMwMjYsImV4cCI6MTc4NjI0OTAyNn0.S2X9qk57ZQCdjsj6wKMfmG7Jpgow1QoykSncQGXbrR8'
         ],
       ),
       GameModel(
@@ -335,11 +340,18 @@ class GameRepository {
   // Check if the game is isInstalled, if yes, set the isInstalled field to true
   Future<bool> setGameInstallation(String gameId) async {
     final gameIndex = _allGames.indexWhere((game) => game.gameId == gameId);
+    // debugPrint('Checking game: ${_allGames[gameIndex]}');
     if (gameIndex != -1 && _allGames[gameIndex].path != null) {
       if (await checkGameInstallation(_allGames[gameIndex].path!)) {
         final game = _allGames[gameIndex];
         _allGames[gameIndex] = game.copyWith(isInstalled: true);
         return true;
+      } else {
+        final game = _allGames[gameIndex];
+        _allGames[gameIndex] = game.copyWith(
+          isInstalled: false,
+          path: null,
+        );
       }
     }
     return false;

@@ -87,12 +87,12 @@ class GameForumCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const Spacer(),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
+                        // const Spacer(),
+                        // Icon(
+                        //   Icons.arrow_forward_ios,
+                        //   size: 16,
+                        //   color: theme.colorScheme.onSurfaceVariant,
+                        // ),
                       ],
                     ),
                   ],

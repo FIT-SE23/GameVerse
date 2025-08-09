@@ -25,7 +25,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<LibraryViewModel>(context, listen: false).loadLibrary();
@@ -51,15 +51,13 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
           final tabList = const [
             Tab(text: 'All Games'),
             Tab(text: 'Downloaded'),
-            Tab(text: 'Favorites'),
-            Tab(text: 'Recently Played'),
+            Tab(text: 'Wishlist'),
           ];
 
           final gameLists = [
             libraryViewModel.filteredGames,
             libraryViewModel.downloadedGames,
-            libraryViewModel.favoriteGames,
-            libraryViewModel.recentGames
+            libraryViewModel.wishlistGames,
           ];
 
           return Column(
@@ -265,6 +263,8 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                         ),
                       ],
                     ),
+
+                    const SizedBox(height: 16),
                 
                     // Games Content
                     libraryViewModel.isLoading
@@ -353,9 +353,8 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       return ListView.separated(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
         itemCount: games.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) => const SizedBox(height: spaceCardHorizontal),
         itemBuilder: (context, index) => _GameListTile(game: games[index]),
       );
     } else {
@@ -366,7 +365,6 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
       return GridView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: spaceCardHorizontal,
@@ -581,7 +579,7 @@ class _GameListTile extends StatelessWidget {
                   final libraryViewModel = Provider.of<LibraryViewModel>(context, listen: false);
                   switch (value) {
                     case 'favorite':
-                      libraryViewModel.toggleFavorite(game.gameId);
+                      libraryViewModel.toggleWishlist(game.gameId);
                       break;
                     case 'uninstall':
                       libraryViewModel.toggleInstalled(game.gameId);

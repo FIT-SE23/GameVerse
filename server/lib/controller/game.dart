@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import "../config/config.dart";
 
 class Game {
-  final String? gameid;
-  final String? publisherid;
+  final String? gameId;
+  final String? publisherId;
   final String? name;
   final String? description;
   final double? price;
@@ -17,8 +17,8 @@ class Game {
   final GameSale? gameSale;
 
   const Game({
-    this.gameid,
-    this.publisherid,
+    this.gameId,
+    this.publisherId,
     this.name,
     this.description,
     this.categories,
@@ -52,8 +52,8 @@ class Game {
     );
 
     return Game(
-      gameid: gameid,
-      publisherid: publisherid,
+      gameId: gameid,
+      publisherId: publisherid,
       name: name,
       description: description,
       price: price,
@@ -68,9 +68,9 @@ class Game {
   @override
   String toString() {
     return "Game {gameid: " +
-        (this.gameid ?? "\"\"") +
+        (this.gameId ?? "\"\"") +
         ", publisherid: " +
-        (this.publisherid ?? "\"\"") +
+        (this.publisherId ?? "\"\"") +
         ", name: " +
         (this.name ?? "\"\"") +
         ", description: " +
@@ -109,9 +109,10 @@ Future<void> _addFiles(
 }
 
 Future<Response> addGame(
-  String publisherid,
+  String token,
   String name,
   String description,
+  double price,
   List<String> binaries,
   List<String> media,
   List<String> media_header,
@@ -120,10 +121,11 @@ Future<Response> addGame(
 ) async {
   final request =
       http.MultipartRequest("POST", Uri.parse(serverURL + "game"))
-        ..fields["publisherid"] = publisherid
         ..fields["gamename"] = name
         ..fields["description"] = description
-        ..fields["categories"] = categories;
+        ..fields["price"] = price.toString()
+        ..fields["categories"] = categories
+        ..headers["Authorization"] = token;
 
   try {
     await _addFiles(request, 'binary', binaries);
@@ -272,11 +274,11 @@ Future<Response> recommendGame(String token, String gameId) async {
 }
 
 class Category {
-  final String? categoryid;
-  final String? categoryName;
+  final String? categoryId;
+  final String? name;
   final bool? isSensitive;
 
-  const Category({this.categoryid, this.categoryName, this.isSensitive});
+  const Category({this.categoryId, this.name, this.isSensitive});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     final categoryid = json["categoryid"] as String?;
@@ -284,8 +286,8 @@ class Category {
     final isSensitive = json["issensitive"] as String?;
 
     return Category(
-      categoryid: categoryid,
-      categoryName: categoryName,
+      categoryId: categoryid,
+      name: categoryName,
       isSensitive: isSensitive == "TRUE",
     );
   }
@@ -293,9 +295,9 @@ class Category {
   @override
   String toString() {
     return "Category {categoryid: " +
-        (this.categoryid ?? "\"\"") +
+        (this.categoryId ?? "\"\"") +
         ", name: " +
-        (this.categoryName ?? "\"\"") +
+        (this.name ?? "\"\"") +
         ", sensitive: " +
         this.isSensitive.toString() +
         "}";
