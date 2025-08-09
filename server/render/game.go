@@ -161,6 +161,7 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	userid, err := verifyUserToken(c)
 	if err != nil {
+		fmt.Println(err.Error())
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	publisherID := userid
@@ -284,10 +285,7 @@ func getGame(c echo.Context, client *supabase.Client) error {
 	gameID := c.Param("id")
 
 	// TODO: check game status if user already signed in
-	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID)
-	if err == nil {
-		filter = filter.In("Resource.type", []string{"media_header", "media"})
-	}
+	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID).In("Resource.type", []string{"media_header", "media"})
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
