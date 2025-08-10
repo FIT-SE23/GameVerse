@@ -346,6 +346,16 @@ Future<Response> addCategory(String categoryName, bool isSensitive) async {
   return response;
 }
 
+Future<Response> getCategories() async {
+  final raw = await http.get(Uri.parse(serverURL + "categories"));
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(await raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 class Resource {
   final String? resourceid;
   final String? userid;

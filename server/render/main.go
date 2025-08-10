@@ -150,6 +150,9 @@ func main() {
 	e.POST("/category", func(c echo.Context) error {
 		return addCategory(c, client)
 	})
+	e.GET("/categories", func(c echo.Context) error {
+		return getCategories(c, client)
+	})
 
 	e.POST("/payment", func(c echo.Context) error {
 		return addPaymentMethod(c, client)
