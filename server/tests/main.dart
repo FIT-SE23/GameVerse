@@ -38,16 +38,22 @@ void main() async {
     print(
       await addGame(
         "Bearer " + token,
-        "Gamer Simulator 2",
-        "Tiếp nối câu chuyện của giả lập cuộc sống người chơi game",
-        42000.0,
-        ["/home/nullgus/Downloads/raylib/lib/x86_64/libraylib.a"],
-        ["/home/nullgus/Downloads/raylib/logo/raylib_128x128.png"],
-        ["/home/nullgus/Downloads/raylib/logo/raylib_1024x1024.png"],
-        ["/home/nullgus/Code/win32/Calendar/calendar.exe"],
-        "Indie,Open World",
+        "Gamer Simulator 4",
+        "Chạm cỏ",
+        "Super milking",
+        "RTX 4090",
+        92000.0,
+        [""],
+        [""],
+        [""],
+        [""],
+        "Open World",
       ),
     );
+  }
+
+  if (true) {
+    print(await getCategories());
   }
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
@@ -95,7 +101,7 @@ void main() async {
     );
   }
 
-  if (true) {
+  if (false) {
     print(await listGames("Gamer Simulator 2", "recommend", 0, 1));
   }
 
@@ -108,11 +114,12 @@ void main() async {
   }
 
   if (false) {
-    print(await getGame("", "12de500f-9810-4428-b217-d606b6847dac"));
+    print(await getGame("", "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
   }
 
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    print(await getUser(resp.data["userid"].toString()));
     final token = resp.data["token"].toString();
     print(await createVnpayReceipt(token));
   }
