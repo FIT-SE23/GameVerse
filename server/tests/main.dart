@@ -32,23 +32,24 @@ void main() async {
     print(await addCategory("Indie", false));
   }
 
-  if (false) {
-    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
-    final token = resp.data["token"].toString();
-    print(
-      await addGame(
-        "Bearer " + token,
-        "Gamer Simulator 2",
-        "Tiếp nối câu chuyện của giả lập cuộc sống người chơi game",
-        42000.0,
-        ["/home/nullgus/Downloads/raylib/lib/x86_64/libraylib.a"],
-        ["/home/nullgus/Downloads/raylib/logo/raylib_128x128.png"],
-        ["/home/nullgus/Downloads/raylib/logo/raylib_1024x1024.png"],
-        ["/home/nullgus/Code/win32/Calendar/calendar.exe"],
-        "Indie,Open World",
-      ),
-    );
-  }
+  // if (false) {
+  //   final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+  //   final token = resp.data["token"].toString();
+  //   print(
+  //     await addGame(
+  //       "Bearer " + token,
+  //       "Gamer Simulator 2",
+  //       "Tiếp nối câu chuyện của giả lập cuộc sống người chơi game",
+  //       42000.0,
+  //       ["/home/nullgus/Downloads/raylib/lib/x86_64/libraylib.a"],
+  //       ["/home/nullgus/Downloads/raylib/logo/raylib_128x128.png"],
+  //       ["/home/nullgus/Downloads/raylib/logo/raylib_1024x1024.png"],
+  //       ["/home/nullgus/Code/win32/Calendar/calendar.exe"],
+  //       "Indie,Open World",
+  //     ),
+  //   );
+  // }
+  
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data.toString();
