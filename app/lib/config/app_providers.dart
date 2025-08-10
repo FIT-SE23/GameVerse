@@ -25,9 +25,10 @@ import '../data/repositories/post_repository.dart';
 import '../data/repositories/comment_repository.dart';
 
 import '../data/services/transaction_service.dart';
-List<SingleChildWidget> appProviders() {
+Future<List<SingleChildWidget>> appProviders() async {
   return [
-    Provider(create: (_) => GameRepository(httpClient: http.Client())),
+    // Provider(create: (_) => GameRepository(httpClient: http.Client())),
+    FutureProvider(create: (_) => GameRepository.fromService(), initialData: GameRepository(httpClient: http.Client())),
     Provider(create: (_) => AuthRepository()),
     Provider(create: (_) => ForumRepository()),
     Provider(create: (_) => PostRepository()),

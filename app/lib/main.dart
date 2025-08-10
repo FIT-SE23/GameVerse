@@ -60,7 +60,7 @@ void main(List<String> args) async {
   }
 
   runApp(MultiProvider(
-    providers: appProviders(),
+    providers: await appProviders(),
     child: MyApp(initialDeepLink: initialDeepLink),
   ));
 

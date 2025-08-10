@@ -409,7 +409,6 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        subtitle: Text('Requested: ${_formatDate(request.requestDate)}'),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
