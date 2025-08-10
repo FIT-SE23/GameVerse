@@ -21,7 +21,7 @@ import (
 func getUser(c echo.Context, client *supabase.Client) error {
 	userid := c.Param("id")
 
-	rep, _, err := client.From("User").Select("userid, username, email", "", false).Eq("userid", userid).Single().ExecuteString()
+	rep, _, err := client.From("User").Select("userid, username, email, type", "", false).Eq("userid", userid).Single().ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -144,7 +144,6 @@ func login(c echo.Context, client *supabase.Client) error {
 	// Return the user ID and token
 	return jsonResponse(c, http.StatusOK, "", map[string]string{
 		"userid": user["userid"],
-		"type":   user["type"],
 		"token":  createUserToken(user["userid"]),
 	})
 }
@@ -211,4 +210,3 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 
 	return jsonResponse(c, http.StatusOK, "", posts)
 }
-

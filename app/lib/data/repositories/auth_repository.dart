@@ -66,6 +66,7 @@ class AuthRepository {
           id: userData,
           username: '', // Fetch from server
           email: '', // Fetch from server
+          type: 'user', // Default type, can be updated later
         );
         _accessToken = token;
         return _currentUser;

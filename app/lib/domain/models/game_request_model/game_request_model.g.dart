@@ -21,12 +21,9 @@ _GameRequestModel _$GameRequestModelFromJson(Map<String, dynamic> json) =>
       media: (json['media'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      requestId: json['requestId'] as String?,
       requestStatus: json['requestStatus'] as String,
-      requestMessage: json['requestMessage'] as String?,
-      requestDate: DateTime.parse(json['requestDate'] as String),
-      binaries: (json['binaries'] as List<dynamic>?)
-          ?.map((e) => e as String)
+      binaries: (json['binaries'] as List<dynamic>)
+          .map((e) => e as String)
           .toList(),
       exes: (json['exes'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
@@ -42,10 +39,7 @@ Map<String, dynamic> _$GameRequestModelToJson(_GameRequestModel instance) =>
       'price': instance.price,
       'categories': instance.categories,
       'media': instance.media,
-      'requestId': instance.requestId,
       'requestStatus': instance.requestStatus,
-      'requestMessage': instance.requestMessage,
-      'requestDate': instance.requestDate.toIso8601String(),
       'binaries': instance.binaries,
       'exes': instance.exes,
     };

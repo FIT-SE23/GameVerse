@@ -197,7 +197,7 @@ class GameApiClient {
     String status,
   ) async {
     final raw = await _client.post(
-      Uri.parse(ApiEndpoint.addGameToCartUrl),
+      Uri.parse(ApiEndpoint.addGameToUrl),
       headers: <String, String>{"Authorization": "Bearer $token"},
       body: <String, String>{
         "gameid": gameid,
@@ -220,7 +220,7 @@ class GameApiClient {
     String status,
   ) async {
     final raw = await _client.post(
-      Uri.parse(ApiEndpoint.removeGameFromCartUrl),
+      Uri.parse(ApiEndpoint.removeGameFromUrl),
       headers: <String, String>{"Authorization": "Bearer $token"},
       body: <String, String>{
         "gameid": gameid,
@@ -250,16 +250,18 @@ class GameApiClient {
     return response;
   }
 
-  Future<Response> listGamesInLibraryOrWishlist(
-    String userid,
-    String status,
-  ) async {
-    String url = "${ApiEndpoint.userUrl}/$userid/";
-    if (status == "In library") {
-      url += "library";
-    } else if (status == "In wishlist") {
-      url += "wishlist";
-    }
+  Future<Response> getLibraryGames(String userid) async {
+    String url = "${ApiEndpoint.userUrl}/$userid/library";
+    final raw = await _client.get(Uri.parse(url));
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+    return response;
+  }
+  Future<Response> getWishListGames(String userid) async {
+    String url = "${ApiEndpoint.userUrl}/$userid/wishlist";
     final raw = await _client.get(Uri.parse(url));
 
     final response = Response.fromJson(

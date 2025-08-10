@@ -1,4 +1,3 @@
-import 'package:gameverse/domain/models/forum_model/forum_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 
@@ -6,18 +5,6 @@ class ForumRepository {
   
   Future<List<GameModel>> getGamesWithForums() async {
     return _getMockGamesWithForums();
-  }
-
-  Future<void> createForum(ForumModel forum) async {
-    // In real app, save to database
-  }
-
-  Future<void> deleteForum(String forumId) async {
-    // In real app, delete from database
-  }
-
-  Future<void> updateForum(ForumModel forum) async {
-    // In real app, update in database
   }
 
   List<GameModel> _getMockGamesWithForums() {

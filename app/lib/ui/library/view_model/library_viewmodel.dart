@@ -51,13 +51,13 @@ class LibraryViewModel extends ChangeNotifier {
   // Wishlist games storage (in a real app, this would be persistent)
   final Set<String> _wishlistGameIds = {};
 
-  Future<void> loadLibrary() async {
+  Future<void> loadLibrary(String userId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       // Load mock library data
-      _games = _gameRepository.allGames;
+      _games = await _gameRepository.getLibraryGames(userId);
       _availableTags = _extractTags(_games);
       _applyFilters();
     } catch (e) {

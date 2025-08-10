@@ -13,8 +13,8 @@ class ApiEndpoint {
   
   // Game endpoints
   static const String gameUrl = '$baseUrl/game';
-  static const String addGameToCartUrl = '$baseUrl/addgameto';
-  static const String removeGameFromCartUrl = '$baseUrl/removegamefrom';
+  static const String addGameToUrl = '$baseUrl/addgameto';
+  static const String removeGameFromUrl = '$baseUrl/removegamefrom';
   static const String recommendedGamesUrl = '$baseUrl/recommended';
   
   // Other endpoints

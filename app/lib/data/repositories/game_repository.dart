@@ -5,6 +5,8 @@ import 'package:path/path.dart' as path;
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/data/services/game_api_client.dart';
+import 'package:gameverse/utils/response.dart';
 
 class GameRepository {
   final http.Client client;
@@ -34,6 +36,17 @@ class GameRepository {
 
   Future<List<GameModel>> getOwnedGames(String userId) async {
     return _getMockOwnedGames();
+  }
+
+  Future<List<GameModel>> getLibraryGames(String userId) async {
+    final Response response = await GameApiClient(client: client).getLibraryGames(userId);
+
+    if (response.code != 200) {
+      return Future.error(response);
+    }
+    final List<GameModel> games = [];
+    debugPrint("Library Games: ${response.data}");
+    return games;
   }
 
   Future<GameModel?> getGameDetails(String gameId) async {

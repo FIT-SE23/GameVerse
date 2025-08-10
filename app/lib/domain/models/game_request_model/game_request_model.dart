@@ -18,14 +18,11 @@ abstract class GameRequestModel with _$GameRequestModel {
     required List<String>? media,
 
     // Request related fields
-    String? requestId,
     required String requestStatus, // e.g., 'pending', 'approved', 'rejected
-    String? requestMessage, // Message from the publisher regarding the request
-    required DateTime requestDate,
 
     // Upload related fields
-    List<String>? binaries,
-    List<String>? exes,
+    required List<String> binaries,
+    required List<String>? exes,
   }) = _GameRequestModel;
 
   factory GameRequestModel.fromJson(Map<String, dynamic> json) => 
