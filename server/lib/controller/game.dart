@@ -237,7 +237,11 @@ Future<Response> getGame(String token, String gameid) async {
   );
 
   // print(jsonBody);
-  // print(response.data);
+  // print(response.data.runtimeType);
+  if (response.data.length == 0) {
+    return Response(code: 400, message: "Gameid not found");
+  }
+
   final game = Game.fromJson(response.data[0] as Map<String, dynamic>);
 
   return Response(code: response.code, message: response.message, data: game);
