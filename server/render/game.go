@@ -314,6 +314,8 @@ func getGame(c echo.Context, client *supabase.Client) error {
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortBy := c.QueryParam("sortby")
+	categories := c.QueryParam("categories")
+	categoryList := strings.Split(categories, ",")
 	start, err := strconv.Atoi(c.QueryParam("start"))
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
@@ -342,7 +344,7 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		for _, info := range raw {
 			gameids = append(gameids, info["gameid"])
 		}
-		rep, _, err = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
+		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
 		// return jsonResponse(c, http.StatusOK, "", resp)
 	} else if sortBy == "date" {
 		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
@@ -355,10 +357,36 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+
 	var games []map[string]any
 	err = json.Unmarshal([]byte(rep), &games)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	if len(categoryList) > 1 || (len(categoryList) == 1 && categoryList[0] != "") {
+		fmt.Println(categoryList)
+		games = slices.DeleteFunc(games, func(game map[string]any) bool {
+			gameCatsAny, ok := game["Category"].([]any)
+			if !ok {
+				return true
+			}
+			for _, gameCatAny := range gameCatsAny {
+				gameCatMap, ok := gameCatAny.(map[string]any)
+				if !ok {
+					return true
+				}
+
+				gameCat, ok := gameCatMap["categoryname"].(string)
+				if !ok {
+					return true
+				}
+				if !slices.Contains(categoryList, gameCat) {
+					return true
+				}
+			}
+			return false
+		})
 	}
 
 	if sortBy == "price" {
@@ -583,49 +611,49 @@ func recommendGame(c echo.Context, client *supabase.Client, userID string) error
 }
 
 func downloadGame(c echo.Context, client *supabase.Client, userID string) error {
-    gameID := c.FormValue("gameid")
-    if gameID == "" {
-        return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
-    }
+	gameID := c.FormValue("gameid")
+	if gameID == "" {
+		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+	}
 
-    rep, _, err := client.From("User_Game").
-        Select("*", "", false).
-        Eq("userid", userID).
-        Eq("gameid", gameID).
-        Eq("status", "In library").
-        Single().
-        ExecuteString()
-    if err != nil {
-        return jsonResponse(c, http.StatusForbidden, "User doesn't own this game", "")
-    }
+	rep, _, err := client.From("User_Game").
+		Select("*", "", false).
+		Eq("userid", userID).
+		Eq("gameid", gameID).
+		Eq("status", "In library").
+		Single().
+		ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusForbidden, "User doesn't own this game", "")
+	}
 
 	rawIDs := c.FormValue("resourceids")
 	var resourceIDs []string
-    if rawIDs != "" {
+	if rawIDs != "" {
 		err := json.Unmarshal([]byte(rawIDs), &resourceIDs)
-        if  err != nil {
-            return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
-        }
-    }
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
+		}
+	}
 
-    query := client.From("Game_Resource").
-        Select("Resource(resourceid, url, type, checksum)", "", false).
-        Eq("gameid", gameID).
-        In("Resource.type", []string{"binary", "executable"})
+	query := client.From("Game_Resource").
+		Select("Resource(resourceid, url, type, checksum)", "", false).
+		Eq("gameid", gameID).
+		In("Resource.type", []string{"binary", "executable"})
 
-    if len(resourceIDs) > 0 {
-        query = query.In("Resource.resourceid", resourceIDs)
-    }
+	if len(resourceIDs) > 0 {
+		query = query.In("Resource.resourceid", resourceIDs)
+	}
 
-    rep, _, err = query.ExecuteString()
-    if err != nil {
-        return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch resources", "")
-    }
+	rep, _, err = query.ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch resources", "")
+	}
 
-    var resources []map[string]any
-    if err := json.Unmarshal([]byte(rep), &resources); err != nil {
-        return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
-    }
+	var resources []map[string]any
+	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+	}
 
-    return jsonResponse(c, http.StatusOK, "", resources)
+	return jsonResponse(c, http.StatusOK, "", resources)
 }

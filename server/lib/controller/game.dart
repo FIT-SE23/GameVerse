@@ -256,11 +256,12 @@ Future<Response> listGames(
   String sortBy,
   int start,
   int cnt,
+  String categories,
 ) async {
   final raw = await http.get(
     Uri.parse(
       serverURL +
-          "search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt",
+          "search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories",
     ),
   );
 
@@ -301,21 +302,20 @@ Future<Response> recommendGame(String token, String gameId) async {
 
 Future<Response> downloadGame(
   String token,
-  String gameId, 
-  {List<String>? resourceIds,}
-) async {
-  final request = http.MultipartRequest(
-    "POST",
-    Uri.parse(serverURL + "download/game"),
-  )
-    ..headers["Authorization"] = token
-    ..fields["gameid"] = gameId;
+  String gameId, {
+  List<String>? resourceIds,
+}) async {
+  final request =
+      http.MultipartRequest("POST", Uri.parse(serverURL + "download/game"))
+        ..headers["Authorization"] = token
+        ..fields["gameid"] = gameId;
 
   if (resourceIds != null && resourceIds.isNotEmpty) {
-    final validResourceIDs = resourceIds
-        .map((id) => id.trim())
-        .where((id) => id.isNotEmpty)
-        .toList();
+    final validResourceIDs =
+        resourceIds
+            .map((id) => id.trim())
+            .where((id) => id.isNotEmpty)
+            .toList();
 
     if (validResourceIDs.isNotEmpty) {
       request.fields['resourceids'] = jsonEncode(validResourceIDs);
