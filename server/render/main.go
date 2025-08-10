@@ -125,6 +125,14 @@ func main() {
 	e.PATCH("/game/:id", func(c echo.Context) error {
 		return updateGame(c, client, bucketId)
 	})
+	e.POST("/download/game", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+
+		return downloadGame(c, client, userid)
+	})
 
 	e.GET("/search", func(c echo.Context) error {
 		entity := c.QueryParam("entity")

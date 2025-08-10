@@ -95,7 +95,7 @@ void main() async {
     );
   }
 
-  if (true) {
+  if (false) {
     print(await listGames("Gamer Simulator 2", "recommend", 0, 1));
   }
 
@@ -126,5 +126,11 @@ void main() async {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
     print(await createVnpayReceipt(token));
+  }
+
+  if (false) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data["token"].toString();
+    print(await downloadGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
   }
 }
