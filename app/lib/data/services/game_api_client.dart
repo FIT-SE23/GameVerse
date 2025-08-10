@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:gameverse/config/api_endpoints.dart';
 import 'package:gameverse/utils/response.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
 
 
 class GameApiClient {
@@ -123,6 +124,42 @@ class GameApiClient {
     return response;
   }
 
+  // a temporary function
+  GameModel _jsonToGameModel(Map<String, dynamic> json) {
+    List<CategoryModel> categories = [];
+    for (var list in json["Category"] as List<dynamic>) {
+      final categoryid = list["categoryid"] as String;
+      final categoryName = list["categoryname"] as String;
+      final isSensitive = list["issensitive"] as String?; 
+      
+      categories.add(CategoryModel(categoryId: categoryid, name: categoryName, isSensitive: isSensitive == 'TRUE'));
+    }
+
+    final rawMedia = json["Resource"] as List<dynamic>;
+    final rawHeader = rawMedia.firstWhere(
+      (list) => list["type"] as String == "media_header",
+      orElse: () => '',
+    );
+    rawMedia.remove(rawHeader);
+    List<String> media = [for (final m in rawMedia) m["url"]];
+ 
+    final game = GameModel(
+      gameId: json["gameid"] as String,
+      publisherId: json["publisherid"] as String,
+      name: json["name"] as String,
+      description: json["description"] as String,
+      price: json["price"].toDouble() as double,
+      recommended: json["recommend"].toInt() as int,
+      releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
+      categories: categories,
+      media: media,
+      headerImage: rawHeader["url"] as String,
+
+      isSale: json["Game_Sale"] == null,
+    );
+    return game;
+  }
+
   Future<Response> getGame(String token, String gameid) async {
     final raw = await http.get(
       Uri.parse('${ApiEndpoint.gameUrl}/$gameid'),
@@ -143,7 +180,12 @@ class GameApiClient {
 
     // print(jsonBody);
     // print(response.data);
-    final game = GameModel.fromJson(response.data[0] as Map<String, dynamic>);
+    // final game = GameModel.fromJson(response.data[0] as Map<String, dynamic>);
+
+    // will change to using GameModel.fromJson later
+    final json = response.data[0] as Map<String, dynamic>;
+
+    final game = _jsonToGameModel(json);
 
     return Response(code: response.code, message: response.message, data: game);
   }

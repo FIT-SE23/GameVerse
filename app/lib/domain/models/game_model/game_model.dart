@@ -11,15 +11,13 @@ abstract class GameModel with _$GameModel {
     required String gameId,
     required String publisherId,
     required String name,
-    required int recommended,
-    required String briefDescription,
     required String description,
-    required String requirements,
-    required String headerImage,
     required double price,
+    required int recommended,
+    required DateTime releaseDate,
     required List<CategoryModel> categories,
     required List<String>? media,
-    required DateTime releaseDate,
+    required String headerImage,
 
     // Request related fields
     String? requestStatus, // e.g., 'pending', 'approved', 'rejected'
