@@ -299,6 +299,38 @@ Future<Response> recommendGame(String token, String gameId) async {
   return response;
 }
 
+Future<Response> downloadGame(
+  String token,
+  String gameId, 
+  {List<String>? resourceIds,}
+) async {
+  final request = http.MultipartRequest(
+    "POST",
+    Uri.parse(serverURL + "download/game"),
+  )
+    ..headers["Authorization"] = token
+    ..fields["gameid"] = gameId;
+
+  if (resourceIds != null && resourceIds.isNotEmpty) {
+    final validResourceIDs = resourceIds
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toList();
+
+    if (validResourceIDs.isNotEmpty) {
+      request.fields['resourceids'] = jsonEncode(validResourceIDs);
+    }
+  }
+
+  final raw = await request.send();
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(await raw.stream.bytesToString()) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 class Category {
   final String? categoryId;
   final String? name;

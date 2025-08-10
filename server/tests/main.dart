@@ -32,6 +32,7 @@ void main() async {
     print(await addCategory("Indie", false));
   }
 
+<<<<<<< HEAD
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
@@ -55,6 +56,26 @@ void main() async {
   if (true) {
     print(await getCategories());
   }
+=======
+  // if (false) {
+  //   final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+  //   final token = resp.data["token"].toString();
+  //   print(
+  //     await addGame(
+  //       "Bearer " + token,
+  //       "Gamer Simulator 2",
+  //       "Tiếp nối câu chuyện của giả lập cuộc sống người chơi game",
+  //       42000.0,
+  //       ["/home/nullgus/Downloads/raylib/lib/x86_64/libraylib.a"],
+  //       ["/home/nullgus/Downloads/raylib/logo/raylib_128x128.png"],
+  //       ["/home/nullgus/Downloads/raylib/logo/raylib_1024x1024.png"],
+  //       ["/home/nullgus/Code/win32/Calendar/calendar.exe"],
+  //       "Indie,Open World",
+  //     ),
+  //   );
+  // }
+  
+>>>>>>> e6561051105a8a2f4dfa09774c18c6f760f22b31
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data.toString();
@@ -133,5 +154,11 @@ void main() async {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
     print(await createVnpayReceipt(token));
+  }
+
+  if (false) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data["token"].toString();
+    print(await downloadGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
   }
 }

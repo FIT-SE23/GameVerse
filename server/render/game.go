@@ -581,3 +581,51 @@ func recommendGame(c echo.Context, client *supabase.Client, userID string) error
 	}
 	return jsonResponse(c, http.StatusOK, "", "")
 }
+
+func downloadGame(c echo.Context, client *supabase.Client, userID string) error {
+    gameID := c.FormValue("gameid")
+    if gameID == "" {
+        return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+    }
+
+    rep, _, err := client.From("User_Game").
+        Select("*", "", false).
+        Eq("userid", userID).
+        Eq("gameid", gameID).
+        Eq("status", "In library").
+        Single().
+        ExecuteString()
+    if err != nil {
+        return jsonResponse(c, http.StatusForbidden, "User doesn't own this game", "")
+    }
+
+	rawIDs := c.FormValue("resourceids")
+	var resourceIDs []string
+    if rawIDs != "" {
+		err := json.Unmarshal([]byte(rawIDs), &resourceIDs)
+        if  err != nil {
+            return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
+        }
+    }
+
+    query := client.From("Game_Resource").
+        Select("Resource(resourceid, url, type, checksum)", "", false).
+        Eq("gameid", gameID).
+        In("Resource.type", []string{"binary", "executable"})
+
+    if len(resourceIDs) > 0 {
+        query = query.In("Resource.resourceid", resourceIDs)
+    }
+
+    rep, _, err = query.ExecuteString()
+    if err != nil {
+        return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch resources", "")
+    }
+
+    var resources []map[string]any
+    if err := json.Unmarshal([]byte(rep), &resources); err != nil {
+        return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+    }
+
+    return jsonResponse(c, http.StatusOK, "", resources)
+}

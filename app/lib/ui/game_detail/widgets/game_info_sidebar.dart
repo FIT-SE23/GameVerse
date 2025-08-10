@@ -35,8 +35,8 @@ class GameInfoSidebar extends StatelessWidget {
 
         Text(
           game.isSale == true && game.discountPercent != null
-              ? '\$${(game.price * (1 - (game.discountPercent! / 100))).toStringAsFixed(2)} VND'
-              : '\$${game.price.toStringAsFixed(2)} VND',
+              ? '${(game.price * (1 - (game.discountPercent! / 100))).toInt()} VND'
+              : '${game.price.toInt()} VND',
           style: theme.textTheme.bodyLarge,
         ),
 
@@ -145,7 +145,7 @@ class GameInfoSidebar extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              '${6750}',
+              '${game.recommended}',
               style: theme.textTheme.bodyLarge!.copyWith(color: AppTheme.currentThemeColors(theme.brightness).getCyan)
             )
           ],
@@ -158,7 +158,7 @@ class GameInfoSidebar extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              '5/10/2020',
+              game.releaseDate.toString().split(' ')[0],
               style: theme.textTheme.bodyLarge
             )
           ],
@@ -176,19 +176,19 @@ class GameInfoSidebar extends StatelessWidget {
             )
           ],
         ),
-        Row(
-          children: [
-            Text(
-              'Platform',
-              style: theme.textTheme.bodyLarge,
-            ),
-            Spacer(),
-            Text(
-              'Windows',
-              style: theme.textTheme.bodyLarge
-            )
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Text(
+        //       'Platform',
+        //       style: theme.textTheme.bodyLarge,
+        //     ),
+        //     Spacer(),
+        //     Text(
+        //       'Windows',
+        //       style: theme.textTheme.bodyLarge
+        //     )
+        //   ],
+        // ),
 
         const SizedBox(height: 16),
 

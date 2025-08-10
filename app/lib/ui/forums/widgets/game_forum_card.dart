@@ -43,7 +43,7 @@ class GameForumCard extends StatelessWidget {
                         Text(
                           game.name,
                           style: theme.textTheme.titleLarge,
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
@@ -52,7 +52,7 @@ class GameForumCard extends StatelessWidget {
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
