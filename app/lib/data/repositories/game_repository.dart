@@ -14,16 +14,24 @@ import 'package:gameverse/utils/response.dart';
 class GameRepository {
   final http.Client client;
 
-  void _initializeMockData() {
-    _allGames = [
-      ..._getMockFeaturedGames(),
-      ..._getMockOwnedGames(),
-      ..._getMockAdditionalGames(),
-    ];
+  static void _initializeMockData() {
+    // _allGames = [
+    //   ..._getMockFeaturedGames(),
+    //   ..._getMockOwnedGames(),
+    //   ..._getMockAdditionalGames(),
+    // ];
+    _allGames.addAll(_getMockOwnedGames());
+    _allGames.addAll(_getMockAdditionalGames());
   }
 
-  List<GameModel> _allGames = [];
+  static List<GameModel> _allGames = [];
   List<GameModel> get allGames => _allGames;
+
+  static Future<GameRepository> fromService() async {
+    var featuredGames = await _getMockFeaturedGames();
+    _allGames = [...featuredGames];
+    return GameRepository();
+  }
 
   GameRepository({http.Client? httpClient}) : client = httpClient ?? http.Client() {
     _initializeMockData();
@@ -65,13 +73,13 @@ class GameRepository {
     return null;
   }
 
-  Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {
+  static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {
     Response response = await futureResponse;
     return response.data;
   }
 
   // Mock Data Methods
-  Future<List<GameModel>> _getMockFeaturedGames() async {
+  static Future<List<GameModel>> _getMockFeaturedGames() async {
     final gameApiClient = GameApiClient();
     return [
       await _getDataFromResponse(gameApiClient.getGame('', '4c29bf9a-6344-4282-ab68-8232534a2dab')) as GameModel,
@@ -187,7 +195,7 @@ class GameRepository {
     ];
   }
 
-  List<GameModel> _getMockOwnedGames() {
+  static List<GameModel> _getMockOwnedGames() {
     return [
       GameModel(
         gameId: '5',
@@ -300,7 +308,7 @@ class GameRepository {
     ];
   }
 
-  List<GameModel> _getMockAdditionalGames() {
+  static List<GameModel> _getMockAdditionalGames() {
     return [
       GameModel(
         gameId: '9',
