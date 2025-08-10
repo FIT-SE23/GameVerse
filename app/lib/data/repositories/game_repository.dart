@@ -84,6 +84,7 @@ class GameRepository {
       await _getDataFromResponse(gameApiClient.getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
       await _getDataFromResponse(gameApiClient.getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
       await _getDataFromResponse(gameApiClient.getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
+      await _getDataFromResponse(gameApiClient.getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
       // GameModel(
       //   gameId: '1',
       //   publisherId: '1',

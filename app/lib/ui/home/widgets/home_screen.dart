@@ -46,13 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(height: 32),
                     GameSectionHorizontal(title: 'Feature Discounts', gameList: Provider.of<HomeViewModel>(context, listen: false).featuredDiscount,),
               
-                    SizedBox(height: 32),
-                    Text(
-                      'Categories',
-                      style: Theme.of(context).textTheme.displayLarge
-                    ),
-                    SizedBox(height: 16),
-                    GenresGame(),
+                    // SizedBox(height: 32),
+                    // Text(
+                    //   'Categories',
+                    //   style: Theme.of(context).textTheme.displayLarge
+                    // ),
+                    // SizedBox(height: 16),
+                    // GenresGame(),
               
                     SizedBox(height: 32),
                     GameSectionHorizontal(title: 'Explore New Games', gameList: Provider.of<HomeViewModel>(context, listen: false).newReleases,),
