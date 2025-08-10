@@ -40,14 +40,14 @@ class PublisherViewModel extends ChangeNotifier {
         id: userId,
         username: 'Publisher_$userId',
         email: '123@gmail.com',
+        type: 'publisher',
         description: description,
         paymentMethod: PaymentMethodModel(
           paymentMethodId: 'pm_${DateTime.now().millisecondsSinceEpoch}',
           type: 'Banking',
           information: 'Paypal',
         ),
-        registrationDate: DateTime.now(),
-        gamesPublishedID: [],
+        publishedGamesID: [],
       );
 
       _state = PublisherViewState.success;
@@ -75,14 +75,14 @@ class PublisherViewModel extends ChangeNotifier {
         id: publisherId,
         username: 'MockPublisher',
         email: '123@gmail.com',
+        type: 'publisher',
         description: 'Indie game developer passionate about creating immersive gaming experiences',
         paymentMethod: PaymentMethodModel(
           paymentMethodId: 'pm_mock_001',
           type: 'Banking',
           information: 'PayPal',
         ),
-        registrationDate: DateTime.now().subtract(const Duration(days: 90)),
-        gamesPublishedID: ['game_001', 'game_002'],
+        publishedGamesID: ['game_001', 'game_002'],
       );
 
       // Create mock published games
@@ -92,9 +92,9 @@ class PublisherViewModel extends ChangeNotifier {
           publisherId: publisherId,
           name: 'Mystery Adventure',
           recommended: 156,
-          // briefDescription: 'An exciting mystery adventure game',
+          briefDescription: 'An exciting mystery adventure game',
           description: 'Embark on a thrilling mystery adventure where every choice matters. Solve puzzles, uncover secrets, and experience a story that adapts to your decisions.',
-          // requirements: 'Windows 10, 4GB RAM, DirectX 11',
+          requirement: 'Windows 10, 4GB RAM, DirectX 11',
           headerImage: 'https://picsum.photos/800/400?random=1',
           price: 19.99,
           categories: [
@@ -119,9 +119,9 @@ class PublisherViewModel extends ChangeNotifier {
           publisherId: publisherId,
           name: 'Space Explorer',
           recommended: 89,
-          // briefDescription: 'Explore the vast universe',
+          briefDescription: 'Explore the vast universe',
           description: 'Build your spaceship, explore distant galaxies, and discover new civilizations in this epic space exploration game.',
-          // requirements: 'Windows 10, 6GB RAM, DirectX 12',
+          requirement: 'Windows 10, 6GB RAM, DirectX 12',
           headerImage: 'https://picsum.photos/800/400?random=4',
           price: 29.99,
           categories: [
@@ -143,7 +143,6 @@ class PublisherViewModel extends ChangeNotifier {
       // Create mock pending requests
       _pendingRequests = [
         GameRequestModel(
-          requestId: 'req_001',
           publisherId: publisherId,
           gameName: 'Pixel Warriors',
           description: 'A retro-style pixel art fighting game with local multiplayer support.',
@@ -160,10 +159,14 @@ class PublisherViewModel extends ChangeNotifier {
           ],
           price: 14.99,
           requestStatus: 'pending',
-          requestDate: DateTime.now().subtract(const Duration(days: 3)),
+          binaries: [
+            'https://example.com/binaries/pixel_warriors_v1.0.bin',
+          ],
+          exes: [
+            'https://example.com/exes/pixel_warriors_v1.0.exe',
+          ],
         ),
         GameRequestModel(
-          requestId: 'req_002',
           gameName: 'Farm Simulator Pro',
           publisherId: publisherId,
           briefDescription: 'The ultimate farming experience with realistic farming mechanics.',
@@ -180,7 +183,12 @@ class PublisherViewModel extends ChangeNotifier {
           ],
           price: 24.99,
           requestStatus: 'pending',
-          requestDate: DateTime.now().subtract(const Duration(days: 7)),
+          binaries: [
+            'https://example.com/binaries/farm_simulator_pro_v1.0.bin',
+          ],
+          exes: [
+            'https://example.com/exes/farm_simulator_pro_v1.0.exe',
+          ],
         ),
       ];
 
@@ -223,8 +231,8 @@ class PublisherViewModel extends ChangeNotifier {
         categories: categories,
         price: price,
         requestStatus: 'pending',
-        requestDate: DateTime.now(),
-        requestMessage: requestMessage,
+        binaries: binaries,
+        exes: exes,
       );
 
       debugPrint('Requesting game publication: $newRequest');
@@ -239,14 +247,13 @@ class PublisherViewModel extends ChangeNotifier {
   }
 
   // Cancel game request
-  Future<bool> cancelGameRequest(String requestId) async {
+  Future<bool> cancelGameRequest(String gameName) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      _pendingRequests.removeWhere((request) => request.requestId == requestId);
+      _pendingRequests.removeWhere((request) => request.gameName == gameName);
       notifyListeners();
       return true;
     } catch (e) {
-      _errorMessage = 'Failed to cancel request: $e';
+      _errorMessage = 'Cancellation failed: $e';
       return false;
     }
   }

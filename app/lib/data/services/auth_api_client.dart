@@ -54,7 +54,6 @@ class AuthApiClient {
     final raw = await _client.get(
       Uri.parse('${ApiEndpoint.userUrl}/$userId'),
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );

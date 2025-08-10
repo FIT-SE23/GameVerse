@@ -11,20 +11,17 @@ abstract class UserModel with _$UserModel {
     required String id,
     required String username,
     required String email,
-    String? avatar,
-    String? bio,
-    @Default('publisher') String type, // e.g., 'user', 'operator', 'publisher'
+    required String type, // e.g., 'user', 'operator', 'publisher'
 
     // Optional fields for user preferences
     List<String>? ownedGamesID,
-    List<String>? favoriteGamesID,
+    List<String>? wishlistGamesID,
     List<String>? installedGamesID,
 
     // Optional fields for publisher
     String? description,
     PaymentMethodModel? paymentMethod,
-    DateTime? registrationDate,
-    List<String>? gamesPublishedID,
+    List<String>? publishedGamesID,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, Object?> json) => 

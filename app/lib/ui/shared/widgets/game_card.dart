@@ -118,7 +118,7 @@ class GameCard extends StatelessWidget {
                   // Price
                     Text(
                       game.price != 0 
-                        ? '${(game.price) / 100} VND' 
+                        ? '${game.price.toInt()} VND' 
                         : 'Free to Play',
                       style: theme.textTheme.bodyMedium,
                     ),

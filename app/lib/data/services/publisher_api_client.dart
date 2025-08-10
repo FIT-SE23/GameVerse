@@ -105,11 +105,16 @@ class PublisherApiClient {
           ],
           price: 29.99,
           requestStatus: 'pending',
-          requestDate: DateTime.now(),
           headerImage: 'https://example.com/header.jpg',
           media: [
             'https://example.com/media1.jpg',
             'https://example.com/media2.jpg',
+          ],
+          binaries: [
+            'https://example.com/binaries/my_awesome_game_v1.0.bin',
+          ],
+          exes: [
+            'https://example.com/exes/my_awesome_game_v1.0.exe',
           ],
         ),
       ];
