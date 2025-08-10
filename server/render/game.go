@@ -31,13 +31,8 @@ func addResources(client *supabase.Client, userID string, gameID string, bucketI
 			continue
 		}
 		defer src.Close()
-		if _, err := io.Copy(h, src); err != nil {
-			errFiles = append(errFiles, file.Filename)
-			fmt.Println("Calculate checksum", err)
-			continue
-		}
 
-		filepath := userID + "/res/" + strings.ReplaceAll(time.Now().UTC().Format(time.RFC3339), ":", "-") + file.Filename
+		filepath := userID + "/res/" + strings.ReplaceAll(time.Now().UTC().Format(time.RFC3339), ":", "-") + "/" + file.Filename
 		_, uplErr := client.Storage.UploadFile(bucketId, filepath, src)
 		if uplErr != nil {
 			errFiles = append(errFiles, file.Filename)
@@ -52,6 +47,18 @@ func addResources(client *supabase.Client, userID string, gameID string, bucketI
 			continue
 		}
 
+		src, err = file.Open()
+		if err != nil {
+			errFiles = append(errFiles, file.Filename)
+			fmt.Println("Read file failed", file.Filename, err)
+			continue
+		}
+		defer src.Close()
+		if _, err := io.Copy(h, src); err != nil {
+			errFiles = append(errFiles, file.Filename)
+			fmt.Println("Calculate checksum", err)
+			continue
+		}
 		resource := map[string]string{
 			"userid":   userID,
 			"url":      signedURL.SignedURL,
@@ -59,6 +66,7 @@ func addResources(client *supabase.Client, userID string, gameID string, bucketI
 			"checksum": hex.EncodeToString(h.Sum(nil)),
 		}
 		h.Reset()
+
 		_, _, err = client.From("Resource").Insert(resource, false, "", "", "").ExecuteString()
 		if err != nil {
 			fmt.Println("Insert into Resource table failed", file.Filename, err)

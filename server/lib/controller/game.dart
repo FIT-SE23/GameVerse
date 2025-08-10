@@ -124,6 +124,8 @@ Future<Response> addGame(
   String token,
   String name,
   String description,
+  String briefDescription,
+  String requirement,
   double price,
   List<String> binaries,
   List<String> media,
@@ -135,6 +137,8 @@ Future<Response> addGame(
       http.MultipartRequest("POST", Uri.parse(serverURL + "game"))
         ..fields["gamename"] = name
         ..fields["description"] = description
+        ..fields["briefdescription"] = briefDescription
+        ..fields["requirement"] = requirement
         ..fields["price"] = price.toString()
         ..fields["categories"] = categories
         ..headers["Authorization"] = token;
