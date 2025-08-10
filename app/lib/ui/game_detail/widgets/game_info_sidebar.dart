@@ -35,8 +35,8 @@ class GameInfoSidebar extends StatelessWidget {
 
         Text(
           game.isSale == true && game.discountPercent != null
-              ? '\$${(game.price * (1 - (game.discountPercent! / 100))).toStringAsFixed(2)} VND'
-              : '\$${game.price.toStringAsFixed(2)} VND',
+              ? '${(game.price * (1 - (game.discountPercent! / 100))).toInt()} VND'
+              : '${game.price.toInt()} VND',
           style: theme.textTheme.bodyLarge,
         ),
 

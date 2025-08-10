@@ -92,9 +92,9 @@ class PublisherViewModel extends ChangeNotifier {
           publisherId: publisherId,
           name: 'Mystery Adventure',
           recommended: 156,
-          // briefDescription: 'An exciting mystery adventure game',
+          briefDescription: 'An exciting mystery adventure game',
           description: 'Embark on a thrilling mystery adventure where every choice matters. Solve puzzles, uncover secrets, and experience a story that adapts to your decisions.',
-          // requirements: 'Windows 10, 4GB RAM, DirectX 11',
+          requirement: 'Windows 10, 4GB RAM, DirectX 11',
           headerImage: 'https://picsum.photos/800/400?random=1',
           price: 19.99,
           categories: [
@@ -119,9 +119,9 @@ class PublisherViewModel extends ChangeNotifier {
           publisherId: publisherId,
           name: 'Space Explorer',
           recommended: 89,
-          // briefDescription: 'Explore the vast universe',
+          briefDescription: 'Explore the vast universe',
           description: 'Build your spaceship, explore distant galaxies, and discover new civilizations in this epic space exploration game.',
-          // requirements: 'Windows 10, 6GB RAM, DirectX 12',
+          requirement: 'Windows 10, 6GB RAM, DirectX 12',
           headerImage: 'https://picsum.photos/800/400?random=4',
           price: 29.99,
           categories: [

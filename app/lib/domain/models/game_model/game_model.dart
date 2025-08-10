@@ -12,6 +12,8 @@ abstract class GameModel with _$GameModel {
     required String publisherId,
     required String name,
     required String description,
+    required String briefDescription,
+    required String requirement,
     required double price,
     required int recommended,
     required DateTime releaseDate,

@@ -125,7 +125,7 @@ class GameCardBig extends StatelessWidget {
                           child:
                             Text(
                               game.price != 0
-                                ? '${(game.price) / 100} VND' 
+                                ? '${game.price.toInt()} VND' 
                                 : 'Free to Play',
                               style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
                             ),

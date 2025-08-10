@@ -8,8 +8,6 @@ import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/data/services/game_api_client.dart';
 import 'package:gameverse/utils/response.dart';
 
-import 'package:gameverse/data/services/game_api_client.dart';
-import 'package:gameverse/utils/response.dart';
 
 class GameRepository {
   final http.Client client;
@@ -29,7 +27,7 @@ class GameRepository {
 
   static Future<GameRepository> fromService() async {
     var featuredGames = await _getMockFeaturedGames();
-    _allGames = [...featuredGames];
+    _allGames = featuredGames;
     return GameRepository();
   }
 
@@ -56,7 +54,7 @@ class GameRepository {
       return Future.error(response);
     }
     final List<GameModel> games = [];
-    debugPrint("Library Games: ${response.data}");
+    // debugPrint("Library Games: ${response.data}");
     return games;
   }
 
@@ -82,9 +80,10 @@ class GameRepository {
   static Future<List<GameModel>> _getMockFeaturedGames() async {
     final gameApiClient = GameApiClient();
     return [
-      await _getDataFromResponse(gameApiClient.getGame('', '4c29bf9a-6344-4282-ab68-8232534a2dab')) as GameModel,
-      await _getDataFromResponse(gameApiClient.getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
       await _getDataFromResponse(gameApiClient.getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
+      await _getDataFromResponse(gameApiClient.getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
+      await _getDataFromResponse(gameApiClient.getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
+      await _getDataFromResponse(gameApiClient.getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
       // GameModel(
       //   gameId: '1',
       //   publisherId: '1',
@@ -202,9 +201,9 @@ class GameRepository {
         publisherId: '3',
         name: 'Dota 2',
         recommended: 92,
-        // briefDescription: 'Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes.',
+        briefDescription: 'Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes.',
         description: 'Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes. And no matter if it\'s their 10th hour of play or 1,000th, there\'s always something new to discover. With regular updates that ensure a constant evolution of gameplay, features, and heroes, Dota 2 has taken on a life of its own.',
-        // requirements: 'Minimum: OS: Windows 10, Processor: Dual core from Intel or AMD at 2.8 GHz, Memory: 4 GB RAM, Graphics: nVidia GeForce 8600/9600GT, ATI/AMD Radeon HD2600/3600',
+        requirement: 'Minimum: OS: Windows 10, Processor: Dual core from Intel or AMD at 2.8 GHz, Memory: 4 GB RAM, Graphics: nVidia GeForce 8600/9600GT, ATI/AMD Radeon HD2600/3600',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/570/header.jpg',
         media: [
           'https://cdn.akamai.steamstatic.com/steam/apps/570/ss_d830cdf96919729c2b1d81876cb1ba8e7b1e7c25.jpg',
@@ -227,9 +226,9 @@ class GameRepository {
         publisherId: '2',
         name: 'Counter-Strike 2',
         recommended: 89,
-        // briefDescription: 'Counter-Strike 2 marks the beginning of a new chapter in the legendary FPS series.',
+        briefDescription: 'Counter-Strike 2 marks the beginning of a new chapter in the legendary FPS series.',
         description: 'For over two decades, Counter-Strike has offered an elite competitive experience, one shaped by millions of players from across the globe. And now the next chapter in the CS story is about to begin. This is Counter-Strike 2.',
-        // requirements: 'Minimum: OS: Windows 10, Processor: 4 hardware CPU threads - Intel® Core™ i5 750 or higher, Memory: 8 GB RAM, Graphics: Video card must be 1 GB or more',
+        requirement: 'Minimum: OS: Windows 10, Processor: 4 hardware CPU threads - Intel® Core™ i5 750 or higher, Memory: 8 GB RAM, Graphics: Video card must be 1 GB or more',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/730/header.jpg',
         media: [
           'https://cdn.akamai.steamstatic.com/steam/apps/730/ss_34309c49a2bb50e6b8a64454c632c5a289c8fd10.jpg',
@@ -252,9 +251,9 @@ class GameRepository {
         publisherId: '4',
         name: 'Team Fortress 2',
         recommended: 88,
-        // briefDescription: 'Nine distinct classes provide a broad range of tactical abilities and personalities.',
+        briefDescription: 'Nine distinct classes provide a broad range of tactical abilities and personalities.',
         description: 'Nine distinct classes provide a broad range of tactical abilities and personalities. Constantly updated with new game modes, maps, equipment and, most importantly, hats!',
-        // requirements: 'Minimum: OS: Windows® 7 (32/64-bit)/Vista/XP, Processor: 1.7 GHz Processor or better, Memory: 512 MB RAM, Graphics: DirectX® 8.1 level Graphics Card',
+        requirement: 'Minimum: OS: Windows® 7 (32/64-bit)/Vista/XP, Processor: 1.7 GHz Processor or better, Memory: 512 MB RAM, Graphics: DirectX® 8.1 level Graphics Card',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/440/header.jpg',
         media: [
           'https://cdn.akamai.steamstatic.com/steam/apps/440/ss_a1c1e9e1c1e9e1c1e9e1c1e9e1c1e9e1c1e9e1c1.jpg',
@@ -284,9 +283,9 @@ class GameRepository {
         publisherId: '5',
         name: 'The Elder Scrolls V: Skyrim',
         recommended: 96,
-        // briefDescription: 'EPIC FANTASY REBORN - The next chapter in the highly anticipated Elder Scrolls saga.',
+        briefDescription: 'EPIC FANTASY REBORN - The next chapter in the highly anticipated Elder Scrolls saga.',
         description: 'EPIC FANTASY REBORN The next chapter in the highly anticipated Elder Scrolls saga arrives from the makers of the 2006 and 2008 Games of the Year, Bethesda Game Studios. Skyrim reimagines and revolutionizes the open-world fantasy epic.',
-        // requirements: 'Minimum: OS: Windows 7/Vista/XP PC (32 or 64 bit), Processor: Dual Core 2.0GHz or equivalent processor, Memory: 2GB System RAM, Graphics: Direct X 9.0c compliant video card with 512 MB of RAM',
+        requirement: 'Minimum: OS: Windows 7/Vista/XP PC (32 or 64 bit), Processor: Dual Core 2.0GHz or equivalent processor, Memory: 2GB System RAM, Graphics: Direct X 9.0c compliant video card with 512 MB of RAM',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/72850/header.jpg',
         media: [
           'https://cdn.akamai.steamstatic.com/steam/apps/72850/ss_c1e9e1c1e9e1c1e9e1c1e9e1c1e9e1c1e9e1c1e9.jpg',
@@ -315,9 +314,9 @@ class GameRepository {
         publisherId: '6',
         name: 'Baldur\'s Gate 3',
         recommended: 96,
-        // briefDescription: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.',
+        briefDescription: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.',
         description: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal, sacrifice and survival, and the lure of absolute power. Mysterious abilities are awakening inside you, drawn from a mind flayer parasite planted in your brain.',
-        // requirements: 'Minimum: OS: Windows 10 64-bit, Processor: Intel I5 4690 / AMD FX 8350, Memory: 8 GB RAM, Graphics: Nvidia GTX 970 / RX 480 (4GB+ of VRAM)',
+        requirement: 'Minimum: OS: Windows 10 64-bit, Processor: Intel I5 4690 / AMD FX 8350, Memory: 8 GB RAM, Graphics: Nvidia GTX 970 / RX 480 (4GB+ of VRAM)',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/1086940/header.jpg',
         media: [
           'https://cdn.akamai.steamstatic.com/steam/apps/1086940/ss_e1f1e1f1e1f1e1f1e1f1e1f1e1f1e1f1e1f1e1f1.jpg',
@@ -339,9 +338,9 @@ class GameRepository {
         publisherId: '7',
         name: 'Call of Duty®: Modern Warfare® III',
         recommended: 82,
-        // briefDescription: 'In the direct sequel to the record-breaking Call of Duty®: Modern Warfare® II.',
+        briefDescription: 'In the direct sequel to the record-breaking Call of Duty®: Modern Warfare® II.',
         description: 'In the direct sequel to the record-breaking Call of Duty®: Modern Warfare® II, Captain Price and Task Force 141 face off against the ultimate threat.',
-        // requirements: 'Minimum: OS: Windows® 10 64 Bit (latest update), Processor: AMD Ryzen™ 5 1400 or Intel® Core™ i5-6600K, Memory: 8 GB RAM, Graphics: AMD Radeon™ RX 470 or NVIDIA® GeForce® GTX 960',
+        requirement: 'Minimum: OS: Windows® 10 64 Bit (latest update), Processor: AMD Ryzen™ 5 1400 or Intel® Core™ i5-6600K, Memory: 8 GB RAM, Graphics: AMD Radeon™ RX 470 or NVIDIA® GeForce® GTX 960',
         headerImage: 'https://cdn.akamai.steamstatic.com/steam/apps/1938090/header.jpg',
         media: [
           'https://cdn.akamai.steamstatic.com/steam/apps/1938090/ss_f2g2f2g2f2g2f2g2f2g2f2g2f2g2f2g2f2g2f2g2.jpg',
