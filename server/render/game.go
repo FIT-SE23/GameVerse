@@ -173,12 +173,16 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	gameName := c.FormValue("gamename")
 	description := c.FormValue("description")
 	price := c.FormValue("price")
+	briefDesc := c.FormValue("briefdescription")
+	requirement := c.FormValue("requirement")
 
 	game := map[string]string{
-		"publisherid": publisherID,
-		"name":        gameName,
-		"description": description,
-		"price":       price,
+		"publisherid":      publisherID,
+		"name":             gameName,
+		"description":      description,
+		"price":            price,
+		"briefdescription": briefDesc,
+		"requirement":      requirement,
 	}
 	_, _, err = client.From("Game").Insert(game, false, "", "", "").ExecuteString()
 	if err != nil {
@@ -391,16 +395,24 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 		return jsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
 	}
 
-	errorReport := make(map[string]interface{})
+	errorReport := make(map[string]any)
 
 	updates := map[string]any{}
 	name := c.FormValue("gamename")
 	desc := c.FormValue("description")
+	briefDesc := c.FormValue("briefdescription")
+	requirement := c.FormValue("requirement")
 	if name != "" {
 		updates["name"] = name
 	}
 	if desc != "" {
 		updates["description"] = desc
+	}
+	if briefDesc != "" {
+		updates["briefdescription"] = briefDesc
+	}
+	if requirement != "" {
+		updates["requirement"] = requirement
 	}
 	if len(updates) > 0 {
 		_, _, err := client.From("Game").Update(updates, "", "").Eq("gameid", gameID).ExecuteString()

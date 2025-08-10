@@ -9,6 +9,8 @@ class Game {
   final String? publisherId;
   final String? name;
   final String? description;
+  final String? briefDescription;
+  final String? requirement;
   final double? price;
   final int? recommend;
   final DateTime? releaseDate;
@@ -21,6 +23,8 @@ class Game {
     this.publisherId,
     this.name,
     this.description,
+    this.briefDescription,
+    this.requirement,
     this.categories,
     this.resources,
     this.price,
@@ -34,6 +38,8 @@ class Game {
     final publisherid = json["publisherid"] as String?;
     final name = json["name"] as String?;
     final description = json["description"] as String?;
+    final briefDescription = json["briefdescription"] as String?;
+    final requirement = json["requirement"] as String?;
     final price = json["price"]?.toDouble() as double?;
     final recommend = json["recommend"]?.toInt() as int?;
     final releaseDate = DateTime.parse(json["releasedate"] as String? ?? "");
@@ -56,6 +62,8 @@ class Game {
       publisherId: publisherid,
       name: name,
       description: description,
+      briefDescription: briefDescription,
+      requirement: requirement,
       price: price,
       recommend: recommend,
       releaseDate: releaseDate,
@@ -75,6 +83,10 @@ class Game {
         (this.name ?? "\"\"") +
         ", description: " +
         (this.description ?? "\"\"") +
+        ", briefdescription: " +
+        (this.briefDescription ?? "\"\"") +
+        ", requirement: " +
+        (this.requirement ?? "\"\"") +
         ", price: " +
         this.price.toString() +
         ", recommend: " +
