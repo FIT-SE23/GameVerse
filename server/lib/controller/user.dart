@@ -56,6 +56,17 @@ Future<Response> addUser(String username, String email, String password) async {
   return response;
 }
 
+Future<Response> getUser(String userId) async {
+  final raw = await http.get(Uri.parse(serverURL + "user/" + userId));
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 Future<Response> listUser(String username) async {
   final raw = await http.get(
     Uri.parse(serverURL + "search?entity=user&username=$username"),
@@ -183,4 +194,3 @@ Future<Response> getOwnedPosts(String userId, {int limit = 20}) async {
 
   return response;
 }
-

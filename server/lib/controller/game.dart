@@ -9,6 +9,8 @@ class Game {
   final String? publisherId;
   final String? name;
   final String? description;
+  final String? briefDescription;
+  final String? requirement;
   final double? price;
   final int? recommend;
   final DateTime? releaseDate;
@@ -21,6 +23,8 @@ class Game {
     this.publisherId,
     this.name,
     this.description,
+    this.briefDescription,
+    this.requirement,
     this.categories,
     this.resources,
     this.price,
@@ -34,6 +38,8 @@ class Game {
     final publisherid = json["publisherid"] as String?;
     final name = json["name"] as String?;
     final description = json["description"] as String?;
+    final briefDescription = json["briefdescription"] as String?;
+    final requirement = json["requirement"] as String?;
     final price = json["price"]?.toDouble() as double?;
     final recommend = json["recommend"]?.toInt() as int?;
     final releaseDate = DateTime.parse(json["releasedate"] as String? ?? "");
@@ -46,16 +52,18 @@ class Game {
     for (var resource in json["Resource"] as List<dynamic>) {
       resources.add(Resource.fromJson(resource as Map<String, dynamic>));
     }
-
-    final gameSale = GameSale.fromJson(
-      json["Game_Sale"] as Map<String, dynamic>,
-    );
+    GameSale? gameSale = null;
+    if (json["Game_Sale"] != null) {
+      gameSale = GameSale.fromJson(json["Game_Sale"] as Map<String, dynamic>);
+    }
 
     return Game(
       gameId: gameid,
       publisherId: publisherid,
       name: name,
       description: description,
+      briefDescription: briefDescription,
+      requirement: requirement,
       price: price,
       recommend: recommend,
       releaseDate: releaseDate,
@@ -75,6 +83,10 @@ class Game {
         (this.name ?? "\"\"") +
         ", description: " +
         (this.description ?? "\"\"") +
+        ", briefdescription: " +
+        (this.briefDescription ?? "\"\"") +
+        ", requirement: " +
+        (this.requirement ?? "\"\"") +
         ", price: " +
         this.price.toString() +
         ", recommend: " +
@@ -225,16 +237,26 @@ Future<Response> getGame(String token, String gameid) async {
   );
 
   // print(jsonBody);
-  // print(response.data);
+  // print(response.data.runtimeType);
+  if (response.data.length == 0) {
+    return Response(code: 400, message: "Gameid not found");
+  }
+
   final game = Game.fromJson(response.data[0] as Map<String, dynamic>);
 
   return Response(code: response.code, message: response.message, data: game);
 }
 
-Future<Response> listGames(String gamename, String sortBy) async {
+Future<Response> listGames(
+  String gamename,
+  String sortBy,
+  int start,
+  int cnt,
+) async {
   final raw = await http.get(
     Uri.parse(
-      serverURL + "search?entity=game&gamename=$gamename&sortby=$sortBy",
+      serverURL +
+          "search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt",
     ),
   );
 

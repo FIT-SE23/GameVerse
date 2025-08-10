@@ -48,7 +48,7 @@ class GameForumCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          game.briefDescription,
+                          game.description,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),

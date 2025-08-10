@@ -161,6 +161,7 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	userid, err := verifyUserToken(c)
 	if err != nil {
+		fmt.Println(err.Error())
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	publisherID := userid
@@ -172,12 +173,16 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	gameName := c.FormValue("gamename")
 	description := c.FormValue("description")
 	price := c.FormValue("price")
+	briefDesc := c.FormValue("briefdescription")
+	requirement := c.FormValue("requirement")
 
 	game := map[string]string{
-		"publisherid": publisherID,
-		"name":        gameName,
-		"description": description,
-		"price":       price,
+		"publisherid":      publisherID,
+		"name":             gameName,
+		"description":      description,
+		"price":            price,
+		"briefdescription": briefDesc,
+		"requirement":      requirement,
 	}
 	_, _, err = client.From("Game").Insert(game, false, "", "", "").ExecuteString()
 	if err != nil {
@@ -284,10 +289,7 @@ func getGame(c echo.Context, client *supabase.Client) error {
 	gameID := c.Param("id")
 
 	// TODO: check game status if user already signed in
-	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID)
-	if err == nil {
-		filter = filter.In("Resource.type", []string{"media_header", "media"})
-	}
+	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID).In("Resource.type", []string{"media_header", "media"})
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
@@ -304,20 +306,24 @@ func getGame(c echo.Context, client *supabase.Client) error {
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortBy := c.QueryParam("sortby")
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	start, err := strconv.Atoi(c.QueryParam("start"))
 	if err != nil {
-		limit = 0
-		err = nil
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+	cnt, err := strconv.Atoi(c.QueryParam("cnt"))
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Limit(limit, "")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
 
 	var rep string
 	if sortBy == "price" {
-		limit := map[string]int{
-			"lim": limit,
+		rangeLimit := map[string]int{
+			"start": start,
+			"cnt":   cnt,
 		}
-		rep = client.Rpc("sortgamebyprice", "", limit)
+		rep = client.Rpc("sortgamebyprice", "", rangeLimit)
 		var raw []map[string]string
 		err = json.Unmarshal([]byte(rep), &raw)
 		if err != nil {
@@ -389,16 +395,24 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 		return jsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
 	}
 
-	errorReport := make(map[string]interface{})
+	errorReport := make(map[string]any)
 
 	updates := map[string]any{}
 	name := c.FormValue("gamename")
 	desc := c.FormValue("description")
+	briefDesc := c.FormValue("briefdescription")
+	requirement := c.FormValue("requirement")
 	if name != "" {
 		updates["name"] = name
 	}
 	if desc != "" {
 		updates["description"] = desc
+	}
+	if briefDesc != "" {
+		updates["briefdescription"] = briefDesc
+	}
+	if requirement != "" {
+		updates["requirement"] = requirement
 	}
 	if len(updates) > 0 {
 		_, _, err := client.From("Game").Update(updates, "", "").Eq("gameid", gameID).ExecuteString()
