@@ -15,8 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameRequestModel {
 
- String get publisherId; String get gameName; String get briefDescription; String get description; String get requirements; String get headerImage; double get price; List<CategoryModel> get categories; List<String>? get media;// Request related fields
- String get requestStatus;// e.g., 'pending', 'approved', 'rejected
+@JsonKey(name: 'publisherid') String get publisherId;@JsonKey(name: 'gamename') String get gameName;@JsonKey(name: 'briefdescription') String get briefDescription; String get description; String get requirements;@JsonKey(name: 'headerimage') String get headerImage; double get price; List<CategoryModel> get categories; List<String>? get media;// Request related fields
+@JsonKey(name: 'status') String get requestStatus;// e.g., 'pending', 'approved', 'rejected
 // Upload related fields
  List<String> get binaries; List<String>? get exes;
 /// Create a copy of GameRequestModel
@@ -51,7 +51,7 @@ abstract mixin class $GameRequestModelCopyWith<$Res>  {
   factory $GameRequestModelCopyWith(GameRequestModel value, $Res Function(GameRequestModel) _then) = _$GameRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String publisherId, String gameName, String briefDescription, String description, String requirements, String headerImage, double price, List<CategoryModel> categories, List<String>? media, String requestStatus, List<String> binaries, List<String>? exes
+@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'status') String requestStatus, List<String> binaries, List<String>? exes
 });
 
 
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publisherId,  String gameName,  String briefDescription,  String description,  String requirements,  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media,  String requestStatus,  List<String> binaries,  List<String>? exes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String>? exes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameRequestModel() when $default != null:
 return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.requestStatus,_that.binaries,_that.exes);case _:
@@ -188,7 +188,7 @@ return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.de
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publisherId,  String gameName,  String briefDescription,  String description,  String requirements,  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media,  String requestStatus,  List<String> binaries,  List<String>? exes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String>? exes)  $default,) {final _that = this;
 switch (_that) {
 case _GameRequestModel():
 return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.requestStatus,_that.binaries,_that.exes);case _:
@@ -208,7 +208,7 @@ return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.de
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publisherId,  String gameName,  String briefDescription,  String description,  String requirements,  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media,  String requestStatus,  List<String> binaries,  List<String>? exes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String>? exes)?  $default,) {final _that = this;
 switch (_that) {
 case _GameRequestModel() when $default != null:
 return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.requestStatus,_that.binaries,_that.exes);case _:
@@ -223,15 +223,15 @@ return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.de
 @JsonSerializable()
 
 class _GameRequestModel implements GameRequestModel {
-  const _GameRequestModel({required this.publisherId, required this.gameName, required this.briefDescription, required this.description, required this.requirements, required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String>? media, required this.requestStatus, required final  List<String> binaries, required final  List<String>? exes}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
+  const _GameRequestModel({@JsonKey(name: 'publisherid') required this.publisherId, @JsonKey(name: 'gamename') required this.gameName, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.description, required this.requirements, @JsonKey(name: 'headerimage') required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String>? media, @JsonKey(name: 'status') required this.requestStatus, required final  List<String> binaries, required final  List<String>? exes}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
   factory _GameRequestModel.fromJson(Map<String, dynamic> json) => _$GameRequestModelFromJson(json);
 
-@override final  String publisherId;
-@override final  String gameName;
-@override final  String briefDescription;
+@override@JsonKey(name: 'publisherid') final  String publisherId;
+@override@JsonKey(name: 'gamename') final  String gameName;
+@override@JsonKey(name: 'briefdescription') final  String briefDescription;
 @override final  String description;
 @override final  String requirements;
-@override final  String headerImage;
+@override@JsonKey(name: 'headerimage') final  String headerImage;
 @override final  double price;
  final  List<CategoryModel> _categories;
 @override List<CategoryModel> get categories {
@@ -250,7 +250,7 @@ class _GameRequestModel implements GameRequestModel {
 }
 
 // Request related fields
-@override final  String requestStatus;
+@override@JsonKey(name: 'status') final  String requestStatus;
 // e.g., 'pending', 'approved', 'rejected
 // Upload related fields
  final  List<String> _binaries;
@@ -305,7 +305,7 @@ abstract mixin class _$GameRequestModelCopyWith<$Res> implements $GameRequestMod
   factory _$GameRequestModelCopyWith(_GameRequestModel value, $Res Function(_GameRequestModel) _then) = __$GameRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String publisherId, String gameName, String briefDescription, String description, String requirements, String headerImage, double price, List<CategoryModel> categories, List<String>? media, String requestStatus, List<String> binaries, List<String>? exes
+@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'status') String requestStatus, List<String> binaries, List<String>? exes
 });
 
 

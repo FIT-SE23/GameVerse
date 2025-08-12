@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CategoryModel {
 
- String get categoryId; String get name; bool get isSensitive;
+@JsonKey(name: 'categoryid') String get categoryId; String get name;@JsonKey(name: 'issensitive') bool get isSensitive;
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CategoryModelCopyWith<$Res>  {
   factory $CategoryModelCopyWith(CategoryModel value, $Res Function(CategoryModel) _then) = _$CategoryModelCopyWithImpl;
 @useResult
 $Res call({
- String categoryId, String name, bool isSensitive
+@JsonKey(name: 'categoryid') String categoryId, String name,@JsonKey(name: 'issensitive') bool isSensitive
 });
 
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String categoryId,  String name,  bool isSensitive)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'categoryid')  String categoryId,  String name, @JsonKey(name: 'issensitive')  bool isSensitive)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CategoryModel() when $default != null:
 return $default(_that.categoryId,_that.name,_that.isSensitive);case _:
@@ -176,7 +176,7 @@ return $default(_that.categoryId,_that.name,_that.isSensitive);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String categoryId,  String name,  bool isSensitive)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'categoryid')  String categoryId,  String name, @JsonKey(name: 'issensitive')  bool isSensitive)  $default,) {final _that = this;
 switch (_that) {
 case _CategoryModel():
 return $default(_that.categoryId,_that.name,_that.isSensitive);case _:
@@ -196,7 +196,7 @@ return $default(_that.categoryId,_that.name,_that.isSensitive);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String categoryId,  String name,  bool isSensitive)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'categoryid')  String categoryId,  String name, @JsonKey(name: 'issensitive')  bool isSensitive)?  $default,) {final _that = this;
 switch (_that) {
 case _CategoryModel() when $default != null:
 return $default(_that.categoryId,_that.name,_that.isSensitive);case _:
@@ -211,12 +211,12 @@ return $default(_that.categoryId,_that.name,_that.isSensitive);case _:
 @JsonSerializable()
 
 class _CategoryModel implements CategoryModel {
-  const _CategoryModel({required this.categoryId, required this.name, required this.isSensitive});
+  const _CategoryModel({@JsonKey(name: 'categoryid') required this.categoryId, required this.name, @JsonKey(name: 'issensitive') required this.isSensitive});
   factory _CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
 
-@override final  String categoryId;
+@override@JsonKey(name: 'categoryid') final  String categoryId;
 @override final  String name;
-@override final  bool isSensitive;
+@override@JsonKey(name: 'issensitive') final  bool isSensitive;
 
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -251,7 +251,7 @@ abstract mixin class _$CategoryModelCopyWith<$Res> implements $CategoryModelCopy
   factory _$CategoryModelCopyWith(_CategoryModel value, $Res Function(_CategoryModel) _then) = __$CategoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- String categoryId, String name, bool isSensitive
+@JsonKey(name: 'categoryid') String categoryId, String name,@JsonKey(name: 'issensitive') bool isSensitive
 });
 
 

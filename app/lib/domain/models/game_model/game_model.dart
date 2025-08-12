@@ -8,27 +8,27 @@ part 'game_model.g.dart';
 @freezed
 abstract class GameModel with _$GameModel {
   const factory GameModel({
-    required String gameId,
-    required String publisherId,
+    @JsonKey(name: 'gameid') required String gameId,
+    @JsonKey(name: 'publisherid') required String publisherId,
     required String name,
     required String description,
-    required String briefDescription,
+    @JsonKey(name: 'briefdescription') required String briefDescription,
     required String requirement,
     required double price,
-    required int recommended,
-    required DateTime releaseDate,
+    @JsonKey(name: 'recommend') required int recommended,
+    @JsonKey(name: 'releasedate') required DateTime releaseDate,
     required List<CategoryModel> categories,
     required List<String>? media,
-    required String headerImage,
+    @JsonKey(name: 'headerimage') required String headerImage,
 
     // Request related fields
-    String? requestStatus, // e.g., 'pending', 'approved', 'rejected'
+    @JsonKey(name: 'requeststatus') String? requestStatus, // e.g., 'pending', 'approved', 'rejected'
 
     // Sale related fields
-    bool? isSale,
-    double? discountPercent,
-    DateTime? saleStartDate,
-    DateTime? saleEndDate,
+    @JsonKey(name: 'issale') bool? isSale,
+    @JsonKey(name: 'discountpercent') double? discountPercent,
+    @JsonKey(name: 'salestartdate') DateTime? saleStartDate,
+    @JsonKey(name: 'saleenddate') DateTime? saleEndDate,
 
     // Download related fields
     String? path,
@@ -36,10 +36,10 @@ abstract class GameModel with _$GameModel {
     List<String>? exes,
 
     // Field for User only
-    @Default(false) bool isOwned,
-    @Default(false) bool isInstalled,
+    @JsonKey(name: 'isowned') @Default(false) bool isOwned,
+    @JsonKey(name: 'isinstalled') @Default(false) bool isInstalled,
     @Default(false) bool favorite,
-    double? playtimeHours,
+    @JsonKey(name: 'playtimehours') double? playtimeHours,
   }) = _GameModel;
 
   factory GameModel.fromJson(Map<String, dynamic> json) => 

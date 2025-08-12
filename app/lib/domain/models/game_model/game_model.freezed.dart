@@ -15,12 +15,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameModel implements DiagnosticableTreeMixin {
 
- String get gameId; String get publisherId; String get name; String get description; String get briefDescription; String get requirement; double get price; int get recommended; DateTime get releaseDate; List<CategoryModel> get categories; List<String>? get media; String get headerImage;// Request related fields
- String? get requestStatus;// e.g., 'pending', 'approved', 'rejected'
+@JsonKey(name: 'gameid') String get gameId;@JsonKey(name: 'publisherid') String get publisherId; String get name; String get description;@JsonKey(name: 'briefdescription') String get briefDescription; String get requirement; double get price;@JsonKey(name: 'recommend') int get recommended;@JsonKey(name: 'releasedate') DateTime get releaseDate; List<CategoryModel> get categories; List<String>? get media;@JsonKey(name: 'headerimage') String get headerImage;// Request related fields
+@JsonKey(name: 'requeststatus') String? get requestStatus;// e.g., 'pending', 'approved', 'rejected'
 // Sale related fields
- bool? get isSale; double? get discountPercent; DateTime? get saleStartDate; DateTime? get saleEndDate;// Download related fields
+@JsonKey(name: 'issale') bool? get isSale;@JsonKey(name: 'discountpercent') double? get discountPercent;@JsonKey(name: 'salestartdate') DateTime? get saleStartDate;@JsonKey(name: 'saleenddate') DateTime? get saleEndDate;// Download related fields
  String? get path; List<String>? get binaries; List<String>? get exes;// Field for User only
- bool get isOwned; bool get isInstalled; bool get favorite; double? get playtimeHours;
+@JsonKey(name: 'isowned') bool get isOwned;@JsonKey(name: 'isinstalled') bool get isInstalled; bool get favorite;@JsonKey(name: 'playtimehours') double? get playtimeHours;
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -59,7 +59,7 @@ abstract mixin class $GameModelCopyWith<$Res>  {
   factory $GameModelCopyWith(GameModel value, $Res Function(GameModel) _then) = _$GameModelCopyWithImpl;
 @useResult
 $Res call({
- String gameId, String publisherId, String name, String description, String briefDescription, String requirement, double price, int recommended, DateTime releaseDate, List<CategoryModel> categories, List<String>? media, String headerImage, String? requestStatus, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes, bool isOwned, bool isInstalled, bool favorite, double? playtimeHours
+@JsonKey(name: 'gameid') String gameId,@JsonKey(name: 'publisherid') String publisherId, String name, String description,@JsonKey(name: 'briefdescription') String briefDescription, String requirement, double price,@JsonKey(name: 'recommend') int recommended,@JsonKey(name: 'releasedate') DateTime releaseDate, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'headerimage') String headerImage,@JsonKey(name: 'requeststatus') String? requestStatus,@JsonKey(name: 'issale') bool? isSale,@JsonKey(name: 'discountpercent') double? discountPercent,@JsonKey(name: 'salestartdate') DateTime? saleStartDate,@JsonKey(name: 'saleenddate') DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes,@JsonKey(name: 'isowned') bool isOwned,@JsonKey(name: 'isinstalled') bool isInstalled, bool favorite,@JsonKey(name: 'playtimehours') double? playtimeHours
 });
 
 
@@ -187,7 +187,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String gameId,  String publisherId,  String name,  String description,  String briefDescription,  String requirement,  double price,  int recommended,  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media,  String headerImage,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'requeststatus')  String? requestStatus, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes, @JsonKey(name: 'isowned')  bool isOwned, @JsonKey(name: 'isinstalled')  bool isInstalled,  bool favorite, @JsonKey(name: 'playtimehours')  double? playtimeHours)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameModel() when $default != null:
 return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
@@ -208,7 +208,7 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String gameId,  String publisherId,  String name,  String description,  String briefDescription,  String requirement,  double price,  int recommended,  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media,  String headerImage,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'requeststatus')  String? requestStatus, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes, @JsonKey(name: 'isowned')  bool isOwned, @JsonKey(name: 'isinstalled')  bool isInstalled,  bool favorite, @JsonKey(name: 'playtimehours')  double? playtimeHours)  $default,) {final _that = this;
 switch (_that) {
 case _GameModel():
 return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
@@ -228,7 +228,7 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String gameId,  String publisherId,  String name,  String description,  String briefDescription,  String requirement,  double price,  int recommended,  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media,  String headerImage,  String? requestStatus,  bool? isSale,  double? discountPercent,  DateTime? saleStartDate,  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes,  bool isOwned,  bool isInstalled,  bool favorite,  double? playtimeHours)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'requeststatus')  String? requestStatus, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes, @JsonKey(name: 'isowned')  bool isOwned, @JsonKey(name: 'isinstalled')  bool isInstalled,  bool favorite, @JsonKey(name: 'playtimehours')  double? playtimeHours)?  $default,) {final _that = this;
 switch (_that) {
 case _GameModel() when $default != null:
 return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.requestStatus,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.favorite,_that.playtimeHours);case _:
@@ -243,18 +243,18 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_tha
 @JsonSerializable()
 
 class _GameModel with DiagnosticableTreeMixin implements GameModel {
-  const _GameModel({required this.gameId, required this.publisherId, required this.name, required this.description, required this.briefDescription, required this.requirement, required this.price, required this.recommended, required this.releaseDate, required final  List<CategoryModel> categories, required final  List<String>? media, required this.headerImage, this.requestStatus, this.isSale, this.discountPercent, this.saleStartDate, this.saleEndDate, this.path, final  List<String>? binaries, final  List<String>? exes, this.isOwned = false, this.isInstalled = false, this.favorite = false, this.playtimeHours}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
+  const _GameModel({@JsonKey(name: 'gameid') required this.gameId, @JsonKey(name: 'publisherid') required this.publisherId, required this.name, required this.description, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.requirement, required this.price, @JsonKey(name: 'recommend') required this.recommended, @JsonKey(name: 'releasedate') required this.releaseDate, required final  List<CategoryModel> categories, required final  List<String>? media, @JsonKey(name: 'headerimage') required this.headerImage, @JsonKey(name: 'requeststatus') this.requestStatus, @JsonKey(name: 'issale') this.isSale, @JsonKey(name: 'discountpercent') this.discountPercent, @JsonKey(name: 'salestartdate') this.saleStartDate, @JsonKey(name: 'saleenddate') this.saleEndDate, this.path, final  List<String>? binaries, final  List<String>? exes, @JsonKey(name: 'isowned') this.isOwned = false, @JsonKey(name: 'isinstalled') this.isInstalled = false, this.favorite = false, @JsonKey(name: 'playtimehours') this.playtimeHours}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
   factory _GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
 
-@override final  String gameId;
-@override final  String publisherId;
+@override@JsonKey(name: 'gameid') final  String gameId;
+@override@JsonKey(name: 'publisherid') final  String publisherId;
 @override final  String name;
 @override final  String description;
-@override final  String briefDescription;
+@override@JsonKey(name: 'briefdescription') final  String briefDescription;
 @override final  String requirement;
 @override final  double price;
-@override final  int recommended;
-@override final  DateTime releaseDate;
+@override@JsonKey(name: 'recommend') final  int recommended;
+@override@JsonKey(name: 'releasedate') final  DateTime releaseDate;
  final  List<CategoryModel> _categories;
 @override List<CategoryModel> get categories {
   if (_categories is EqualUnmodifiableListView) return _categories;
@@ -271,15 +271,15 @@ class _GameModel with DiagnosticableTreeMixin implements GameModel {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  String headerImage;
+@override@JsonKey(name: 'headerimage') final  String headerImage;
 // Request related fields
-@override final  String? requestStatus;
+@override@JsonKey(name: 'requeststatus') final  String? requestStatus;
 // e.g., 'pending', 'approved', 'rejected'
 // Sale related fields
-@override final  bool? isSale;
-@override final  double? discountPercent;
-@override final  DateTime? saleStartDate;
-@override final  DateTime? saleEndDate;
+@override@JsonKey(name: 'issale') final  bool? isSale;
+@override@JsonKey(name: 'discountpercent') final  double? discountPercent;
+@override@JsonKey(name: 'salestartdate') final  DateTime? saleStartDate;
+@override@JsonKey(name: 'saleenddate') final  DateTime? saleEndDate;
 // Download related fields
 @override final  String? path;
  final  List<String>? _binaries;
@@ -301,10 +301,10 @@ class _GameModel with DiagnosticableTreeMixin implements GameModel {
 }
 
 // Field for User only
-@override@JsonKey() final  bool isOwned;
-@override@JsonKey() final  bool isInstalled;
+@override@JsonKey(name: 'isowned') final  bool isOwned;
+@override@JsonKey(name: 'isinstalled') final  bool isInstalled;
 @override@JsonKey() final  bool favorite;
-@override final  double? playtimeHours;
+@override@JsonKey(name: 'playtimehours') final  double? playtimeHours;
 
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
@@ -345,7 +345,7 @@ abstract mixin class _$GameModelCopyWith<$Res> implements $GameModelCopyWith<$Re
   factory _$GameModelCopyWith(_GameModel value, $Res Function(_GameModel) _then) = __$GameModelCopyWithImpl;
 @override @useResult
 $Res call({
- String gameId, String publisherId, String name, String description, String briefDescription, String requirement, double price, int recommended, DateTime releaseDate, List<CategoryModel> categories, List<String>? media, String headerImage, String? requestStatus, bool? isSale, double? discountPercent, DateTime? saleStartDate, DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes, bool isOwned, bool isInstalled, bool favorite, double? playtimeHours
+@JsonKey(name: 'gameid') String gameId,@JsonKey(name: 'publisherid') String publisherId, String name, String description,@JsonKey(name: 'briefdescription') String briefDescription, String requirement, double price,@JsonKey(name: 'recommend') int recommended,@JsonKey(name: 'releasedate') DateTime releaseDate, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'headerimage') String headerImage,@JsonKey(name: 'requeststatus') String? requestStatus,@JsonKey(name: 'issale') bool? isSale,@JsonKey(name: 'discountpercent') double? discountPercent,@JsonKey(name: 'salestartdate') DateTime? saleStartDate,@JsonKey(name: 'saleenddate') DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes,@JsonKey(name: 'isowned') bool isOwned,@JsonKey(name: 'isinstalled') bool isInstalled, bool favorite,@JsonKey(name: 'playtimehours') double? playtimeHours
 });
 
 

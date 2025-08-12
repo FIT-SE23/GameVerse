@@ -7,7 +7,7 @@ part of 'user_model.dart';
 // **************************************************************************
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
-  id: json['id'] as String,
+  id: json['userid'] as String,
   username: json['username'] as String,
   email: json['email'] as String,
   type: json['type'] as String,
@@ -21,10 +21,10 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       ?.map((e) => e as String)
       .toList(),
   description: json['description'] as String?,
-  paymentMethod: json['paymentMethod'] == null
+  paymentMethod: json['paymentmethod'] == null
       ? null
       : PaymentMethodModel.fromJson(
-          json['paymentMethod'] as Map<String, dynamic>,
+          json['paymentmethod'] as Map<String, dynamic>,
         ),
   publishedGamesID: (json['publishedGamesID'] as List<dynamic>?)
       ?.map((e) => e as String)
@@ -33,7 +33,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'userid': instance.id,
       'username': instance.username,
       'email': instance.email,
       'type': instance.type,
@@ -41,6 +41,6 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'wishlistGamesID': instance.wishlistGamesID,
       'installedGamesID': instance.installedGamesID,
       'description': instance.description,
-      'paymentMethod': instance.paymentMethod,
+      'paymentmethod': instance.paymentMethod,
       'publishedGamesID': instance.publishedGamesID,
     };

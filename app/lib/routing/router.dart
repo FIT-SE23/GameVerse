@@ -14,7 +14,7 @@ import 'package:gameverse/ui/profile/widgets/profile_screen.dart';
 import 'package:gameverse/ui/settings/widgets/settings_screen.dart';
 import 'package:gameverse/ui/post/widgets/post_screen.dart';
 import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
-import 'package:gameverse/ui/transactions/widgets/transaction_screen.dart';
+import 'package:gameverse/ui/transaction/widgets/transaction_screen.dart';
 import 'package:gameverse/ui/publisher/widgets/publisher_registration_screen.dart';
 import 'package:gameverse/ui/publisher/widgets/publisher_dashboard_screen.dart';
 

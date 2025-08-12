@@ -7,9 +7,9 @@ part 'payment_method_model.g.dart';
 @freezed
 abstract class PaymentMethodModel with _$PaymentMethodModel {
   const factory PaymentMethodModel({
-    required String paymentMethodId,
-    required String type, // e.g., "paypal"
-    required String information,
+    @JsonKey(name: 'paymentmethodid') required String paymentMethodId,
+    required String type, // e.g., "banking"
+    required String information, // e.g., "PayPal", "Credit Card"
   }) = _PaymentMethodModel;
 
   factory PaymentMethodModel.fromJson(Map<String, Object?> json) => 

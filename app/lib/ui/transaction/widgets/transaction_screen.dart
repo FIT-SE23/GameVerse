@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:provider/provider.dart';
-import 'package:gameverse/ui/transactions/view_model/transaction_viewmodel.dart';
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/domain/models/transaction_model/transaction_model.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
@@ -354,19 +355,17 @@ class _TransactionScreenState extends State<TransactionScreen>
                 if (amount != null && amount > 0) {
                   Navigator.pop(context);
                   
-                  bool success;
+                  bool success = false;
                   if (selectedMethod == 'PayPal') {
-                    success = await viewModel.addFundsWithPayPal(context, amount);
+                    // success = await viewModel.addFundsWithPayPal(context, amount);
                   } else {
-                    success = await viewModel.addFunds(amount, selectedMethod);
+                    // success = await viewModel.addFunds(amount, selectedMethod);
                   }
                   
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(success 
-                            ? 'Added \$${amount.toStringAsFixed(2)} to your wallet!'
-                            : viewModel.errorMessage),
+                        content: Text(viewModel.errorMessage),
                         backgroundColor: success ? Colors.green : Colors.red,
                         behavior: SnackBarBehavior.floating,
                       ),
@@ -402,7 +401,6 @@ class _TransactionScreenState extends State<TransactionScreen>
 
   int _countGamePurchases(List<TransactionModel> transactions) {
     return transactions
-        .where((t) => t.description?.contains('Purchase:') == true)
         .length;
   }
 }
@@ -570,8 +568,7 @@ class _TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isIncoming = transaction.receiverId == 'current_user';
-    final isGamePurchase = transaction.description?.contains('Purchase:') == true;
+    final isIncoming = transaction.gameId == Provider.of<AuthRepository>(context, listen: false).currentUser!.id;
 
     IconData icon;
     Color iconColor;
@@ -582,8 +579,8 @@ class _TransactionCard extends StatelessWidget {
       iconColor = Colors.green;
       amountText = '+\$${transaction.amount.toStringAsFixed(2)}';
     } else {
-      icon = isGamePurchase ? Icons.videogame_asset : Icons.remove_circle;
-      iconColor = isGamePurchase ? theme.colorScheme.primary : Colors.red;
+      icon = Icons.videogame_asset;
+      iconColor = theme.colorScheme.primary ;
       amountText = '-\$${transaction.amount.toStringAsFixed(2)}';
     }
 
@@ -599,12 +596,6 @@ class _TransactionCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, color: iconColor, size: 24),
-        ),
-        title: Text(
-          transaction.description ?? 'Transaction',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

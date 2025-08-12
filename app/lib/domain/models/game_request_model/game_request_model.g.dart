@@ -8,12 +8,12 @@ part of 'game_request_model.dart';
 
 _GameRequestModel _$GameRequestModelFromJson(Map<String, dynamic> json) =>
     _GameRequestModel(
-      publisherId: json['publisherId'] as String,
-      gameName: json['gameName'] as String,
-      briefDescription: json['briefDescription'] as String,
+      publisherId: json['publisherid'] as String,
+      gameName: json['gamename'] as String,
+      briefDescription: json['briefdescription'] as String,
       description: json['description'] as String,
       requirements: json['requirements'] as String,
-      headerImage: json['headerImage'] as String,
+      headerImage: json['headerimage'] as String,
       price: (json['price'] as num).toDouble(),
       categories: (json['categories'] as List<dynamic>)
           .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
@@ -21,7 +21,7 @@ _GameRequestModel _$GameRequestModelFromJson(Map<String, dynamic> json) =>
       media: (json['media'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      requestStatus: json['requestStatus'] as String,
+      requestStatus: json['status'] as String,
       binaries: (json['binaries'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -30,16 +30,16 @@ _GameRequestModel _$GameRequestModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$GameRequestModelToJson(_GameRequestModel instance) =>
     <String, dynamic>{
-      'publisherId': instance.publisherId,
-      'gameName': instance.gameName,
-      'briefDescription': instance.briefDescription,
+      'publisherid': instance.publisherId,
+      'gamename': instance.gameName,
+      'briefdescription': instance.briefDescription,
       'description': instance.description,
       'requirements': instance.requirements,
-      'headerImage': instance.headerImage,
+      'headerimage': instance.headerImage,
       'price': instance.price,
       'categories': instance.categories,
       'media': instance.media,
-      'requestStatus': instance.requestStatus,
+      'status': instance.requestStatus,
       'binaries': instance.binaries,
       'exes': instance.exes,
     };

@@ -8,22 +8,22 @@ part of 'transaction_model.dart';
 
 _TransactionModel _$TransactionModelFromJson(Map<String, dynamic> json) =>
     _TransactionModel(
-      id: json['id'] as String,
-      senderId: json['senderId'] as String,
-      receiverId: json['receiverId'] as String,
+      transactionId: json['transactionid'] as String,
+      senderId: json['senderid'] as String,
+      gameId: json['gameid'] as String,
       amount: (json['amount'] as num).toDouble(),
-      transactionDate: DateTime.parse(json['transactionDate'] as String),
+      transactionDate: DateTime.parse(json['transactiondate'] as String),
       status: json['status'] as String,
-      description: json['description'] as String?,
+      isRefundable: json['isRefundable'] as bool,
     );
 
 Map<String, dynamic> _$TransactionModelToJson(_TransactionModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'senderId': instance.senderId,
-      'receiverId': instance.receiverId,
+      'transactionid': instance.transactionId,
+      'senderid': instance.senderId,
+      'gameid': instance.gameId,
       'amount': instance.amount,
-      'transactionDate': instance.transactionDate.toIso8601String(),
+      'transactiondate': instance.transactionDate.toIso8601String(),
       'status': instance.status,
-      'description': instance.description,
+      'isRefundable': instance.isRefundable,
     };

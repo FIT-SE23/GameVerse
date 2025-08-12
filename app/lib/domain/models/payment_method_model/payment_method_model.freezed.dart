@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaymentMethodModel {
 
- String get paymentMethodId; String get type;// e.g., "paypal"
+@JsonKey(name: 'paymentmethodid') String get paymentMethodId; String get type;// e.g., "banking"
  String get information;
 /// Create a copy of PaymentMethodModel
 /// with the given fields replaced by the non-null parameter values.
@@ -49,7 +49,7 @@ abstract mixin class $PaymentMethodModelCopyWith<$Res>  {
   factory $PaymentMethodModelCopyWith(PaymentMethodModel value, $Res Function(PaymentMethodModel) _then) = _$PaymentMethodModelCopyWithImpl;
 @useResult
 $Res call({
- String paymentMethodId, String type, String information
+@JsonKey(name: 'paymentmethodid') String paymentMethodId, String type, String information
 });
 
 
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String paymentMethodId,  String type,  String information)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'paymentmethodid')  String paymentMethodId,  String type,  String information)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentMethodModel() when $default != null:
 return $default(_that.paymentMethodId,_that.type,_that.information);case _:
@@ -177,7 +177,7 @@ return $default(_that.paymentMethodId,_that.type,_that.information);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String paymentMethodId,  String type,  String information)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'paymentmethodid')  String paymentMethodId,  String type,  String information)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentMethodModel():
 return $default(_that.paymentMethodId,_that.type,_that.information);case _:
@@ -197,7 +197,7 @@ return $default(_that.paymentMethodId,_that.type,_that.information);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String paymentMethodId,  String type,  String information)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'paymentmethodid')  String paymentMethodId,  String type,  String information)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentMethodModel() when $default != null:
 return $default(_that.paymentMethodId,_that.type,_that.information);case _:
@@ -212,12 +212,12 @@ return $default(_that.paymentMethodId,_that.type,_that.information);case _:
 @JsonSerializable()
 
 class _PaymentMethodModel implements PaymentMethodModel {
-  const _PaymentMethodModel({required this.paymentMethodId, required this.type, required this.information});
+  const _PaymentMethodModel({@JsonKey(name: 'paymentmethodid') required this.paymentMethodId, required this.type, required this.information});
   factory _PaymentMethodModel.fromJson(Map<String, dynamic> json) => _$PaymentMethodModelFromJson(json);
 
-@override final  String paymentMethodId;
+@override@JsonKey(name: 'paymentmethodid') final  String paymentMethodId;
 @override final  String type;
-// e.g., "paypal"
+// e.g., "banking"
 @override final  String information;
 
 /// Create a copy of PaymentMethodModel
@@ -253,7 +253,7 @@ abstract mixin class _$PaymentMethodModelCopyWith<$Res> implements $PaymentMetho
   factory _$PaymentMethodModelCopyWith(_PaymentMethodModel value, $Res Function(_PaymentMethodModel) _then) = __$PaymentMethodModelCopyWithImpl;
 @override @useResult
 $Res call({
- String paymentMethodId, String type, String information
+@JsonKey(name: 'paymentmethodid') String paymentMethodId, String type, String information
 });
 
 

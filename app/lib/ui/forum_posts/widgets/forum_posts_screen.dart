@@ -329,6 +329,7 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
   }
 
   void _showCreatePostDialog(BuildContext context, viewModel) {
+    final titleController = TextEditingController();
     final contentController = TextEditingController();
 
     showDialog(
@@ -357,9 +358,18 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              // Title input
+              TextField(
+                controller: titleController,
+                maxLines: 6,
+                decoration: const InputDecoration(
+                  labelText: 'Post Title',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: contentController,
-                maxLines: 6,
                 decoration: const InputDecoration(
                   labelText: 'What\'s on your mind?',
                   border: OutlineInputBorder(),
@@ -376,9 +386,11 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (contentController.text.trim().isNotEmpty) {
+              if (contentController.text.trim().isNotEmpty &&
+                  titleController.text.trim().isNotEmpty) {
                 await viewModel.createPost(
                   widget.gameId,
+                  titleController.text.trim(),
                   contentController.text.trim(),
                   'current_user',
                 );
@@ -418,7 +430,7 @@ class _PostCard extends StatelessWidget {
       elevation: 1,
       child: InkWell(
         onTap: () {
-          context.push('/post/${post.id}');
+          context.push('/post/${post.postId}');
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(

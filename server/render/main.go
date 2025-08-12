@@ -289,5 +289,12 @@ func main() {
 		return deleteComment(c, client, userid)
 	})
 
+	e.GET("/forum", func(c echo.Context) error {
+		return getAllForums(c, client)
+	})
+	e.GET("/forum/:id", func(c echo.Context) error {
+		return getForum(c, client)
+	})
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

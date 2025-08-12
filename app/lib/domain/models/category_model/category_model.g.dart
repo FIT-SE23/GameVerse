@@ -8,14 +8,14 @@ part of 'category_model.dart';
 
 _CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
     _CategoryModel(
-      categoryId: json['categoryId'] as String,
+      categoryId: json['categoryid'] as String,
       name: json['name'] as String,
-      isSensitive: json['isSensitive'] as bool,
+      isSensitive: json['issensitive'] as bool,
     );
 
 Map<String, dynamic> _$CategoryModelToJson(_CategoryModel instance) =>
     <String, dynamic>{
-      'categoryId': instance.categoryId,
+      'categoryid': instance.categoryId,
       'name': instance.name,
-      'isSensitive': instance.isSensitive,
+      'issensitive': instance.isSensitive,
     };

@@ -53,7 +53,7 @@ class PostViewModel extends ChangeNotifier {
     final newComment = CommentModel(
       commentId: 'comment_${DateTime.now().millisecondsSinceEpoch}',
       relatedGameId: _post!.forumId.replaceFirst('forum_', ''),
-      postsId: [_post!.id],
+      postsId: [_post!.postId],
     );
 
     await _commentRepository.addComment(newComment);

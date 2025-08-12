@@ -38,9 +38,10 @@ class ForumPostsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> createPost(String gameId, String content, String authorId) async {
+  Future<void> createPost(String gameId, String title, String content, String authorId) async {
     final newPost = PostModel(
-      id: 'post_${DateTime.now().millisecondsSinceEpoch}',
+      postId: 'post_${DateTime.now().millisecondsSinceEpoch}',
+      title: title,
       content: content,
       createdAt: DateTime.now(),
       upvotes: 0,
@@ -55,7 +56,7 @@ class ForumPostsViewModel extends ChangeNotifier {
   }
 
   void upvotePost(String postId) {
-    final postIndex = _posts.indexWhere((post) => post.id == postId);
+    final postIndex = _posts.indexWhere((post) => post.postId == postId);
     if (postIndex != -1) {
       _posts[postIndex] = _posts[postIndex].copyWith(
         upvotes: _posts[postIndex].upvotes + 1,

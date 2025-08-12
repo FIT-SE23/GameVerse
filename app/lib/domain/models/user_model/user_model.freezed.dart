@@ -15,10 +15,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get username; String get email; String get type;// e.g., 'user', 'operator', 'publisher'
+@JsonKey(name: 'userid') String get id; String get username; String get email; String get type;// e.g., 'user', 'operator', 'publisher'
 // Optional fields for user preferences
  List<String>? get ownedGamesID; List<String>? get wishlistGamesID; List<String>? get installedGamesID;// Optional fields for publisher
- String? get description; PaymentMethodModel? get paymentMethod; List<String>? get publishedGamesID;
+ String? get description;@JsonKey(name: 'paymentmethod') PaymentMethodModel? get paymentMethod; List<String>? get publishedGamesID;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,7 +51,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String username, String email, String type, List<String>? ownedGamesID, List<String>? wishlistGamesID, List<String>? installedGamesID, String? description, PaymentMethodModel? paymentMethod, List<String>? publishedGamesID
+@JsonKey(name: 'userid') String id, String username, String email, String type, List<String>? ownedGamesID, List<String>? wishlistGamesID, List<String>? installedGamesID, String? description,@JsonKey(name: 'paymentmethod') PaymentMethodModel? paymentMethod, List<String>? publishedGamesID
 });
 
 
@@ -177,7 +177,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String type,  List<String>? ownedGamesID,  List<String>? wishlistGamesID,  List<String>? installedGamesID,  String? description,  PaymentMethodModel? paymentMethod,  List<String>? publishedGamesID)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'userid')  String id,  String username,  String email,  String type,  List<String>? ownedGamesID,  List<String>? wishlistGamesID,  List<String>? installedGamesID,  String? description, @JsonKey(name: 'paymentmethod')  PaymentMethodModel? paymentMethod,  List<String>? publishedGamesID)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.username,_that.email,_that.type,_that.ownedGamesID,_that.wishlistGamesID,_that.installedGamesID,_that.description,_that.paymentMethod,_that.publishedGamesID);case _:
@@ -198,7 +198,7 @@ return $default(_that.id,_that.username,_that.email,_that.type,_that.ownedGamesI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String email,  String type,  List<String>? ownedGamesID,  List<String>? wishlistGamesID,  List<String>? installedGamesID,  String? description,  PaymentMethodModel? paymentMethod,  List<String>? publishedGamesID)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'userid')  String id,  String username,  String email,  String type,  List<String>? ownedGamesID,  List<String>? wishlistGamesID,  List<String>? installedGamesID,  String? description, @JsonKey(name: 'paymentmethod')  PaymentMethodModel? paymentMethod,  List<String>? publishedGamesID)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.username,_that.email,_that.type,_that.ownedGamesID,_that.wishlistGamesID,_that.installedGamesID,_that.description,_that.paymentMethod,_that.publishedGamesID);case _:
@@ -218,7 +218,7 @@ return $default(_that.id,_that.username,_that.email,_that.type,_that.ownedGamesI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String email,  String type,  List<String>? ownedGamesID,  List<String>? wishlistGamesID,  List<String>? installedGamesID,  String? description,  PaymentMethodModel? paymentMethod,  List<String>? publishedGamesID)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'userid')  String id,  String username,  String email,  String type,  List<String>? ownedGamesID,  List<String>? wishlistGamesID,  List<String>? installedGamesID,  String? description, @JsonKey(name: 'paymentmethod')  PaymentMethodModel? paymentMethod,  List<String>? publishedGamesID)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.username,_that.email,_that.type,_that.ownedGamesID,_that.wishlistGamesID,_that.installedGamesID,_that.description,_that.paymentMethod,_that.publishedGamesID);case _:
@@ -233,10 +233,10 @@ return $default(_that.id,_that.username,_that.email,_that.type,_that.ownedGamesI
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.username, required this.email, required this.type, final  List<String>? ownedGamesID, final  List<String>? wishlistGamesID, final  List<String>? installedGamesID, this.description, this.paymentMethod, final  List<String>? publishedGamesID}): _ownedGamesID = ownedGamesID,_wishlistGamesID = wishlistGamesID,_installedGamesID = installedGamesID,_publishedGamesID = publishedGamesID;
+  const _UserModel({@JsonKey(name: 'userid') required this.id, required this.username, required this.email, required this.type, final  List<String>? ownedGamesID, final  List<String>? wishlistGamesID, final  List<String>? installedGamesID, this.description, @JsonKey(name: 'paymentmethod') this.paymentMethod, final  List<String>? publishedGamesID}): _ownedGamesID = ownedGamesID,_wishlistGamesID = wishlistGamesID,_installedGamesID = installedGamesID,_publishedGamesID = publishedGamesID;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
-@override final  String id;
+@override@JsonKey(name: 'userid') final  String id;
 @override final  String username;
 @override final  String email;
 @override final  String type;
@@ -273,7 +273,7 @@ class _UserModel implements UserModel {
 
 // Optional fields for publisher
 @override final  String? description;
-@override final  PaymentMethodModel? paymentMethod;
+@override@JsonKey(name: 'paymentmethod') final  PaymentMethodModel? paymentMethod;
  final  List<String>? _publishedGamesID;
 @override List<String>? get publishedGamesID {
   final value = _publishedGamesID;
@@ -317,7 +317,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String username, String email, String type, List<String>? ownedGamesID, List<String>? wishlistGamesID, List<String>? installedGamesID, String? description, PaymentMethodModel? paymentMethod, List<String>? publishedGamesID
+@JsonKey(name: 'userid') String id, String username, String email, String type, List<String>? ownedGamesID, List<String>? wishlistGamesID, List<String>? installedGamesID, String? description,@JsonKey(name: 'paymentmethod') PaymentMethodModel? paymentMethod, List<String>? publishedGamesID
 });
 
 

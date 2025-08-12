@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostModel {
 
- String get id; String get content; DateTime get createdAt; int get upvotes; String get forumId; String get authorId; List<String>? get commentsId;
+@JsonKey(name: 'postid') String get postId;@JsonKey(name: 'userid') String get authorId;@JsonKey(name: 'forumid') String get forumId; String get title; String get content; int get upvotes;@JsonKey(name: 'postdate') DateTime get createdAt; List<String>? get commentsId;
 /// Create a copy of PostModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PostModelCopyWith<PostModel> get copyWith => _$PostModelCopyWithImpl<PostModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostModel&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.forumId, forumId) || other.forumId == forumId)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&const DeepCollectionEquality().equals(other.commentsId, commentsId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostModel&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.forumId, forumId) || other.forumId == forumId)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.commentsId, commentsId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,content,createdAt,upvotes,forumId,authorId,const DeepCollectionEquality().hash(commentsId));
+int get hashCode => Object.hash(runtimeType,postId,authorId,forumId,title,content,upvotes,createdAt,const DeepCollectionEquality().hash(commentsId));
 
 @override
 String toString() {
-  return 'PostModel(id: $id, content: $content, createdAt: $createdAt, upvotes: $upvotes, forumId: $forumId, authorId: $authorId, commentsId: $commentsId)';
+  return 'PostModel(postId: $postId, authorId: $authorId, forumId: $forumId, title: $title, content: $content, upvotes: $upvotes, createdAt: $createdAt, commentsId: $commentsId)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PostModelCopyWith<$Res>  {
   factory $PostModelCopyWith(PostModel value, $Res Function(PostModel) _then) = _$PostModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String content, DateTime createdAt, int upvotes, String forumId, String authorId, List<String>? commentsId
+@JsonKey(name: 'postid') String postId,@JsonKey(name: 'userid') String authorId,@JsonKey(name: 'forumid') String forumId, String title, String content, int upvotes,@JsonKey(name: 'postdate') DateTime createdAt, List<String>? commentsId
 });
 
 
@@ -65,15 +65,16 @@ class _$PostModelCopyWithImpl<$Res>
 
 /// Create a copy of PostModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? content = null,Object? createdAt = null,Object? upvotes = null,Object? forumId = null,Object? authorId = null,Object? commentsId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? postId = null,Object? authorId = null,Object? forumId = null,Object? title = null,Object? content = null,Object? upvotes = null,Object? createdAt = null,Object? commentsId = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
-as int,forumId: null == forumId ? _self.forumId : forumId // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as String,authorId: null == authorId ? _self.authorId : authorId // ignore: cast_nullable_to_non_nullable
-as String,commentsId: freezed == commentsId ? _self.commentsId : commentsId // ignore: cast_nullable_to_non_nullable
+as String,forumId: null == forumId ? _self.forumId : forumId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,commentsId: freezed == commentsId ? _self.commentsId : commentsId // ignore: cast_nullable_to_non_nullable
 as List<String>?,
   ));
 }
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String content,  DateTime createdAt,  int upvotes,  String forumId,  String authorId,  List<String>? commentsId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'postid')  String postId, @JsonKey(name: 'userid')  String authorId, @JsonKey(name: 'forumid')  String forumId,  String title,  String content,  int upvotes, @JsonKey(name: 'postdate')  DateTime createdAt,  List<String>? commentsId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostModel() when $default != null:
-return $default(_that.id,_that.content,_that.createdAt,_that.upvotes,_that.forumId,_that.authorId,_that.commentsId);case _:
+return $default(_that.postId,_that.authorId,_that.forumId,_that.title,_that.content,_that.upvotes,_that.createdAt,_that.commentsId);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.id,_that.content,_that.createdAt,_that.upvotes,_that.forum
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String content,  DateTime createdAt,  int upvotes,  String forumId,  String authorId,  List<String>? commentsId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'postid')  String postId, @JsonKey(name: 'userid')  String authorId, @JsonKey(name: 'forumid')  String forumId,  String title,  String content,  int upvotes, @JsonKey(name: 'postdate')  DateTime createdAt,  List<String>? commentsId)  $default,) {final _that = this;
 switch (_that) {
 case _PostModel():
-return $default(_that.id,_that.content,_that.createdAt,_that.upvotes,_that.forumId,_that.authorId,_that.commentsId);case _:
+return $default(_that.postId,_that.authorId,_that.forumId,_that.title,_that.content,_that.upvotes,_that.createdAt,_that.commentsId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.id,_that.content,_that.createdAt,_that.upvotes,_that.forum
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String content,  DateTime createdAt,  int upvotes,  String forumId,  String authorId,  List<String>? commentsId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'postid')  String postId, @JsonKey(name: 'userid')  String authorId, @JsonKey(name: 'forumid')  String forumId,  String title,  String content,  int upvotes, @JsonKey(name: 'postdate')  DateTime createdAt,  List<String>? commentsId)?  $default,) {final _that = this;
 switch (_that) {
 case _PostModel() when $default != null:
-return $default(_that.id,_that.content,_that.createdAt,_that.upvotes,_that.forumId,_that.authorId,_that.commentsId);case _:
+return $default(_that.postId,_that.authorId,_that.forumId,_that.title,_that.content,_that.upvotes,_that.createdAt,_that.commentsId);case _:
   return null;
 
 }
@@ -215,15 +216,16 @@ return $default(_that.id,_that.content,_that.createdAt,_that.upvotes,_that.forum
 @JsonSerializable()
 
 class _PostModel implements PostModel {
-  const _PostModel({required this.id, required this.content, required this.createdAt, required this.upvotes, required this.forumId, required this.authorId, final  List<String>? commentsId}): _commentsId = commentsId;
+  const _PostModel({@JsonKey(name: 'postid') required this.postId, @JsonKey(name: 'userid') required this.authorId, @JsonKey(name: 'forumid') required this.forumId, required this.title, required this.content, required this.upvotes, @JsonKey(name: 'postdate') required this.createdAt, final  List<String>? commentsId}): _commentsId = commentsId;
   factory _PostModel.fromJson(Map<String, dynamic> json) => _$PostModelFromJson(json);
 
-@override final  String id;
+@override@JsonKey(name: 'postid') final  String postId;
+@override@JsonKey(name: 'userid') final  String authorId;
+@override@JsonKey(name: 'forumid') final  String forumId;
+@override final  String title;
 @override final  String content;
-@override final  DateTime createdAt;
 @override final  int upvotes;
-@override final  String forumId;
-@override final  String authorId;
+@override@JsonKey(name: 'postdate') final  DateTime createdAt;
  final  List<String>? _commentsId;
 @override List<String>? get commentsId {
   final value = _commentsId;
@@ -247,16 +249,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostModel&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.forumId, forumId) || other.forumId == forumId)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&const DeepCollectionEquality().equals(other._commentsId, _commentsId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostModel&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.forumId, forumId) || other.forumId == forumId)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._commentsId, _commentsId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,content,createdAt,upvotes,forumId,authorId,const DeepCollectionEquality().hash(_commentsId));
+int get hashCode => Object.hash(runtimeType,postId,authorId,forumId,title,content,upvotes,createdAt,const DeepCollectionEquality().hash(_commentsId));
 
 @override
 String toString() {
-  return 'PostModel(id: $id, content: $content, createdAt: $createdAt, upvotes: $upvotes, forumId: $forumId, authorId: $authorId, commentsId: $commentsId)';
+  return 'PostModel(postId: $postId, authorId: $authorId, forumId: $forumId, title: $title, content: $content, upvotes: $upvotes, createdAt: $createdAt, commentsId: $commentsId)';
 }
 
 
@@ -267,7 +269,7 @@ abstract mixin class _$PostModelCopyWith<$Res> implements $PostModelCopyWith<$Re
   factory _$PostModelCopyWith(_PostModel value, $Res Function(_PostModel) _then) = __$PostModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String content, DateTime createdAt, int upvotes, String forumId, String authorId, List<String>? commentsId
+@JsonKey(name: 'postid') String postId,@JsonKey(name: 'userid') String authorId,@JsonKey(name: 'forumid') String forumId, String title, String content, int upvotes,@JsonKey(name: 'postdate') DateTime createdAt, List<String>? commentsId
 });
 
 
@@ -284,15 +286,16 @@ class __$PostModelCopyWithImpl<$Res>
 
 /// Create a copy of PostModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? content = null,Object? createdAt = null,Object? upvotes = null,Object? forumId = null,Object? authorId = null,Object? commentsId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? authorId = null,Object? forumId = null,Object? title = null,Object? content = null,Object? upvotes = null,Object? createdAt = null,Object? commentsId = freezed,}) {
   return _then(_PostModel(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
-as int,forumId: null == forumId ? _self.forumId : forumId // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as String,authorId: null == authorId ? _self.authorId : authorId // ignore: cast_nullable_to_non_nullable
-as String,commentsId: freezed == commentsId ? _self._commentsId : commentsId // ignore: cast_nullable_to_non_nullable
+as String,forumId: null == forumId ? _self.forumId : forumId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,commentsId: freezed == commentsId ? _self._commentsId : commentsId // ignore: cast_nullable_to_non_nullable
 as List<String>?,
   ));
 }

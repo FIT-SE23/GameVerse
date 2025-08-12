@@ -8,7 +8,7 @@ part 'user_model.g.dart';
 @freezed
 abstract class UserModel with _$UserModel {
   const factory UserModel({
-    required String id,
+    @JsonKey(name: 'userid') required String id,
     required String username,
     required String email,
     required String type, // e.g., 'user', 'operator', 'publisher'
@@ -20,7 +20,7 @@ abstract class UserModel with _$UserModel {
 
     // Optional fields for publisher
     String? description,
-    PaymentMethodModel? paymentMethod,
+    @JsonKey(name: 'paymentmethod') PaymentMethodModel? paymentMethod,
     List<String>? publishedGamesID,
   }) = _UserModel;
 

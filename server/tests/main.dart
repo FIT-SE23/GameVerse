@@ -32,31 +32,6 @@ void main() async {
     print(await addCategory("Indie", false));
   }
 
-<<<<<<< HEAD
-  if (false) {
-    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
-    final token = resp.data["token"].toString();
-    print(
-      await addGame(
-        "Bearer " + token,
-        "Gamer Simulator 4",
-        "Chạm cỏ",
-        "Super milking",
-        "RTX 4090",
-        92000.0,
-        [""],
-        [""],
-        [""],
-        [""],
-        "Open World",
-      ),
-    );
-  }
-
-  if (true) {
-    print(await getCategories());
-  }
-=======
   // if (false) {
   //   final resp = await login("gamingizmylife@gmail.com", "noobmaster");
   //   final token = resp.data["token"].toString();
@@ -75,7 +50,6 @@ void main() async {
   //   );
   // }
   
->>>>>>> e6561051105a8a2f4dfa09774c18c6f760f22b31
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data.toString();

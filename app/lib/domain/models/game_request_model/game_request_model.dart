@@ -7,18 +7,18 @@ part 'game_request_model.g.dart';
 @freezed
 abstract class GameRequestModel with _$GameRequestModel {
   const factory GameRequestModel({
-    required String publisherId,
-    required String gameName,
-    required String briefDescription,
+    @JsonKey(name: 'publisherid') required String publisherId,
+    @JsonKey(name: 'gamename') required String gameName,
+    @JsonKey(name: 'briefdescription') required String briefDescription,
     required String description,
     required String requirements,
-    required String headerImage,
+    @JsonKey(name: 'headerimage') required String headerImage,
     required double price,
     required List<CategoryModel> categories,
     required List<String>? media,
 
     // Request related fields
-    required String requestStatus, // e.g., 'pending', 'approved', 'rejected
+    @JsonKey(name: 'status') required String requestStatus, // e.g., 'pending', 'approved', 'rejected
 
     // Upload related fields
     required List<String> binaries,

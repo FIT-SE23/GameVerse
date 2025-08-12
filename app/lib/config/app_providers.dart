@@ -12,7 +12,7 @@ import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/ui/forum_posts/view_model/forum_posts_viewmodel.dart';
 import 'package:gameverse/ui/forums/view_model/forum_viewmodel.dart';
 import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
-import 'package:gameverse/ui/transactions/view_model/transaction_viewmodel.dart';
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 
 import 'package:gameverse/ui/advance_search/view_model/advanced_search_viewmodel.dart';

@@ -7,12 +7,13 @@ part of 'post_model.dart';
 // **************************************************************************
 
 _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
-  id: json['id'] as String,
+  postId: json['postid'] as String,
+  authorId: json['userid'] as String,
+  forumId: json['forumid'] as String,
+  title: json['title'] as String,
   content: json['content'] as String,
-  createdAt: DateTime.parse(json['createdAt'] as String),
   upvotes: (json['upvotes'] as num).toInt(),
-  forumId: json['forumId'] as String,
-  authorId: json['authorId'] as String,
+  createdAt: DateTime.parse(json['postdate'] as String),
   commentsId: (json['commentsId'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
@@ -20,11 +21,12 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
 
 Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'postid': instance.postId,
+      'userid': instance.authorId,
+      'forumid': instance.forumId,
+      'title': instance.title,
       'content': instance.content,
-      'createdAt': instance.createdAt.toIso8601String(),
       'upvotes': instance.upvotes,
-      'forumId': instance.forumId,
-      'authorId': instance.authorId,
+      'postdate': instance.createdAt.toIso8601String(),
       'commentsId': instance.commentsId,
     };
