@@ -28,6 +28,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Title search
         SizedBox(
           height: 36,
           child: TextField(
@@ -68,6 +69,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
         ),
         const SizedBox(height: 16),
 
+        // Categories filter
         Text(
           'Categories',
           style: theme.textTheme.titleMedium

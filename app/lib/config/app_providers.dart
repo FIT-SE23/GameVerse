@@ -15,7 +15,7 @@ import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 
-import 'package:gameverse/ui/advance_search/view_model/advanced_search_viewmodel.dart';
+import 'package:gameverse/ui/advanced_search/view_model/advanced_search_viewmodel.dart';
 
 
 import '../data/repositories/auth_repository.dart';
