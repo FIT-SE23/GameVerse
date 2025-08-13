@@ -324,6 +324,9 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+	if start < 0 || cnt < 0 {
+		return jsonResponse(c, http.StatusOK, "", []map[string]string{})
+	}
 
 	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
 
@@ -346,6 +349,23 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		}
 		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
 		// return jsonResponse(c, http.StatusOK, "", resp)
+	} else if sortBy == "popularity" {
+		rangeLimit := map[string]int{
+			"start": start,
+			"cnt":   cnt,
+		}
+		rep = client.Rpc("sortgamebypopularity", "", rangeLimit)
+		var raw []map[string]string
+		err = json.Unmarshal([]byte(rep), &raw)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		gameids := []string{}
+		for _, info := range raw {
+			gameids = append(gameids, info["gameid"])
+		}
+		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
 	} else if sortBy == "date" {
 		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
 	} else if sortBy == "recommend" {
@@ -407,6 +427,35 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 			priceI := calcuateNewPrice(games[i])
 			priceJ := calcuateNewPrice(games[j])
 			return priceI < priceJ
+		})
+	} else if sortBy == "popularity" {
+		calcuatePopularity := func(game map[string]any) float64 {
+			recommend, ok := game["recommend"].(float64)
+			if !ok {
+				fmt.Println("Parse failed: recommend")
+				return 0
+			}
+
+			releaseDateRaw, ok := game["releasedate"].(string)
+			if !ok {
+				fmt.Println("Parse failed: releasedate")
+				return 0
+			}
+
+			releaseDate, err := time.Parse("2006-01-02", releaseDateRaw)
+			if err != nil {
+				fmt.Println(err)
+				return 0
+			}
+
+			elapsed := time.Since(releaseDate)
+			return recommend / math.Pow(elapsed.Hours()/24.0, 3)
+		}
+		sort.Slice(games, func(i, j int) bool {
+			priceI := calcuatePopularity(games[i])
+			priceJ := calcuatePopularity(games[j])
+			fmt.Println(priceI, priceJ)
+			return priceI > priceJ
 		})
 	}
 
