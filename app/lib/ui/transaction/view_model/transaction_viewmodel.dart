@@ -1,15 +1,29 @@
 import 'package:flutter/foundation.dart';
+
+import 'package:gameverse/data/repositories/transaction_repository.dart';
+import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/domain/models/transaction_model/transaction_model.dart';
 import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
-import 'package:gameverse/data/services/transaction_api_client.dart';
 
 enum TransactionViewState { initial, loading, success, error }
 
 class TransactionViewModel extends ChangeNotifier {
-  final TransactionApiClient _transactionApiClient = TransactionApiClient();
-  
+  final TransactionRepository _transactionRepository;
+  final AuthRepository _authRepository;
+
+  TransactionViewModel({
+    required TransactionRepository transactionRepository,
+    required AuthRepository authRepository,
+  })  : _transactionRepository = transactionRepository,
+        _authRepository = authRepository {
+    if (_authRepository.currentUser != null) {
+      loadCartItems(_authRepository.currentUser!.id);
+      loadUserTransactions(_authRepository.currentUser!.id);
+    }
+  }
+
   TransactionViewState _state = TransactionViewState.initial;
   TransactionViewState get state => _state;
 
@@ -18,7 +32,6 @@ class TransactionViewModel extends ChangeNotifier {
   
   List<TransactionModel> _transactions = [];
   List<TransactionModel> get transactions => _transactions;
-  
   
   List<CartItemModel> _cartItems = [];
   List<CartItemModel> get cartItems => _cartItems;
@@ -39,12 +52,13 @@ class TransactionViewModel extends ChangeNotifier {
     // Only add if not already in cart
     if (!isGameInCart(game.gameId)) {
       final cartItem = CartItemModel(
-        userId: '', // Will be set when sending to server
+        userId: _authRepository.currentUser!.id,
         game: game,
         addedAt: DateTime.now(),
       );
       
       _cartItems.add(cartItem);
+      _transactionRepository.addToCart(_authRepository.accessToken!, game.gameId);
       notifyListeners();
     }
   }
@@ -52,12 +66,16 @@ class TransactionViewModel extends ChangeNotifier {
   // Remove game from cart
   void removeFromCart(String gameId) {
     _cartItems.removeWhere((item) => item.game.gameId == gameId);
+    _transactionRepository.removeFromCart(_authRepository.accessToken!, gameId);
     notifyListeners();
   }
 
   // Clear cart
   void clearCart() {
     _cartItems.clear();
+    for (var item in _cartItems) {
+      _transactionRepository.removeFromCart(_authRepository.accessToken!, item.game.gameId);
+    }
     notifyListeners();
   }
 
@@ -85,7 +103,7 @@ class TransactionViewModel extends ChangeNotifier {
       _state = TransactionViewState.loading;
       notifyListeners();
 
-      final transactions = await _transactionApiClient.getUserTransactions(userId);
+      final transactions = await _transactionRepository.getUserTransactions(userId);
       _transactions = transactions;
       
       _state = TransactionViewState.success;
@@ -97,51 +115,38 @@ class TransactionViewModel extends ChangeNotifier {
     }
   }
 
-  // Process checkout (creates a transaction for each game)
-  Future<bool> processCheckout({
-    required String userId,
-    required String paymentMethodId,
-  }) async {
-    if (_cartItems.isEmpty) return false;
-
+  Future<void> loadCartItems(String userId) async {
     try {
-      _isProcessingCheckout = true;
+      _state = TransactionViewState.loading;
       notifyListeners();
 
-      // Create a transaction for each game in cart
-      final newTransactions = <TransactionModel>[];
+      // Assuming the repository has a method to get cart items
+      _cartItems = await _transactionRepository.getCartItems(userId);
       
-      for (final item in _cartItems) {
-        final transaction = TransactionModel(
-          senderId: userId,
-          amount: item.price,
-          status: 'completed',
-          transactionDate: DateTime.now(),
-          paymentMethodId: paymentMethodId,
-          gameId: item.game.gameId,
-          isRefundable: true, // Assuming all transactions are refundable
-        );
-        
-        // Send transaction to server
-        await _transactionApiClient.saveTransaction(transaction);
-        
-        // Add to local transactions list
-        newTransactions.add(transaction);
-      }
-      
-      // Update transactions list with new transactions
-      _transactions.insertAll(0, newTransactions);
-      
-      // Clear cart after successful purchase
-      clearCart();
-      
-      return true;
+      _state = TransactionViewState.success;
     } catch (e) {
-      _errorMessage = 'Checkout failed: $e';
-      return false;
+      _state = TransactionViewState.error;
+      _errorMessage = e.toString();
     } finally {
-      _isProcessingCheckout = false;
       notifyListeners();
     }
   }
+
+  // Load payment methods
+  // Future<void> loadPaymentMethods() async {
+  //   try {
+  //     _state = TransactionViewState.loading;
+  //     notifyListeners();
+
+  //     // Assuming the repository has a method to get payment methods
+  //     _paymentMethods = await _transactionRepository.getPaymentMethods();
+      
+  //     _state = TransactionViewState.success;
+  //   } catch (e) {
+  //     _state = TransactionViewState.error;
+  //     _errorMessage = e.toString();
+  //   } finally {
+  //     notifyListeners();
+  //   }
+  // }
 }

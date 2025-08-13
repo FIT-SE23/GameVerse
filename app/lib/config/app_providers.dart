@@ -23,6 +23,7 @@ import '../data/repositories/game_repository.dart';
 import '../data/repositories/forum_repository.dart';
 import '../data/repositories/post_repository.dart';
 import '../data/repositories/comment_repository.dart';
+import '../data/repositories/transaction_repository.dart';
 
 import '../data/services/transaction_service.dart';
 Future<List<SingleChildWidget>> appProviders() async {
@@ -33,7 +34,8 @@ Future<List<SingleChildWidget>> appProviders() async {
     Provider(create: (_) => ForumRepository()),
     Provider(create: (_) => PostRepository()),
     Provider(create: (_) => CommentRepository()),
-    Provider<TransactionService>(create: (_) => TransactionService()),
+    Provider(create: (_) => TransactionService()),
+    Provider(create: (_) => TransactionRepository()),
 
     // ViewModels
     ChangeNotifierProvider(
@@ -82,7 +84,10 @@ Future<List<SingleChildWidget>> appProviders() async {
       create: (_) => ThemeViewModel(),
     ),
     ChangeNotifierProvider<TransactionViewModel>(
-      create: (context) => TransactionViewModel(),
+      create: (context) => TransactionViewModel(
+        transactionRepository: context.read<TransactionRepository>(),
+        authRepository: context.read<AuthRepository>(),
+      ),
     ),
     ChangeNotifierProvider<PublisherViewModel>(
       create: (_) => PublisherViewModel(),

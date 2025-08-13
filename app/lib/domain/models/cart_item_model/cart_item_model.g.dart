@@ -11,7 +11,9 @@ _CartItemModel _$CartItemModelFromJson(Map<String, dynamic> json) =>
       cartItemId: json['cartitemid'] as String?,
       userId: json['userid'] as String,
       game: GameModel.fromJson(json['game'] as Map<String, dynamic>),
-      addedAt: DateTime.parse(json['added_at'] as String),
+      addedAt: json['addedat'] == null
+          ? null
+          : DateTime.parse(json['addedat'] as String),
     );
 
 Map<String, dynamic> _$CartItemModelToJson(_CartItemModel instance) =>
@@ -19,5 +21,5 @@ Map<String, dynamic> _$CartItemModelToJson(_CartItemModel instance) =>
       'cartitemid': instance.cartItemId,
       'userid': instance.userId,
       'game': instance.game,
-      'added_at': instance.addedAt.toIso8601String(),
+      'addedat': instance.addedAt?.toIso8601String(),
     };

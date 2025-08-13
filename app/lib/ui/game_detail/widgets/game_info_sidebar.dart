@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/config/app_theme.dart';
 import 'package:gameverse/ui/game_detail/widgets/game_download_button.dart';
+import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 
@@ -55,9 +56,13 @@ class GameInfoSidebar extends StatelessWidget {
             child: ElevatedButton(
               style: theme.elevatedButtonTheme.style,
               onPressed: () => {
-                Provider.of<TransactionViewModel>(context, listen: false)
-                    .addToCart(game),
-                context.push(Routes.transactions),
+                if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.unauthenticated) {
+                  context.push(Routes.login),
+                } else {
+                  Provider.of<TransactionViewModel>(context, listen: false)
+                      .addToCart(game),
+                  context.push(Routes.transactions),
+                }
               },
               child: Text(
                 'Buy game',

@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:gameverse/data/services/transaction_api_client.dart';
 import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
-import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
-import 'package:gameverse/config/api_endpoints.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class CheckoutBottomSheet extends StatefulWidget {
   final VoidCallback onCheckoutComplete;
@@ -24,11 +17,6 @@ class CheckoutBottomSheet extends StatefulWidget {
 
 class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
   bool _isProcessing = false;
-  // final TransactionApiClient _transactionApiClient = TransactionApiClient();
-  
-  // PayPal configuration - should move to environment variables or config
-  final String _payPalClientId = dotenv.env['PAYPAL_CLIENT_ID']!;
-  final String _payPalSecret = dotenv.env['PAYPAL_CLIENT_SECRET']!;
   String method = 'paypal';
 
   @override
@@ -227,135 +215,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
   }
 
   void _initiatePayPalCheckout(BuildContext context) async {
-    final transactionViewModel = Provider.of<TransactionViewModel>(context, listen: false);
-    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    
-    // Prepare PayPal items from cart
-    final items = transactionViewModel.cartItems.map((item) {
-      return {
-        "name": item.game.name,
-        "quantity": 1,
-        "price": item.price.toStringAsFixed(2),
-        "currency": "USD"
-      };
-    }).toList();
-    
-    // Calculate total amount
-    final total = transactionViewModel.calculateTotal().toStringAsFixed(2);
-    
-    try {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) => PaypalCheckoutView(
-            sandboxMode: true, // Set to false for production
-            clientId: _payPalClientId,
-            secretKey: _payPalSecret,
-            transactions: [
-              {
-                "amount": {
-                  "total": total,
-                  "currency": "USD",
-                  "details": {
-                    "subtotal": total,
-                  }
-                },
-                "description": "Games purchase on GameVerse",
-                "item_list": {
-                  "items": items,
-                }
-              }
-            ],
-            note: "Contact us for any questions about your purchase.",
-            onSuccess: (Map params) async {
-              debugPrint("Payment successful: $params");
-
-              final data = params['data'];
-              
-              // Verify payment with server
-              final paymentId = data['id'];
-              final payerId = data['payer']['payer_info']['payer_id'];
-              
-              setState(() {
-                _isProcessing = true;
-              });
-              
-              try {
-                // Verify payment with server
-                final isVerified = await _verifyPayPalPayment(paymentId, payerId);
-                
-                if (isVerified) {
-                  // Process the checkout with our system
-                  final success = await transactionViewModel.processCheckout(
-                    userId: authViewModel.user!.id,
-                    paymentMethodId: paymentId,
-                  );
-
-                  if (success && context.mounted) {
-                    Navigator.pop(context); // Close payment screen
-                    Navigator.pop(context); // Close bottom sheet
-                    widget.onCheckoutComplete();
-                  } else {
-                    _showError(transactionViewModel.errorMessage);
-                  }
-                } else {
-                  _showError('Payment verification failed');
-                }
-              } catch (e) {
-                _showError('Error processing payment: $e');
-              } finally {
-                setState(() {
-                  _isProcessing = false;
-                });
-              }
-            },
-            onError: (error) {
-              debugPrint("Payment error: $error");
-              _showError('Payment failed: $error');
-            },
-            onCancel: (params) {
-              debugPrint("Payment cancelled: $params");
-              _showError('Payment cancelled');
-            },
-          ),
-        ),
-      );
-    } catch (e) {
-      _showError('Error initiating payment: $e');
-    }
+    return; // Temporarily disable PayPal checkout for development
   }
 
-  // Verify payment with server (not implemented)
-  Future<bool> _verifyPayPalPayment(String paymentId, String payerId) async {
-    try {
-      // Call your server to verify the payment
-      final response = await http.post(
-        Uri.parse('${ApiEndpoints.baseUrl}/verify-payment'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'payment_id': paymentId,
-          'payer_id': payerId,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['verified'] == true;
-      }
-      
-      return true; // Consider payment verified for now
-    } catch (e) {
-      debugPrint("Payment verification error: $e");
-      // For development when server isn't available
-      return true; // Consider payment verified for now
-    }
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/config/config.dart';
+import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gameverse/routing/routes.dart';
 
 class AddToCartButton extends StatelessWidget {
   final GameModel game;
@@ -18,6 +20,7 @@ class AddToCartButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    
     return Consumer<TransactionViewModel>(
       builder: (context, transactionViewModel, _) {
         final isInCart = transactionViewModel.isGameInCart(game.gameId);
@@ -39,7 +42,14 @@ class AddToCartButton extends StatelessWidget {
         }
 
         return ElevatedButton(
-          onPressed: () => _addToCart(context, transactionViewModel),
+          onPressed: () => 
+          {
+            if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.unauthenticated) {
+              context.push(Routes.login),
+            } else {
+              _addToCart(context, transactionViewModel),
+            }
+          },
           style: theme.elevatedButtonTheme.style!.copyWith(
             backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
           ),

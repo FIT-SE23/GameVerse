@@ -10,7 +10,7 @@ abstract class CartItemModel with _$CartItemModel {
     @JsonKey(name: 'cartitemid') String? cartItemId,
     @JsonKey(name: 'userid') required String userId,
     required GameModel game,
-    @JsonKey(name: 'added_at') required DateTime addedAt,
+    @JsonKey(name: 'addedat') DateTime? addedAt,
   }) = _CartItemModel;
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) =>

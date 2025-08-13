@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CartItemModel {
 
-@JsonKey(name: 'cartitemid') String? get cartItemId;@JsonKey(name: 'userid') String get userId; GameModel get game;@JsonKey(name: 'added_at') DateTime get addedAt;
+@JsonKey(name: 'cartitemid') String? get cartItemId;@JsonKey(name: 'userid') String get userId; GameModel get game;@JsonKey(name: 'addedat') DateTime? get addedAt;
 /// Create a copy of CartItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CartItemModelCopyWith<$Res>  {
   factory $CartItemModelCopyWith(CartItemModel value, $Res Function(CartItemModel) _then) = _$CartItemModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'cartitemid') String? cartItemId,@JsonKey(name: 'userid') String userId, GameModel game,@JsonKey(name: 'added_at') DateTime addedAt
+@JsonKey(name: 'cartitemid') String? cartItemId,@JsonKey(name: 'userid') String userId, GameModel game,@JsonKey(name: 'addedat') DateTime? addedAt
 });
 
 
@@ -65,13 +65,13 @@ class _$CartItemModelCopyWithImpl<$Res>
 
 /// Create a copy of CartItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cartItemId = freezed,Object? userId = null,Object? game = null,Object? addedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cartItemId = freezed,Object? userId = null,Object? game = null,Object? addedAt = freezed,}) {
   return _then(_self.copyWith(
 cartItemId: freezed == cartItemId ? _self.cartItemId : cartItemId // ignore: cast_nullable_to_non_nullable
 as String?,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,game: null == game ? _self.game : game // ignore: cast_nullable_to_non_nullable
-as GameModel,addedAt: null == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as GameModel,addedAt: freezed == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 /// Create a copy of CartItemModel
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'cartitemid')  String? cartItemId, @JsonKey(name: 'userid')  String userId,  GameModel game, @JsonKey(name: 'added_at')  DateTime addedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'cartitemid')  String? cartItemId, @JsonKey(name: 'userid')  String userId,  GameModel game, @JsonKey(name: 'addedat')  DateTime? addedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CartItemModel() when $default != null:
 return $default(_that.cartItemId,_that.userId,_that.game,_that.addedAt);case _:
@@ -186,7 +186,7 @@ return $default(_that.cartItemId,_that.userId,_that.game,_that.addedAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'cartitemid')  String? cartItemId, @JsonKey(name: 'userid')  String userId,  GameModel game, @JsonKey(name: 'added_at')  DateTime addedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'cartitemid')  String? cartItemId, @JsonKey(name: 'userid')  String userId,  GameModel game, @JsonKey(name: 'addedat')  DateTime? addedAt)  $default,) {final _that = this;
 switch (_that) {
 case _CartItemModel():
 return $default(_that.cartItemId,_that.userId,_that.game,_that.addedAt);case _:
@@ -206,7 +206,7 @@ return $default(_that.cartItemId,_that.userId,_that.game,_that.addedAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'cartitemid')  String? cartItemId, @JsonKey(name: 'userid')  String userId,  GameModel game, @JsonKey(name: 'added_at')  DateTime addedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'cartitemid')  String? cartItemId, @JsonKey(name: 'userid')  String userId,  GameModel game, @JsonKey(name: 'addedat')  DateTime? addedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _CartItemModel() when $default != null:
 return $default(_that.cartItemId,_that.userId,_that.game,_that.addedAt);case _:
@@ -221,13 +221,13 @@ return $default(_that.cartItemId,_that.userId,_that.game,_that.addedAt);case _:
 @JsonSerializable()
 
 class _CartItemModel implements CartItemModel {
-  const _CartItemModel({@JsonKey(name: 'cartitemid') this.cartItemId, @JsonKey(name: 'userid') required this.userId, required this.game, @JsonKey(name: 'added_at') required this.addedAt});
+  const _CartItemModel({@JsonKey(name: 'cartitemid') this.cartItemId, @JsonKey(name: 'userid') required this.userId, required this.game, @JsonKey(name: 'addedat') this.addedAt});
   factory _CartItemModel.fromJson(Map<String, dynamic> json) => _$CartItemModelFromJson(json);
 
 @override@JsonKey(name: 'cartitemid') final  String? cartItemId;
 @override@JsonKey(name: 'userid') final  String userId;
 @override final  GameModel game;
-@override@JsonKey(name: 'added_at') final  DateTime addedAt;
+@override@JsonKey(name: 'addedat') final  DateTime? addedAt;
 
 /// Create a copy of CartItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -262,7 +262,7 @@ abstract mixin class _$CartItemModelCopyWith<$Res> implements $CartItemModelCopy
   factory _$CartItemModelCopyWith(_CartItemModel value, $Res Function(_CartItemModel) _then) = __$CartItemModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'cartitemid') String? cartItemId,@JsonKey(name: 'userid') String userId, GameModel game,@JsonKey(name: 'added_at') DateTime addedAt
+@JsonKey(name: 'cartitemid') String? cartItemId,@JsonKey(name: 'userid') String userId, GameModel game,@JsonKey(name: 'addedat') DateTime? addedAt
 });
 
 
@@ -279,13 +279,13 @@ class __$CartItemModelCopyWithImpl<$Res>
 
 /// Create a copy of CartItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cartItemId = freezed,Object? userId = null,Object? game = null,Object? addedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cartItemId = freezed,Object? userId = null,Object? game = null,Object? addedAt = freezed,}) {
   return _then(_CartItemModel(
 cartItemId: freezed == cartItemId ? _self.cartItemId : cartItemId // ignore: cast_nullable_to_non_nullable
 as String?,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,game: null == game ? _self.game : game // ignore: cast_nullable_to_non_nullable
-as GameModel,addedAt: null == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as GameModel,addedAt: freezed == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

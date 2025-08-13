@@ -33,7 +33,7 @@ class DesktopNavbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Previous page buttons
+          // Previous page button
           IconButton(
             tooltip: 'Go back',
             icon: const Icon(
@@ -44,6 +44,19 @@ class DesktopNavbar extends StatelessWidget {
               if (context.canPop()) {
                 context.pop();
               }
+            },
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
+
+          // Reload page button
+          IconButton(
+            tooltip: 'Reload page',
+            icon: const Icon(
+              Icons.refresh,
+              size: 20,
+            ),
+            onPressed: () {
+              context.go(currentLocation);
             },
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
