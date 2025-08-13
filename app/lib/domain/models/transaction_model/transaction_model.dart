@@ -7,13 +7,15 @@ part 'transaction_model.g.dart';
 @freezed
 abstract class TransactionModel with _$TransactionModel {
   const factory TransactionModel({
-    @JsonKey(name: 'transactionid') required String transactionId,
+    @JsonKey(name: 'transactionid') String? transactionId,
     @JsonKey(name: 'senderid') required String senderId,
     @JsonKey(name: 'gameid') required String gameId,
     required double amount,
     @JsonKey(name: 'transactiondate') required DateTime transactionDate,
-    required String status,
-    @JsonKey(name: 'isRefundable') required bool isRefundable,
+    @JsonKey(name: 'isrefundable') required bool isRefundable,
+    @JsonKey(name: 'paymentmethodid') required String paymentMethodId,
+
+    @Default('completed') String? status,
   }) = _TransactionModel;
 
   factory TransactionModel.fromJson(Map<String, Object?> json) => 

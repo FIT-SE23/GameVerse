@@ -8,14 +8,16 @@ part of 'cart_item_model.dart';
 
 _CartItemModel _$CartItemModelFromJson(Map<String, dynamic> json) =>
     _CartItemModel(
-      cartItemId: json['cartItemId'] as String,
-      userId: json['userId'] as String,
+      cartItemId: json['cartitemid'] as String?,
+      userId: json['userid'] as String,
       game: GameModel.fromJson(json['game'] as Map<String, dynamic>),
+      addedAt: DateTime.parse(json['added_at'] as String),
     );
 
 Map<String, dynamic> _$CartItemModelToJson(_CartItemModel instance) =>
     <String, dynamic>{
-      'cartItemId': instance.cartItemId,
-      'userId': instance.userId,
+      'cartitemid': instance.cartItemId,
+      'userid': instance.userId,
       'game': instance.game,
+      'added_at': instance.addedAt.toIso8601String(),
     };

@@ -16,7 +16,7 @@ class AuthApiClient {
     final hashPassword = sha256.convert(bytePassword).toString();
 
     final raw = await _client.post(
-      Uri.parse(ApiEndpoint.loginUrl),
+      Uri.parse(ApiEndpoints.loginUrl),
       body: <String, String>{"email": email, "password": hashPassword},
     );
 
@@ -33,7 +33,7 @@ class AuthApiClient {
     final hashPassword = sha256.convert(bytePassword).toString();
 
     final raw = await _client.post(
-      Uri.parse(ApiEndpoint.registerUrl),
+      Uri.parse(ApiEndpoints.registerUrl),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: <String, String>{
         "username": username,
@@ -52,7 +52,7 @@ class AuthApiClient {
   
   Future<Response> getProfile(String token, String userId) async {
     final raw = await _client.get(
-      Uri.parse('${ApiEndpoint.userUrl}/$userId'),
+      Uri.parse('${ApiEndpoints.userUrl}/$userId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -71,7 +71,7 @@ class AuthApiClient {
     try {
       // You'll need to add a token verification endpoint on your server
       final response = await _client.get(
-        Uri.parse('${ApiEndpoint.baseUrl}/verify-token'),
+        Uri.parse('${ApiEndpoints.baseUrl}/verify-token'),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded', 
           'Authorization': 'Bearer $token',

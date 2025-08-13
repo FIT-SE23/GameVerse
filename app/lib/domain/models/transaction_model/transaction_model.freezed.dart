@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TransactionModel {
 
-@JsonKey(name: 'transactionid') String get transactionId;@JsonKey(name: 'senderid') String get senderId;@JsonKey(name: 'gameid') String get gameId; double get amount;@JsonKey(name: 'transactiondate') DateTime get transactionDate; String get status;@JsonKey(name: 'isRefundable') bool get isRefundable;
+@JsonKey(name: 'transactionid') String? get transactionId;@JsonKey(name: 'senderid') String get senderId;@JsonKey(name: 'gameid') String get gameId; double get amount;@JsonKey(name: 'transactiondate') DateTime get transactionDate;@JsonKey(name: 'isrefundable') bool get isRefundable;@JsonKey(name: 'paymentmethodid') String get paymentMethodId; String? get status;
 /// Create a copy of TransactionModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TransactionModelCopyWith<TransactionModel> get copyWith => _$TransactionModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionModel&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.senderId, senderId) || other.senderId == senderId)&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.transactionDate, transactionDate) || other.transactionDate == transactionDate)&&(identical(other.status, status) || other.status == status)&&(identical(other.isRefundable, isRefundable) || other.isRefundable == isRefundable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionModel&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.senderId, senderId) || other.senderId == senderId)&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.transactionDate, transactionDate) || other.transactionDate == transactionDate)&&(identical(other.isRefundable, isRefundable) || other.isRefundable == isRefundable)&&(identical(other.paymentMethodId, paymentMethodId) || other.paymentMethodId == paymentMethodId)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,transactionId,senderId,gameId,amount,transactionDate,status,isRefundable);
+int get hashCode => Object.hash(runtimeType,transactionId,senderId,gameId,amount,transactionDate,isRefundable,paymentMethodId,status);
 
 @override
 String toString() {
-  return 'TransactionModel(transactionId: $transactionId, senderId: $senderId, gameId: $gameId, amount: $amount, transactionDate: $transactionDate, status: $status, isRefundable: $isRefundable)';
+  return 'TransactionModel(transactionId: $transactionId, senderId: $senderId, gameId: $gameId, amount: $amount, transactionDate: $transactionDate, isRefundable: $isRefundable, paymentMethodId: $paymentMethodId, status: $status)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TransactionModelCopyWith<$Res>  {
   factory $TransactionModelCopyWith(TransactionModel value, $Res Function(TransactionModel) _then) = _$TransactionModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'transactionid') String transactionId,@JsonKey(name: 'senderid') String senderId,@JsonKey(name: 'gameid') String gameId, double amount,@JsonKey(name: 'transactiondate') DateTime transactionDate, String status,@JsonKey(name: 'isRefundable') bool isRefundable
+@JsonKey(name: 'transactionid') String? transactionId,@JsonKey(name: 'senderid') String senderId,@JsonKey(name: 'gameid') String gameId, double amount,@JsonKey(name: 'transactiondate') DateTime transactionDate,@JsonKey(name: 'isrefundable') bool isRefundable,@JsonKey(name: 'paymentmethodid') String paymentMethodId, String? status
 });
 
 
@@ -65,16 +65,17 @@ class _$TransactionModelCopyWithImpl<$Res>
 
 /// Create a copy of TransactionModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? transactionId = null,Object? senderId = null,Object? gameId = null,Object? amount = null,Object? transactionDate = null,Object? status = null,Object? isRefundable = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? transactionId = freezed,Object? senderId = null,Object? gameId = null,Object? amount = null,Object? transactionDate = null,Object? isRefundable = null,Object? paymentMethodId = null,Object? status = freezed,}) {
   return _then(_self.copyWith(
-transactionId: null == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
-as String,senderId: null == senderId ? _self.senderId : senderId // ignore: cast_nullable_to_non_nullable
+transactionId: freezed == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
+as String?,senderId: null == senderId ? _self.senderId : senderId // ignore: cast_nullable_to_non_nullable
 as String,gameId: null == gameId ? _self.gameId : gameId // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as double,transactionDate: null == transactionDate ? _self.transactionDate : transactionDate // ignore: cast_nullable_to_non_nullable
-as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,isRefundable: null == isRefundable ? _self.isRefundable : isRefundable // ignore: cast_nullable_to_non_nullable
-as bool,
+as DateTime,isRefundable: null == isRefundable ? _self.isRefundable : isRefundable // ignore: cast_nullable_to_non_nullable
+as bool,paymentMethodId: null == paymentMethodId ? _self.paymentMethodId : paymentMethodId // ignore: cast_nullable_to_non_nullable
+as String,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'transactionid')  String transactionId, @JsonKey(name: 'senderid')  String senderId, @JsonKey(name: 'gameid')  String gameId,  double amount, @JsonKey(name: 'transactiondate')  DateTime transactionDate,  String status, @JsonKey(name: 'isRefundable')  bool isRefundable)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'transactionid')  String? transactionId, @JsonKey(name: 'senderid')  String senderId, @JsonKey(name: 'gameid')  String gameId,  double amount, @JsonKey(name: 'transactiondate')  DateTime transactionDate, @JsonKey(name: 'isrefundable')  bool isRefundable, @JsonKey(name: 'paymentmethodid')  String paymentMethodId,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TransactionModel() when $default != null:
-return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_that.transactionDate,_that.status,_that.isRefundable);case _:
+return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_that.transactionDate,_that.isRefundable,_that.paymentMethodId,_that.status);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'transactionid')  String transactionId, @JsonKey(name: 'senderid')  String senderId, @JsonKey(name: 'gameid')  String gameId,  double amount, @JsonKey(name: 'transactiondate')  DateTime transactionDate,  String status, @JsonKey(name: 'isRefundable')  bool isRefundable)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'transactionid')  String? transactionId, @JsonKey(name: 'senderid')  String senderId, @JsonKey(name: 'gameid')  String gameId,  double amount, @JsonKey(name: 'transactiondate')  DateTime transactionDate, @JsonKey(name: 'isrefundable')  bool isRefundable, @JsonKey(name: 'paymentmethodid')  String paymentMethodId,  String? status)  $default,) {final _that = this;
 switch (_that) {
 case _TransactionModel():
-return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_that.transactionDate,_that.status,_that.isRefundable);case _:
+return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_that.transactionDate,_that.isRefundable,_that.paymentMethodId,_that.status);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'transactionid')  String transactionId, @JsonKey(name: 'senderid')  String senderId, @JsonKey(name: 'gameid')  String gameId,  double amount, @JsonKey(name: 'transactiondate')  DateTime transactionDate,  String status, @JsonKey(name: 'isRefundable')  bool isRefundable)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'transactionid')  String? transactionId, @JsonKey(name: 'senderid')  String senderId, @JsonKey(name: 'gameid')  String gameId,  double amount, @JsonKey(name: 'transactiondate')  DateTime transactionDate, @JsonKey(name: 'isrefundable')  bool isRefundable, @JsonKey(name: 'paymentmethodid')  String paymentMethodId,  String? status)?  $default,) {final _that = this;
 switch (_that) {
 case _TransactionModel() when $default != null:
-return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_that.transactionDate,_that.status,_that.isRefundable);case _:
+return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_that.transactionDate,_that.isRefundable,_that.paymentMethodId,_that.status);case _:
   return null;
 
 }
@@ -215,16 +216,17 @@ return $default(_that.transactionId,_that.senderId,_that.gameId,_that.amount,_th
 @JsonSerializable()
 
 class _TransactionModel implements TransactionModel {
-  const _TransactionModel({@JsonKey(name: 'transactionid') required this.transactionId, @JsonKey(name: 'senderid') required this.senderId, @JsonKey(name: 'gameid') required this.gameId, required this.amount, @JsonKey(name: 'transactiondate') required this.transactionDate, required this.status, @JsonKey(name: 'isRefundable') required this.isRefundable});
+  const _TransactionModel({@JsonKey(name: 'transactionid') this.transactionId, @JsonKey(name: 'senderid') required this.senderId, @JsonKey(name: 'gameid') required this.gameId, required this.amount, @JsonKey(name: 'transactiondate') required this.transactionDate, @JsonKey(name: 'isrefundable') required this.isRefundable, @JsonKey(name: 'paymentmethodid') required this.paymentMethodId, this.status = 'completed'});
   factory _TransactionModel.fromJson(Map<String, dynamic> json) => _$TransactionModelFromJson(json);
 
-@override@JsonKey(name: 'transactionid') final  String transactionId;
+@override@JsonKey(name: 'transactionid') final  String? transactionId;
 @override@JsonKey(name: 'senderid') final  String senderId;
 @override@JsonKey(name: 'gameid') final  String gameId;
 @override final  double amount;
 @override@JsonKey(name: 'transactiondate') final  DateTime transactionDate;
-@override final  String status;
-@override@JsonKey(name: 'isRefundable') final  bool isRefundable;
+@override@JsonKey(name: 'isrefundable') final  bool isRefundable;
+@override@JsonKey(name: 'paymentmethodid') final  String paymentMethodId;
+@override@JsonKey() final  String? status;
 
 /// Create a copy of TransactionModel
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TransactionModel&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.senderId, senderId) || other.senderId == senderId)&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.transactionDate, transactionDate) || other.transactionDate == transactionDate)&&(identical(other.status, status) || other.status == status)&&(identical(other.isRefundable, isRefundable) || other.isRefundable == isRefundable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TransactionModel&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.senderId, senderId) || other.senderId == senderId)&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.transactionDate, transactionDate) || other.transactionDate == transactionDate)&&(identical(other.isRefundable, isRefundable) || other.isRefundable == isRefundable)&&(identical(other.paymentMethodId, paymentMethodId) || other.paymentMethodId == paymentMethodId)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,transactionId,senderId,gameId,amount,transactionDate,status,isRefundable);
+int get hashCode => Object.hash(runtimeType,transactionId,senderId,gameId,amount,transactionDate,isRefundable,paymentMethodId,status);
 
 @override
 String toString() {
-  return 'TransactionModel(transactionId: $transactionId, senderId: $senderId, gameId: $gameId, amount: $amount, transactionDate: $transactionDate, status: $status, isRefundable: $isRefundable)';
+  return 'TransactionModel(transactionId: $transactionId, senderId: $senderId, gameId: $gameId, amount: $amount, transactionDate: $transactionDate, isRefundable: $isRefundable, paymentMethodId: $paymentMethodId, status: $status)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$TransactionModelCopyWith<$Res> implements $TransactionMod
   factory _$TransactionModelCopyWith(_TransactionModel value, $Res Function(_TransactionModel) _then) = __$TransactionModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'transactionid') String transactionId,@JsonKey(name: 'senderid') String senderId,@JsonKey(name: 'gameid') String gameId, double amount,@JsonKey(name: 'transactiondate') DateTime transactionDate, String status,@JsonKey(name: 'isRefundable') bool isRefundable
+@JsonKey(name: 'transactionid') String? transactionId,@JsonKey(name: 'senderid') String senderId,@JsonKey(name: 'gameid') String gameId, double amount,@JsonKey(name: 'transactiondate') DateTime transactionDate,@JsonKey(name: 'isrefundable') bool isRefundable,@JsonKey(name: 'paymentmethodid') String paymentMethodId, String? status
 });
 
 
@@ -276,16 +278,17 @@ class __$TransactionModelCopyWithImpl<$Res>
 
 /// Create a copy of TransactionModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? transactionId = null,Object? senderId = null,Object? gameId = null,Object? amount = null,Object? transactionDate = null,Object? status = null,Object? isRefundable = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? transactionId = freezed,Object? senderId = null,Object? gameId = null,Object? amount = null,Object? transactionDate = null,Object? isRefundable = null,Object? paymentMethodId = null,Object? status = freezed,}) {
   return _then(_TransactionModel(
-transactionId: null == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
-as String,senderId: null == senderId ? _self.senderId : senderId // ignore: cast_nullable_to_non_nullable
+transactionId: freezed == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
+as String?,senderId: null == senderId ? _self.senderId : senderId // ignore: cast_nullable_to_non_nullable
 as String,gameId: null == gameId ? _self.gameId : gameId // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as double,transactionDate: null == transactionDate ? _self.transactionDate : transactionDate // ignore: cast_nullable_to_non_nullable
-as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,isRefundable: null == isRefundable ? _self.isRefundable : isRefundable // ignore: cast_nullable_to_non_nullable
-as bool,
+as DateTime,isRefundable: null == isRefundable ? _self.isRefundable : isRefundable // ignore: cast_nullable_to_non_nullable
+as bool,paymentMethodId: null == paymentMethodId ? _self.paymentMethodId : paymentMethodId // ignore: cast_nullable_to_non_nullable
+as String,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

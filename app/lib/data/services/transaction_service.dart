@@ -19,6 +19,7 @@ class TransactionService {
   Future<TransactionResult> processGamePurchase({
     required GameModel game,
     required String userId,
+    required String paymentMethodId,
   }) async {
     await Future.delayed(const Duration(milliseconds: 1000));
 
@@ -32,13 +33,13 @@ class TransactionService {
     }
 
     final transaction = TransactionModel(
-      transactionId: 'txn_${DateTime.now().millisecondsSinceEpoch}',
       senderId: userId,
       gameId: game.gameId,
       amount: price,
       transactionDate: DateTime.now(),
       status: 'completed',
       isRefundable: true,
+      paymentMethodId: paymentMethodId,
     );
 
     _userBalance -= price;

@@ -1,6 +1,6 @@
 // Define endpoint to communication between frontend and backend 
 
-class ApiEndpoint {
+class ApiEndpoints {
   // Use your server URL instead of Steam API
   // static const String baseUrl = 'https://gameverse-99u7.onrender.com';
   // For local development, uncomment this:
@@ -16,6 +16,9 @@ class ApiEndpoint {
   static const String addGameToUrl = '$baseUrl/addgameto';
   static const String removeGameFromUrl = '$baseUrl/removegamefrom';
   static const String recommendedGamesUrl = '$baseUrl/recommended';
+
+  // Transaction endpoints
+  static const String transactionUrl = '$baseUrl/transaction';
   
   // Other endpoints
   static const String searchUrl = '$baseUrl/search';

@@ -82,9 +82,7 @@ Future<List<SingleChildWidget>> appProviders() async {
       create: (_) => ThemeViewModel(),
     ),
     ChangeNotifierProvider<TransactionViewModel>(
-      create: (context) => TransactionViewModel(
-        transactionService: context.read<TransactionService>(),
-      ),
+      create: (context) => TransactionViewModel(),
     ),
     ChangeNotifierProvider<PublisherViewModel>(
       create: (_) => PublisherViewModel(),

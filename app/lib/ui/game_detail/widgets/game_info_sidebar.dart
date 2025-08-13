@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
+import 'package:provider/provider.dart';
+
 
 import 'package:gameverse/routing/routes.dart';
+import 'package:gameverse/ui/game_detail/widgets/add_to_cart_button.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
@@ -50,7 +54,11 @@ class GameInfoSidebar extends StatelessWidget {
             height: 36,
             child: ElevatedButton(
               style: theme.elevatedButtonTheme.style,
-              onPressed: () => context.push(Routes.transactions),
+              onPressed: () => {
+                Provider.of<TransactionViewModel>(context, listen: false)
+                    .addToCart(game),
+                context.push(Routes.transactions),
+              },
               child: Text(
                 'Buy game',
                 style: theme.textTheme.bodyLarge!.copyWith(color: AppTheme.oppositeThemeColors(theme.brightness).getText, fontWeight: FontWeight.bold),
@@ -64,21 +72,7 @@ class GameInfoSidebar extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Tooltip(
-                  message: 'Add to cart',
-                  child: ElevatedButton(
-                    style: theme.elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                    ),
-                    onPressed: () => context.push(Routes.transactions),
-                    child: Icon(
-                      Icons.add_shopping_cart_rounded,
-                      color: AppTheme.currentThemeColors(theme.brightness).getText,
-                    )
-                  ),
-                ),
-              ),
+              AddToCartButton(game: game, context: context),
               const SizedBox(width: 8),
               Expanded(
                 child: Tooltip(
@@ -97,17 +91,19 @@ class GameInfoSidebar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Tooltip(
-                  message: 'Recommend',
-                  child: ElevatedButton(
-                    style: theme.elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                child: Center(
+                  child: Tooltip(
+                    message: 'Recommend',
+                    child: ElevatedButton(
+                      style: theme.elevatedButtonTheme.style!.copyWith(
+                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                      ),
+                      onPressed: () => context.push(Routes.transactions),
+                      child: Icon(
+                        Icons.thumb_up_alt_outlined,
+                        color: AppTheme.currentThemeColors(theme.brightness).getText,
+                      )
                     ),
-                    onPressed: () => context.push(Routes.transactions),
-                    child: Icon(
-                      Icons.thumb_up_alt_outlined,
-                      color: AppTheme.currentThemeColors(theme.brightness).getText,
-                    )
                   ),
                 ),
               ),

@@ -39,7 +39,7 @@ class GameApiClient {
     String categories,
   ) async {
     final request =
-        http.MultipartRequest("POST", Uri.parse(ApiEndpoint.gameUrl))
+        http.MultipartRequest("POST", Uri.parse(ApiEndpoints.gameUrl))
           ..fields["publisherid"] = publisherid
           ..fields["gamename"] = name
           ..fields["description"] = description
@@ -79,7 +79,7 @@ class GameApiClient {
   }) async {
     final request = http.MultipartRequest(
       'PATCH',
-      Uri.parse('${ApiEndpoint.gameUrl}/$gameId'),
+      Uri.parse('${ApiEndpoints.gameUrl}/$gameId'),
     );
 
     if (name != null) {
@@ -168,7 +168,7 @@ class GameApiClient {
 
   Future<Response> getGame(String token, String gameid) async {
     final raw = await http.get(
-      Uri.parse('${ApiEndpoint.gameUrl}/$gameid'),
+      Uri.parse('${ApiEndpoints.gameUrl}/$gameid'),
       headers: <String, String>{"Authorization": "Bearer $token"},
     );
     var jsonBody;
@@ -202,7 +202,7 @@ class GameApiClient {
   Future<Response> listGames(String gamename, String sortBy) async {
     final raw = await http.get(
       Uri.parse(
-        "${ApiEndpoint.baseUrl}search?entity=game&gamename=$gamename&sortby=$sortBy",
+        "${ApiEndpoints.baseUrl}search?entity=game&gamename=$gamename&sortby=$sortBy",
       ),
     );
 
@@ -229,7 +229,7 @@ class GameApiClient {
 
   Future<Response> recommendGame(String token, String gameId) async {
     final raw = await http.post(
-      Uri.parse("${ApiEndpoint.recommendedGamesUrl}/game"),
+      Uri.parse("${ApiEndpoints.recommendedGamesUrl}/game"),
       headers: <String, String>{"Authorization": "Bearer $token"},
       body: <String, String>{"gameid": gameId},
     );
@@ -248,7 +248,7 @@ class GameApiClient {
     String status,
   ) async {
     final raw = await _client.post(
-      Uri.parse(ApiEndpoint.addGameToUrl),
+      Uri.parse(ApiEndpoints.addGameToUrl),
       headers: <String, String>{"Authorization": "Bearer $token"},
       body: <String, String>{
         "gameid": gameid,
@@ -271,7 +271,7 @@ class GameApiClient {
     String status,
   ) async {
     final raw = await _client.post(
-      Uri.parse(ApiEndpoint.removeGameFromUrl),
+      Uri.parse(ApiEndpoints.removeGameFromUrl),
       headers: <String, String>{"Authorization": "Bearer $token"},
       body: <String, String>{
         "gameid": gameid,
@@ -289,7 +289,7 @@ class GameApiClient {
 
   Future<Response> listGamesInCart(String token) async {
     final raw = await _client.post(
-      Uri.parse("${ApiEndpoint.userUrl}/cart"),
+      Uri.parse("${ApiEndpoints.userUrl}/cart"),
       headers: <String, String>{"Authorization": "Bearer $token"},
     );
 
@@ -302,7 +302,7 @@ class GameApiClient {
   }
 
   Future<Response> getLibraryGames(String userid) async {
-    String url = "${ApiEndpoint.userUrl}/$userid/library";
+    String url = "${ApiEndpoints.userUrl}/$userid/library";
     final raw = await _client.get(Uri.parse(url));
 
     final response = Response.fromJson(
@@ -312,7 +312,7 @@ class GameApiClient {
     return response;
   }
   Future<Response> getWishListGames(String userid) async {
-    String url = "${ApiEndpoint.userUrl}/$userid/wishlist";
+    String url = "${ApiEndpoints.userUrl}/$userid/wishlist";
     final raw = await _client.get(Uri.parse(url));
 
     final response = Response.fromJson(

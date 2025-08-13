@@ -18,7 +18,7 @@ class PublisherApiClient {
   }) async {
     try {
       final response = await _client.post(
-        Uri.parse('${ApiEndpoint.baseUrl}/publisher'),
+        Uri.parse('${ApiEndpoints.baseUrl}/publisher'),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: {
           'userid': userId,
@@ -44,7 +44,7 @@ class PublisherApiClient {
   Future<dynamic> getPublisherProfile(String publisherId) async {
     try {
       final response = await _client.get(
-        Uri.parse('${ApiEndpoint.baseUrl}/publisher/$publisherId'),
+        Uri.parse('${ApiEndpoints.baseUrl}/publisher/$publisherId'),
       );
       
       if (response.statusCode == 200) {
@@ -69,7 +69,7 @@ class PublisherApiClient {
   Future<List<GameModel>> getPublishedGames(String publisherId) async {
     try {
       final response = await _client.get(
-        Uri.parse('${ApiEndpoint.baseUrl}/publisher/$publisherId'),
+        Uri.parse('${ApiEndpoints.baseUrl}/publisher/$publisherId'),
       );
       
       if (response.statusCode == 200) {
@@ -164,7 +164,7 @@ class PublisherApiClient {
       if (paymentMethodId != null) body['paymentmethodid'] = paymentMethodId;
 
       final response = await _client.patch(
-        Uri.parse('${ApiEndpoint.baseUrl}/publisher/$publisherId'),
+        Uri.parse('${ApiEndpoints.baseUrl}/publisher/$publisherId'),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: body,
       );
