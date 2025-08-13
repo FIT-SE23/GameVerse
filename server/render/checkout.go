@@ -23,7 +23,7 @@ import (
 )
 
 func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid string, paymentMethodId string) error {
-	rep := client.Rpc("listgamesincart", "", map[string]string{"userid": userid})
+	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
 	err := json.Unmarshal([]byte(rep), &items)
@@ -55,7 +55,7 @@ func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid st
 		}
 	}
 
-	rep, _, err = client.From("User_Game").Update(map[string]string{"status": "In library"}, "", "").Eq("userid", userid).ExecuteString()
+	rep, _, err = client.From("User_Game").Update(map[string]string{"status": "In library"}, "", "").Eq("userid", userid).Eq("status", "In cart").ExecuteString()
 	if err != nil {
 		fmt.Println(err.Error(), rep)
 	}
@@ -117,7 +117,7 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 		return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
 	}
 
-	rep := client.Rpc("listgamesincart", "", map[string]string{"userid": userid})
+	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
 	err := json.Unmarshal([]byte(rep), &items)
@@ -293,7 +293,7 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 }
 
 func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) error {
-	rep := client.Rpc("listgamesincart", "", map[string]string{"userid": userid})
+	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
 	err := json.Unmarshal([]byte(rep), &items)
