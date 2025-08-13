@@ -63,21 +63,21 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   }
 
   Future<void> loadData({
-    String searchQuery = '',
+    String titleQuery = '',
     bool onlyDiscounted = false,
     Set<String> selectedCategories = const {}
   }) async {
     _isLoading = true;
     notifyListeners();
 
-    _searchQuery = searchQuery.toLowerCase();
+    _searchQuery = titleQuery.toLowerCase();
     _onlyDiscounted = onlyDiscounted;
     _selectedCategories = selectedCategories;
-    updateCategoryMap();
-
+    
     try {
       _games = await _gameRepository.searchGames([]);
       _categoryMap = _getCategories(_games);
+      updateCategoryMap();
       applyFilters();
     } catch (e) {
       debugPrint('Error loading advanced search: $e');

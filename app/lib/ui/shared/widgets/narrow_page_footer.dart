@@ -101,7 +101,7 @@ class NarrowPageFooter extends StatelessWidget {
                         _buildFooterLink(context, 'Home', Routes.home),
                         _buildFooterLink(context, 'Library', Routes.library),
                         _buildFooterLink(context, 'Forums', Routes.forums),
-                        _buildFooterLink(context, 'Search', Routes.advanceSearch),
+                        _buildFooterLink(context, 'Search', Routes.advancedSearch),
                       ],
                     ),
                   )

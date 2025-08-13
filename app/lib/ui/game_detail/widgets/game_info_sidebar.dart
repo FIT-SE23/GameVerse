@@ -115,7 +115,7 @@ class GameInfoSidebar extends StatelessWidget {
                     style: theme.elevatedButtonTheme.style!.copyWith(
                       backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
                     ),
-                    onPressed: () => context.push('/forum-posts/${game.gameId}/${Uri.encodeComponent(game.name)}'),
+                    onPressed: () => context.push('${Routes.forumPosts}/${game.gameId}/${Uri.encodeComponent(game.name)}'),
                     child: Icon(
                       Icons.forum_outlined,
                       color: AppTheme.currentThemeColors(theme.brightness).getText,
@@ -199,7 +199,12 @@ class GameInfoSidebar extends StatelessWidget {
           children: [
             for (String name in game.categories.map((e) => e.name))
               if (name.isNotEmpty)
-                CategoryChip(name: name, onSelect: () {}),
+                CategoryChip(
+                  name: name, 
+                  onSelect: () {
+                    context.push('${Routes.advancedSearch}?categories=$name');
+                  }
+                ),
           ]
         ),
       ],
