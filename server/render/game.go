@@ -324,6 +324,9 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+	if start < 0 || cnt < 0 {
+		return jsonResponse(c, http.StatusOK, "", []map[string]string{})
+	}
 
 	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
 
