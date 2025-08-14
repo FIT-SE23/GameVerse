@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutBottomSheet extends StatefulWidget {
   final VoidCallback onCheckoutComplete;
@@ -58,18 +59,34 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
             ),
             
             const SizedBox(height: 24),
-            
             if (_isProcessing) ...[
-              const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 24),
-                    Text('Processing your payment...'),
-                  ],
+              if (transactionViewModel.urlToPaymentGateway.isNotEmpty) ...[
+                Center(
+                  child: Column(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Open the payment gateway URL
+                          launchUrl(Uri.parse(transactionViewModel.urlToPaymentGateway));
+                        },
+                        icon: const Icon(Icons.open_in_new),
+                        label: Text('Open ${method.toUpperCase()} Gateway'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ] else ...[
+                const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 24),
+                      Text('Processing your payment...'),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
             ] else ...[
               // Order summary
@@ -194,12 +211,16 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               ),
 
               const SizedBox(height: 24),
-              
               // Checkout button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () => _initiatePayPalCheckout(context),
+                  onPressed: () => {
+                    setState(() {
+                      _isProcessing = true;
+                    }),
+                    transactionViewModel.getUrlPaymentGateway(method),
+                  },
                   icon: const Icon(Icons.payment),
                   label: Text('Pay \$${total.toStringAsFixed(2)} with ${method.toUpperCase()}'),
                   style: ElevatedButton.styleFrom(
@@ -213,9 +234,4 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
       ),
     );
   }
-
-  void _initiatePayPalCheckout(BuildContext context) async {
-    return; // Temporarily disable PayPal checkout for development
-  }
-
 }

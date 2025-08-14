@@ -17,12 +17,7 @@ class TransactionViewModel extends ChangeNotifier {
     required TransactionRepository transactionRepository,
     required AuthRepository authRepository,
   })  : _transactionRepository = transactionRepository,
-        _authRepository = authRepository {
-    if (_authRepository.currentUser != null) {
-      loadCartItems(_authRepository.currentUser!.id);
-      loadUserTransactions(_authRepository.currentUser!.id);
-    }
-  }
+        _authRepository = authRepository;
 
   TransactionViewState _state = TransactionViewState.initial;
   TransactionViewState get state => _state;
@@ -41,6 +36,26 @@ class TransactionViewModel extends ChangeNotifier {
 
   List<PaymentMethodModel> _paymentMethods = [];
   List<PaymentMethodModel> get paymentMethods => _paymentMethods;
+
+  String _urlToPaymentGateway = '';
+  String get urlToPaymentGateway => _urlToPaymentGateway;
+
+  Future<void> init() async {
+    _state = TransactionViewState.loading;
+    notifyListeners();
+    try {
+      // Load initial data
+      await loadUserTransactions(_authRepository.accessToken!);
+      await loadCartItems(_authRepository.accessToken!);
+      // await loadPaymentMethods();
+      _state = TransactionViewState.success;
+    } catch (e) {
+      _state = TransactionViewState.error;
+      _errorMessage = e.toString();
+    } finally {
+      notifyListeners();
+    }
+  }
 
   // Check if game is in cart
   bool isGameInCart(String gameId) {
@@ -98,12 +113,12 @@ class TransactionViewModel extends ChangeNotifier {
   }
 
   // Load user's transactions
-  Future<void> loadUserTransactions(String userId) async {
+  Future<void> loadUserTransactions(String token) async {
     try {
       _state = TransactionViewState.loading;
       notifyListeners();
 
-      final transactions = await _transactionRepository.getUserTransactions(userId);
+      final transactions = await _transactionRepository.getUserTransactions(token);
       _transactions = transactions;
       
       _state = TransactionViewState.success;
@@ -115,13 +130,13 @@ class TransactionViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> loadCartItems(String userId) async {
+  Future<void> loadCartItems(String token) async {
     try {
       _state = TransactionViewState.loading;
       notifyListeners();
 
       // Assuming the repository has a method to get cart items
-      _cartItems = await _transactionRepository.getCartItems(userId);
+      _cartItems = await _transactionRepository.getCartItems(token);
       
       _state = TransactionViewState.success;
     } catch (e) {
@@ -149,4 +164,31 @@ class TransactionViewModel extends ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
+
+  Future<void> getUrlPaymentGateway(String method) async {
+    try {
+      _state = TransactionViewState.loading;
+      notifyListeners();
+
+      // Assuming the repository has a method to get the payment gateway URL
+      if (method == 'paypal') {
+        _urlToPaymentGateway = await _transactionRepository.getPayPalPaymentGatewayUrl(
+          _authRepository.accessToken!,
+        );
+      } else if (method == 'vnpay') {
+        _urlToPaymentGateway = await _transactionRepository.getVNPayPaymentGatewayUrl(
+          _authRepository.accessToken!,
+        );
+      } else {
+        throw Exception('Unsupported payment method');
+      }
+      
+      _state = TransactionViewState.success;
+    } catch (e) {
+      _state = TransactionViewState.error;
+      _errorMessage = e.toString();
+    } finally {
+      notifyListeners();
+    }
+  }
 }

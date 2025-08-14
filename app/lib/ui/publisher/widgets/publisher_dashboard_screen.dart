@@ -528,10 +528,6 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
     }
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
-
   void _showRequestGameDialog(BuildContext context) {
     showDialog(
       context: context,

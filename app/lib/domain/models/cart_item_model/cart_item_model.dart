@@ -8,7 +8,7 @@ part 'cart_item_model.g.dart';
 abstract class CartItemModel with _$CartItemModel {
   const factory CartItemModel({
     @JsonKey(name: 'cartitemid') String? cartItemId,
-    @JsonKey(name: 'userid') required String userId,
+    @JsonKey(name: 'userid') String? userId,
     required GameModel game,
     @JsonKey(name: 'addedat') DateTime? addedAt,
   }) = _CartItemModel;

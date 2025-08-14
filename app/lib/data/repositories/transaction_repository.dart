@@ -1,4 +1,3 @@
-
 import 'package:gameverse/data/services/game_api_client.dart';
 import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
@@ -51,13 +50,17 @@ class TransactionRepository {
       throw Exception('Failed to remove game from wishlist: ${response.message}');
     }
   }
-  Future<List<CartItemModel>> getCartItems(String userId) async {
-    final response = await GameApiClient().getLibraryGames(userId);
+  Future<List<CartItemModel>> getCartItems(String token) async {
+    final response = await GameApiClient().getCartItems(token);
     if (response.code == 200) {
-      // Assuming the response data is a list of games
-      return (response.data as List<dynamic>)
-          .map((item) => CartItemModel.fromJson(item as Map<String, dynamic>))
-          .toList();
+      List<CartItemModel> cartItems = [];
+      for (final item in response.data) {
+        final cartItem = CartItemModel(
+          game: item as GameModel,
+        );
+        cartItems.add(cartItem);
+      }
+      return cartItems;
     } else {
       throw Exception('Failed to fetch cart items: ${response.message}');
     }
@@ -71,6 +74,23 @@ class TransactionRepository {
           .toList();
     } else {
       throw Exception('Failed to fetch wishlist items: ${response.message}');
+    }
+  }
+
+  Future<String> getPayPalPaymentGatewayUrl(String token) async {
+    final response = await TransactionApiClient().getPayPalPaymentGatewayUrl(token);
+    if (response.code == 200) {
+      return response.data as String;
+    } else {
+      throw Exception('Failed to fetch PayPal payment gateway URL: ${response.message}');
+    }
+  }
+  Future<String> getVNPayPaymentGatewayUrl(String token) async {
+    final response = await TransactionApiClient().getVNPayPaymentGatewayUrl(token);
+    if (response.code == 200) {
+      return response.data as String;
+    } else {
+      throw Exception('Failed to fetch PayPal payment gateway URL: ${response.message}');
     }
   }
 

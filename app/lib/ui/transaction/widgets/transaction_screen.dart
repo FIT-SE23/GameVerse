@@ -227,7 +227,7 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
                 icon: const Icon(Icons.payment),
                 label: Text(transactionViewModel.isProcessingCheckout
                     ? 'Processing...'
-                    : 'Checkout with PayPal'),
+                    : 'Checkout'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),

@@ -52,7 +52,6 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
 
       _user = await _authRepository.login(provider, email: email, password: password);
-      debugPrint('Login successful: $_user');
       if (_user != null) {
         _status = AuthStatus.authenticated;
         _isPublisher = (_user?.type == 'publisher');

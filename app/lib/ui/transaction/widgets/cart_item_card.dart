@@ -20,7 +20,7 @@ class CartItemCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () => context.push('/game/${game.gameId}'),
+        onTap: () => context.push('/game-details/${game.gameId}'),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(

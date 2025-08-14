@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'login_form.dart';
 import 'signup_form.dart';
-
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
 
 // import 'package:flutter_svg/flutter_svg.dart';
@@ -58,9 +59,7 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
       final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
       await authViewModel.login(provider);
       
-      if (!mounted) return;
-      
-      if (authViewModel.status == AuthStatus.authenticated) {
+      if (mounted && authViewModel.status == AuthStatus.authenticated) {
         context.pop();
       } else {
         if (authViewModel.errorMessage.isNotEmpty) {
@@ -70,6 +69,8 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
+        Provider.of<TransactionViewModel>(context, listen: false)
+          .init(); // Initialize transaction view model after login
       }
     }
   }

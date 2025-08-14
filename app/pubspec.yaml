@@ -39,7 +39,7 @@ dependencies:
 
   # Authorization
   supabase_flutter: ^2.9.1
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
 
   # Config
   flutter_dotenv: ^5.2.1
@@ -58,9 +58,6 @@ dependencies:
 
   # Load SVG image
   flutter_svg: ^2.2.0
-
-  # Webview inside app
-  webview_flutter: ^4.13.0
 
   # Secured Storage
   flutter_secure_storage: ^9.2.4

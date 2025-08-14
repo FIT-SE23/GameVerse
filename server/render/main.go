@@ -165,7 +165,7 @@ func main() {
 	e.POST("/payment", func(c echo.Context) error {
 		return addPaymentMethod(c, client)
 	})
-	
+
 	e.GET("/payment", func(c echo.Context) error {
 		return getPaymentMethods(c, client)
 	})

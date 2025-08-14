@@ -9,7 +9,7 @@ part of 'cart_item_model.dart';
 _CartItemModel _$CartItemModelFromJson(Map<String, dynamic> json) =>
     _CartItemModel(
       cartItemId: json['cartitemid'] as String?,
-      userId: json['userid'] as String,
+      userId: json['userid'] as String?,
       game: GameModel.fromJson(json['game'] as Map<String, dynamic>),
       addedAt: json['addedat'] == null
           ? null

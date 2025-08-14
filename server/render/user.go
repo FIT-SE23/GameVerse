@@ -149,7 +149,7 @@ func login(c echo.Context, client *supabase.Client) error {
 }
 
 func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
-	rep, _, err := client.From("User_Game").Select("Game(*)", "", false).Eq("userid", userid).Eq("status", status).ExecuteString()
+	rep, _, err := client.From("User_Game").Select("Game(gameid)", "", false).Eq("userid", userid).Eq("status", status).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

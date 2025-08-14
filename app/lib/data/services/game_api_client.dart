@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:gameverse/config/api_endpoints.dart';
 import 'package:gameverse/utils/response.dart';
@@ -287,20 +288,6 @@ class GameApiClient {
     return response;
   }
 
-  Future<Response> listGamesInCart(String token) async {
-    final raw = await _client.post(
-      Uri.parse("${ApiEndpoints.userUrl}/cart"),
-      headers: <String, String>{"Authorization": "Bearer $token"},
-    );
-
-    final response = Response.fromJson(
-      raw.statusCode,
-      jsonDecode(raw.body) as Map<String, dynamic>,
-    );
-
-    return response;
-  }
-
   Future<Response> getLibraryGames(String userid) async {
     String url = "${ApiEndpoints.userUrl}/$userid/library";
     final raw = await _client.get(Uri.parse(url));
@@ -320,5 +307,32 @@ class GameApiClient {
       jsonDecode(raw.body) as Map<String, dynamic>,
     );
     return response;
+  }
+
+  Future<Response> getCartItems(String token) async {
+    final raw = await _client.post(
+      Uri.parse("${ApiEndpoints.userUrl}/cart"),
+      headers: <String, String>{"Authorization": "Bearer $token"},
+    );
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    final json = response.data as List<dynamic>;
+    
+    final games = <GameModel>[];
+    for (final item in json) {
+      // This is a temporary solution, 
+      // will change later to speed up the process
+      final game = await getGame(token, item["Game"]["gameid"] as String);
+      if (game.code != 200) {
+        debugPrint('Failed to get game: ${game.message}');
+        continue;
+      }
+      games.add(game.data as GameModel);
+    }
+
+    return Response(code: response.code, message: response.message, data: games);
   }
 }
