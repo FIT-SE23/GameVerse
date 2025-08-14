@@ -665,7 +665,7 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
 	}
 
-	rep, _, err := client.From("User_Game").
+	_, _, err := client.From("User_Game").
 		Select("*", "", false).
 		Eq("userid", userID).
 		Eq("gameid", gameID).
@@ -683,25 +683,25 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 		if err != nil {
 			return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
 		}
+		sort.Strings(resourceIDs)
 	}
 
-	query := client.From("Game_Resource").
-		Select("Resource(resourceid, url, type, checksum)", "", false).
-		Eq("gameid", gameID).
-		In("Resource.type", []string{"binary", "executable"})
+	rep := client.Rpc("geturls", "", map[string]string{"id": gameID})
+
+	var resources []map[string]string
+	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
+		fmt.Println(err)
+		return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+	}
+	resources = slices.DeleteFunc(resources, func(resource map[string]string) bool {
+		return resource["type"] != "binary" && resource["type"] != "executable"
+	})
 
 	if len(resourceIDs) > 0 {
-		query = query.In("Resource.resourceid", resourceIDs)
-	}
-
-	rep, _, err = query.ExecuteString()
-	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch resources", "")
-	}
-
-	var resources []map[string]any
-	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+		resources = slices.DeleteFunc(resources, func(resource map[string]string) bool {
+			idx := sort.SearchStrings(resourceIDs, resource["resourceid"])
+			return idx >= len(resourceIDs) || resourceIDs[idx] != resource["resourceid"]
+		})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", resources)
