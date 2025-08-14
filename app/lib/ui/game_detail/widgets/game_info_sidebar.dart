@@ -96,24 +96,6 @@ class GameInfoSidebar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Center(
-                  child: Tooltip(
-                    message: 'Recommend',
-                    child: ElevatedButton(
-                      style: theme.elevatedButtonTheme.style!.copyWith(
-                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                      ),
-                      onPressed: () => context.push(Routes.transactions),
-                      child: Icon(
-                        Icons.thumb_up_alt_outlined,
-                        color: AppTheme.currentThemeColors(theme.brightness).getText,
-                      )
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
                 child: Tooltip(
                   message: 'Go to forum',
                   child: ElevatedButton(
@@ -134,6 +116,74 @@ class GameInfoSidebar extends StatelessWidget {
         ...[
           // If game is owned, show download button
           GameDownloadButton(game: game),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Tooltip(
+                    message: 'Recommend',
+                    child: ElevatedButton(
+                      style: theme.elevatedButtonTheme.style!.copyWith(
+                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                      ),
+                      onPressed: () => {
+                        // Provider.of<GameDetailsViewModel>(context, listen: false)
+                        //   .recommendGame(game.gameId),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Recommended ${game.name} successfully!'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        ),
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.thumb_up_alt_outlined,
+                            color: AppTheme.currentThemeColors(theme.brightness).getText,
+                          ),
+                        ],
+                      )
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Not recommend button
+                Expanded(
+                  child: Tooltip(
+                    message: 'Not Recommend',
+                    child: ElevatedButton(
+                      style: theme.elevatedButtonTheme.style!.copyWith(
+                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                      ),
+                      onPressed: () => {
+                        // Provider.of<GameDetailsViewModel>(context, listen: false)
+                        //   .notrecommendGame(game.gameId),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Not Recommended ${game.name} successfully!'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        ),
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.thumb_down_alt_outlined,
+                            color: AppTheme.currentThemeColors(theme.brightness).getText,
+                          ),
+                        ],
+                      )
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
 
         const SizedBox(height: 16),

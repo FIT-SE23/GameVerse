@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/config/spacing_config.dart';
-import 'package:gameverse/data/repositories/auth_repository.dart';
+import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
@@ -27,10 +27,12 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
       Provider.of<LibraryViewModel>(context, listen: false).loadLibrary(
-        Provider.of<AuthRepository>(context, listen: false).currentUser!.id,
+        authViewModel.accessToken!,
+        authViewModel.user!.id,
       );
     });
   }

@@ -27,9 +27,10 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
     // Load data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      final transactionViewModel = Provider.of<TransactionViewModel>(context, listen: false);
       if (authViewModel.status == AuthStatus.authenticated) {
-        Provider.of<TransactionViewModel>(context, listen: false)
-            .loadUserTransactions(authViewModel.user!.id);
+        transactionViewModel.loadCartItems(authViewModel.accessToken!);
+        transactionViewModel.loadUserTransactions(authViewModel.accessToken!);
       }
     });
   }

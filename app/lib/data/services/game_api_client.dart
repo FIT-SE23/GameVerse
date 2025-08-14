@@ -288,7 +288,7 @@ class GameApiClient {
     return response;
   }
 
-  Future<Response> getLibraryGames(String userid) async {
+  Future<Response> getLibraryGames(String token, String userid) async {
     String url = "${ApiEndpoints.userUrl}/$userid/library";
     final raw = await _client.get(Uri.parse(url));
 
@@ -296,7 +296,25 @@ class GameApiClient {
       raw.statusCode,
       jsonDecode(raw.body) as Map<String, dynamic>,
     );
-    return response;
+    if (response.code != 200) {
+      return Future.error(response);
+    }
+
+    final json = response.data as List<dynamic>;
+
+    final games = <GameModel>[];
+    for (final item in json) {
+      // This is a temporary solution, 
+      // will change later to speed up the process
+      final game = await getGame(token, item["Game"]["gameid"] as String);
+      if (game.code != 200) {
+        debugPrint('Failed to get game: ${game.message}');
+        continue;
+      }
+      games.add(game.data as GameModel);
+    }
+
+    return Response(code: response.code, message: response.message, data: games);
   }
   Future<Response> getWishListGames(String userid) async {
     String url = "${ApiEndpoints.userUrl}/$userid/wishlist";
@@ -318,6 +336,9 @@ class GameApiClient {
       raw.statusCode,
       jsonDecode(raw.body) as Map<String, dynamic>,
     );
+    if (response.code != 200) {
+      return Future.error(response);
+    }
 
     final json = response.data as List<dynamic>;
     
@@ -334,5 +355,36 @@ class GameApiClient {
     }
 
     return Response(code: response.code, message: response.message, data: games);
+  }
+
+  Future<Response> downloadGame(
+    String token,
+    String gameId, {
+    List<String>? resourceIds,
+  }) async {
+    final request =
+        http.MultipartRequest("POST", Uri.parse("${ApiEndpoints.baseUrl}download/game"))
+          ..headers["Authorization"] = token
+          ..fields["gameid"] = gameId;
+
+    if (resourceIds != null && resourceIds.isNotEmpty) {
+      final validResourceIDs =
+          resourceIds
+              .map((id) => id.trim())
+              .where((id) => id.isNotEmpty)
+              .toList();
+
+      if (validResourceIDs.isNotEmpty) {
+        request.fields['resourceids'] = jsonEncode(validResourceIDs);
+      }
+    }
+
+    final raw = await request.send();
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(await raw.stream.bytesToString()) as Map<String, dynamic>,
+    );
+
+    return response;
   }
 }

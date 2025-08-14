@@ -17,6 +17,9 @@ class AuthViewModel extends ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
 
+  String? _accessToken;
+  String? get accessToken => _accessToken;
+
   bool _isRegistered = false;
 
   bool _isPublisher = false;
@@ -33,6 +36,7 @@ class AuthViewModel extends ChangeNotifier {
     try {
       _user = await _authRepository.checkSession();
       _status = _user != null ? AuthStatus.authenticated : AuthStatus.unauthenticated;
+      _accessToken = _authRepository.accessToken;
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = 'Session check failed: $e';
@@ -55,6 +59,7 @@ class AuthViewModel extends ChangeNotifier {
       if (_user != null) {
         _status = AuthStatus.authenticated;
         _isPublisher = (_user?.type == 'publisher');
+        _accessToken = _authRepository.accessToken;
       } else {
         _status = AuthStatus.unauthenticated;
         _errorMessage = 'Login failed: Invalid credentials';
