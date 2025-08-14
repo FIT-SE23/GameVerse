@@ -307,7 +307,7 @@ Future<Response> downloadGame(
 }) async {
   final request =
       http.MultipartRequest("POST", Uri.parse(serverURL + "download/game"))
-        ..headers["Authorization"] = token
+        ..headers["Authorization"] = "Bearer " + token
         ..fields["gameid"] = gameId;
 
   if (resourceIds != null && resourceIds.isNotEmpty) {
