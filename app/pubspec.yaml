@@ -102,7 +102,6 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/logo/
-    - .env
 
 msix_config:
   display_name: gameverse
