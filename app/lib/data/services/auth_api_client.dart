@@ -73,7 +73,6 @@ class AuthApiClient {
       final response = await _client.get(
         Uri.parse('${ApiEndpoints.baseUrl}/verify-token'),
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded', 
           'Authorization': 'Bearer $token',
         },
       );
@@ -86,6 +85,26 @@ class AuthApiClient {
     } catch (e) {
       debugPrint('Token verification error: $e');
       return false;
+    }
+  }
+
+  Future<Response> verifyOauthToken(String token) async {
+    try {
+      final raw = await _client.post(
+        Uri.parse('${ApiEndpoints.baseUrl}/verify-oauth-token'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      final response = Response.fromJson(
+        raw.statusCode,
+        jsonDecode(raw.body) as Map<String, dynamic>,
+      );
+      return response;
+    } catch (e) {
+      debugPrint('OAuth token verification error: $e');
+      return Response(code: 500, message: 'Internal Server Error', data: {});
     }
   }
 }

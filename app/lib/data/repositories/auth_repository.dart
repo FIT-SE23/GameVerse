@@ -38,9 +38,11 @@ class AuthRepository {
 
   // Initialize Supabase - call this before using auth
   static Future<void> initializeSupabase() async {
+    const String envUrl = String.fromEnvironment('SUPABASE_URL');
+    const String envAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
     await Supabase.initialize(
-      url: String.fromEnvironment('SUPABASE_URL'),
-      anonKey: String.fromEnvironment('SUPABASE_ANON_KEY'),
+      url: envUrl,
+      anonKey: envAnonKey,
       debug: false,
     );
   }
@@ -48,27 +50,53 @@ class AuthRepository {
   Future<UserModel?> checkSession() async {
     try {
       final token = await SecureStorageService.getToken();
-      if (token == null || token.isEmpty) {
-        return null;
+      debugPrint('Checking session with token: $token');
+      if (token != null && token.isNotEmpty) {
+        final isValid = await _apiClient.verifyToken(token);
+        debugPrint('Token validity: $isValid');
+        if (!isValid) {
+          await SecureStorageService.clearAuthData();
+          return null;
+        }
+
+        // Get stored user data
+        final userData = await SecureStorageService.getUserId();
+        if (userData != null) {
+          _currentUser = UserModel(
+            id: userData,
+            username: '', // Fetch from server
+            email: '', // Fetch from server
+            type: 'user', // Default type, can be updated later
+          );
+          _accessToken = token;
+          return _currentUser;
+        }
       }
 
-      final isValid = await _apiClient.verifyToken(token);
-      if (!isValid) {
-        await SecureStorageService.clearAuthData();
-        return null;
-      }
+      // If not found, check supabase session
+      final session = supabase.auth.currentSession;
+      if (session != null) {
+        // First verify token 
+        final result = await _apiClient.verifyOauthToken(session.user.email!);
+        if (result.code == 200) {
+          final token = result.data['token'] as String;
+          final userId = result.data['userid'] as String;
 
-      // Get stored user data
-      final userData = await SecureStorageService.getUserId();
-      if (userData != null) {
-        _currentUser = UserModel(
-          id: userData,
-          username: '', // Fetch from server
-          email: '', // Fetch from server
-          type: 'user', // Default type, can be updated later
-        );
-        _accessToken = token;
-        return _currentUser;
+          // Save to secure storage
+          await SecureStorageService.saveAuthData(
+            token: token,
+            userId: userId,
+          );
+          final response = await _apiClient.getProfile(token, userId);
+          if (response.code == 200) {
+            _currentUser = UserModel.fromJson(response.data);
+            _accessToken = token;
+            return _currentUser;
+          } else {
+            debugPrint('Get profile error: ${response.message}');
+          }
+          return _currentUser;
+        }
       }
 
       return null;

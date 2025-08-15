@@ -62,7 +62,11 @@ class AuthViewModel extends ChangeNotifier {
         _accessToken = _authRepository.accessToken;
       } else {
         _status = AuthStatus.unauthenticated;
-        _errorMessage = 'Login failed: Invalid credentials';
+        if (provider == AuthProvider.server) {
+          _errorMessage = 'Invalid email or password';
+        } else {
+          _errorMessage = 'Login failed, you may need to register first';
+        }
       }
 
     } catch (e) {
