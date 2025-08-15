@@ -386,11 +386,26 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 
 	if len(categoryList) > 1 || (len(categoryList) == 1 && categoryList[0] != "") {
 		fmt.Println(categoryList)
+		sort.Strings(categoryList)
+		matchCategories := func(required []string, given []string) bool {
+			requiredIdx := 0
+			for requiredIdx < len(required) {
+				if _, found := slices.BinarySearch(given, required[requiredIdx]); found {
+					requiredIdx++
+				} else {
+					return false
+				}
+			}
+
+			return requiredIdx >= len(required)
+		}
 		games = slices.DeleteFunc(games, func(game map[string]any) bool {
 			gameCatsAny, ok := game["Category"].([]any)
 			if !ok {
 				return true
 			}
+
+			givenCat := []string{}
 			for _, gameCatAny := range gameCatsAny {
 				gameCatMap, ok := gameCatAny.(map[string]any)
 				if !ok {
@@ -401,11 +416,10 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 				if !ok {
 					return true
 				}
-				if !slices.Contains(categoryList, gameCat) {
-					return true
-				}
+				givenCat = append(givenCat, gameCat)
 			}
-			return false
+			fmt.Println(game["name"], givenCat)
+			return !matchCategories(categoryList, givenCat)
 		})
 	}
 
