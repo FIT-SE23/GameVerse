@@ -300,5 +300,12 @@ func main() {
 		return getForum(c, client)
 	})
 
+	e.POST("/verify-oauth-token", func(c echo.Context) error {
+		return verifyOAuthToken(c, client)
+	})
+	e.POST("/verify-user-token", func(c echo.Context) error {
+		return verifyToken(c)
+	})
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

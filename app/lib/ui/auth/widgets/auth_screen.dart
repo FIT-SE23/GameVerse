@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
-import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'login_form.dart';
 import 'signup_form.dart';
@@ -61,16 +60,13 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
       
       if (mounted && authViewModel.status == AuthStatus.authenticated) {
         context.pop();
-      } else {
-        if (authViewModel.errorMessage.isNotEmpty) {
-          _showErrorSnackBar(authViewModel.errorMessage);
-        }
       }
+      //  else {
+          // _showErrorSnackBar(authViewModel.errorMessage);
+      // }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
-        Provider.of<TransactionViewModel>(context, listen: false)
-          .init(); // Initialize transaction view model after login
       }
     }
   }
