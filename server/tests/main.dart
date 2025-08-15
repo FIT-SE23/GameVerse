@@ -96,9 +96,9 @@ void main() async {
     );
   }
 
-  if (false) {
-    print(await listGames("Gamer Simulator 2", "recommend", 0, 1));
-  }
+  // if (false) {
+  //   print(await listGames("Gamer Simulator 2", "recommend", 0, 1));
+  // }
 
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
