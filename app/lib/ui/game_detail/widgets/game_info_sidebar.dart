@@ -77,7 +77,7 @@ class GameInfoSidebar extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AddToCartButton(game: game, context: context),
+              Expanded(child: AddToCartButton(game: game, context: context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Tooltip(

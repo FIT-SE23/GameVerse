@@ -125,15 +125,18 @@ class GameApiClient {
     return response;
   }
 
+  CategoryModel _jsonToCategoryModel(Map<String, dynamic> json) {
+    final categoryid = (json["categoryid"] ?? '') as String;
+    final categoryName = (json["categoryname"] ?? '') as String;
+    final isSensitive = json["issensitive"].toString().toLowerCase() as String?;
+    return CategoryModel(categoryId: categoryid, name: categoryName, isSensitive: isSensitive == 'true');
+  }
+
   // a temporary function
   GameModel _jsonToGameModel(Map<String, dynamic> json) {
     List<CategoryModel> categories = [];
-    for (var list in json["Category"] as List<dynamic>) {
-      final categoryid = (list["categoryid"] ?? '') as String;
-      final categoryName = (list["categoryname"] ?? '') as String;
-      final isSensitive = (list["issensitive"] ?? '') as String?;
-      
-      categories.add(CategoryModel(categoryId: categoryid, name: categoryName, isSensitive: isSensitive == 'TRUE'));
+    for (var list in json["Category"] as List<dynamic>) {     
+      categories.add(_jsonToCategoryModel(list));
     }
 
     final rawMedia = json["Resource"] as List<dynamic>;
@@ -200,10 +203,16 @@ class GameApiClient {
     return Response(code: response.code, message: response.message, data: game);
   }
 
-  Future<Response> listGames(String gamename, String sortBy) async {
+  Future<Response> listGames(
+    String gamename,
+    String sortBy,
+    int start,
+    int cnt,
+    String categories,
+  ) async {
     final raw = await http.get(
       Uri.parse(
-        "${ApiEndpoints.baseUrl}search?entity=game&gamename=$gamename&sortby=$sortBy",
+        "${ApiEndpoints.baseUrl}/search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories",
       ),
     );
 
@@ -220,12 +229,32 @@ class GameApiClient {
       jsonBody as Map<String, dynamic>,
     );
 
-    final games = <GameModel>[];
-    for (var game in response.data as List<dynamic>) {
-      games.add(GameModel.fromJson(game as Map<String, dynamic>));
+    List<GameModel> games = <GameModel>[];
+    for (var json in response.data as List<dynamic>) {
+      games.add(_jsonToGameModel(json as Map<String, dynamic>));
     }
 
     return Response(code: response.code, message: response.message, data: games);
+  }
+
+  Future<Response> getCategories() async {
+    final raw = await http.get(
+      Uri.parse(
+        "${ApiEndpoints.baseUrl}/categories",
+      ),
+    );
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    List<CategoryModel> categories = [];
+    for (var json in response.data as List<dynamic>) {     
+      categories.add(_jsonToCategoryModel(json));
+    }
+
+    return Response(code: response.code, message: response.message, data: categories);
   }
 
   Future<Response> recommendGame(String token, String gameId) async {
