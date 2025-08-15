@@ -7,7 +7,6 @@ part 'game_request_model.g.dart';
 @freezed
 abstract class GameRequestModel with _$GameRequestModel {
   const factory GameRequestModel({
-    @JsonKey(name: 'requestid') String? requestId,
     @JsonKey(name: 'publisherid') required String publisherId,
     @JsonKey(name: 'gamename') required String gameName,
     @JsonKey(name: 'briefdescription') required String briefDescription,

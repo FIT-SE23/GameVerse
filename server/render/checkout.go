@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -218,6 +219,45 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 	return jsonResponse(c, http.StatusOK, "", links[1])
 }
 
+func checkPaymentIdValid(accessToken string, paymentId string) (bool, error) {
+	url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return false, errors.New("cannot create request")
+	}
+
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+	var result map[string]any
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	fmt.Println(result)
+
+	state, exists := result["state"]
+	if !exists {
+		return true, nil
+	}
+	return state != "approved", nil
+}
+
 func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 	payerId := c.QueryParam("PayerID")
 	paymentId := c.QueryParam("paymentId")
@@ -227,6 +267,10 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 	accessToken := getAccessToken(id, secret)
 	if accessToken == "" {
 		return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
+	}
+
+	if valid, err := checkPaymentIdValid(accessToken, paymentId); !valid || err != nil {
+		return jsonResponse(c, http.StatusBadRequest, "Checkout failed", "")
 	}
 	paymentData := map[string]any{
 		"payer_id": payerId,
@@ -238,11 +282,13 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	_, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-	}
+	/*
+		_, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+		if err != nil {
+			fmt.Println("Error creating request:", err)
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+	*/
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
