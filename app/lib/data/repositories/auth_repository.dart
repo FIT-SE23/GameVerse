@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:gameverse/utils/response.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:gameverse/domain/models/user_model/user_model.dart';
 import 'package:gameverse/data/services/auth_api_client.dart';
@@ -40,8 +39,8 @@ class AuthRepository {
   // Initialize Supabase - call this before using auth
   static Future<void> initializeSupabase() async {
     await Supabase.initialize(
-      url: dotenv.env['SUPABASE_URL']!,
-      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+      url: String.fromEnvironment('SUPABASE_URL'),
+      anonKey: String.fromEnvironment('SUPABASE_ANON_KEY'),
       debug: false,
     );
   }

@@ -74,6 +74,9 @@ dependencies:
   # A http networking package, supports Request cancelation, File uploading/downloading
   dio: ^5.9.0
 
+  # # A secure way to store dotenv by obfuscating
+  # envied: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
