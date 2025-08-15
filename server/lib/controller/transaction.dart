@@ -1,4 +1,7 @@
-import 'dart:ffi';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import "../config/config.dart";
 
 class Transaction {
   final String id;
@@ -57,4 +60,19 @@ class Transaction {
         this.isRefundable.toString() +
         "}";
   }
+}
+
+Future<Response> getTransactions(String token) async {
+  final request = http.MultipartRequest(
+    "POST",
+    Uri.parse(serverURL + "transactions"),
+  )..headers["Authorization"] = "Bearer " + token;
+
+  final raw = await request.send();
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(await raw.stream.bytesToString()) as Map<String, dynamic>,
+  );
+
+  return response;
 }

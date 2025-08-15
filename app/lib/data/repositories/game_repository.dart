@@ -1,3 +1,4 @@
+import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path/path.dart' as path;
@@ -7,8 +8,16 @@ import 'package:gameverse/data/services/game_api_client.dart';
 import 'package:gameverse/utils/response.dart';
 
 
+class GameSortCriteria {
+  static final popularity = 'popularity';
+  static final price = 'price';
+  static final date = 'date';
+  static final recommend = 'recommend';
+}
+
 class GameRepository {
   final http.Client client;
+  static late GameApiClient gameApiClient;
 
   static List<GameModel> _allGames = [];
   List<GameModel> get allGames => _allGames;
@@ -17,6 +26,7 @@ class GameRepository {
   List<GameModel> get libraryGames => _libraryGames;
 
   static Future<GameRepository> fromService() async {
+    gameApiClient = GameApiClient();
     var featuredGames = await _getMockFeaturedGames();
     _allGames = featuredGames;
     return GameRepository();
@@ -24,12 +34,22 @@ class GameRepository {
 
   GameRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
   
-  Future<List<GameModel>> searchGames(List<String> name) async {
-    return _allGames;
+  Future<List<GameModel>> searchGames(
+    String title,
+    String sortBy,
+    int start,
+    int cnt,
+    List<String> categories
+  ) async {
+    return await _getDataFromResponse(gameApiClient.listGames(title, sortBy, start, cnt, categories.join(','))) as List<GameModel>;
+  }
+
+  Future<List<CategoryModel>> getCategories() async {
+    return await _getDataFromResponse(gameApiClient.getCategories()) as List<CategoryModel>;
   }
 
   Future<List<GameModel>> getLibraryGames(String token, String userId) async {
-    final Response response = await GameApiClient(client: client).getLibraryGames(token, userId);
+    final Response response = await gameApiClient.getLibraryGames(token, userId);
 
     if (response.code != 200) {
       return Future.error(response.message);
@@ -69,7 +89,6 @@ class GameRepository {
   }
 
   static Future<List<GameModel>> _getMockFeaturedGames() async {
-    final gameApiClient = GameApiClient();
     return [
       await _getDataFromResponse(gameApiClient.getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
       await _getDataFromResponse(gameApiClient.getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,

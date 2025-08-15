@@ -26,36 +26,42 @@ class AddToCartButton extends StatelessWidget {
         final isInCart = transactionViewModel.isGameInCart(game.gameId);
 
         if (isInCart) {
-          return ElevatedButton(
-            onPressed: () => _removeFromCart(context, transactionViewModel),
-            style: theme.elevatedButtonTheme.style!.copyWith(
-              // Use different color if game is already in cart
-              backgroundColor: WidgetStatePropertyAll(
-                AppTheme.oppositeThemeColors(theme.brightness).getShell,
+          return Tooltip(
+            message: 'Remove from cart',
+            child: ElevatedButton(
+              onPressed: () => _removeFromCart(context, transactionViewModel),
+              style: theme.elevatedButtonTheme.style!.copyWith(
+                // Use different color if game is already in cart
+                backgroundColor: WidgetStatePropertyAll(
+                  AppTheme.oppositeThemeColors(theme.brightness).getShell,
+                ),
               ),
-            ),
-            child: Icon(
-              Icons.shopping_cart,
-              color: AppTheme.oppositeThemeColors(theme.brightness).getText,
+              child: Icon(
+                Icons.shopping_cart,
+                color: AppTheme.oppositeThemeColors(theme.brightness).getText,
+              ),
             ),
           );
         }
 
-        return ElevatedButton(
-          onPressed: () => 
-          {
-            if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.unauthenticated) {
-              context.push(Routes.login),
-            } else {
-              _addToCart(context, transactionViewModel),
-            }
-          },
-          style: theme.elevatedButtonTheme.style!.copyWith(
-            backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-          ),
-          child: Icon(
-            Icons.add_shopping_cart,
-            color: AppTheme.currentThemeColors(theme.brightness).getText,
+        return Tooltip(
+          message: 'Add to cart',
+          child: ElevatedButton(
+            onPressed: () => 
+            {
+              if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.unauthenticated) {
+                context.push(Routes.login),
+              } else {
+                _addToCart(context, transactionViewModel),
+              }
+            },
+            style: theme.elevatedButtonTheme.style!.copyWith(
+              backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+            ),
+            child: Icon(
+              Icons.add_shopping_cart,
+              color: AppTheme.currentThemeColors(theme.brightness).getText,
+            ),
           ),
         );
       },

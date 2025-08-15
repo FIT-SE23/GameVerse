@@ -117,7 +117,7 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Logo and title
-                      const SizedBox(height: 32),
+                      // const SizedBox(height: 32),
                       // Center(
                       //   child: Transform.scale(
                       //     scale: 1,
