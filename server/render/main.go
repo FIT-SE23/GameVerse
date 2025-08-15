@@ -180,6 +180,14 @@ func main() {
 		return updatePublisher(c, client)
 	})
 
+	e.POST("/transactions", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+
+		return getTransactions(c, client, userid)
+	})
 	e.POST("/paypal/create", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
