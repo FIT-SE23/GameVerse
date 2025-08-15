@@ -42,15 +42,16 @@ class AppRouter {
             (state.matchedLocation == Routes.settings ||
              state.matchedLocation == Routes.profile ||
              state.matchedLocation == Routes.transactions ||
-             state.matchedLocation == Routes.library
+             state.matchedLocation == Routes.library ||
+             state.matchedLocation == Routes.publisherDashboard ||
+              state.matchedLocation == Routes.publisherRegistration
              )) {
           return Routes.login;
         }
 
         // Guard against accessing publisher routes when not type of publisher
-        if (!authViewModel.isPublisher &&
-            (state.matchedLocation == Routes.publisherRegistration ||
-             state.matchedLocation == Routes.publisherDashboard)) {
+        
+        if (isLoggedIn && authViewModel.user!.type != 'publisher' && state.matchedLocation == Routes.publisherDashboard) {
           return Routes.publisherRegistration;
         }
         

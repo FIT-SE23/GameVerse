@@ -1,26 +1,41 @@
 import 'package:flutter/foundation.dart';
+import 'package:gameverse/data/repositories/auth_repository.dart';
+import 'package:gameverse/data/repositories/game_repository.dart';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 import 'package:gameverse/domain/models/user_model/user_model.dart';
+import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 enum PublisherViewState { loading, success, error }
 
 class PublisherViewModel extends ChangeNotifier {
-  PublisherViewState _state = PublisherViewState.loading;
-  String _errorMessage = '';
-  List<GameModel> _publishedGames = [];
-  List<GameRequestModel> _pendingRequests = [];
-  UserModel? _publisherProfile;
+  final GameRepository _gameRepository;
+  final AuthRepository _authRepository;
 
-  // Getters
+  PublisherViewModel({required GameRepository gameRepository, required AuthRepository authRepository})
+      : _gameRepository = gameRepository,
+        _authRepository = authRepository;
+  
+  PublisherViewState _state = PublisherViewState.loading;
   PublisherViewState get state => _state;
+
+  String _errorMessage = '';
   String get errorMessage => _errorMessage;
+
+  List<GameModel> _publishedGames = [];
   List<GameModel> get publishedGames => _publishedGames;
+
+  List<GameRequestModel> _pendingRequests = [];
   List<GameRequestModel> get pendingRequests => _pendingRequests;
+
+  UserModel? _publisherProfile;
   UserModel? get publisherProfile => _publisherProfile;
+
+  List<CategoryModel> _categories = [];
+  List<CategoryModel> get categories => _categories;
 
   // Register as publisher
   Future<bool> registerAsPublisher({
@@ -61,14 +76,33 @@ class PublisherViewModel extends ChangeNotifier {
     }
   }
 
+  // Load categories
+  Future<List<CategoryModel>> getCategories() async {
+    try {
+      _state = PublisherViewState.loading;
+      notifyListeners();
+
+      if (_gameRepository.categories.isNotEmpty) {
+        _categories = _gameRepository.categories;
+      } else {
+        _categories = await _gameRepository.getCategories();
+      }
+
+      _state = PublisherViewState.success;
+    } catch (e) {
+      _state = PublisherViewState.error;
+      _errorMessage = 'Failed to load categories: $e';
+    } finally {
+      notifyListeners();
+    }
+    return _categories;
+  }
+
   // Load publisher data with mock data
   Future<void> loadPublisherData(String publisherId) async {
     try {
       _state = PublisherViewState.loading;
       notifyListeners();
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
 
       // Create mock publisher profile
       _publisherProfile = UserModel(
@@ -206,7 +240,7 @@ class PublisherViewModel extends ChangeNotifier {
     required String publisherId,
     required String gameName,
     required String description,
-    List<CategoryModel> categories = const [],
+    required List<CategoryModel> categories,
     required double price,
     required String briefDescription,
     required String requirements,
@@ -235,7 +269,14 @@ class PublisherViewModel extends ChangeNotifier {
         exes: exes,
       );
 
-      debugPrint('Requesting game publication: $newRequest');
+      // debugPrint('Requesting game publication: $newRequest');
+      bool isSuccess = await _gameRepository.
+                              requestGamePublication(_authRepository.accessToken!, newRequest);
+      if (!isSuccess) {
+        _errorMessage = 'Failed to request game publication';
+        notifyListeners();
+        return false;
+      }
 
       _pendingRequests.insert(0, newRequest);
       notifyListeners();

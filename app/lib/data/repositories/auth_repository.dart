@@ -49,29 +49,29 @@ class AuthRepository {
 
   Future<UserModel?> checkSession() async {
     try {
-      final token = await SecureStorageService.getToken();
-      debugPrint('Checking session with token: $token');
-      if (token != null && token.isNotEmpty) {
-        final isValid = await _apiClient.verifyToken(token);
-        debugPrint('Token validity: $isValid');
-        if (!isValid) {
-          await SecureStorageService.clearAuthData();
-          return null;
-        }
+      // final token = await SecureStorageService.getToken();
+      // debugPrint('Checking session with token: $token');
+      // if (token != null && token.isNotEmpty) {
+      //   final isValid = await _apiClient.verifyToken(token);
+      //   debugPrint('Token validity: $isValid');
+      //   if (!isValid) {
+      //     await SecureStorageService.clearAuthData();
+      //     return null;
+      //   }
 
-        // Get stored user data
-        final userData = await SecureStorageService.getUserId();
-        if (userData != null) {
-          _currentUser = UserModel(
-            id: userData,
-            username: '', // Fetch from server
-            email: '', // Fetch from server
-            type: 'user', // Default type, can be updated later
-          );
-          _accessToken = token;
-          return _currentUser;
-        }
-      }
+      //   // Get stored user data
+      //   final userData = await SecureStorageService.getUserId();
+      //   if (userData != null) {
+      //     _currentUser = UserModel(
+      //       id: userData,
+      //       username: '', // Fetch from server
+      //       email: '', // Fetch from server
+      //       type: 'user', // Default type, can be updated later
+      //     );
+      //     _accessToken = token;
+      //     return _currentUser;
+      //   }
+      // }
 
       // If not found, check supabase session
       final session = supabase.auth.currentSession;

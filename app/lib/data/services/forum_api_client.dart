@@ -27,7 +27,6 @@ class ForumApiClient {
   Future<Response> getForum(String id) async {
     try {
       final response = await _client.get(Uri.parse('${ApiEndpoints.baseUrl}/forum/$id'));
-      debugPrint('Get forum response: ${response.body}');
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         return Response.fromJson(200, jsonData);

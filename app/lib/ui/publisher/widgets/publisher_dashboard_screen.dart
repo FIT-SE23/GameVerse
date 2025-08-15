@@ -333,37 +333,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
             borderRadius: BorderRadius.circular(8),
             color: theme.colorScheme.surfaceContainerHighest,
           ),
-          child: game.headerImage.isNotEmpty
-              ? Image.network(
-                  game.headerImage,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.image_not_supported,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    );
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                            : null,
-                      ),
-                    );
-                  },
-                )
-                : Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                )
+          child: _buildGameImage(game.headerImage, theme),
         ),
         title: Text(
           game.name,
@@ -395,6 +365,68 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGameImage(String imageUrl, ThemeData theme) {
+    // Handle empty URLs
+    if (imageUrl.isEmpty) {
+      return Center(
+        child: Icon(
+          Icons.image_not_supported,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
+    }
+
+    // Validate URL format
+    Uri? uri;
+    try {
+      uri = Uri.parse(imageUrl);
+      
+      // If it's a file URI, ensure it has a proper path
+      if (uri.scheme == 'file' && (uri.path.isEmpty || uri.path == '/')) {
+        throw FormatException('Invalid file path');
+      }
+      
+      // Check if URL has a scheme, if not assume it's a network image
+      if (uri.scheme.isEmpty) {
+        imageUrl = 'https://$imageUrl';
+      }
+    } catch (e) {
+      debugPrint('Invalid image URL: $imageUrl - $e');
+      return Center(
+        child: Icon(
+          Icons.broken_image,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
+    }
+
+    // Load image with error handling
+    return Image.network(
+      imageUrl,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        debugPrint('Image error: $error');
+        return Center(
+          child: Icon(
+            Icons.image_not_supported,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        );
+      },
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: CircularProgressIndicator(
+            value: loadingProgress.expectedTotalBytes != null
+                ? loadingProgress.cumulativeBytesLoaded /
+                  loadingProgress.expectedTotalBytes!
+                : null,
+          ),
+        );
+      },
     );
   }
 

@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path/path.dart' as path;
@@ -25,6 +27,9 @@ class GameRepository {
   static List<GameModel> _libraryGames = [];
   List<GameModel> get libraryGames => _libraryGames;
 
+  static List<CategoryModel> _categories = [];
+  List<CategoryModel> get categories => _categories;
+
   static Future<GameRepository> fromService() async {
     gameApiClient = GameApiClient();
     var featuredGames = await _getMockFeaturedGames();
@@ -45,7 +50,9 @@ class GameRepository {
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    return await _getDataFromResponse(gameApiClient.getCategories()) as List<CategoryModel>;
+    _categories = await _getDataFromResponse(gameApiClient.getCategories()) as List<CategoryModel>;
+
+    return _categories;
   }
 
   Future<List<GameModel>> getLibraryGames(String token, String userId) async {
@@ -142,5 +149,28 @@ class GameRepository {
     }
 
     return false; // No executables found
+  }
+
+  Future<bool> requestGamePublication(String token, GameRequestModel request) async {
+    final Response response = await gameApiClient.addGame(
+      token,
+      request.gameName,
+      request.description,
+      request.briefDescription,
+      request.requirements,
+      request.price,
+      request.binaries,
+      request.media,
+      [request.headerImage],
+      request.exes,
+      // Convert categories to a list of name strings and connect by ','
+      request.categories.map((category) => category.name).toList().join(','),
+    );
+
+    if (response.code != 200) {
+      return false;
+    }
+
+    return true;
   }
 }

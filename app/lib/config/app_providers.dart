@@ -90,7 +90,10 @@ Future<List<SingleChildWidget>> appProviders() async {
       ),
     ),
     ChangeNotifierProvider<PublisherViewModel>(
-      create: (_) => PublisherViewModel(),
+      create: (context) => PublisherViewModel(
+        gameRepository: context.read<GameRepository>(),
+        authRepository: context.read<AuthRepository>(),
+      ),
     ),
     ChangeNotifierProvider<AdvancedSearchViewmodel>(
       create: (context) => AdvancedSearchViewmodel(

@@ -18,14 +18,12 @@ _GameRequestModel _$GameRequestModelFromJson(Map<String, dynamic> json) =>
       categories: (json['categories'] as List<dynamic>)
           .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      media: (json['media'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      media: (json['media'] as List<dynamic>).map((e) => e as String).toList(),
       requestStatus: json['status'] as String,
       binaries: (json['binaries'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      exes: (json['exes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      exes: (json['exes'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$GameRequestModelToJson(_GameRequestModel instance) =>
