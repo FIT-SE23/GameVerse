@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:http/http.dart' as http;
@@ -86,8 +85,20 @@ class GameRepository {
     return game;
   }
 
-  Future<List<GameModel>> getFeaturedGames() async {
-    return _getMockFeaturedGames();
+  Future<List<GameModel>> getDiscountededGames() async {
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.price, 0, 10, '')) as List<GameModel>;
+  }
+
+  Future<List<GameModel>> getNewGames() async {
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.date, 0, 10, '')) as List<GameModel>;
+  }
+
+  Future<List<GameModel>> getPopularGames() async {
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, '')) as List<GameModel>;
+  }
+
+  Future<List<GameModel>> getTopRecommendedGames() async {
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 5, '')) as List<GameModel>;
   }
 
   static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {

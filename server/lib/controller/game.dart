@@ -341,12 +341,12 @@ class Category {
   factory Category.fromJson(Map<String, dynamic> json) {
     final categoryid = json["categoryid"] as String?;
     final categoryName = json["categoryname"] as String?;
-    final isSensitive = json["issensitive"] as String?;
+    final isSensitive = json["issensitive"].toString().toLowerCase() as String?;
 
     return Category(
       categoryId: categoryid,
       name: categoryName,
-      isSensitive: isSensitive == "TRUE",
+      isSensitive: isSensitive == "true",
     );
   }
 
