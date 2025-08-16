@@ -3,7 +3,7 @@
 class ApiEndpoints {
   // Use your server URL instead of Steam API
   // For local development vs production
-  static const bool debug = bool.fromEnvironment('DEBUG', defaultValue: false);
+  static const bool debug = bool.fromEnvironment('DEBUG', defaultValue: true);
   static const String baseUrl = debug 
       ? 'http://localhost:1323'         // Local development URL
       : 'https://gameverse-99u7.onrender.com'; // Production URL

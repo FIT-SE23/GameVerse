@@ -30,32 +30,26 @@ class GameApiClient {
   }
 
   Future<Response> addGame(
-    String token,
+    String publisherid,
     String name,
     String description,
-    String briefDescription,
-    String requirement,
-    double price,
     List<String> binaries,
     List<String> media,
-    List<String> mediaHeader,
+    String mediaheader,
     List<String> exes,
     String categories,
   ) async {
     final request =
         http.MultipartRequest("POST", Uri.parse(ApiEndpoints.gameUrl))
-          ..headers["Authorization"] = token
+          ..fields["publisherid"] = publisherid
           ..fields["gamename"] = name
           ..fields["description"] = description
-          ..fields["briefdescription"] = briefDescription
-          ..fields["requirement"] = requirement
-          ..fields["price"] = price.toString()
-          ..fields["categories"] = categories;
+          ..fields["categories"] = categories
+          ..fields["mediaheader"] = mediaheader;
 
     try {
       await _addFiles(request, 'binary', binaries);
       await _addFiles(request, 'media', media);
-      await _addFiles(request, 'media_header', mediaHeader);
       await _addFiles(request, 'executable', exes);
     } catch (err) {
       if (err is Response) return err;
