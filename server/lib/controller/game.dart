@@ -141,7 +141,7 @@ Future<Response> addGame(
         ..fields["requirement"] = requirement
         ..fields["price"] = price.toString()
         ..fields["categories"] = categories
-        ..headers["Authorization"] = token;
+        ..headers["Authorization"] = "Bearer " + token;
 
   try {
     await _addFiles(request, 'binary', binaries);
