@@ -17,6 +17,8 @@ class CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final double radius = 6;
     
     if (!isSelected) {
       return InkWell(
@@ -28,7 +30,7 @@ class CategoryChip extends StatelessWidget {
               color: AppTheme.currentThemeColors(theme.brightness).getText,
               width: 1,
             ),
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(radius),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -49,7 +51,7 @@ class CategoryChip extends StatelessWidget {
               color: AppTheme.currentThemeColors(theme.brightness).getText,
               width: 1,
             ),
-            borderRadius: BorderRadius.zero,
+            borderRadius: BorderRadius.circular(radius),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
