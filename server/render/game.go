@@ -317,6 +317,8 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	categories := c.QueryParam("categories")
 	categoryList := strings.Split(categories, ",")
 	start, err := strconv.Atoi(c.QueryParam("start"))
+	onSale := c.QueryParam("onsale") == "1"
+
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -328,7 +330,12 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusOK, "", []map[string]string{})
 	}
 
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale!inner(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
+	if onSale {
+		today := time.Now().UTC().UTC().Format("2006-01-02")
+		fmt.Println(today)
+		filter = filter.Not("Game_Sale.gameid", "is", "NULL").Lte("Game_Sale.startdate", today).Gte("Game_Sale.enddate", today)
+	}
 
 	var rep string
 	if sortBy == "price" {
@@ -336,7 +343,11 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 			"start": start,
 			"cnt":   cnt,
 		}
-		rep = client.Rpc("sortgamebyprice", "", rangeLimit)
+		if onSale {
+			rep = client.Rpc("sortonsalegamebyprice", "", rangeLimit)
+		} else {
+			rep = client.Rpc("sortgamebyprice", "", rangeLimit)
+		}
 		var raw []map[string]string
 		err = json.Unmarshal([]byte(rep), &raw)
 		if err != nil {
@@ -354,7 +365,11 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 			"start": start,
 			"cnt":   cnt,
 		}
-		rep = client.Rpc("sortgamebypopularity", "", rangeLimit)
+		if onSale {
+			rep = client.Rpc("sortonsalegamebypopularity", "", rangeLimit)
+		} else {
+			rep = client.Rpc("sortgamebypopularity", "", rangeLimit)
+		}
 		var raw []map[string]string
 		err = json.Unmarshal([]byte(rep), &raw)
 		if err != nil {
