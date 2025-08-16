@@ -15,10 +15,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameRequestModel {
 
-@JsonKey(name: 'publisherid') String get publisherId;@JsonKey(name: 'gamename') String get gameName;@JsonKey(name: 'briefdescription') String get briefDescription; String get description; String get requirements;@JsonKey(name: 'headerimage') String get headerImage; double get price; List<CategoryModel> get categories; List<String>? get media;// Request related fields
+@JsonKey(name: 'publisherid') String get publisherId;@JsonKey(name: 'gamename') String get gameName;@JsonKey(name: 'briefdescription') String get briefDescription; String get description; String get requirements;@JsonKey(name: 'headerimage') String get headerImage; double get price; List<CategoryModel> get categories; List<String> get media;// Request related fields
 @JsonKey(name: 'status') String get requestStatus;// e.g., 'pending', 'approved', 'rejected
 // Upload related fields
- List<String> get binaries; List<String>? get exes;
+ List<String> get binaries; List<String> get exes;
 /// Create a copy of GameRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,7 +51,7 @@ abstract mixin class $GameRequestModelCopyWith<$Res>  {
   factory $GameRequestModelCopyWith(GameRequestModel value, $Res Function(GameRequestModel) _then) = _$GameRequestModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'status') String requestStatus, List<String> binaries, List<String>? exes
+@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String> media,@JsonKey(name: 'status') String requestStatus, List<String> binaries, List<String> exes
 });
 
 
@@ -68,7 +68,7 @@ class _$GameRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of GameRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = freezed,Object? requestStatus = null,Object? binaries = null,Object? exes = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = null,Object? requestStatus = null,Object? binaries = null,Object? exes = null,}) {
   return _then(_self.copyWith(
 publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
 as String,gameName: null == gameName ? _self.gameName : gameName // ignore: cast_nullable_to_non_nullable
@@ -78,11 +78,11 @@ as String,requirements: null == requirements ? _self.requirements : requirements
 as String,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,categories: null == categories ? _self.categories : categories // ignore: cast_nullable_to_non_nullable
-as List<CategoryModel>,media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,requestStatus: null == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
+as List<CategoryModel>,media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as List<String>,requestStatus: null == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
 as String,binaries: null == binaries ? _self.binaries : binaries // ignore: cast_nullable_to_non_nullable
-as List<String>,exes: freezed == exes ? _self.exes : exes // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>,exes: null == exes ? _self.exes : exes // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String>? exes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String> exes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameRequestModel() when $default != null:
 return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.requestStatus,_that.binaries,_that.exes);case _:
@@ -188,7 +188,7 @@ return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.de
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String>? exes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String> exes)  $default,) {final _that = this;
 switch (_that) {
 case _GameRequestModel():
 return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.requestStatus,_that.binaries,_that.exes);case _:
@@ -208,7 +208,7 @@ return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.de
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String>? exes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'status')  String requestStatus,  List<String> binaries,  List<String> exes)?  $default,) {final _that = this;
 switch (_that) {
 case _GameRequestModel() when $default != null:
 return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.requestStatus,_that.binaries,_that.exes);case _:
@@ -223,7 +223,7 @@ return $default(_that.publisherId,_that.gameName,_that.briefDescription,_that.de
 @JsonSerializable()
 
 class _GameRequestModel implements GameRequestModel {
-  const _GameRequestModel({@JsonKey(name: 'publisherid') required this.publisherId, @JsonKey(name: 'gamename') required this.gameName, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.description, required this.requirements, @JsonKey(name: 'headerimage') required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String>? media, @JsonKey(name: 'status') required this.requestStatus, required final  List<String> binaries, required final  List<String>? exes}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
+  const _GameRequestModel({@JsonKey(name: 'publisherid') required this.publisherId, @JsonKey(name: 'gamename') required this.gameName, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.description, required this.requirements, @JsonKey(name: 'headerimage') required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String> media, @JsonKey(name: 'status') required this.requestStatus, required final  List<String> binaries, required final  List<String> exes}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
   factory _GameRequestModel.fromJson(Map<String, dynamic> json) => _$GameRequestModelFromJson(json);
 
 @override@JsonKey(name: 'publisherid') final  String publisherId;
@@ -240,13 +240,11 @@ class _GameRequestModel implements GameRequestModel {
   return EqualUnmodifiableListView(_categories);
 }
 
- final  List<String>? _media;
-@override List<String>? get media {
-  final value = _media;
-  if (value == null) return null;
+ final  List<String> _media;
+@override List<String> get media {
   if (_media is EqualUnmodifiableListView) return _media;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableListView(_media);
 }
 
 // Request related fields
@@ -262,13 +260,11 @@ class _GameRequestModel implements GameRequestModel {
   return EqualUnmodifiableListView(_binaries);
 }
 
- final  List<String>? _exes;
-@override List<String>? get exes {
-  final value = _exes;
-  if (value == null) return null;
+ final  List<String> _exes;
+@override List<String> get exes {
   if (_exes is EqualUnmodifiableListView) return _exes;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableListView(_exes);
 }
 
 
@@ -305,7 +301,7 @@ abstract mixin class _$GameRequestModelCopyWith<$Res> implements $GameRequestMod
   factory _$GameRequestModelCopyWith(_GameRequestModel value, $Res Function(_GameRequestModel) _then) = __$GameRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'status') String requestStatus, List<String> binaries, List<String>? exes
+@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String> media,@JsonKey(name: 'status') String requestStatus, List<String> binaries, List<String> exes
 });
 
 
@@ -322,7 +318,7 @@ class __$GameRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of GameRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = freezed,Object? requestStatus = null,Object? binaries = null,Object? exes = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = null,Object? requestStatus = null,Object? binaries = null,Object? exes = null,}) {
   return _then(_GameRequestModel(
 publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
 as String,gameName: null == gameName ? _self.gameName : gameName // ignore: cast_nullable_to_non_nullable
@@ -332,11 +328,11 @@ as String,requirements: null == requirements ? _self.requirements : requirements
 as String,headerImage: null == headerImage ? _self.headerImage : headerImage // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,categories: null == categories ? _self._categories : categories // ignore: cast_nullable_to_non_nullable
-as List<CategoryModel>,media: freezed == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,requestStatus: null == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
+as List<CategoryModel>,media: null == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
+as List<String>,requestStatus: null == requestStatus ? _self.requestStatus : requestStatus // ignore: cast_nullable_to_non_nullable
 as String,binaries: null == binaries ? _self._binaries : binaries // ignore: cast_nullable_to_non_nullable
-as List<String>,exes: freezed == exes ? _self._exes : exes // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>,exes: null == exes ? _self._exes : exes // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

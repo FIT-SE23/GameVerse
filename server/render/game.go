@@ -317,6 +317,8 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	categories := c.QueryParam("categories")
 	categoryList := strings.Split(categories, ",")
 	start, err := strconv.Atoi(c.QueryParam("start"))
+	onSale := c.QueryParam("onsale") == "1"
+
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -324,8 +326,16 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+	if start < 0 || cnt < 0 {
+		return jsonResponse(c, http.StatusOK, "", []map[string]string{})
+	}
 
-	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
+	filter := client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale!inner(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
+	if onSale {
+		today := time.Now().UTC().UTC().Format("2006-01-02")
+		fmt.Println(today)
+		filter = filter.Not("Game_Sale.gameid", "is", "NULL").Lte("Game_Sale.startdate", today).Gte("Game_Sale.enddate", today)
+	}
 
 	var rep string
 	if sortBy == "price" {
@@ -333,7 +343,11 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 			"start": start,
 			"cnt":   cnt,
 		}
-		rep = client.Rpc("sortgamebyprice", "", rangeLimit)
+		if onSale {
+			rep = client.Rpc("sortonsalegamebyprice", "", rangeLimit)
+		} else {
+			rep = client.Rpc("sortgamebyprice", "", rangeLimit)
+		}
 		var raw []map[string]string
 		err = json.Unmarshal([]byte(rep), &raw)
 		if err != nil {
@@ -346,6 +360,27 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		}
 		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
 		// return jsonResponse(c, http.StatusOK, "", resp)
+	} else if sortBy == "popularity" {
+		rangeLimit := map[string]int{
+			"start": start,
+			"cnt":   cnt,
+		}
+		if onSale {
+			rep = client.Rpc("sortonsalegamebypopularity", "", rangeLimit)
+		} else {
+			rep = client.Rpc("sortgamebypopularity", "", rangeLimit)
+		}
+		var raw []map[string]string
+		err = json.Unmarshal([]byte(rep), &raw)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		gameids := []string{}
+		for _, info := range raw {
+			gameids = append(gameids, info["gameid"])
+		}
+		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
 	} else if sortBy == "date" {
 		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
 	} else if sortBy == "recommend" {
@@ -366,11 +401,26 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 
 	if len(categoryList) > 1 || (len(categoryList) == 1 && categoryList[0] != "") {
 		fmt.Println(categoryList)
+		sort.Strings(categoryList)
+		matchCategories := func(required []string, given []string) bool {
+			requiredIdx := 0
+			for requiredIdx < len(required) {
+				if _, found := slices.BinarySearch(given, required[requiredIdx]); found {
+					requiredIdx++
+				} else {
+					return false
+				}
+			}
+
+			return requiredIdx >= len(required)
+		}
 		games = slices.DeleteFunc(games, func(game map[string]any) bool {
 			gameCatsAny, ok := game["Category"].([]any)
 			if !ok {
 				return true
 			}
+
+			givenCat := []string{}
 			for _, gameCatAny := range gameCatsAny {
 				gameCatMap, ok := gameCatAny.(map[string]any)
 				if !ok {
@@ -381,11 +431,10 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 				if !ok {
 					return true
 				}
-				if !slices.Contains(categoryList, gameCat) {
-					return true
-				}
+				givenCat = append(givenCat, gameCat)
 			}
-			return false
+			fmt.Println(game["name"], givenCat)
+			return !matchCategories(categoryList, givenCat)
 		})
 	}
 
@@ -407,6 +456,35 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 			priceI := calcuateNewPrice(games[i])
 			priceJ := calcuateNewPrice(games[j])
 			return priceI < priceJ
+		})
+	} else if sortBy == "popularity" {
+		calcuatePopularity := func(game map[string]any) float64 {
+			recommend, ok := game["recommend"].(float64)
+			if !ok {
+				fmt.Println("Parse failed: recommend")
+				return 0
+			}
+
+			releaseDateRaw, ok := game["releasedate"].(string)
+			if !ok {
+				fmt.Println("Parse failed: releasedate")
+				return 0
+			}
+
+			releaseDate, err := time.Parse("2006-01-02", releaseDateRaw)
+			if err != nil {
+				fmt.Println(err)
+				return 0
+			}
+
+			elapsed := time.Since(releaseDate)
+			return recommend / math.Pow(elapsed.Hours()/24.0, 3)
+		}
+		sort.Slice(games, func(i, j int) bool {
+			priceI := calcuatePopularity(games[i])
+			priceJ := calcuatePopularity(games[j])
+			fmt.Println(priceI, priceJ)
+			return priceI > priceJ
 		})
 	}
 
@@ -616,7 +694,7 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
 	}
 
-	rep, _, err := client.From("User_Game").
+	_, _, err := client.From("User_Game").
 		Select("*", "", false).
 		Eq("userid", userID).
 		Eq("gameid", gameID).
@@ -634,25 +712,25 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 		if err != nil {
 			return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
 		}
+		sort.Strings(resourceIDs)
 	}
 
-	query := client.From("Game_Resource").
-		Select("Resource(resourceid, url, type, checksum)", "", false).
-		Eq("gameid", gameID).
-		In("Resource.type", []string{"binary", "executable"})
+	rep := client.Rpc("geturls", "", map[string]string{"id": gameID})
+
+	var resources []map[string]string
+	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
+		fmt.Println(err)
+		return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+	}
+	resources = slices.DeleteFunc(resources, func(resource map[string]string) bool {
+		return resource["type"] != "binary" && resource["type"] != "executable"
+	})
 
 	if len(resourceIDs) > 0 {
-		query = query.In("Resource.resourceid", resourceIDs)
-	}
-
-	rep, _, err = query.ExecuteString()
-	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch resources", "")
-	}
-
-	var resources []map[string]any
-	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+		resources = slices.DeleteFunc(resources, func(resource map[string]string) bool {
+			idx := sort.SearchStrings(resourceIDs, resource["resourceid"])
+			return idx >= len(resourceIDs) || resourceIDs[idx] != resource["resourceid"]
+		})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", resources)

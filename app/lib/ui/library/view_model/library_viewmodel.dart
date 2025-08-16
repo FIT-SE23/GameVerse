@@ -51,13 +51,12 @@ class LibraryViewModel extends ChangeNotifier {
   // Wishlist games storage (in a real app, this would be persistent)
   final Set<String> _wishlistGameIds = {};
 
-  Future<void> loadLibrary(String userId) async {
+  Future<void> loadLibrary(String token, String userId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      // Load mock library data
-      _games = await _gameRepository.getLibraryGames(userId);
+      _games = await _gameRepository.getLibraryGames(token, userId);
       _availableTags = _extractTags(_games);
       _applyFilters();
     } catch (e) {
@@ -153,24 +152,9 @@ class LibraryViewModel extends ChangeNotifier {
     // In a real app, games would have actual tags
     // For now, we'll generate some mock tags based on game properties
     final tags = <String>[];
-    
-    if (game.isInstalled) tags.add('Downloaded');
-    if (game.playtimeHours != null && game.playtimeHours! > 50) tags.add('Wishlist');
-    if (game.playtimeHours != null && game.playtimeHours! > 0) tags.add('Played');
-    if (game.price == 0) tags.add('Free to Play');
-    
-    // Mock genre tags
-    final gameNameLower = game.name.toLowerCase();
-    if (gameNameLower.contains('counter') || gameNameLower.contains('shooter')) {
-      tags.add('FPS');
+    for (final category in game.categories) {
+      tags.add(category.name.toLowerCase());
     }
-    if (gameNameLower.contains('dota') || gameNameLower.contains('strategy')) {
-      tags.add('Strategy');
-    }
-    if (gameNameLower.contains('rpg') || gameNameLower.contains('adventure')) {
-      tags.add('RPG');
-    }
-    
     return tags;
   }
 }

@@ -12,7 +12,7 @@ class ForumApiClient {
 
   Future<Response> getAllForums() async {
     try {
-      final response = await _client.get(Uri.parse('${ApiEndpoint.baseUrl}/forum'));
+      final response = await _client.get(Uri.parse('${ApiEndpoints.baseUrl}/forum'));
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         return Response.fromJson(200, jsonData);
@@ -26,8 +26,7 @@ class ForumApiClient {
 
   Future<Response> getForum(String id) async {
     try {
-      final response = await _client.get(Uri.parse('${ApiEndpoint.baseUrl}/forum/$id'));
-      debugPrint('Get forum response: ${response.body}');
+      final response = await _client.get(Uri.parse('${ApiEndpoints.baseUrl}/forum/$id'));
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         return Response.fromJson(200, jsonData);

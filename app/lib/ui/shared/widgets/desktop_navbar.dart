@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:gameverse/routing/routes.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
@@ -32,7 +33,7 @@ class DesktopNavbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Previous page buttons
+          // Previous page button
           IconButton(
             tooltip: 'Go back',
             icon: const Icon(
@@ -43,6 +44,19 @@ class DesktopNavbar extends StatelessWidget {
               if (context.canPop()) {
                 context.pop();
               }
+            },
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
+
+          // Reload page button
+          IconButton(
+            tooltip: 'Reload page',
+            icon: const Icon(
+              Icons.refresh,
+              size: 20,
+            ),
+            onPressed: () {
+              context.go(currentLocation);
             },
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
@@ -62,16 +76,16 @@ class DesktopNavbar extends StatelessWidget {
           // Navigation items
           Row(
             children: [
-              _buildNavItem(context, '/', 'Home', currentLocation),
-              _buildNavItem(context, '/library', 'Library', currentLocation),
-              _buildNavItem(context, '/forums', 'Forums', currentLocation),
-              _buildNavItem(context, '/advance-search', 'Search', currentLocation),
+              _buildNavItem(context, Routes.home, 'Home', currentLocation),
+              _buildNavItem(context, Routes.library, 'Library', currentLocation),
+              _buildNavItem(context, Routes.forums, 'Forums', currentLocation),
+              _buildNavItem(context, Routes.advancedSearch, 'Search', currentLocation),
               // If the user type is operator, show the admin panel
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
                 _buildNavItem(context, '/operator-panel', 'Operator Panel', currentLocation),
               // If the user type is publisher, show the publisher dashboard
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
-                _buildNavItem(context, '/publisher-dashboard', 'Publisher Dashboard', currentLocation),
+                _buildNavItem(context, Routes.publisherDashboard, 'Publisher Dashboard', currentLocation),
             ],
           ),
           const SizedBox(width: 16),

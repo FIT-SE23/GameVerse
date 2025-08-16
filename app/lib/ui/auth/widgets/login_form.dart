@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 
 import 'package:gameverse/config/app_theme.dart';
 
@@ -57,6 +58,8 @@ class _LoginFormState extends State<LoginForm> {
       } finally {
         if (mounted) {
           setState(() => _isLoading = false);
+          Provider.of<TransactionViewModel>(context, listen: false)
+            .init(); // Initialize transaction view model after login
         }
       }
     }

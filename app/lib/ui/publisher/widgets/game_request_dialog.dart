@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
 
 class GameRequestDialog extends StatefulWidget {
   const GameRequestDialog({super.key});
@@ -27,6 +28,9 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
   final List<String> _selectedExes = [];
   String? _headerImagePath;
 
+  final List<CategoryModel> _selectedCategories = [];
+  List<CategoryModel> _availableCategories = [];
+
   @override
   void dispose() {
     _gameNameController.dispose();
@@ -39,8 +43,37 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
     super.dispose();
   }
 
+    @override
+  void initState() {
+    super.initState();
+    // Load available categories
+    _loadCategories();
+  }
+  
+  Future<void> _loadCategories() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      final publisherViewModel = Provider.of<PublisherViewModel>(context, listen: false);
+      if (publisherViewModel.categories.isNotEmpty) {
+        _availableCategories = publisherViewModel.categories;
+      } else {
+        _availableCategories = await publisherViewModel.getCategories();
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load categories: $e')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Dialog(
       child: Container(
         width: 700,
@@ -167,21 +200,67 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
                         const SizedBox(height: 16),
                         
                         // Categories
-                        TextFormField(
-                          controller: _categoriesController,
-                          decoration: const InputDecoration(
-                            labelText: 'Categories *',
-                            hintText: 'e.g., Action, Adventure, RPG (comma-separated)',
-                            prefixIcon: Icon(Icons.category),
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Please enter at least one category';
-                            }
-                            return null;
-                          },
+                        Text(
+                          'Categories',
+                          style: theme.textTheme.titleMedium,
                         ),
+                        const SizedBox(height: 8),
+                        
+                        // Category selection chips
+                        if (_availableCategories.isEmpty && !_isLoading)
+                          Text(
+                            'No categories available',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                          )
+                        else
+                          Wrap(
+                            spacing: 8.0,
+                            runSpacing: 8.0,
+                            children: _availableCategories.map((category) {
+                              final isSelected = _selectedCategories.contains(category);
+                              return FilterChip(
+                                label: Text(category.name),
+                                selected: isSelected,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    if (selected) {
+                                      _selectedCategories.add(category);
+                                    } else {
+                                      _selectedCategories.remove(category);
+                                    }
+                                  });
+                                },
+                                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                                selectedColor: theme.colorScheme.primaryContainer,
+                                checkmarkColor: theme.colorScheme.onPrimaryContainer,
+                              );
+                            }).toList(),
+                          ),
+                        
+                        if (_selectedCategories.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Selected: ${_selectedCategories.map((e) => e.name).join(", ")}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        
+                        // Validation message for categories
+                        if (_selectedCategories.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Please select at least one category',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.error,
+                              ),
+                            ),
+                          ),
                         
                         const SizedBox(height: 16),
                         
@@ -189,7 +268,7 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
                         TextFormField(
                           controller: _priceController,
                           decoration: const InputDecoration(
-                            labelText: 'Price (USD) *',
+                            labelText: 'Price (VND) *',
                             hintText: '0.00 for free games',
                             prefixIcon: Icon(Icons.monetization_on),
                             border: OutlineInputBorder(),
@@ -509,8 +588,7 @@ class _GameRequestDialogState extends State<GameRequestDialog> {
         description: _descriptionController.text.trim(),
         briefDescription: _briefDescriptionController.text.trim(),
         requirements: _requirementsController.text.trim(),
-        // categories: _categoriesController.text.trim(),
-        categories: [],
+        categories: _selectedCategories,
         price: double.parse(_priceController.text),
         binaries: _selectedBinaries,
         media: _selectedMedia,

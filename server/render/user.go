@@ -85,6 +85,64 @@ func createUserToken(userid string) string {
 	return token
 }
 
+func verifyOAuthToken(c echo.Context, client *supabase.Client) error {
+	header := c.Request().Header
+	auth := header["Authorization"]
+	if len(auth) == 0 {
+		return jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+	}
+	rawToken := strings.Split(auth[0], " ")
+
+	email := rawToken[1]
+	// For OAuth, we assume the token is valid.
+	// Find userid by email in the database
+	rep, _, err := client.From("User").Select("userid", "", false).Eq("email", email).Single().ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+	}
+	var user map[string]string
+	err = json.Unmarshal([]byte(rep), &user)
+	if err != nil {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+	}
+	userid, ok := user["userid"]
+	if !ok {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+	}
+	return jsonResponse(c, http.StatusOK, "", map[string]string{
+		"userid": userid,
+		"token":  createUserToken(userid),
+	})
+}
+
+func verifyToken(c echo.Context) error {
+	header := c.Request().Header
+	auth := header["Authorization"]
+	if len(auth) == 0 {
+		return jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+	}
+
+	rawToken := strings.Split(auth[0], " ")
+	if len(rawToken) < 2 {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
+	}
+
+	token := rawToken[1]
+	raw, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
+		gvSecret := os.Getenv("GV_SERECT")
+		return []byte(gvSecret), nil
+	})
+	if err != nil {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+	}
+
+	if !raw.Valid {
+		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+	}
+
+	return jsonResponse(c, http.StatusOK, "", "")
+}
+
 func verifyUserToken(c echo.Context) (string, error) {
 	header := c.Request().Header
 	auth := header["Authorization"]
@@ -151,7 +209,7 @@ func login(c echo.Context, client *supabase.Client) error {
 }
 
 func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
-	rep, _, err := client.From("User_Game").Select("Game(*)", "", false).Eq("userid", userid).Eq("status", status).ExecuteString()
+	rep, _, err := client.From("User_Game").Select("Game(gameid)", "", false).Eq("userid", userid).Eq("status", status).ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}

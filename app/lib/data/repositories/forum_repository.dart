@@ -19,13 +19,11 @@ class ForumRepository {
 
       // Get forum details for each forum ID
       List<ForumModel> forums = [];
-      debugPrint('Fetching forums for IDs: $forumIds');
       for (String forumId in forumIds) {
         final forumResponse = await ForumApiClient().getForum(forumId);
         
         // Check if the forum response is successful
         if (forumResponse.code == 200) {
-          debugPrint('Forum response: ${forumResponse.data[0]}');
           forums.add(ForumModel.fromJson(forumResponse.data[0]));
         } else {
           throw Exception('Failed to load forum: ${forumResponse.message}');

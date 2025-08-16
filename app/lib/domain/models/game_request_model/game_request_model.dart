@@ -15,14 +15,14 @@ abstract class GameRequestModel with _$GameRequestModel {
     @JsonKey(name: 'headerimage') required String headerImage,
     required double price,
     required List<CategoryModel> categories,
-    required List<String>? media,
+    required List<String> media,
 
     // Request related fields
     @JsonKey(name: 'status') required String requestStatus, // e.g., 'pending', 'approved', 'rejected
 
     // Upload related fields
     required List<String> binaries,
-    required List<String>? exes,
+    required List<String> exes,
   }) = _GameRequestModel;
 
   factory GameRequestModel.fromJson(Map<String, dynamic> json) => 

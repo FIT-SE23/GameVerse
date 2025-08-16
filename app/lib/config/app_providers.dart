@@ -15,7 +15,7 @@ import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 
-import 'package:gameverse/ui/advance_search/view_model/advanced_search_viewmodel.dart';
+import 'package:gameverse/ui/advanced_search/view_model/advanced_search_viewmodel.dart';
 
 
 import '../data/repositories/auth_repository.dart';
@@ -23,6 +23,7 @@ import '../data/repositories/game_repository.dart';
 import '../data/repositories/forum_repository.dart';
 import '../data/repositories/post_repository.dart';
 import '../data/repositories/comment_repository.dart';
+import '../data/repositories/transaction_repository.dart';
 
 import '../data/services/transaction_service.dart';
 Future<List<SingleChildWidget>> appProviders() async {
@@ -33,7 +34,8 @@ Future<List<SingleChildWidget>> appProviders() async {
     Provider(create: (_) => ForumRepository()),
     Provider(create: (_) => PostRepository()),
     Provider(create: (_) => CommentRepository()),
-    Provider<TransactionService>(create: (_) => TransactionService()),
+    Provider(create: (_) => TransactionService()),
+    Provider(create: (_) => TransactionRepository()),
 
     // ViewModels
     ChangeNotifierProvider(
@@ -83,11 +85,15 @@ Future<List<SingleChildWidget>> appProviders() async {
     ),
     ChangeNotifierProvider<TransactionViewModel>(
       create: (context) => TransactionViewModel(
-        transactionService: context.read<TransactionService>(),
+        transactionRepository: context.read<TransactionRepository>(),
+        authRepository: context.read<AuthRepository>(),
       ),
     ),
     ChangeNotifierProvider<PublisherViewModel>(
-      create: (_) => PublisherViewModel(),
+      create: (context) => PublisherViewModel(
+        gameRepository: context.read<GameRepository>(),
+        authRepository: context.read<AuthRepository>(),
+      ),
     ),
     ChangeNotifierProvider<AdvancedSearchViewmodel>(
       create: (context) => AdvancedSearchViewmodel(

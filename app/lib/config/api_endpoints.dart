@@ -1,10 +1,12 @@
 // Define endpoint to communication between frontend and backend 
 
-class ApiEndpoint {
+class ApiEndpoints {
   // Use your server URL instead of Steam API
-  // static const String baseUrl = 'https://gameverse-99u7.onrender.com';
-  // For local development, uncomment this:
-  static const String baseUrl = 'http://localhost:1323';
+  // For local development vs production
+  static const bool debug = bool.fromEnvironment('DEBUG', defaultValue: false);
+  static const String baseUrl = debug 
+      ? 'http://localhost:1323'         // Local development URL
+      : 'https://gameverse-99u7.onrender.com'; // Production URL
   
   // Authentication endpoints
   static const String loginUrl = '$baseUrl/login';
@@ -16,6 +18,9 @@ class ApiEndpoint {
   static const String addGameToUrl = '$baseUrl/addgameto';
   static const String removeGameFromUrl = '$baseUrl/removegamefrom';
   static const String recommendedGamesUrl = '$baseUrl/recommended';
+
+  // Transaction endpoints
+  static const String transactionUrl = '$baseUrl/transaction';
   
   // Other endpoints
   static const String searchUrl = '$baseUrl/search';

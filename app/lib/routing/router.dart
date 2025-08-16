@@ -1,4 +1,4 @@
-import 'package:gameverse/ui/advance_search/widgets/advance_search_screen.dart';
+import 'package:gameverse/ui/advanced_search/widgets/advanced_search_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
@@ -42,15 +42,16 @@ class AppRouter {
             (state.matchedLocation == Routes.settings ||
              state.matchedLocation == Routes.profile ||
              state.matchedLocation == Routes.transactions ||
-             state.matchedLocation == Routes.library
+             state.matchedLocation == Routes.library ||
+             state.matchedLocation == Routes.publisherDashboard ||
+              state.matchedLocation == Routes.publisherRegistration
              )) {
           return Routes.login;
         }
 
         // Guard against accessing publisher routes when not type of publisher
-        if (!authViewModel.isPublisher &&
-            (state.matchedLocation == Routes.publisherRegistration ||
-             state.matchedLocation == Routes.publisherDashboard)) {
+        
+        if (isLoggedIn && authViewModel.user!.type != 'publisher' && state.matchedLocation == Routes.publisherDashboard) {
           return Routes.publisherRegistration;
         }
         
@@ -71,8 +72,13 @@ class AppRouter {
               builder: (context, state) => const LibraryScreen(),
             ),
             GoRoute(
-              path: Routes.advanceSearch,
-              builder: (context, state) => const AdvanceSearchScreen(),
+              path: Routes.advancedSearch,
+              builder: (context, state) {
+                final titleQuery = state.uri.queryParameters['title'] ?? '';
+                final categoriesList = state.uri.queryParameters['categories']?.split(',') ?? [];
+                final selectedCategories = categoriesList.toSet();
+                return AdvancedSearchScreen(titleQuery: titleQuery, selectedCategories: selectedCategories);
+              },
             ),
             GoRoute(
               path: Routes.forums,
@@ -121,7 +127,7 @@ class AppRouter {
               builder: (context, state) => const TransactionScreen(),
             ),
             GoRoute(
-              path: '/forum-posts/:gameId/:gameName',
+              path: '${Routes.forumPosts}/:gameId/:gameName',
               builder: (context, state) {
                 final gameId = state.pathParameters['gameId']!;
                 final gameName = Uri.decodeComponent(state.pathParameters['gameName']!);

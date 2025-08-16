@@ -24,6 +24,9 @@ class HomeViewModel extends ChangeNotifier {
 
   List<GameModel> _popularGames = [];
   List<GameModel> get popularGames => _popularGames;
+
+  List<GameModel> _topRecommendedGames = [];
+  List<GameModel> get topRecommendedGames => _topRecommendedGames;
   
   // Error handling
   String _errorMessage = '';
@@ -34,14 +37,10 @@ class HomeViewModel extends ChangeNotifier {
       _state = HomeViewState.loading;
       notifyListeners();
       
-      // Load featured games
-      _featuredDiscount = await _gameRepository.getFeaturedGames();
-      
-      // In a real app, we would have more API calls for different sections
-      _newReleases = _featuredDiscount;
-
-      // Same as new releases, currently just taking 5 featured discount games to demo
-      _popularGames = _featuredDiscount.take(5).toList();
+      _featuredDiscount = await _gameRepository.getDiscountededGames();
+      _newReleases = await _gameRepository.getNewGames();
+      _popularGames = await _gameRepository.getPopularGames();
+      _topRecommendedGames = await _gameRepository.getTopRecommendedGames();
       
       _state = HomeViewState.success;
     } catch (e) {

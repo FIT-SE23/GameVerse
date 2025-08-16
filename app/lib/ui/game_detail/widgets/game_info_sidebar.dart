@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
+import 'package:provider/provider.dart';
+
 
 import 'package:gameverse/routing/routes.dart';
+import 'package:gameverse/ui/game_detail/widgets/add_to_cart_button.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/config/app_theme.dart';
 import 'package:gameverse/ui/game_detail/widgets/game_download_button.dart';
+import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 
@@ -50,7 +55,15 @@ class GameInfoSidebar extends StatelessWidget {
             height: 36,
             child: ElevatedButton(
               style: theme.elevatedButtonTheme.style,
-              onPressed: () => context.push(Routes.transactions),
+              onPressed: () => {
+                if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.unauthenticated) {
+                  context.push(Routes.login),
+                } else {
+                  Provider.of<TransactionViewModel>(context, listen: false)
+                      .addToCart(game),
+                  context.push(Routes.transactions),
+                }
+              },
               child: Text(
                 'Buy game',
                 style: theme.textTheme.bodyLarge!.copyWith(color: AppTheme.oppositeThemeColors(theme.brightness).getText, fontWeight: FontWeight.bold),
@@ -64,21 +77,7 @@ class GameInfoSidebar extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Tooltip(
-                  message: 'Add to cart',
-                  child: ElevatedButton(
-                    style: theme.elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                    ),
-                    onPressed: () => context.push(Routes.transactions),
-                    child: Icon(
-                      Icons.add_shopping_cart_rounded,
-                      color: AppTheme.currentThemeColors(theme.brightness).getText,
-                    )
-                  ),
-                ),
-              ),
+              Expanded(child: AddToCartButton(game: game, context: context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Tooltip(
@@ -98,28 +97,12 @@ class GameInfoSidebar extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Tooltip(
-                  message: 'Recommend',
-                  child: ElevatedButton(
-                    style: theme.elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                    ),
-                    onPressed: () => context.push(Routes.transactions),
-                    child: Icon(
-                      Icons.thumb_up_alt_outlined,
-                      color: AppTheme.currentThemeColors(theme.brightness).getText,
-                    )
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Tooltip(
                   message: 'Go to forum',
                   child: ElevatedButton(
                     style: theme.elevatedButtonTheme.style!.copyWith(
                       backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
                     ),
-                    onPressed: () => context.push('/forum-posts/${game.gameId}/${Uri.encodeComponent(game.name)}'),
+                    onPressed: () => context.push('${Routes.forumPosts}/${game.gameId}/${Uri.encodeComponent(game.name)}'),
                     child: Icon(
                       Icons.forum_outlined,
                       color: AppTheme.currentThemeColors(theme.brightness).getText,
@@ -133,6 +116,74 @@ class GameInfoSidebar extends StatelessWidget {
         ...[
           // If game is owned, show download button
           GameDownloadButton(game: game),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Tooltip(
+                    message: 'Recommend',
+                    child: ElevatedButton(
+                      style: theme.elevatedButtonTheme.style!.copyWith(
+                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                      ),
+                      onPressed: () => {
+                        // Provider.of<GameDetailsViewModel>(context, listen: false)
+                        //   .recommendGame(game.gameId),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Recommended ${game.name} successfully!'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        ),
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.thumb_up_alt_outlined,
+                            color: AppTheme.currentThemeColors(theme.brightness).getText,
+                          ),
+                        ],
+                      )
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Not recommend button
+                Expanded(
+                  child: Tooltip(
+                    message: 'Not Recommend',
+                    child: ElevatedButton(
+                      style: theme.elevatedButtonTheme.style!.copyWith(
+                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                      ),
+                      onPressed: () => {
+                        // Provider.of<GameDetailsViewModel>(context, listen: false)
+                        //   .notrecommendGame(game.gameId),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Not Recommended ${game.name} successfully!'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        ),
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.thumb_down_alt_outlined,
+                            color: AppTheme.currentThemeColors(theme.brightness).getText,
+                          ),
+                        ],
+                      )
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
 
         const SizedBox(height: 16),
@@ -203,7 +254,12 @@ class GameInfoSidebar extends StatelessWidget {
           children: [
             for (String name in game.categories.map((e) => e.name))
               if (name.isNotEmpty)
-                CategoryChip(name: name, onSelect: () {}),
+                CategoryChip(
+                  name: name, 
+                  onSelect: () {
+                    context.push('${Routes.advancedSearch}?categories=$name');
+                  }
+                ),
           ]
         ),
       ],

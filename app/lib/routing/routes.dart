@@ -4,8 +4,9 @@ abstract final class Routes {
   static const signup = '/signup';
   static const gameDetails = '/game-details';
   static const library = '/library';
-  static const advanceSearch = '/advance-search';
+  static const advancedSearch = '/advanced-search';
   static const forums = '/forums';
+  static const forumPosts = '/forum-posts';
   static const profile = '/profile';
   static const settings = '/settings';
   static const about = '/about';

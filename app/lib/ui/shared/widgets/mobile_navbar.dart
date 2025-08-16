@@ -43,6 +43,16 @@ class MobileNavbar extends StatelessWidget {
               }
             },
           ),
+          // Reload page button
+          IconButton(
+            icon: Icon(
+              Icons.refresh,
+              color: Theme.of(context).appBarTheme.foregroundColor,
+            ),
+            onPressed: () {
+              context.go(currentLocation);
+            },
+          ),
 
           // Menu button
           IconButton(

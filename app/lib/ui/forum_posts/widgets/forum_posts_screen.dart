@@ -44,7 +44,10 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        // Hide the back button
+        automaticallyImplyLeading: false,
         title: Text('${widget.gameName} Forum'),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -21,4 +22,19 @@ func addPaymentMethod(c echo.Context, client *supabase.Client) error {
 	}
 
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func getPaymentMethods(c echo.Context, client *supabase.Client) error {
+	paymentMethods, _, err := client.From("PaymentMethod").Select("*", "", false).ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	var methods []map[string]any
+	err = json.Unmarshal([]byte(paymentMethods), &methods)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, "Invalid payment methods", "")
+	}
+
+	return jsonResponse(c, http.StatusOK, "", methods)
 }

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,7 +22,7 @@ void main(List<String> args) async {
   // debugPaintSizeEnabled = true;
 
   try {
-    await dotenv.load();
+    // await dotenv.load();
   } catch (e) {
     debugPrint('Failed to load .env file: $e');
   }

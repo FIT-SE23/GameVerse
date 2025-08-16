@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 // import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
@@ -63,21 +64,21 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   }
 
   Future<void> loadData({
-    String searchQuery = '',
+    String titleQuery = '',
     bool onlyDiscounted = false,
     Set<String> selectedCategories = const {}
   }) async {
     _isLoading = true;
     notifyListeners();
 
-    _searchQuery = searchQuery.toLowerCase();
+    _searchQuery = titleQuery.toLowerCase();
     _onlyDiscounted = onlyDiscounted;
     _selectedCategories = selectedCategories;
-    updateCategoryMap();
-
+    
     try {
-      _games = await _gameRepository.searchGames([]);
-      _categoryMap = _getCategories(_games);
+      _games = await _gameRepository.searchGames(titleQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList());
+      _categoryMap = await _getCategories();
+      updateCategoryMap();
       applyFilters();
     } catch (e) {
       debugPrint('Error loading advanced search: $e');
@@ -89,10 +90,12 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
 
   // This method will be changed to getting the list of categories
   // from server instead of extracting from game list
-  Map<String, bool> _getCategories(List<GameModel> games) {
+  Future<Map<String, bool>> _getCategories() async {
     Map<String, bool> categoryMap = {};
-    for (final game in games) {
-      categoryMap.addAll({for (String name in game.categories.map((e) => e.name)) name: false});
+    List<CategoryModel> categories = await _gameRepository.getCategories();
+
+    for (final category in categories) {
+      categoryMap[category.name] = false;
     }
     return Map.fromEntries(
       categoryMap.entries.toList()
@@ -100,28 +103,9 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
     );
   }
 
-  void applyFilters() {
+  void applyFilters() async {
     updateSelectedCategories();
-    _filteredGames = _games.where((game) {
-      // Keyword filter
-      if (_searchQuery.isNotEmpty) {
-        if (!game.name.toLowerCase().contains(_searchQuery)) {
-          return false;
-        }
-      }
-
-      // Category filter
-      if (_selectedCategories.isNotEmpty) {
-        final gameCategories = game.categories.map((e) => e.name).toSet();
-        if (!gameCategories.containsAll(_selectedCategories)) {
-          return false;
-        }
-      }
-
-      // Discount filter (will add later)
-
-      return true;
-    }).toList();
+    _filteredGames = await _gameRepository.searchGames(_searchQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList());
 
     notifyListeners();
   }

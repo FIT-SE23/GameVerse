@@ -166,6 +166,10 @@ func main() {
 		return addPaymentMethod(c, client)
 	})
 
+	e.GET("/payment", func(c echo.Context) error {
+		return getPaymentMethods(c, client)
+	})
+
 	e.POST("/publisher", func(c echo.Context) error {
 		return addPublisher(c, client)
 	})
@@ -176,6 +180,14 @@ func main() {
 		return updatePublisher(c, client)
 	})
 
+	e.POST("/transactions", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+
+		return getTransactions(c, client, userid)
+	})
 	e.POST("/paypal/create", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
@@ -294,6 +306,13 @@ func main() {
 	})
 	e.GET("/forum/:id", func(c echo.Context) error {
 		return getForum(c, client)
+	})
+
+	e.POST("/verify-oauth-token", func(c echo.Context) error {
+		return verifyOAuthToken(c, client)
+	})
+	e.POST("/verify-user-token", func(c echo.Context) error {
+		return verifyToken(c)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))

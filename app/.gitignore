@@ -1,3 +1,6 @@
+# Api key
+api_keys.json
+
 # Miscellaneous
 *.class
 *.lock
