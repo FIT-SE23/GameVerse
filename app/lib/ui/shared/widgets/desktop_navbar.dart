@@ -114,7 +114,7 @@ class DesktopNavbar extends StatelessWidget {
                   elevation: WidgetStateProperty.all(0),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
-                      // borderRadius: BorderRadius.circular(0),
+                      borderRadius: BorderRadius.circular(6),
                       side: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText, width: 1)
                     )
                   ),
@@ -182,7 +182,7 @@ class DesktopNavbar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(0),
+                borderRadius: BorderRadius.circular(6),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

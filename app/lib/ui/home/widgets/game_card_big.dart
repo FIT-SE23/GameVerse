@@ -18,6 +18,8 @@ class GameCardBig extends StatelessWidget {
   Widget _rawCard(BuildContext context) {
     final theme = Theme.of(context);
 
+    final double radius = 12;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         double width = constraints.maxWidth;
@@ -36,37 +38,40 @@ class GameCardBig extends StatelessWidget {
                       opacity: animation,
                       child: child,
                   ),
-                  child: Image.network(
-                    width: double.infinity,
-                    height: height,
-                    key: ValueKey(game.headerImage),
-                    game.headerImage,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Center(
-                          child: Icon(
-                            Icons.image_not_supported,
-                            color: theme.colorScheme.onSurfaceVariant,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(radius),
+                    child: Image.network(
+                      width: double.infinity,
+                      height: height,
+                      key: ValueKey(game.headerImage),
+                      game.headerImage,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: Center(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded / 
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / 
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -78,6 +83,7 @@ class GameCardBig extends StatelessWidget {
                 right: -1,
                 child: Container(
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(radius),
                     gradient: LinearGradient(
                       begin: Alignment(-0.6, 0),
                       end: Alignment(1, 0),

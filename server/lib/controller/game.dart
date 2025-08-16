@@ -141,7 +141,7 @@ Future<Response> addGame(
         ..fields["requirement"] = requirement
         ..fields["price"] = price.toString()
         ..fields["categories"] = categories
-        ..headers["Authorization"] = token;
+        ..headers["Authorization"] = "Bearer " + token;
 
   try {
     await _addFiles(request, 'binary', binaries);
@@ -257,11 +257,13 @@ Future<Response> listGames(
   int start,
   int cnt,
   String categories,
+  bool onSale,
 ) async {
+  String sonSale = onSale ? "1" : "";
   final raw = await http.get(
     Uri.parse(
       serverURL +
-          "search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories",
+          "search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories&onsale=$sonSale",
     ),
   );
 

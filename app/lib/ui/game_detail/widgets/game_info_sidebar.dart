@@ -16,10 +16,12 @@ import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 
 class GameInfoSidebar extends StatelessWidget {
   final GameModel game;
+  final String publisherName;
 
   const GameInfoSidebar({
     super.key,
     required this.game,
+    required this.publisherName,
   });
 
   @override
@@ -30,9 +32,12 @@ class GameInfoSidebar extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
-          child: Image.network(
-            game.headerImage,
-            fit: BoxFit.cover
+          child: ClipRRect(
+            borderRadius: BorderRadiusGeometry.circular(12),
+            child: Image.network(
+              game.headerImage,
+              fit: BoxFit.cover
+            ),
           ),
         ),
 
@@ -150,37 +155,37 @@ class GameInfoSidebar extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                // Not recommend button
-                Expanded(
-                  child: Tooltip(
-                    message: 'Not Recommend',
-                    child: ElevatedButton(
-                      style: theme.elevatedButtonTheme.style!.copyWith(
-                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                      ),
-                      onPressed: () => {
-                        // Provider.of<GameDetailsViewModel>(context, listen: false)
-                        //   .notrecommendGame(game.gameId),
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Not Recommended ${game.name} successfully!'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        ),
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.thumb_down_alt_outlined,
-                            color: AppTheme.currentThemeColors(theme.brightness).getText,
-                          ),
-                        ],
-                      )
-                    ),
-                  ),
-                ),
+                // const SizedBox(width: 8),
+                // // Not recommend button
+                // Expanded(
+                //   child: Tooltip(
+                //     message: 'Not Recommend',
+                //     child: ElevatedButton(
+                //       style: theme.elevatedButtonTheme.style!.copyWith(
+                //         backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                //       ),
+                //       onPressed: () => {
+                //         // Provider.of<GameDetailsViewModel>(context, listen: false)
+                //         //   .notrecommendGame(game.gameId),
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(
+                //             content: Text('Not Recommended ${game.name} successfully!'),
+                //             duration: const Duration(seconds: 2),
+                //           ),
+                //         ),
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(
+                //             Icons.thumb_down_alt_outlined,
+                //             color: AppTheme.currentThemeColors(theme.brightness).getText,
+                //           ),
+                //         ],
+                //       )
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -222,7 +227,7 @@ class GameInfoSidebar extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              'Square Enix',
+              publisherName,
               style: theme.textTheme.bodyLarge
             )
           ],

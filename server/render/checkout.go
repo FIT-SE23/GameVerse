@@ -219,7 +219,7 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 	return jsonResponse(c, http.StatusOK, "", links[1])
 }
 
-func checkPaymentIdValid(accessToken string, paymentId string) (bool, error) {
+func checkPaypalPaymentIdValid(accessToken string, paymentId string) (bool, error) {
 	url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -269,7 +269,7 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
 	}
 
-	if valid, err := checkPaymentIdValid(accessToken, paymentId); !valid || err != nil {
+	if valid, err := checkPaypalPaymentIdValid(accessToken, paymentId); !valid || err != nil {
 		return jsonResponse(c, http.StatusBadRequest, "Checkout failed", "")
 	}
 	paymentData := map[string]any{
@@ -422,13 +422,100 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 	}
 
 	defer res.Body.Close()
-	_, err = io.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println("IO read all", err)
-		return err
-	}
+	/*
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println("IO read all", err)
+			return err
+		}
+	*/
 
 	return jsonResponse(c, http.StatusOK, "", vnpayUrl+queryString)
+}
+
+func checkVNPPaymentIdValid(c echo.Context) (bool, error) {
+	hostName, err := os.Hostname()
+	if err != nil {
+		fmt.Println("Hostname", err)
+		return false, err
+	}
+
+	ipAddrs, err := net.LookupIP(hostName)
+	if err != nil || len(ipAddrs) == 0 {
+		fmt.Println("LookupIP", err)
+		return false, err
+	}
+	txnRef := c.QueryParam("vnp_TxnRef")
+	refList := strings.Split(txnRef, "|")
+	if len(refList) != 2 {
+		return false, errors.New("Missing vnp_TxnRef")
+	}
+
+	userid := refList[0]
+
+	ipAddr := ipAddrs[0].String()
+	vnpayUrl := "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction"
+	vnpCode := os.Getenv("VNP_CODE")
+	vnpHashSecret := os.Getenv("VNP_SECRET")
+	utc := time.Now().UTC()
+	now := utc.Add(time.Hour * 7)
+	query := map[string]string{
+		"vnp_RequestId":       txnRef,
+		"vnp_Version":         "2.1.1",
+		"vnp_Command":         "querydr",
+		"vnp_TmnCode":         vnpCode,
+		"vnp_TxnRef":          txnRef,
+		"vnp_OrderInfo":       userid,
+		"vnp_TransactionDate": c.QueryParam("vnp_PayDate"),
+		"vnp_CreateDate":      fmt.Sprintf("%d%02d%02d%02d%02d%02d", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second()),
+		"vnp_IpAddr":          ipAddr,
+	}
+
+	queryString := query["vnp_RequestId"] + "|" +
+		query["vnp_Version"] + "|" +
+		query["vnp_Command"] + "|" +
+		query["vnp_TmnCode"] + "|" +
+		query["vnp_TxnRef"] + "|" +
+		query["vnp_TransactionDate"] + "|" +
+		query["vnp_CreateDate"] + "|" +
+		query["vnp_IpAddr"] + "|" +
+		query["vnp_OrderInfo"]
+	hmac := hmac.New(sha512.New, []byte(vnpHashSecret))
+	hmac.Write([]byte(queryString))
+	sum := hmac.Sum(nil)
+	secureHash := hex.EncodeToString(sum)
+
+	query["vnp_SecureHash"] = secureHash
+	jsonData, err := json.Marshal(query)
+	if err != nil {
+		fmt.Println("Error marshalling JSON:", err)
+		return false, err
+	}
+	req, err := http.NewRequest("POST", vnpayUrl, bytes.NewBuffer([]byte(jsonData)))
+	if err != nil {
+		return false, err
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("Error client do", err)
+		return false, err
+	}
+
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("IO read all", err)
+		return false, err
+	}
+
+	var response map[string]string
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return false, err
+	}
+	fmt.Println(response)
+
+	return response["vnp_ResponseCode"] == "00", nil
 }
 
 func checkoutVnpay(c echo.Context, client *supabase.Client) error {
@@ -441,6 +528,9 @@ func checkoutVnpay(c echo.Context, client *supabase.Client) error {
 		}
 
 		userid := refList[0]
+		if valid, err := checkVNPPaymentIdValid(c); !valid || err != nil {
+			return jsonResponse(c, http.StatusBadRequest, "Checkout failed", "")
+		}
 		return moveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
 	}
 	transactionStatus := c.QueryParam("vnp_TransactionStatus")

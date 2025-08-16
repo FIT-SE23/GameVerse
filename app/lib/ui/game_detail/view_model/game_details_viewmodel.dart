@@ -17,6 +17,9 @@ class GameDetailsViewModel extends ChangeNotifier {
   GameModel? _gameDetail;
   GameModel? get gameDetail => _gameDetail;
 
+  String _publisherName = '';
+  String get publisherName => _publisherName;
+
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
 
@@ -33,6 +36,8 @@ class GameDetailsViewModel extends ChangeNotifier {
       notifyListeners();
 
       _gameDetail = await _gameRepository.getGameDetails(gameId);
+
+      _publisherName = _gameDetail != null ? await _gameRepository.getPublisherName(_gameDetail!.publisherId) : '';
       
       if (_gameDetail != null) {
         _isInLibrary = _gameDetail!.isOwned;

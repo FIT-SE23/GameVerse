@@ -220,19 +220,25 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                                   style: theme.textTheme.displayMedium
                                                 ),
                                                 const SizedBox(height: 8),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 1,
-                                                      child: Center(),
-                                                    ),
-                                                    const SizedBox(width: 16),
-                                                    Expanded(
-                                                      flex: 1,
-                                                      child: Center(),
-                                                    ),
-                                                  ],
+                                                Text(
+                                                  gameDetailsViewModel.gameDetail!.requirement.isNotEmpty
+                                                    ? gameDetailsViewModel.gameDetail!.requirement
+                                                    : 'No requirements',
+                                                  style: theme.textTheme.bodyLarge,
                                                 )
+                                                // Row(
+                                                //   children: [
+                                                //     Expanded(
+                                                //       flex: 1,
+                                                //       child: Center(),
+                                                //     ),
+                                                //     const SizedBox(width: 16),
+                                                //     Expanded(
+                                                //       flex: 1,
+                                                //       child: Center(),
+                                                //     ),
+                                                //   ],
+                                                // )
                                               ],
                                             )
                                           ),
@@ -260,7 +266,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                 right: negativeSpaceWidth(context),
                 child: SizedBox(
                   width: sidebarWidth,
-                  child: GameInfoSidebar(game: gameDetailsViewModel.gameDetail!),
+                  child: GameInfoSidebar(game: gameDetailsViewModel.gameDetail!, publisherName: gameDetailsViewModel.publisherName),
                 ),
               ),
             ],

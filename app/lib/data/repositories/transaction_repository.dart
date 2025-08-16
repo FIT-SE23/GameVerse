@@ -80,6 +80,7 @@ class TransactionRepository {
   Future<String> getPayPalPaymentGatewayUrl(String token) async {
     final response = await TransactionApiClient().getPayPalPaymentGatewayUrl(token);
     if (response.code == 200) {
+      print(response.data);
       return response.data as String;
     } else {
       throw Exception('Failed to fetch PayPal payment gateway URL: ${response.message}');
@@ -88,6 +89,7 @@ class TransactionRepository {
   Future<String> getVNPayPaymentGatewayUrl(String token) async {
     final response = await TransactionApiClient().getVNPayPaymentGatewayUrl(token);
     if (response.code == 200) {
+      print(response.data);
       return response.data as String;
     } else {
       throw Exception('Failed to fetch PayPal payment gateway URL: ${response.message}');

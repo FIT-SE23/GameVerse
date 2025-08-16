@@ -43,9 +43,10 @@ class GameRepository {
     String sortBy,
     int start,
     int cnt,
-    List<String> categories
+    List<String> categories,
+    bool onSale
   ) async {
-    return await _getDataFromResponse(gameApiClient.listGames(title, sortBy, start, cnt, categories.join(','))) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames(title, sortBy, start, cnt, categories.join(','), onSale)) as List<GameModel>;
   }
 
   Future<List<CategoryModel>> getCategories() async {
@@ -71,7 +72,6 @@ class GameRepository {
   }
 
   Future<GameModel?> getGameDetails(String gameId) async {
-
     // First check in library games and then in all games
     GameModel? game = _libraryGames.firstWhere(
       (game) => game.gameId == gameId,
@@ -85,20 +85,24 @@ class GameRepository {
     return game;
   }
 
+  Future<String> getPublisherName(String publisherId) async {
+    return await _getDataFromResponse(gameApiClient.getPublisherName(publisherId)) as String;
+  }
+
   Future<List<GameModel>> getDiscountededGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.price, 0, 10, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.price, 0, 10, '', true)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getNewGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.date, 0, 10, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.date, 0, 10, '', false)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getPopularGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, '', false)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getTopRecommendedGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 5, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 5, '', false)) as List<GameModel>;
   }
 
   static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {
