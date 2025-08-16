@@ -16,10 +16,12 @@ import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 
 class GameInfoSidebar extends StatelessWidget {
   final GameModel game;
+  final String publisherName;
 
   const GameInfoSidebar({
     super.key,
     required this.game,
+    required this.publisherName,
   });
 
   @override
@@ -30,9 +32,12 @@ class GameInfoSidebar extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
-          child: Image.network(
-            game.headerImage,
-            fit: BoxFit.cover
+          child: ClipRRect(
+            borderRadius: BorderRadiusGeometry.circular(12),
+            child: Image.network(
+              game.headerImage,
+              fit: BoxFit.cover
+            ),
           ),
         ),
 
@@ -222,7 +227,7 @@ class GameInfoSidebar extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              'Square Enix',
+              publisherName,
               style: theme.textTheme.bodyLarge
             )
           ],

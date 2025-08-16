@@ -17,12 +17,15 @@ class GameForumCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final double radius = 6;
+
     return InkWell(
       onTap: () {
         context.push('/forum-posts/${game.gameId}/${Uri.encodeComponent(game.name)}');
       },
       child: Container(
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(radius),
           color: theme.cardTheme.color
         ),
         height: 120,
@@ -110,20 +113,23 @@ class GameForumCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: Image.network(
-                          game.headerImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: theme.colorScheme.surfaceContainerHighest,
-                              child: const Center(
-                                child: Icon(Icons.videogame_asset, size: 32),
-                              ),
-                            );
-                          },
+                      child: ClipRRect(
+                        borderRadius: BorderRadiusGeometry.circular(radius),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: Image.network(
+                            game.headerImage,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: theme.colorScheme.surfaceContainerHighest,
+                                child: const Center(
+                                  child: Icon(Icons.videogame_asset, size: 32),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -136,6 +142,7 @@ class GameForumCard extends StatelessWidget {
                       right: -2,
                       child: Container(
                         decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(radius),
                           gradient: LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,

@@ -15,6 +15,9 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
 
   bool _onlyDiscounted = false;
   bool get onlyDiscounted => _onlyDiscounted;
+  void setOnlyDiscounted(bool discounted) {
+    _onlyDiscounted = discounted;
+  }
 
   Map<String, bool> _categoryMap = {};
   Map<String, bool> get categoryMap => _categoryMap;
@@ -76,7 +79,7 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
     _selectedCategories = selectedCategories;
     
     try {
-      _games = await _gameRepository.searchGames(titleQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList());
+      _games = await _gameRepository.searchGames(titleQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList(), false);
       _categoryMap = await _getCategories();
       updateCategoryMap();
       applyFilters();
@@ -105,7 +108,7 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
 
   void applyFilters() async {
     updateSelectedCategories();
-    _filteredGames = await _gameRepository.searchGames(_searchQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList());
+    _filteredGames = await _gameRepository.searchGames(_searchQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList(), onlyDiscounted);
 
     notifyListeners();
   }

@@ -209,16 +209,31 @@ class GameApiClient {
     return Response(code: response.code, message: response.message, data: game);
   }
 
+  Future<Response> getPublisherName(String publisherId) async {
+    final raw = await http.get(Uri.parse(
+      "${ApiEndpoints.baseUrl}/user/$publisherId"
+    ));
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    return Response(code: response.code, message: response.message, data: response.data['username']);
+  }
+
   Future<Response> listGames(
     String gamename,
     String sortBy,
     int start,
     int cnt,
     String categories,
+    bool onSale,
   ) async {
+    String sonSale = onSale ? '1' : '';
     final raw = await http.get(
       Uri.parse(
-        "${ApiEndpoints.baseUrl}/search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories",
+        "${ApiEndpoints.baseUrl}/search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories&onsale=$sonSale",
       ),
     );
 

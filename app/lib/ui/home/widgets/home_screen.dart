@@ -6,7 +6,7 @@ import '../view_model/home_viewmodel.dart';
 
 import 'game_section_horizontal.dart';
 import 'game_section_fancy.dart';
-import 'genres_game.dart';
+// import 'genres_game.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
 

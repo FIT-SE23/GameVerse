@@ -109,11 +109,11 @@ class _ForumsScreenState extends State<ForumsScreen> {
                           border: InputBorder.none,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                            borderRadius: BorderRadius.zero
+                            borderRadius: BorderRadius.circular(6)
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                            borderRadius: BorderRadius.zero
+                            borderRadius: BorderRadius.circular(6)
                           ),
                           filled: false,
                           contentPadding: const EdgeInsets.symmetric(

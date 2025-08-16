@@ -28,7 +28,7 @@ class CategoryChip extends StatelessWidget {
               color: AppTheme.currentThemeColors(theme.brightness).getText,
               width: 1,
             ),
-            borderRadius: BorderRadius.zero,
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),

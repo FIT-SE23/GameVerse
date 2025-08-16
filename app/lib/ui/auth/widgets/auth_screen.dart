@@ -109,7 +109,9 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
               constraints: const BoxConstraints(maxWidth: 500),
               padding: const EdgeInsets.all(24),
               child: Card(
-                shape: RoundedRectangleBorder(),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 shadowColor: Colors.transparent,
                 child: Padding(
                   padding: const EdgeInsets.all(32),

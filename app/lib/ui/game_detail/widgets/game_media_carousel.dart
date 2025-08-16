@@ -29,6 +29,8 @@ class _GameMediaCarouselState extends State<GameMediaCarousel> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final double radius = 12;
+
     return Column(
       children: [
         AspectRatio(
@@ -39,35 +41,38 @@ class _GameMediaCarouselState extends State<GameMediaCarousel> {
               opacity: animation,
               child: child
             ),
-            child: Image.network(
-              widget.media[currentMediaIndex],
+            child: ClipRRect(
               key: ValueKey(widget.media[currentMediaIndex]),
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      color: theme.colorScheme.onSurfaceVariant,
+              borderRadius: BorderRadiusGeometry.circular(radius),
+              child: Image.network(
+                widget.media[currentMediaIndex],
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                );
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / 
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / 
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
+              ),
             ),
           ),
         ),
@@ -105,48 +110,52 @@ class _GameMediaCarouselState extends State<GameMediaCarousel> {
                       child: Stack(
                         children: [
                           Positioned.fill(
-                            child: Image.network(
-                              widget.media[index],
-                              fit: BoxFit.cover,
-                              cacheWidth: 128,
-                              cacheHeight: 72,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: theme.colorScheme.surfaceContainerHighest,
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      color: theme.colorScheme.onSurfaceVariant,
+                            child: ClipRRect(
+                              borderRadius: BorderRadiusGeometry.circular(radius),
+                              child: Image.network(
+                                widget.media[index],
+                                fit: BoxFit.cover,
+                                cacheWidth: 128,
+                                cacheHeight: 72,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: theme.colorScheme.surfaceContainerHighest,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        color: theme.colorScheme.onSurfaceVariant,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Container(
-                                  color: theme.colorScheme.surfaceContainerHighest,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded / 
-                                              loadingProgress.expectedTotalBytes!
-                                          : null,
+                                  );
+                                },
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Container(
+                                    color: theme.colorScheme.surfaceContainerHighest,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress.expectedTotalBytes != null
+                                            ? loadingProgress.cumulativeBytesLoaded / 
+                                                loadingProgress.expectedTotalBytes!
+                                            : null,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }
+                                  );
+                                }
+                              ),
                             ),
                           ),
                   
                           Positioned(
-                            top: -1,
-                            bottom: -1,
-                            left: -1,
-                            right: -1,
+                            top: -0.5,
+                            bottom: -0.5,
+                            left: -0.5,
+                            right: -0.5,
                             child: Container(
                               decoration:
                               currentMediaIndex == index
                               ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(radius),
                                   border: BoxBorder.all(
                                     color: AppTheme.currentThemeColors(theme.brightness).getText,
                                     width: 2,
@@ -155,11 +164,12 @@ class _GameMediaCarouselState extends State<GameMediaCarousel> {
                               :
                               hoverIndex == index
                               ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(radius),
                                   color: theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
-                                  border: BoxBorder.all(
-                                    color: AppTheme.currentThemeColors(theme.brightness).getText,
-                                    width: 2,
-                                  )
+                                  // border: BoxBorder.all(
+                                  //   color: AppTheme.currentThemeColors(theme.brightness).getText,
+                                  //   width: 2,
+                                  // )
                                 )
                               : BoxDecoration(
                                   color: theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
