@@ -155,37 +155,37 @@ class GameInfoSidebar extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                // Not recommend button
-                Expanded(
-                  child: Tooltip(
-                    message: 'Not Recommend',
-                    child: ElevatedButton(
-                      style: theme.elevatedButtonTheme.style!.copyWith(
-                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                      ),
-                      onPressed: () => {
-                        // Provider.of<GameDetailsViewModel>(context, listen: false)
-                        //   .notrecommendGame(game.gameId),
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Not Recommended ${game.name} successfully!'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        ),
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.thumb_down_alt_outlined,
-                            color: AppTheme.currentThemeColors(theme.brightness).getText,
-                          ),
-                        ],
-                      )
-                    ),
-                  ),
-                ),
+                // const SizedBox(width: 8),
+                // // Not recommend button
+                // Expanded(
+                //   child: Tooltip(
+                //     message: 'Not Recommend',
+                //     child: ElevatedButton(
+                //       style: theme.elevatedButtonTheme.style!.copyWith(
+                //         backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                //       ),
+                //       onPressed: () => {
+                //         // Provider.of<GameDetailsViewModel>(context, listen: false)
+                //         //   .notrecommendGame(game.gameId),
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(
+                //             content: Text('Not Recommended ${game.name} successfully!'),
+                //             duration: const Duration(seconds: 2),
+                //           ),
+                //         ),
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(
+                //             Icons.thumb_down_alt_outlined,
+                //             color: AppTheme.currentThemeColors(theme.brightness).getText,
+                //           ),
+                //         ],
+                //       )
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

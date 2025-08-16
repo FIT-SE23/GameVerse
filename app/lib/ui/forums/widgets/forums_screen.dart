@@ -139,10 +139,13 @@ class _ForumsScreenState extends State<ForumsScreen> {
                 
                     // Content
                     if (viewModel.state == ForumsState.loading)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: CircularProgressIndicator(),
+                      SizedBox(
+                        height: 200,
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(32),
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
                       )
                     else if (viewModel.state == ForumsState.error)
