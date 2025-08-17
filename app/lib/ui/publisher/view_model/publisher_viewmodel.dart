@@ -7,7 +7,6 @@ import 'package:gameverse/domain/models/game_request_model/game_request_model.da
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 import 'package:gameverse/domain/models/user_model/user_model.dart';
-import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 enum PublisherViewState { loading, success, error }
 
@@ -41,7 +40,7 @@ class PublisherViewModel extends ChangeNotifier {
   Future<bool> registerAsPublisher({
     required String userId,
     required String description,
-    required String paymentMethodId,
+    required PaymentMethodModel paymentMethod,
   }) async {
     try {
       _state = PublisherViewState.loading;
@@ -192,13 +191,14 @@ class PublisherViewModel extends ChangeNotifier {
             CategoryModel(categoryId: '6', name: 'Fighting', isSensitive: false),
           ],
           price: 14.99,
-          requestStatus: 'pending',
+          status: 'pending',
           binaries: [
             'https://example.com/binaries/pixel_warriors_v1.0.bin',
           ],
           exes: [
             'https://example.com/exes/pixel_warriors_v1.0.exe',
           ],
+          submissionDate: DateTime.now().subtract(const Duration(days: 10)),
         ),
         GameRequestModel(
           gameName: 'Farm Simulator Pro',
@@ -216,15 +216,16 @@ class PublisherViewModel extends ChangeNotifier {
             CategoryModel(categoryId: '8', name: 'Farming', isSensitive: false),
           ],
           price: 24.99,
-          requestStatus: 'pending',
+          status: 'pending',
           binaries: [
             'https://example.com/binaries/farm_simulator_pro_v1.0.bin',
           ],
           exes: [
             'https://example.com/exes/farm_simulator_pro_v1.0.exe',
           ],
+          submissionDate: DateTime.now().subtract(const Duration(days: 5),
         ),
-      ];
+      )];
 
       _state = PublisherViewState.success;
     } catch (e) {
@@ -264,9 +265,10 @@ class PublisherViewModel extends ChangeNotifier {
         media: media,
         categories: categories,
         price: price,
-        requestStatus: 'pending',
+        status: 'pending',
         binaries: binaries,
         exes: exes,
+        submissionDate: DateTime.now(),
       );
 
       // debugPrint('Requesting game publication: $newRequest');

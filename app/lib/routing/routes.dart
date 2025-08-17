@@ -13,7 +13,7 @@ abstract final class Routes {
   static const transactions = '/transactions';
   static const contact = '/contact';
   static const authCallback = '/auth-callback';
-  static const operatorPanel = '/operator-panel';
+  static const operatorDashboard = '/operator-dashboard';
   static const faqs = '/faqs';
   static const publisherRegistration = '/publisher-registration';
   static const publisherDashboard = '/publisher-dashboard';

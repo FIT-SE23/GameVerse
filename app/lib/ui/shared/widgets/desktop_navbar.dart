@@ -82,7 +82,7 @@ class DesktopNavbar extends StatelessWidget {
               _buildNavItem(context, Routes.advancedSearch, 'Search', currentLocation),
               // If the user type is operator, show the admin panel
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
-                _buildNavItem(context, '/operator-panel', 'Operator Panel', currentLocation),
+                _buildNavItem(context, Routes.operatorDashboard, 'Operator Dashboard', currentLocation),
               // If the user type is publisher, show the publisher dashboard
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
                 _buildNavItem(context, Routes.publisherDashboard, 'Publisher Dashboard', currentLocation),

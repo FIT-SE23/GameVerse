@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
@@ -14,13 +15,20 @@ class PublisherRegistrationScreen extends StatefulWidget {
 class _PublisherRegistrationScreenState extends State<PublisherRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  final _paymentMethodController = TextEditingController();
+  final _paymentInfoController = TextEditingController();
+  String _selectedPaymentType = 'PayPal'; // Default value
   bool _isLoading = false;
+  
+  // Payment method types and their hints
+  final Map<String, String> _paymentMethods = {
+    'PayPal': 'Enter your PayPal email address',
+    'VNPay': 'Enter your VNPay account number',
+  };
   
   @override
   void dispose() {
     _descriptionController.dispose();
-    _paymentMethodController.dispose();
+    _paymentInfoController.dispose();
     super.dispose();
   }
 
@@ -115,7 +123,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3))
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.3))
       ),
       child: Form(
         key: _formKey,
@@ -153,19 +161,84 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
             
             const SizedBox(height: 24),
             
-            // Payment method field
+            // Payment method selection
+            Text(
+              'Payment Method *',
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
+            
+            // Payment type selector
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Select payment type:',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  // Radio buttons for payment methods
+                  ..._paymentMethods.keys.map((String method) {
+                    return RadioListTile<String>(
+                      title: Text(method),
+                      value: method,
+                      groupValue: _selectedPaymentType,
+                      onChanged: (String? value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedPaymentType = value;
+                            // Clear the text field when switching payment types
+                            _paymentInfoController.clear();
+                          });
+                        }
+                      },
+                      contentPadding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Payment information field
             TextFormField(
-              controller: _paymentMethodController,
-              decoration: const InputDecoration(
-                labelText: 'Payment Method *',
-                hintText: 'e.g., PayPal, Banking, etc.',
-                prefixIcon: Icon(Icons.payment),
-                border: OutlineInputBorder(),
+              controller: _paymentInfoController,
+              decoration: InputDecoration(
+                labelText: '$_selectedPaymentType Information *',
+                hintText: _paymentMethods[_selectedPaymentType],
+                prefixIcon: const Icon(Icons.payment),
+                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your payment method information';
+                  return 'Please enter your payment information';
                 }
+                
+                // Validate based on payment type
+                if (_selectedPaymentType == 'PayPal') {
+                  // Simple email validation
+                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                } else if (_selectedPaymentType == 'VNPay') {
+                  // Basic number validation for VNPay
+                  if (value.length < 8) {
+                    return 'Please enter a valid VNPay account number';
+                  }
+                }
+                
                 return null;
               },
             ),
@@ -284,10 +357,17 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
     });
 
     try {
+      // Create payment method model
+      final paymentMethod = PaymentMethodModel(
+        paymentMethodId: '', 
+        type: _selectedPaymentType,
+        information: _paymentInfoController.text.trim(),
+      );
+
       final success = await publisherViewModel.registerAsPublisher(
         userId: authViewModel.user!.id,
         description: _descriptionController.text.trim(),
-        paymentMethodId: _paymentMethodController.text.trim(),
+        paymentMethod: paymentMethod,
       );
 
       if (!context.mounted) return;
