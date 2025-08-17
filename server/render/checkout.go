@@ -109,7 +109,11 @@ func getAccessToken(id string, secret string) string {
 }
 
 func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
-	serverURL := "http://localhost:1323/"
+	serverURL := os.Getenv("SERVER_URL")
+	if serverURL == "" {
+		serverURL = "http://localhost:1323/"
+	}
+
 	url := "https://api-m.sandbox.paypal.com/v1/payments/payment"
 	id := os.Getenv("PP_ID")
 	secret := os.Getenv("PP_SECRET")
@@ -366,7 +370,10 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 	}
 	ipAddr := ipAddrs[0].String()
 
-	serverURL := "http://localhost:1323/"
+	serverURL := os.Getenv("SERVER_URL")
+	if serverURL == "" {
+		serverURL = "http://localhost:1323/"
+	}
 	vnpayUrl := "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?"
 	vnpCode := os.Getenv("VNP_CODE")
 	vnpHashSecret := os.Getenv("VNP_SECRET")
