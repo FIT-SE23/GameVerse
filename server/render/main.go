@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -35,6 +36,14 @@ func main() {
 	bucketId := "root"
 
 	e := echo.New()
+	
+    e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+        AllowOrigins: []string{"https://game-verse-bice.vercel.app/", "http://localhost"},
+        AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch, http.MethodOptions},
+        AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+        AllowCredentials: true,
+        MaxAge: 86400, // 24 hours
+    }))
 
 	e.POST("/login", func(c echo.Context) error {
 		return login(c, client)

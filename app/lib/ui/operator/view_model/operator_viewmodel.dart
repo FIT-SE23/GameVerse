@@ -2,9 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:gameverse/data/repositories/operator_repository.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
+import 'package:gameverse/domain/models/publisher_request_model/publisher_request_model.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 
 enum OperatorViewState { initial, loading, success, error }
+enum OperatorTab { games, publishers }
 
 class OperatorViewModel extends ChangeNotifier {
   final OperatorRepository _operatorRepository;
@@ -12,30 +15,69 @@ class OperatorViewModel extends ChangeNotifier {
   
   OperatorViewModel({
     required OperatorRepository operatorRepository,
-    required AuthRepository authRepository
+    required AuthRepository authRepository,
   })  : _operatorRepository = operatorRepository,
         _authRepository = authRepository {
     // Initialize with mock data in development mode
     if (kDebugMode) {
-      _pendingRequests = _generateMockRequests();
+      _pendingGameRequests = _generateMockGameRequests();
+      _pendingPublisherRequests = _generateMockPublisherRequests();
       _state = OperatorViewState.success;
     }
   }
   
   OperatorViewState _state = OperatorViewState.initial;
   String _errorMessage = '';
-  List<GameRequestModel> _pendingRequests = [];
-  GameRequestModel? _selectedRequest;
+  
+  // Active tab
+  OperatorTab _activeTab = OperatorTab.games;
+  
+  // Game requests
+  List<GameRequestModel> _pendingGameRequests = [];
+  GameRequestModel? _selectedGameRequest;
+  
+  // Publisher requests
+  List<PublisherRequestModel> _pendingPublisherRequests = [];
+  PublisherRequestModel? _selectedPublisherRequest;
   
   // Getters
   OperatorViewState get state => _state;
   String get errorMessage => _errorMessage;
-  List<GameRequestModel> get pendingRequests => _pendingRequests;
-  GameRequestModel? get selectedRequest => _selectedRequest;
-  bool get hasSelectedRequest => _selectedRequest != null;
+  OperatorTab get activeTab => _activeTab;
+  
+  // Game requests getters
+  List<GameRequestModel> get pendingGameRequests => _pendingGameRequests;
+  GameRequestModel? get selectedGameRequest => _selectedGameRequest;
+  bool get hasSelectedGameRequest => _selectedGameRequest != null;
+  
+  // Publisher requests getters
+  List<PublisherRequestModel> get pendingPublisherRequests => _pendingPublisherRequests;
+  PublisherRequestModel? get selectedPublisherRequest => _selectedPublisherRequest;
+  bool get hasSelectedPublisherRequest => _selectedPublisherRequest != null;
+  
+  // Set active tab
+  void setActiveTab(OperatorTab tab) {
+    _activeTab = tab;
+    // Clear selections when switching tabs
+    if (tab == OperatorTab.games) {
+      _selectedPublisherRequest = null;
+    } else {
+      _selectedGameRequest = null;
+    }
+    notifyListeners();
+  }
+  
+  // Load all pending requests based on active tab
+  Future<void> loadPendingRequests() async {
+    if (_activeTab == OperatorTab.games) {
+      await loadPendingGameRequests();
+    } else {
+      await loadPendingPublisherRequests();
+    }
+  }
   
   // Load all pending game requests
-  Future<void> loadPendingRequests() async {
+  Future<void> loadPendingGameRequests() async {
     try {
       _state = OperatorViewState.loading;
       notifyListeners();
@@ -43,24 +85,54 @@ class OperatorViewModel extends ChangeNotifier {
       // For development/testing, use mock data
       if (kDebugMode) {
         await Future.delayed(const Duration(milliseconds: 800)); // Simulate network delay
-        _pendingRequests = _generateMockRequests();
+        _pendingGameRequests = _generateMockGameRequests();
       } else {
         // For production, use actual API
-        final requests = await _operatorRepository.getPendingRequests(_authRepository.accessToken!);
-        _pendingRequests = requests;
+        final requests = await _operatorRepository.getPendingGameRequests(
+          _authRepository.accessToken!,
+        );
+        _pendingGameRequests = requests;
       }
       
       _state = OperatorViewState.success;
     } catch (e) {
       _state = OperatorViewState.error;
-      _errorMessage = 'Failed to load requests: $e';
+      _errorMessage = 'Failed to load game requests: $e';
     } finally {
       notifyListeners();
     }
   }
   
-  // Generate mock data for testing
-  List<GameRequestModel> _generateMockRequests() {
+  // Load all pending publisher requests
+  Future<void> loadPendingPublisherRequests() async {
+    try {
+      _state = OperatorViewState.loading;
+      notifyListeners();
+      
+      // For development/testing, use mock data
+      if (kDebugMode) {
+        await Future.delayed(const Duration(milliseconds: 800)); // Simulate network delay
+        _pendingPublisherRequests = _generateMockPublisherRequests();
+      } else {
+        // For production, use actual API
+        final requests = await _operatorRepository.getPendingPublisherRequests(
+          _authRepository.accessToken!,
+        );
+        _pendingPublisherRequests = requests;
+      }
+      
+      _state = OperatorViewState.success;
+    } catch (e) {
+      _state = OperatorViewState.error;
+      _errorMessage = 'Failed to load publisher requests: $e';
+    } finally {
+      notifyListeners();
+    }
+  }
+  
+  // Generate mock data for game requests
+// Generate mock data for testing
+  List<GameRequestModel> _generateMockGameRequests() {
     return [
       GameRequestModel(
         requestId: "req1",
@@ -152,7 +224,7 @@ class OperatorViewModel extends ChangeNotifier {
           "https://picsum.photos/id/65/800/450",
           "https://picsum.photos/id/66/800/450",
         ],
-        status: "moreinfo",
+        status: "pending",
         binaries: ["strategic_conquest.bin", "conquest_data.pak"],
         exes: ["strategic_conquest.exe", "editor.exe"],
         submissionDate: DateTime.now().subtract(const Duration(days: 4)),
@@ -183,20 +255,78 @@ class OperatorViewModel extends ChangeNotifier {
       ),
     ];
   }
+
+  // Generate mock data for publisher requests
+  List<PublisherRequestModel> _generateMockPublisherRequests() {
+    return [
+      PublisherRequestModel(
+        requestId: "pub_req1",
+        userId: "user1",
+        username: "GameStudio123",
+        email: "contact@gamestudio123.com",
+        description: "We are an indie game studio focused on creating innovative puzzle games. With over 5 years of experience in the industry, our team of 10 developers has published several successful titles on mobile platforms. We're excited to bring our unique gaming experiences to GameVerse.",
+        paymentMethod: const PaymentMethodModel(
+          paymentMethodId: "pm1",
+          type: "PayPal",
+          information: "payments@gamestudio123.com",
+        ),
+        status: "pending",
+        submissionDate: DateTime.now().subtract(const Duration(days: 2)),
+      ),
+      PublisherRequestModel(
+        requestId: "pub_req2",
+        userId: "user2",
+        username: "RPGMasters",
+        email: "info@rpgmasters.net",
+        description: "RPGMasters is a veteran game development team specializing in role-playing games with deep storytelling and strategic gameplay. Founded in 2018, we've developed 3 successful PC titles with positive reviews. Our mission is to create immersive fantasy worlds that captivate players.",
+        paymentMethod: const PaymentMethodModel(
+          paymentMethodId: "pm2",
+          type: "VNPay",
+          information: "9876543210",
+        ),
+        status: "pending",
+        submissionDate: DateTime.now().subtract(const Duration(days: 5)),
+      ),
+      PublisherRequestModel(
+        requestId: "pub_req3",
+        userId: "user3",
+        username: "SoloDevStudio",
+        email: "john.dev@example.com",
+        description: "I'm John, an independent game developer with a passion for creating unique 2D platformers. I've been developing games for 3 years, with two successful releases on other platforms. I focus on pixel art aesthetics and challenging gameplay mechanics.",
+        paymentMethod: const PaymentMethodModel(
+          paymentMethodId: "pm3",
+          type: "PayPal",
+          information: "john.payments@example.com",
+        ),
+        status: "pending",
+        submissionDate: DateTime.now().subtract(const Duration(days: 1)),
+      ),
+    ];
+  }
   
-  // Set selected request
-  void selectRequest(GameRequestModel request) {
-    _selectedRequest = request;
+  // Game request selection and actions
+  void selectGameRequest(GameRequestModel request) {
+    _selectedGameRequest = request;
     notifyListeners();
   }
   
-  // Clear selected request
-  void clearSelectedRequest() {
-    _selectedRequest = null;
+  void clearSelectedGameRequest() {
+    _selectedGameRequest = null;
     notifyListeners();
   }
   
-  // Approve game request
+  // Publisher request selection and actions
+  void selectPublisherRequest(PublisherRequestModel request) {
+    _selectedPublisherRequest = request;
+    notifyListeners();
+  }
+  
+  void clearSelectedPublisherRequest() {
+    _selectedPublisherRequest = null;
+    notifyListeners();
+  }
+  
+  // Approve a game request
   Future<bool> approveGameRequest(String? requestId, {String? feedback}) async {
     if (requestId == null) return false;
     
@@ -206,10 +336,11 @@ class OperatorViewModel extends ChangeNotifier {
       
       // For development/testing, simulate API call
       if (kDebugMode) {
+        await Future.delayed(const Duration(seconds: 1));
         // Update local data for testing
-        _pendingRequests.removeWhere((req) => req.requestId == requestId);
-        if (_selectedRequest?.requestId == requestId) {
-          _selectedRequest = null;
+        _pendingGameRequests.removeWhere((req) => req.requestId == requestId);
+        if (_selectedGameRequest?.requestId == requestId) {
+          _selectedGameRequest = null;
         }
       } else {
         // For production, call actual API
@@ -220,9 +351,9 @@ class OperatorViewModel extends ChangeNotifier {
         );
         
         if (success) {
-          _pendingRequests.removeWhere((req) => req.requestId == requestId);
-          if (_selectedRequest?.requestId == requestId) {
-            _selectedRequest = null;
+          _pendingGameRequests.removeWhere((req) => req.requestId == requestId);
+          if (_selectedGameRequest?.requestId == requestId) {
+            _selectedGameRequest = null;
           }
         } else {
           _state = OperatorViewState.error;
@@ -244,7 +375,7 @@ class OperatorViewModel extends ChangeNotifier {
     }
   }
   
-  // Reject game request
+  // Reject a game request
   Future<bool> rejectGameRequest(String? requestId, {required String feedback}) async {
     if (requestId == null) return false;
     
@@ -256,9 +387,9 @@ class OperatorViewModel extends ChangeNotifier {
       if (kDebugMode) {
         await Future.delayed(const Duration(seconds: 1));
         // Update local data for testing
-        _pendingRequests.removeWhere((req) => req.requestId == requestId);
-        if (_selectedRequest?.requestId == requestId) {
-          _selectedRequest = null;
+        _pendingGameRequests.removeWhere((req) => req.requestId == requestId);
+        if (_selectedGameRequest?.requestId == requestId) {
+          _selectedGameRequest = null;
         }
       } else {
         // For production, call actual API
@@ -269,9 +400,9 @@ class OperatorViewModel extends ChangeNotifier {
         );
         
         if (success) {
-          _pendingRequests.removeWhere((req) => req.requestId == requestId);
-          if (_selectedRequest?.requestId == requestId) {
-            _selectedRequest = null;
+          _pendingGameRequests.removeWhere((req) => req.requestId == requestId);
+          if (_selectedGameRequest?.requestId == requestId) {
+            _selectedGameRequest = null;
           }
         } else {
           _state = OperatorViewState.error;
@@ -288,6 +419,104 @@ class OperatorViewModel extends ChangeNotifier {
     } catch (e) {
       _state = OperatorViewState.error;
       _errorMessage = 'Failed to reject request: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+  
+  // Approve a publisher request
+  Future<bool> approvePublisherRequest(String? requestId, {String? feedback}) async {
+    if (requestId == null) return false;
+    
+    try {
+      _state = OperatorViewState.loading;
+      notifyListeners();
+      
+      // For development/testing, simulate API call
+      if (kDebugMode) {
+        await Future.delayed(const Duration(seconds: 1));
+        // Update local data for testing
+        _pendingPublisherRequests.removeWhere((req) => req.requestId == requestId);
+        if (_selectedPublisherRequest?.requestId == requestId) {
+          _selectedPublisherRequest = null;
+        }
+      } else {
+        // For production, call actual API
+        final success = await _operatorRepository.approvePublisherRequest(
+          _authRepository.accessToken!,
+          requestId,
+          feedback: feedback,
+        );
+        
+        if (success) {
+          _pendingPublisherRequests.removeWhere((req) => req.requestId == requestId);
+          if (_selectedPublisherRequest?.requestId == requestId) {
+            _selectedPublisherRequest = null;
+          }
+        } else {
+          _state = OperatorViewState.error;
+          _errorMessage = 'Failed to approve publisher request';
+          notifyListeners();
+          return false;
+        }
+      }
+      
+      _state = OperatorViewState.success;
+      notifyListeners();
+      
+      return true;
+    } catch (e) {
+      _state = OperatorViewState.error;
+      _errorMessage = 'Failed to approve publisher request: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+  
+  // Reject a publisher request
+  Future<bool> rejectPublisherRequest(String? requestId, {required String feedback}) async {
+    if (requestId == null) return false;
+    
+    try {
+      _state = OperatorViewState.loading;
+      notifyListeners();
+      
+      // For development/testing, simulate API call
+      if (kDebugMode) {
+        await Future.delayed(const Duration(seconds: 1));
+        // Update local data for testing
+        _pendingPublisherRequests.removeWhere((req) => req.requestId == requestId);
+        if (_selectedPublisherRequest?.requestId == requestId) {
+          _selectedPublisherRequest = null;
+        }
+      } else {
+        // For production, call actual API
+        final success = await _operatorRepository.rejectPublisherRequest(
+          _authRepository.accessToken!,
+          requestId,
+          feedback: feedback,
+        );
+        
+        if (success) {
+          _pendingPublisherRequests.removeWhere((req) => req.requestId == requestId);
+          if (_selectedPublisherRequest?.requestId == requestId) {
+            _selectedPublisherRequest = null;
+          }
+        } else {
+          _state = OperatorViewState.error;
+          _errorMessage = 'Failed to reject publisher request';
+          notifyListeners();
+          return false;
+        }
+      }
+      
+      _state = OperatorViewState.success;
+      notifyListeners();
+      
+      return true;
+    } catch (e) {
+      _state = OperatorViewState.error;
+      _errorMessage = 'Failed to reject publisher request: $e';
       notifyListeners();
       return false;
     }

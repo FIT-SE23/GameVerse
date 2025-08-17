@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 class GameRequestDetail extends StatefulWidget {
   final GameRequestModel request;
   final VoidCallback onApprove;

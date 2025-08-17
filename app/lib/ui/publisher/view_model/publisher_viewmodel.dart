@@ -40,7 +40,7 @@ class PublisherViewModel extends ChangeNotifier {
   Future<bool> registerAsPublisher({
     required String userId,
     required String description,
-    required String paymentMethodId,
+    required PaymentMethodModel paymentMethod,
   }) async {
     try {
       _state = PublisherViewState.loading;

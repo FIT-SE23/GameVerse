@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaymentMethodModel {
 
-@JsonKey(name: 'paymentmethodid') String get paymentMethodId; String get type;// e.g., "banking"
+@JsonKey(name: 'paymentmethodid') String get paymentMethodId; String get type;// e.g., "VNPay", "PayPal"
  String get information;
 /// Create a copy of PaymentMethodModel
 /// with the given fields replaced by the non-null parameter values.
@@ -217,7 +217,7 @@ class _PaymentMethodModel implements PaymentMethodModel {
 
 @override@JsonKey(name: 'paymentmethodid') final  String paymentMethodId;
 @override final  String type;
-// e.g., "banking"
+// e.g., "VNPay", "PayPal"
 @override final  String information;
 
 /// Create a copy of PaymentMethodModel

@@ -23,7 +23,8 @@ class ApiEndpoints {
   static const String transactionUrl = '$baseUrl/transaction';
 
   // Operator endpoints
-  static const String operatorGameRequests = '$baseUrl/operator/requests';
+  static const String operatorGameRequests = '$baseUrl/operator/game-requests';
+  static const String operatorPublisherRequests = '$baseUrl/operator/publisher-requests';
   
   // Other endpoints
   static const String searchUrl = '$baseUrl/search';
