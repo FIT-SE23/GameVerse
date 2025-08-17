@@ -37,7 +37,6 @@ func main() {
 	bucketId := "root"
 
 	e := echo.New()
-
 	e.Use(middleware.CORS())
 
 	e.POST("/login", func(c echo.Context) error {
