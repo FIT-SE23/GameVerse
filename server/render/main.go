@@ -38,7 +38,7 @@ func main() {
 	e := echo.New()
 	
     e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-        AllowOrigins: []string{"https://game-verse-bice.vercel.app/", "http://localhost"},
+        AllowOrigins: []string{"*"}, // For development
         AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch, http.MethodOptions},
         AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
         AllowCredentials: true,
