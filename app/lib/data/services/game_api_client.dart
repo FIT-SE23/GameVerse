@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:gameverse/config/api_endpoints.dart';
@@ -156,24 +157,46 @@ class GameApiClient {
     }
 
     List<String> media = [for (final m in rawMedia) m["url"]];
- 
-    final game = GameModel(
-      gameId: (json["gameid"] ?? '') as String,
-      publisherId: (json["publisherid"] ?? '') as String,
-      name: (json["name"] ?? '') as String,
-      description: (json["description"] ?? '') as String,
-      briefDescription: (json["briefdescription"] ?? '') as String,
-      requirement: (json["requirement"] ?? '') as String,
-      price: json["price"].toDouble() as double,
-      recommended: json["recommend"].toInt() as int,
-      releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
-      categories: categories,
-      media: media,
-      headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
 
-      isSale: json["Game_Sale"] == null,
-    );
-    return game;
+    if (json["Game_Sale"] == null) {
+      return GameModel(
+        gameId: (json["gameid"] ?? '') as String,
+        publisherId: (json["publisherid"] ?? '') as String,
+        name: (json["name"] ?? '') as String,
+        description: (json["description"] ?? '') as String,
+        briefDescription: (json["briefdescription"] ?? '') as String,
+        requirement: (json["requirement"] ?? '') as String,
+        price: json["price"].toDouble() as double,
+        recommended: json["recommend"].toInt() as int,
+        releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
+        categories: categories,
+        media: media,
+        headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
+
+        isSale: false,
+      );
+    } else {
+      final gameSale = json["Game_Sale"] as Map<String, dynamic>;
+      return GameModel(
+        gameId: (json["gameid"] ?? '') as String,
+        publisherId: (json["publisherid"] ?? '') as String,
+        name: (json["name"] ?? '') as String,
+        description: (json["description"] ?? '') as String,
+        briefDescription: (json["briefdescription"] ?? '') as String,
+        requirement: (json["requirement"] ?? '') as String,
+        price: json["price"].toDouble() as double,
+        recommended: json["recommend"].toInt() as int,
+        releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
+        categories: categories,
+        media: media,
+        headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
+
+        isSale: true,
+        discountPercent: gameSale["discountpercentage"].toDouble() as double,
+        saleStartDate: DateTime.parse(gameSale["startdate"] as String? ?? ""),
+        saleEndDate: DateTime.parse(gameSale["enddate"] as String? ?? ""),
+      );
+    }
   }
 
   Future<Response> getGame(String token, String gameid) async {

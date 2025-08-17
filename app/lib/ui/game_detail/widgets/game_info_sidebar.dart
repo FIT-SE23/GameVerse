@@ -13,6 +13,7 @@ import 'package:gameverse/ui/game_detail/widgets/game_download_button.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
+import 'package:gameverse/ui/shared/widgets/game_price.dart';
 
 class GameInfoSidebar extends StatelessWidget {
   final GameModel game;
@@ -43,11 +44,9 @@ class GameInfoSidebar extends StatelessWidget {
 
         const SizedBox(height: 8),
 
-        Text(
-          game.isSale == true && game.discountPercent != null
-              ? '${(game.price * (1 - (game.discountPercent! / 100))).toInt()} VND'
-              : '${game.price.toInt()} VND',
-          style: theme.textTheme.bodyLarge,
+        GamePrice(
+          game: game,
+          textStyle: theme.textTheme.bodyLarge!,
         ),
 
         const SizedBox(height: 8),

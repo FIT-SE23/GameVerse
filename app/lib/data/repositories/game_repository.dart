@@ -90,7 +90,7 @@ class GameRepository {
   }
 
   Future<List<GameModel>> getDiscountededGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.price, 0, 10, '', true)) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getNewGames() async {
@@ -102,7 +102,11 @@ class GameRepository {
   }
 
   Future<List<GameModel>> getTopRecommendedGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 5, '', false)) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 10, '', false)) as List<GameModel>;
+  }
+
+  Future<List<GameModel>> getGamesByCategory(String category) async {
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, category, false)) as List<GameModel>;
   }
 
   static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {

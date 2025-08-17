@@ -77,7 +77,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
           Column(
             children: [
               SizedBox(
-                height: 280,
+                height: 300,
                 child: Scrollbar(
                   thumbVisibility: false,
                   scrollbarOrientation: ScrollbarOrientation.bottom,

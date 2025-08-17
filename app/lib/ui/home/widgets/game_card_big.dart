@@ -5,6 +5,8 @@ import 'dart:math';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 
+import 'package:gameverse/ui/shared/widgets/game_price.dart';
+
 class GameCardBig extends StatelessWidget {
   final GameModel game;
   final double height;
@@ -39,11 +41,11 @@ class GameCardBig extends StatelessWidget {
                       child: child,
                   ),
                   child: ClipRRect(
+                    key: ValueKey(game.headerImage),
                     borderRadius: BorderRadius.circular(radius),
                     child: Image.network(
                       width: double.infinity,
                       height: height,
-                      key: ValueKey(game.headerImage),
                       game.headerImage,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
@@ -129,13 +131,23 @@ class GameCardBig extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child:
-                            Text(
-                              game.price != 0
-                                ? '${game.price.toInt()} VND' 
-                                : 'Free to Play',
-                              style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
-                            ),
+                            GamePrice(
+                              game: game,
+                              textStyle: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal)
+                            )
                         ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: width / 2,
+                          child: Text(
+                            game.briefDescription,
+                            style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true                            
+                          ),
+                        )
+
                         // const SizedBox(height: 20),
                         // Text(
                         //   game.briefDescription,

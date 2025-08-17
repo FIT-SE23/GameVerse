@@ -6,24 +6,24 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 
 import 'game_price.dart';
 
-class GameCard extends StatelessWidget {
+class GameCardLong extends StatelessWidget {
   final GameModel game;
-  final double width;
+  final double height;
   final bool showPrice;
 
-  const GameCard({
+  const GameCardLong({
     super.key,
     required this.game,
-    required this.width,
+    required this.height,
     this.showPrice = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SizedBox(
-      width: width,
+      height: height,
       child: InkWell(
         hoverColor: Colors.transparent,
         // splashColor: Colors.transparent,
@@ -31,10 +31,10 @@ class GameCard extends StatelessWidget {
         onTap: () {
           context.push('/game-details/${game.gameId}');
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Game image
             AspectRatio(
               aspectRatio: 16 / 9,
               child: Stack(
@@ -107,31 +107,28 @@ class GameCard extends StatelessWidget {
                 ],
               ),
             ),
-            
-            // Game details
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Game title
-                  Text(
-                    game.name,
-                    style: theme.textTheme.titleSmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: true,
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  if (showPrice)
-                    GamePrice(
-                      game: game,
-                      textStyle: theme.textTheme.bodyMedium!
-                    )
-                ],
-              ),
-            ),
+
+            const SizedBox(width: 16),
+
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  game.name,
+                  style: theme.textTheme.titleSmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                ),
+                const SizedBox(height: 8),
+                if (showPrice)
+                  GamePrice(
+                    game: game,
+                    textStyle: theme.textTheme.bodyMedium!,
+                  )
+              ],
+            )
           ],
         ),
       ),

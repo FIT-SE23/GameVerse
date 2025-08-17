@@ -6,7 +6,7 @@ import '../view_model/home_viewmodel.dart';
 
 import 'game_section_horizontal.dart';
 import 'game_section_fancy.dart';
-// import 'genres_game.dart';
+import 'category_section.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
 
@@ -56,6 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
               
                     SizedBox(height: 32),
                     GameSectionHorizontal(title: 'Explore New Games', gameList: Provider.of<HomeViewModel>(context, listen: false).newReleases,),
+
+                    SizedBox(height: 32),
+                    GameSectionHorizontal(title: 'Top Recommended Games', gameList: Provider.of<HomeViewModel>(context, listen: false).topRecommendedGames,),
+
+                    SizedBox(height: 32),
+                    CategorySection(),
               
                     const SizedBox(height: 96), // Extra space before footer
                   ],

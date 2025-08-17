@@ -55,7 +55,7 @@ class FilteredGameSection extends StatelessWidget {
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: spaceCardHorizontal,
             mainAxisSpacing: 16,
-            childAspectRatio: 1,
+            childAspectRatio: 1 / 1.1,
           ),
           itemCount: gameList.length,
           itemBuilder: (context, index) => GameCard(
