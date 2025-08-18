@@ -214,6 +214,7 @@ class GameRepository {
     );
 
     if (response.code != 200) {
+      debugPrint('Failed to request game publication: ${response.message}');
       return false;
     }
 

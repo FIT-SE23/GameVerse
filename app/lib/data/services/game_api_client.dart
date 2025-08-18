@@ -45,7 +45,7 @@ class GameApiClient {
   ) async {
     final request =
         http.MultipartRequest("POST", Uri.parse(ApiEndpoints.gameUrl))
-          ..headers["Authorization"] = token
+          ..headers["Authorization"] = 'Bearer $token'
           ..fields["gamename"] = name
           ..fields["description"] = description
           ..fields["briefdescription"] = briefDescription
