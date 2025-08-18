@@ -436,8 +436,8 @@ class GameApiClient {
     List<String>? resourceIds,
   }) async {
     final request =
-        http.MultipartRequest("POST", Uri.parse("${ApiEndpoints.baseUrl}download/game"))
-          ..headers["Authorization"] = token
+        http.MultipartRequest("POST", Uri.parse("${ApiEndpoints.baseUrl}/download/game"))
+          ..headers["Authorization"] = "Bearer $token"
           ..fields["gameid"] = gameId;
 
     if (resourceIds != null && resourceIds.isNotEmpty) {
@@ -451,7 +451,6 @@ class GameApiClient {
         request.fields['resourceids'] = jsonEncode(validResourceIDs);
       }
     }
-
     final raw = await request.send();
     final response = Response.fromJson(
       raw.statusCode,

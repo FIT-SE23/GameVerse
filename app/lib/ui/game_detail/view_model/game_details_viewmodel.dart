@@ -30,12 +30,16 @@ class GameDetailsViewModel extends ChangeNotifier {
   bool _isFavorite = false;
   bool get isFavorite => _isFavorite;
 
-  Future<void> loadGameDetails(String gameId) async {
+  Future<void> loadGameDetails(String gameId, {String gamePath = ''}) async {
     try {
       _state = GameDetailsState.loading;
       notifyListeners();
 
       _gameDetail = await _gameRepository.getGameDetails(gameId);
+      _gameDetail = _gameDetail?.copyWith(
+        isInstalled: await _gameRepository.setGameInstallation(gameId),
+        path: gamePath.isNotEmpty ? gamePath : _gameDetail?.path,
+      );
 
       _publisherName = _gameDetail != null ? await _gameRepository.getPublisherName(_gameDetail!.publisherId) : '';
       

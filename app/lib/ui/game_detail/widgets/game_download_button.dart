@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gameverse/ui/game_detail/view_model/game_details_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +72,9 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
         children: [
           Expanded(
             child: ElevatedButton.icon(
-              onPressed: () => _launchGame(context),
+              onPressed: () async {
+                await _launchGame(context);
+              },
               icon: const Icon(Icons.play_arrow),
               label: const Text('Play'),
             ),
@@ -98,6 +102,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
   }
 
   Future<void> _downloadGame(BuildContext context) async {
+    final GameRepository gameRepository = Provider.of<GameRepository>(context, listen: false);
     if (widget.game.binaries?.isNotEmpty != true || widget.game.exes?.isNotEmpty != true) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -158,7 +163,6 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
       }
 
       if (context.mounted) {
-        final GameRepository gameRepository = Provider.of<GameRepository>(context, listen: false);
         gameRepository.setGameInstallationPath(
           widget.game.gameId,
           path.join(settingsViewModel.downloadPath, widget.game.gameId),
@@ -191,27 +195,61 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
             backgroundColor: Colors.red,
           ),
         );
+        // Load game details to refresh state
       }
     } finally {
       if (context.mounted) {
+        
         setState(() {
           _isDownloading = false;
           _currentDownloadFile = '';
-          // Only set installed if we successfully verified installation
         });
         // Reload game details to get updated state
-        Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.game.gameId);
+        Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(
+          widget.game.gameId,
+          gamePath: path.join(settingsViewModel.downloadPath, widget.game.gameId),
+        );
       }
     }
   }
 
-  void _launchGame(BuildContext context) {
-    // Implementation for launching the game
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Launching game...'),
-      ),
-    );
+  Future<void> _launchGame(BuildContext context) async {
+    // Launch the game using the installed path
+    final gamePath = await Provider.of<GameRepository>(context, listen: false)
+        .checkGameInstallation(widget.game.path!);
+
+    if (gamePath.isEmpty && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Game is not installed or installation path is missing'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    // Using process to launch the game
+    try {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Launching game...'),
+          ),
+        );
+      }
+      // Delay to ensure the snackbar is shown
+      await Future.delayed(const Duration(milliseconds: 500));
+      await Process.start(gamePath, [], mode: ProcessStartMode.normal);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to launch game: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    }
   }
 
   Future<void> _uninstallGame(BuildContext context) async {
@@ -241,20 +279,14 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
     });
 
     try {
+
+      await _safeDeleteGame();
       if (context.mounted) {
-        final GameRepository gameRepository = Provider.of<GameRepository>(context, listen: false);
-        
-        // First, update the game state in repository to mark as uninstalled
-        // This prevents other processes from accessing the files
-        await gameRepository.setGameInstallation(widget.game.gameId);
-        
-        // Small delay to ensure any file handles are released
-        await Future.delayed(const Duration(milliseconds: 500));
-        
         // Try to delete the game directory
-        await _safeDeleteGame();
+        bool isInstalled = await Provider.of<GameRepository>(context, listen: false)
+            .setGameInstallation(widget.game.gameId);
         
-        if (context.mounted) {
+        if (context.mounted && !isInstalled) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Game uninstalled successfully'),
