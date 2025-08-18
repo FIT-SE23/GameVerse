@@ -54,6 +54,7 @@ Future<List<SingleChildWidget>> appProviders() async {
     ChangeNotifierProvider<GameDetailsViewModel>(
       create: (context) => GameDetailsViewModel(
         gameRepository: context.read<GameRepository>(),
+        authRepository: context.read<AuthRepository>(),
       ),
     ),
     ChangeNotifierProvider<LibraryViewModel>(

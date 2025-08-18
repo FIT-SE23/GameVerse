@@ -220,4 +220,41 @@ class GameRepository {
 
     return true;
   }
+
+  Future<bool> recommendGame(String token, String gameId) async {
+    final Response response = await gameApiClient.recommendGame(
+      token,
+      gameId,
+    );
+    if (response.code != 200) {
+      debugPrint('Failed to recommend game: ${response.message}');
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> isRecommended(String token, String gameId) async {
+    final Response response = await gameApiClient.isRecommended(
+      token,
+      gameId,
+    );
+    if (response.code != 200) {
+      debugPrint('Failed to check if game is recommended: ${response.message}');
+      return false;
+    }
+    if (response.data == true) {
+      return true;
+    }
+    return false;
+  }
+
+  // Update specific game details
+  Future<void> updateGameDetails(GameModel updatedGame) async {
+    final index = _allGames.indexWhere((game) => game.gameId == updatedGame.gameId);
+    if (index != -1) {
+      _allGames[index] = updatedGame;
+    } else {
+      debugPrint('Game with ID ${updatedGame.gameId} not found in repository.');
+    }
+  }
 }

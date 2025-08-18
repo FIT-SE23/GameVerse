@@ -227,6 +227,15 @@ func main() {
 		return recommendGame(c, client, userid)
 	})
 
+	e.GET("/recommend/game/:id", func(c echo.Context) error {
+		gameid := c.Param("id")
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return isRecommended(c, client, userid, gameid)
+	})
+
 	e.POST("/post", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
