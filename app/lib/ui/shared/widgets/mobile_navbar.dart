@@ -29,31 +29,6 @@ class MobileNavbar extends StatelessWidget {
       color: Theme.of(context).appBarTheme.backgroundColor,
       child: Row(
         children: [
-          // Previous page button
-          IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Theme.of(context).appBarTheme.foregroundColor,
-            ),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/');
-              }
-            },
-          ),
-          // Reload page button
-          IconButton(
-            icon: Icon(
-              Icons.refresh,
-              color: Theme.of(context).appBarTheme.foregroundColor,
-            ),
-            onPressed: () {
-              context.go(currentLocation);
-            },
-          ),
-
           // Menu button
           IconButton(
             icon: Icon(
