@@ -33,11 +33,14 @@ func addPublisher(c echo.Context, client *supabase.Client) error {
 	}
 	paymentMethodID := c.FormValue("paymentmethodid")
 	description := c.FormValue("description")
+	paymentCadtNumber := c.FormValue("paymentcardnumber")
 
-	publisher := map[string]string{
-		"publisherid":     userid,
-		"paymentmethodid": paymentMethodID,
-		"description":     description,
+	publisher := map[string]any{
+		"publisherid":       userid,
+		"paymentmethodid":   paymentMethodID,
+		"description":       description,
+		"paymentcardnumber": paymentCadtNumber,
+		"isverified":        false,
 	}
 	_, _, err = client.From("Publisher").Insert(publisher, false, "", "", "").ExecuteString()
 	if err != nil {
@@ -62,8 +65,10 @@ func updatePublisher(c echo.Context, client *supabase.Client) error {
 
 	paymentMethodID := c.FormValue("paymentmethodid")
 	description := c.FormValue("description")
+	paymentCardNumber := c.FormValue("paymentcardnumber")
+	isVerified := c.FormValue("isverified")
 
-	if paymentMethodID == "" && description == "" {
+	if paymentMethodID == "" && description == "" && paymentCardNumber == "" && isVerified == "" {
 		return jsonResponse(c, http.StatusBadRequest, "Nothing to update", "")
 	}
 
@@ -73,6 +78,12 @@ func updatePublisher(c echo.Context, client *supabase.Client) error {
 	}
 	if description != "" {
 		updates["description"] = description
+	}
+	if paymentCardNumber != "" {
+		updates["paymentcardnumber"] = paymentCardNumber
+	}
+	if isVerified != "" {
+		updates["isverified"] = isVerified == "1"
 	}
 
 	_, _, err = client.From("Publisher").Update(updates, "", "").Eq("publisherid", publisherID).ExecuteString()
