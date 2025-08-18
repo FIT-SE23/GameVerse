@@ -208,7 +208,8 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 		From("Post").
 		Select("*", "", false).
 		Limit(limit, "").
-		eq("forumid", forumId)
+		Eq("forumid", forumId)
+
 	if title != "" {
 		filter = filter.Like("title", "%"+title+"%")
 	}
