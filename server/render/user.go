@@ -253,7 +253,7 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 
 	rep, _, err := client.
 		From("Post").
-		Select("*", "", false).
+		Select("postid", "", false).
 		Eq("userid", userid).
 		Order("postdate", &postgrest.OrderOpts{Ascending: false}).
 		Limit(limit, "").

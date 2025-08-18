@@ -15,15 +15,15 @@ void main() async {
     print(await addPaymentMethod("Banking", "AngryBank"));
   }
 
-  if (false) {
-    print(
-      await addPublisher(
-        "d8915c91-71e6-4a45-84de-a12d0256ffc2",
-        "a2f4772b-38ac-4fe2-b5a6-bead806c1221",
-        "We love gaming!!!",
-      ),
-    );
-  }
+  // if (false) {
+  //   print(
+  //     await addPublisher(
+  //       "d8915c91-71e6-4a45-84de-a12d0256ffc2",
+  //       "a2f4772b-38ac-4fe2-b5a6-bead806c1221",
+  //       "We love gaming!!!",
+  //     ),
+  //   );
+  // }
 
   if (false) {
     print(await addCategory("Horror", true));
