@@ -47,6 +47,7 @@ class TransactionViewModel extends ChangeNotifier {
       // Load initial data
       await loadUserTransactions(_authRepository.accessToken!);
       await loadCartItems(_authRepository.accessToken!);
+      await loadPaymentMethods();
       // await loadPaymentMethods();
       _state = TransactionViewState.success;
     } catch (e) {
@@ -123,6 +124,7 @@ class TransactionViewModel extends ChangeNotifier {
       
       _state = TransactionViewState.success;
     } catch (e) {
+      debugPrint('Error loading transactions: $e');
       _state = TransactionViewState.error;
       _errorMessage = e.toString();
     } finally {
@@ -148,22 +150,21 @@ class TransactionViewModel extends ChangeNotifier {
   }
 
   // Load payment methods
-  // Future<void> loadPaymentMethods() async {
-  //   try {
-  //     _state = TransactionViewState.loading;
-  //     notifyListeners();
+  Future<void> loadPaymentMethods() async {
+    try {
+      _state = TransactionViewState.loading;
+      notifyListeners();
 
-  //     // Assuming the repository has a method to get payment methods
-  //     _paymentMethods = await _transactionRepository.getPaymentMethods();
-      
-  //     _state = TransactionViewState.success;
-  //   } catch (e) {
-  //     _state = TransactionViewState.error;
-  //     _errorMessage = e.toString();
-  //   } finally {
-  //     notifyListeners();
-  //   }
-  // }
+      // Assuming the repository has a method to get payment methods
+      _paymentMethods = await _transactionRepository.getPaymentMethods();
+      _state = TransactionViewState.success;
+    } catch (e) {
+      _state = TransactionViewState.error;
+      _errorMessage = e.toString();
+    } finally {
+      notifyListeners();
+    }
+  }
 
   Future<void> getUrlPaymentGateway(String method) async {
     try {

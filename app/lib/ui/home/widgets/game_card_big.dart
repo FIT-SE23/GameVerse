@@ -5,6 +5,8 @@ import 'dart:math';
 
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 
+import 'package:gameverse/ui/shared/widgets/game_price.dart';
+
 class GameCardBig extends StatelessWidget {
   final GameModel game;
   final double height;
@@ -17,6 +19,8 @@ class GameCardBig extends StatelessWidget {
 
   Widget _rawCard(BuildContext context) {
     final theme = Theme.of(context);
+
+    final double radius = 12;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -36,37 +40,40 @@ class GameCardBig extends StatelessWidget {
                       opacity: animation,
                       child: child,
                   ),
-                  child: Image.network(
-                    width: double.infinity,
-                    height: height,
+                  child: ClipRRect(
                     key: ValueKey(game.headerImage),
-                    game.headerImage,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Center(
-                          child: Icon(
-                            Icons.image_not_supported,
-                            color: theme.colorScheme.onSurfaceVariant,
+                    borderRadius: BorderRadius.circular(radius),
+                    child: Image.network(
+                      width: double.infinity,
+                      height: height,
+                      game.headerImage,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: Center(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded / 
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / 
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -78,6 +85,7 @@ class GameCardBig extends StatelessWidget {
                 right: -1,
                 child: Container(
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(radius),
                     gradient: LinearGradient(
                       begin: Alignment(-0.6, 0),
                       end: Alignment(1, 0),
@@ -123,13 +131,23 @@ class GameCardBig extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child:
-                            Text(
-                              game.price != 0
-                                ? '${game.price.toInt()} VND' 
-                                : 'Free to Play',
-                              style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
-                            ),
+                            GamePrice(
+                              game: game,
+                              textStyle: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal)
+                            )
                         ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: width / 2,
+                          child: Text(
+                            game.briefDescription,
+                            style: theme.textTheme.displaySmall!.copyWith(fontSize: 18, fontWeight: FontWeight.normal),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true                            
+                          ),
+                        )
+
                         // const SizedBox(height: 20),
                         // Text(
                         //   game.briefDescription,

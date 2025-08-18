@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
+import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 
 
@@ -27,6 +28,12 @@ class HomeViewModel extends ChangeNotifier {
 
   List<GameModel> _topRecommendedGames = [];
   List<GameModel> get topRecommendedGames => _topRecommendedGames;
+
+  Map<String, List<GameModel>> _gamesByCategories = {};
+  Map<String, List<GameModel>> get gamesByCategories => _gamesByCategories;
+
+  List<CategoryModel> _categories = [];
+  List<CategoryModel> get categories => _categories;
   
   // Error handling
   String _errorMessage = '';
@@ -41,6 +48,14 @@ class HomeViewModel extends ChangeNotifier {
       _newReleases = await _gameRepository.getNewGames();
       _popularGames = await _gameRepository.getPopularGames();
       _topRecommendedGames = await _gameRepository.getTopRecommendedGames();
+      _categories = await _gameRepository.getCategories();
+
+      for (final category in _categories) {
+        final games = await _gameRepository.getGamesByCategory(category.name);
+        if (games.isNotEmpty) {
+          _gamesByCategories[category.name] = games;
+        }
+      }
       
       _state = HomeViewState.success;
     } catch (e) {

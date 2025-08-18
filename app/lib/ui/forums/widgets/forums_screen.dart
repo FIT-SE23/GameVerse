@@ -109,11 +109,11 @@ class _ForumsScreenState extends State<ForumsScreen> {
                           border: InputBorder.none,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                            borderRadius: BorderRadius.zero
+                            borderRadius: BorderRadius.circular(6)
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                            borderRadius: BorderRadius.zero
+                            borderRadius: BorderRadius.circular(6)
                           ),
                           filled: false,
                           contentPadding: const EdgeInsets.symmetric(
@@ -139,10 +139,13 @@ class _ForumsScreenState extends State<ForumsScreen> {
                 
                     // Content
                     if (viewModel.state == ForumsState.loading)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: CircularProgressIndicator(),
+                      SizedBox(
+                        height: 200,
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(32),
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
                       )
                     else if (viewModel.state == ForumsState.error)

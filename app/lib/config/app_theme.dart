@@ -132,7 +132,7 @@ class AppTheme {
         foregroundColor: DarkThemeColors.onCyan,           // Button text
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
     ),
     
@@ -150,7 +150,7 @@ class AppTheme {
         foregroundColor: DarkThemeColors.cyan, // Text color
         side: const BorderSide(color: Color(0xFF444444)), // Border color
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
     ),
     
@@ -260,7 +260,7 @@ class AppTheme {
         foregroundColor: LightThemeColors.onCyan,           // Button text
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
     ),
     
@@ -278,7 +278,7 @@ class AppTheme {
         foregroundColor: LightThemeColors.cyan, // Text color
         side: const BorderSide(color: Color(0xFFDDDDDD)), // Border color
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
     ),
     

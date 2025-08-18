@@ -104,7 +104,7 @@ class PublisherApiClient {
 
           ],
           price: 29.99,
-          requestStatus: 'pending',
+          status: 'pending',
           headerImage: 'https://example.com/header.jpg',
           media: [
             'https://example.com/media1.jpg',
@@ -116,6 +116,7 @@ class PublisherApiClient {
           exes: [
             'https://example.com/exes/my_awesome_game_v1.0.exe',
           ],
+          submissionDate: DateTime.now(),
         ),
       ];
     } catch (e) {

@@ -13,13 +13,16 @@ import 'package:gameverse/ui/game_detail/widgets/game_download_button.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
+import 'package:gameverse/ui/shared/widgets/game_price.dart';
 
 class GameInfoSidebar extends StatelessWidget {
   final GameModel game;
+  final String publisherName;
 
   const GameInfoSidebar({
     super.key,
     required this.game,
+    required this.publisherName,
   });
 
   @override
@@ -30,19 +33,45 @@ class GameInfoSidebar extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
-          child: Image.network(
-            game.headerImage,
-            fit: BoxFit.cover
+          child: ClipRRect(
+            borderRadius: BorderRadiusGeometry.circular(12),
+            child: Image.network(
+              game.headerImage,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: Center(
+                    child: Icon(
+                      Icons.image_not_supported,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                );
+              },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded / 
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
 
         const SizedBox(height: 8),
 
-        Text(
-          game.isSale == true && game.discountPercent != null
-              ? '${(game.price * (1 - (game.discountPercent! / 100))).toInt()} VND'
-              : '${game.price.toInt()} VND',
-          style: theme.textTheme.bodyLarge,
+        GamePrice(
+          game: game,
+          textStyle: theme.textTheme.bodyLarge!,
         ),
 
         const SizedBox(height: 8),
@@ -150,37 +179,37 @@ class GameInfoSidebar extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                // Not recommend button
-                Expanded(
-                  child: Tooltip(
-                    message: 'Not Recommend',
-                    child: ElevatedButton(
-                      style: theme.elevatedButtonTheme.style!.copyWith(
-                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                      ),
-                      onPressed: () => {
-                        // Provider.of<GameDetailsViewModel>(context, listen: false)
-                        //   .notrecommendGame(game.gameId),
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Not Recommended ${game.name} successfully!'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        ),
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.thumb_down_alt_outlined,
-                            color: AppTheme.currentThemeColors(theme.brightness).getText,
-                          ),
-                        ],
-                      )
-                    ),
-                  ),
-                ),
+                // const SizedBox(width: 8),
+                // // Not recommend button
+                // Expanded(
+                //   child: Tooltip(
+                //     message: 'Not Recommend',
+                //     child: ElevatedButton(
+                //       style: theme.elevatedButtonTheme.style!.copyWith(
+                //         backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                //       ),
+                //       onPressed: () => {
+                //         // Provider.of<GameDetailsViewModel>(context, listen: false)
+                //         //   .notrecommendGame(game.gameId),
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(
+                //             content: Text('Not Recommended ${game.name} successfully!'),
+                //             duration: const Duration(seconds: 2),
+                //           ),
+                //         ),
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(
+                //             Icons.thumb_down_alt_outlined,
+                //             color: AppTheme.currentThemeColors(theme.brightness).getText,
+                //           ),
+                //         ],
+                //       )
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -222,7 +251,7 @@ class GameInfoSidebar extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              'Square Enix',
+              publisherName,
               style: theme.textTheme.bodyLarge
             )
           ],

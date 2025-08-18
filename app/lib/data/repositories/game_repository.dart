@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:http/http.dart' as http;
@@ -43,9 +44,10 @@ class GameRepository {
     String sortBy,
     int start,
     int cnt,
-    List<String> categories
+    List<String> categories,
+    bool onSale
   ) async {
-    return await _getDataFromResponse(gameApiClient.listGames(title, sortBy, start, cnt, categories.join(','))) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames(title, sortBy, start, cnt, categories.join(','), onSale)) as List<GameModel>;
   }
 
   Future<List<CategoryModel>> getCategories() async {
@@ -65,13 +67,37 @@ class GameRepository {
       // Update the game with isOwned
       GameModel game = gameData as GameModel;
       game = game.copyWith(isOwned: true);
+      // Check if the game is already downloaded
+      bool isInstalled = await setGameInstallation(game.gameId);
+      game = game.copyWith(isInstalled: isInstalled);
+      // If the game is not installed, get download url
+      if (!isInstalled) {
+        final response = await gameApiClient.downloadGame(token, game.gameId);
+        List<String> binaries = [];
+        List<String> exes = [];
+        if (response.code == 200) {
+          for (final item in response.data as List<dynamic>) {{
+            if (item['type'] == 'binary') {
+              binaries.add(item['url']);
+            } else if (item['type'] == 'executable') {
+              exes.add(item['url']);
+            }
+          }}
+          game = game.copyWith(
+            binaries: binaries,
+            exes: exes,
+          );
+          setGameInstallation(game.gameId);
+        } else {
+          debugPrint('Failed to get download URL for ${game.gameId}: ${response.message}');
+        }
+      }
       _libraryGames.add(game);
     }
     return _libraryGames;
   }
 
   Future<GameModel?> getGameDetails(String gameId) async {
-
     // First check in library games and then in all games
     GameModel? game = _libraryGames.firstWhere(
       (game) => game.gameId == gameId,
@@ -85,20 +111,28 @@ class GameRepository {
     return game;
   }
 
+  Future<String> getPublisherName(String publisherId) async {
+    return await _getDataFromResponse(gameApiClient.getPublisherName(publisherId)) as String;
+  }
+
   Future<List<GameModel>> getDiscountededGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.price, 0, 10, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getNewGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.date, 0, 10, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.date, 0, 10, '', false)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getPopularGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, '', false)) as List<GameModel>;
   }
 
   Future<List<GameModel>> getTopRecommendedGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 5, '')) as List<GameModel>;
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 10, '', false)) as List<GameModel>;
+  }
+
+  Future<List<GameModel>> getGamesByCategory(String category) async {
+    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, category, false)) as List<GameModel>;
   }
 
   static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {
@@ -130,7 +164,8 @@ class GameRepository {
     final gameIndex = _allGames.indexWhere((game) => game.gameId == gameId);
     // debugPrint('Checking game: ${_allGames[gameIndex]}');
     if (gameIndex != -1 && _allGames[gameIndex].path != null) {
-      if (await checkGameInstallation(_allGames[gameIndex].path!)) {
+      String gamePath = await checkGameInstallation(_allGames[gameIndex].path!);
+      if (gamePath.isNotEmpty) {
         final game = _allGames[gameIndex];
         _allGames[gameIndex] = game.copyWith(isInstalled: true);
         return true;
@@ -146,20 +181,20 @@ class GameRepository {
   }
 
   
-  Future<bool> checkGameInstallation(String gamePath) async {
+  Future<String> checkGameInstallation(String gamePath) async {
     final gameDir = Directory(gamePath);
-    if (!await gameDir.exists()) return false;
+    if (!await gameDir.exists()) return '';
 
     await for (final entity in gameDir.list(recursive: true)) {
       if (entity is File) {
         final extension = path.extension(entity.path).toLowerCase();
         if (extension == '.exe' || extension == '.app' || extension == '.deb') {
-          return true; // Found an executable
+          return entity.path; // Return the first executable found
         }
       }
     }
 
-    return false; // No executables found
+    return ''; // No executable found
   }
 
   Future<bool> requestGamePublication(String token, GameRequestModel request) async {
@@ -179,6 +214,7 @@ class GameRepository {
     );
 
     if (response.code != 200) {
+      debugPrint('Failed to request game publication: ${response.message}');
       return false;
     }
 

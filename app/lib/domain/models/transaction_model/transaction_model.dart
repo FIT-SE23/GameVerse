@@ -10,7 +10,7 @@ abstract class TransactionModel with _$TransactionModel {
     @JsonKey(name: 'transactionid') String? transactionId,
     @JsonKey(name: 'senderid') required String senderId,
     @JsonKey(name: 'gameid') required String gameId,
-    required double amount,
+    @JsonKey(name: 'moneyamount') required double moneyAmount,
     @JsonKey(name: 'transactiondate') required DateTime transactionDate,
     @JsonKey(name: 'isrefundable') required bool isRefundable,
     @JsonKey(name: 'paymentmethodid') required String paymentMethodId,

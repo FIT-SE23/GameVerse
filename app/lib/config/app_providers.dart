@@ -14,6 +14,7 @@ import 'package:gameverse/ui/forums/view_model/forum_viewmodel.dart';
 import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
+import 'package:gameverse/ui/operator/view_model/operator_viewmodel.dart';
 
 import 'package:gameverse/ui/advanced_search/view_model/advanced_search_viewmodel.dart';
 
@@ -24,6 +25,7 @@ import '../data/repositories/forum_repository.dart';
 import '../data/repositories/post_repository.dart';
 import '../data/repositories/comment_repository.dart';
 import '../data/repositories/transaction_repository.dart';
+import '../data/repositories/operator_repository.dart';
 
 import '../data/services/transaction_service.dart';
 Future<List<SingleChildWidget>> appProviders() async {
@@ -36,6 +38,7 @@ Future<List<SingleChildWidget>> appProviders() async {
     Provider(create: (_) => CommentRepository()),
     Provider(create: (_) => TransactionService()),
     Provider(create: (_) => TransactionRepository()),
+    Provider(create: (_) => OperatorRepository()),
 
     // ViewModels
     ChangeNotifierProvider(
@@ -98,6 +101,13 @@ Future<List<SingleChildWidget>> appProviders() async {
     ChangeNotifierProvider<AdvancedSearchViewmodel>(
       create: (context) => AdvancedSearchViewmodel(
         gameRepository: context.read<GameRepository>(),
+      ),
+    ),
+    // Add to your existing providers list
+    ChangeNotifierProvider<OperatorViewModel>(
+      create: (context) => OperatorViewModel(
+        operatorRepository: context.read<OperatorRepository>(),
+        authRepository: context.read<AuthRepository>(),
       ),
     ),
   ];

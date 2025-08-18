@@ -22,9 +22,6 @@ class GameDownloadService {
         await gameDir.create(recursive: true);
       }
       final filePath = path.join(gameDir.path, nameFile);
-    
-      debugPrint('Downloading to: $filePath');
-      debugPrint('Download URL: $downloadUrl');
       
       await _dio.download(
         downloadUrl,

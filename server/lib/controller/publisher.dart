@@ -7,18 +7,30 @@ class Publisher {
   final String? publisherId;
   final String? paymentMethodId;
   final String? description;
+  final String? paymentCardNumber;
+  final bool? isVerified;
 
-  const Publisher({this.publisherId, this.paymentMethodId, this.description});
+  const Publisher({
+    this.publisherId,
+    this.paymentMethodId,
+    this.description,
+    this.paymentCardNumber,
+    this.isVerified,
+  });
 
   factory Publisher.fromJson(Map<String, dynamic> json) {
     final publisherid = json["publisherid"] as String?;
     final paymentMethodId = json["paymentMethodId"] as String?;
     final description = json["description"] as String?;
+    final paymentCardNumber = json["paymentcardnumber"] as String?;
+    final isVerified = json["issensitive"].toString().toLowerCase() as String?;
 
     return Publisher(
       publisherId: publisherid,
       paymentMethodId: paymentMethodId,
       description: description,
+      paymentCardNumber: paymentCardNumber,
+      isVerified: isVerified == "true",
     );
   }
 
@@ -30,22 +42,28 @@ class Publisher {
         (this.paymentMethodId ?? "\"\"") +
         ", description: " +
         (this.description ?? "\"\"") +
+        ", paymentcardnumber: " +
+        (this.paymentCardNumber ?? "\"\"") +
+        ", verified: " +
+        this.isVerified.toString() +
         "}";
   }
 }
 
 Future<Response> addPublisher(
-  String userid,
+  String token,
   String paymentMethodId,
   String description,
+  String paymentCardNumber,
 ) async {
   final raw = await http.post(
     Uri.parse(serverURL + "publisher"),
     body: <String, String>{
-      "userid": userid,
       "paymentmethodid": paymentMethodId,
       "description": description,
+      "paymentcardnumber": paymentCardNumber,
     },
+    headers: {"Authorization": "Bearer " + token},
   );
 
   final response = Response.fromJson(
@@ -60,10 +78,14 @@ Future<Response> updatePublisher({
   required String publisherId,
   String? paymentMethodId,
   String? description,
+  String? paymentCardNumber,
+  bool? isVerified,
 }) async {
   final body = <String, String>{};
   if (paymentMethodId != null) body['paymentmethodid'] = paymentMethodId;
   if (description != null) body['description'] = description;
+  if (paymentCardNumber != null) body['paymentcardnumber'] = paymentCardNumber;
+  if (isVerified != null) body['isverified'] = isVerified ? "1" : "";
 
   final raw = await http.patch(
     Uri.parse(serverURL + 'publisher/$publisherId'),

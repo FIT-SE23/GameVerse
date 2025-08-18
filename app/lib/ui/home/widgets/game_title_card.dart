@@ -27,57 +27,66 @@ class _GameTitleCardState extends State<GameTitleCard> {
   Widget _rawCard(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SizedBox(
+    final double radius = 12;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+      ),
       width: double.infinity,
       height: 56,
       child: Stack(
         fit: StackFit.loose,
         children: [
           Positioned.fill(
-            child: Image.network(
-              widget.game.headerImage,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      color: theme.colorScheme.onSurfaceVariant,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radius),
+              child: Image.network(
+                widget.game.headerImage,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                );
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / 
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / 
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
 
           // Gradient
           Positioned(
-            top: -1,
-            bottom: -1,
-            left: -1,
-            right: -1,
+            top: -0.5,
+            bottom: -0.5,
+            left: -0.5,
+            right: -0.5,
             child: Container(
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius),
                 gradient: LinearGradient(
                   begin: Alignment(-1, 0),
                   end: Alignment(1, 0),
                   colors: 
-                  widget.selectedIndex != widget.index
+                  widget.selectedIndex != widget.index && !_isHovered
                     ? [
                     theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
                     theme.scaffoldBackgroundColor
@@ -99,7 +108,9 @@ class _GameTitleCardState extends State<GameTitleCard> {
                 children: [
                   Text(
                     widget.game.name,
-                    style: widget.selectedIndex != widget.index ? theme.textTheme.titleSmall : getOppositeTheme(theme).textTheme.titleSmall,
+                    style: widget.selectedIndex != widget.index && !_isHovered
+                      ? theme.textTheme.titleSmall
+                      : getOppositeTheme(theme).textTheme.titleSmall,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.right,
@@ -121,12 +132,7 @@ class _GameTitleCardState extends State<GameTitleCard> {
         widget.onSelect(widget.index);
         // context.push('/game-details/${widget.game.appId}');
       },
-      child: AnimatedScale(
-        scale: _isHovered ? 1.1 : 1,
-        duration: Duration(milliseconds: 150),
-        curve: Curves.easeOut,
-        child: _rawCard(context),
-      ),
+      child: _rawCard(context),
     );
   }
 }

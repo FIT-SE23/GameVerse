@@ -12,11 +12,9 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
   forumId: json['forumid'] as String,
   title: json['title'] as String,
   content: json['content'] as String,
-  upvotes: (json['upvotes'] as num).toInt(),
+  upvotes: (json['recommend'] as num).toInt(),
   createdAt: DateTime.parse(json['postdate'] as String),
-  commentsId: (json['commentsId'] as List<dynamic>?)
-      ?.map((e) => e as String)
-      .toList(),
+  commentsCount: (json['comments'] as num).toInt(),
 );
 
 Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
@@ -26,7 +24,7 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'forumid': instance.forumId,
       'title': instance.title,
       'content': instance.content,
-      'upvotes': instance.upvotes,
+      'recommend': instance.upvotes,
       'postdate': instance.createdAt.toIso8601String(),
-      'commentsId': instance.commentsId,
+      'comments': instance.commentsCount,
     };

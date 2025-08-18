@@ -1,4 +1,5 @@
 import 'dart:convert';
+// import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:gameverse/config/api_endpoints.dart';
@@ -44,7 +45,7 @@ class GameApiClient {
   ) async {
     final request =
         http.MultipartRequest("POST", Uri.parse(ApiEndpoints.gameUrl))
-          ..headers["Authorization"] = token
+          ..headers["Authorization"] = 'Bearer $token'
           ..fields["gamename"] = name
           ..fields["description"] = description
           ..fields["briefdescription"] = briefDescription
@@ -156,24 +157,46 @@ class GameApiClient {
     }
 
     List<String> media = [for (final m in rawMedia) m["url"]];
- 
-    final game = GameModel(
-      gameId: (json["gameid"] ?? '') as String,
-      publisherId: (json["publisherid"] ?? '') as String,
-      name: (json["name"] ?? '') as String,
-      description: (json["description"] ?? '') as String,
-      briefDescription: (json["briefdescription"] ?? '') as String,
-      requirement: (json["requirement"] ?? '') as String,
-      price: json["price"].toDouble() as double,
-      recommended: json["recommend"].toInt() as int,
-      releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
-      categories: categories,
-      media: media,
-      headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
 
-      isSale: json["Game_Sale"] == null,
-    );
-    return game;
+    if (json["Game_Sale"] == null) {
+      return GameModel(
+        gameId: (json["gameid"] ?? '') as String,
+        publisherId: (json["publisherid"] ?? '') as String,
+        name: (json["name"] ?? '') as String,
+        description: (json["description"] ?? '') as String,
+        briefDescription: (json["briefdescription"] ?? '') as String,
+        requirement: (json["requirement"] ?? '') as String,
+        price: json["price"].toDouble() as double,
+        recommended: json["recommend"].toInt() as int,
+        releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
+        categories: categories,
+        media: media,
+        headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
+
+        isSale: false,
+      );
+    } else {
+      final gameSale = json["Game_Sale"] as Map<String, dynamic>;
+      return GameModel(
+        gameId: (json["gameid"] ?? '') as String,
+        publisherId: (json["publisherid"] ?? '') as String,
+        name: (json["name"] ?? '') as String,
+        description: (json["description"] ?? '') as String,
+        briefDescription: (json["briefdescription"] ?? '') as String,
+        requirement: (json["requirement"] ?? '') as String,
+        price: json["price"].toDouble() as double,
+        recommended: json["recommend"].toInt() as int,
+        releaseDate: DateTime.parse(json["releasedate"] as String? ?? ""),
+        categories: categories,
+        media: media,
+        headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
+
+        isSale: true,
+        discountPercent: gameSale["discountpercentage"].toDouble() as double,
+        saleStartDate: DateTime.parse(gameSale["startdate"] as String? ?? ""),
+        saleEndDate: DateTime.parse(gameSale["enddate"] as String? ?? ""),
+      );
+    }
   }
 
   Future<Response> getGame(String token, String gameid) async {
@@ -209,16 +232,31 @@ class GameApiClient {
     return Response(code: response.code, message: response.message, data: game);
   }
 
+  Future<Response> getPublisherName(String publisherId) async {
+    final raw = await http.get(Uri.parse(
+      "${ApiEndpoints.baseUrl}/user/$publisherId"
+    ));
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    return Response(code: response.code, message: response.message, data: response.data['username']);
+  }
+
   Future<Response> listGames(
     String gamename,
     String sortBy,
     int start,
     int cnt,
     String categories,
+    bool onSale,
   ) async {
+    String sonSale = onSale ? '1' : '';
     final raw = await http.get(
       Uri.parse(
-        "${ApiEndpoints.baseUrl}/search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories",
+        "${ApiEndpoints.baseUrl}/search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories&onsale=$sonSale",
       ),
     );
 
@@ -398,8 +436,8 @@ class GameApiClient {
     List<String>? resourceIds,
   }) async {
     final request =
-        http.MultipartRequest("POST", Uri.parse("${ApiEndpoints.baseUrl}download/game"))
-          ..headers["Authorization"] = token
+        http.MultipartRequest("POST", Uri.parse("${ApiEndpoints.baseUrl}/download/game"))
+          ..headers["Authorization"] = "Bearer $token"
           ..fields["gameid"] = gameId;
 
     if (resourceIds != null && resourceIds.isNotEmpty) {
@@ -413,7 +451,6 @@ class GameApiClient {
         request.fields['resourceids'] = jsonEncode(validResourceIDs);
       }
     }
-
     final raw = await request.send();
     final response = Response.fromJson(
       raw.statusCode,

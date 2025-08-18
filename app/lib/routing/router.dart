@@ -17,6 +17,7 @@ import 'package:gameverse/ui/forum_posts/widgets/forum_posts_screen.dart';
 import 'package:gameverse/ui/transaction/widgets/transaction_screen.dart';
 import 'package:gameverse/ui/publisher/widgets/publisher_registration_screen.dart';
 import 'package:gameverse/ui/publisher/widgets/publisher_dashboard_screen.dart';
+import 'package:gameverse/ui/operator/widgets/operator_dashboard_screen.dart';
 
 import 'package:gameverse/ui/policy/widgets/terms_of_service_screen.dart';
 import 'package:gameverse/ui/policy/widgets/privacy_policy_screen.dart';
@@ -164,6 +165,10 @@ class AppRouter {
             GoRoute(
               path: Routes.publisherDashboard,
               builder: (context, state) => const PublisherDashboardScreen(),
+            ),
+            GoRoute(
+              path: Routes.operatorDashboard,
+              builder: (context, state) => const OperatorDashboardScreen(),
             ),
           ],
         ),

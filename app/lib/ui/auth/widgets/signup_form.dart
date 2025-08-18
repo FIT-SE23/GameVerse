@@ -69,6 +69,8 @@ class _SignUpFormState extends State<SignupForm> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final double radius = 6;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -83,19 +85,19 @@ class _SignUpFormState extends State<SignupForm> {
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
             ),
             validator: (value) {
@@ -116,19 +118,19 @@ class _SignUpFormState extends State<SignupForm> {
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
             ),
             keyboardType: TextInputType.emailAddress,
@@ -161,19 +163,19 @@ class _SignUpFormState extends State<SignupForm> {
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
             ),
             obscureText: !_isPasswordVisible,
@@ -205,19 +207,19 @@ class _SignUpFormState extends State<SignupForm> {
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red.shade300),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(radius)
               ),
             ),
             obscureText: !_isConfirmPasswordVisible,

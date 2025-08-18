@@ -19,6 +19,8 @@ class _FilterSidebarState extends State<FilterSidebar> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
 
+  bool _discounted = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -52,11 +54,11 @@ class _FilterSidebarState extends State<FilterSidebar> {
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(6)
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                borderRadius: BorderRadius.zero
+                borderRadius: BorderRadius.circular(6)
               ),
               filled: false,
               contentPadding: const EdgeInsets.symmetric(
@@ -68,6 +70,24 @@ class _FilterSidebarState extends State<FilterSidebar> {
           ),
         ),
         const SizedBox(height: 16),
+
+        Row(
+          children: [
+            Checkbox(
+              value: _discounted,
+              onChanged: (value) {
+                setState(() {
+                  _discounted = value!;
+                  viewModel.setOnlyDiscounted(_discounted);
+                });
+              },
+            ),
+            Text(
+              'Only Discounted',
+              style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),
+            )
+          ],
+        ),
 
         // Categories filter
         Text(

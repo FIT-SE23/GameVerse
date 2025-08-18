@@ -35,7 +35,7 @@ class TransactionService {
     final transaction = TransactionModel(
       senderId: userId,
       gameId: game.gameId,
-      amount: price,
+      moneyAmount: price,
       transactionDate: DateTime.now(),
       status: 'completed',
       isRefundable: true,
