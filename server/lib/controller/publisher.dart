@@ -35,17 +35,17 @@ class Publisher {
 }
 
 Future<Response> addPublisher(
-  String userid,
+  String token,
   String paymentMethodId,
   String description,
 ) async {
   final raw = await http.post(
     Uri.parse(serverURL + "publisher"),
     body: <String, String>{
-      "userid": userid,
       "paymentmethodid": paymentMethodId,
       "description": description,
     },
+    headers: {"Authorization": "Bearer " + token},
   );
 
   final response = Response.fromJson(
