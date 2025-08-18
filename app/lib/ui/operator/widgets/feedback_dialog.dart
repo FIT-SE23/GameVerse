@@ -7,12 +7,12 @@ class FeedbackDialog extends StatefulWidget {
   final bool isRequired;
   
   const FeedbackDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.confirmLabel,
     this.isRequired = true,
-  }) : super(key: key);
+  });
   
   @override
   State<FeedbackDialog> createState() => _FeedbackDialogState();

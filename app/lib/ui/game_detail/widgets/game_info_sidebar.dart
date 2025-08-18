@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:provider/provider.dart';
 
+import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
+import 'package:gameverse/ui/game_detail/view_model/game_details_viewmodel.dart';
 
 import 'package:gameverse/routing/routes.dart';
 import 'package:gameverse/ui/game_detail/widgets/add_to_cart_button.dart';
@@ -153,29 +154,53 @@ class GameInfoSidebar extends StatelessWidget {
                 Expanded(
                   child: Tooltip(
                     message: 'Recommend',
-                    child: ElevatedButton(
-                      style: theme.elevatedButtonTheme.style!.copyWith(
-                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
-                      ),
-                      onPressed: () => {
-                        // Provider.of<GameDetailsViewModel>(context, listen: false)
-                        //   .recommendGame(game.gameId),
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Recommended ${game.name} successfully!'),
-                            duration: const Duration(seconds: 2),
+                    child: Consumer<GameDetailsViewModel>(
+                      builder: (context, gameDetailsViewModel, child) {
+                        return ElevatedButton(
+                          style: theme.elevatedButtonTheme.style!.copyWith(
+                            backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
                           ),
-                        ),
+                          onPressed: () async {
+                            final success = await gameDetailsViewModel
+                                .recommendGame(game.gameId);
+                            if (success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: gameDetailsViewModel.isRecommended
+                                      ? Text('Recommended ${game.name} successfully!')
+                                      : Text('Unrecommended ${game.name} successfully!'),
+                                  duration: const Duration(seconds: 2),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } else if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Failed to recommend ${game.name}.'),
+                                  duration: const Duration(seconds: 2),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.thumb_up_alt_outlined,
+                                color: AppTheme.currentThemeColors(theme.brightness).getText,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                gameDetailsViewModel.isRecommended ? 'Unrecommend' : 'Recommend',
+                                style: theme.textTheme.bodyLarge!.copyWith(
+                                  color: AppTheme.currentThemeColors(theme.brightness).getText,
+                                ),
+                              ),
+                            ],
+                          )
+                        );
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.thumb_up_alt_outlined,
-                            color: AppTheme.currentThemeColors(theme.brightness).getText,
-                          ),
-                        ],
-                      )
                     ),
                   ),
                 ),

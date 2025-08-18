@@ -315,6 +315,19 @@ class GameApiClient {
     return response;
   }
 
+  Future<Response> isRecommended(String token, String gameId) async {
+    final raw = await http.get(
+      Uri.parse("${ApiEndpoints.recommendedGamesUrl}/game/$gameId"),
+      headers: <String, String>{"Authorization": "Bearer $token"},
+    );
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    return response;
+  }
+
   // Add a game to the user's library or wishlist with a specific status
   Future<Response> addGameWithStatus(
     String token,
