@@ -83,16 +83,16 @@ class OperatorViewModel extends ChangeNotifier {
       notifyListeners();
       
       // For development/testing, use mock data
-      if (kDebugMode) {
-        await Future.delayed(const Duration(milliseconds: 800)); // Simulate network delay
+      // if (kDebugMode) {
+        await Future.delayed(const Duration(milliseconds: 200)); // Simulate network delay
         _pendingGameRequests = _generateMockGameRequests();
-      } else {
-        // For production, use actual API
-        final requests = await _operatorRepository.getPendingGameRequests(
-          _authRepository.accessToken!,
-        );
-        _pendingGameRequests = requests;
-      }
+      // } else {
+      //   // For production, use actual API
+      //   final requests = await _operatorRepository.getPendingGameRequests(
+      //     _authRepository.accessToken!,
+      //   );
+      //   _pendingGameRequests = requests;
+      // }
       
       _state = OperatorViewState.success;
     } catch (e) {
@@ -110,16 +110,16 @@ class OperatorViewModel extends ChangeNotifier {
       notifyListeners();
       
       // For development/testing, use mock data
-      if (kDebugMode) {
-        await Future.delayed(const Duration(milliseconds: 800)); // Simulate network delay
+      // if (kDebugMode) {
+        await Future.delayed(const Duration(milliseconds: 200)); // Simulate network delay
         _pendingPublisherRequests = _generateMockPublisherRequests();
-      } else {
-        // For production, use actual API
-        final requests = await _operatorRepository.getPendingPublisherRequests(
-          _authRepository.accessToken!,
-        );
-        _pendingPublisherRequests = requests;
-      }
+      // } else {
+      //   // For production, use actual API
+      //   final requests = await _operatorRepository.getPendingPublisherRequests(
+      //     _authRepository.accessToken!,
+      //   );
+      //   _pendingPublisherRequests = requests;
+      // }
       
       _state = OperatorViewState.success;
     } catch (e) {

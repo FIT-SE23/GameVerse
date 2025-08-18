@@ -288,7 +288,11 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
             paymentMethod: PaymentMethodModel(
               paymentMethodId: 'pm_123',
               type: 'banking',
-              information: 'PayPal',
+              // check in payment methods to find the name
+              information: Provider.of<TransactionViewModel>(context)
+                  .paymentMethods
+                  .firstWhere((pm) => pm.paymentMethodId == transaction.paymentMethodId)
+                  .information,
             )
           );
         },

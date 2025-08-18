@@ -1,18 +1,20 @@
+import 'package:flutter/widgets.dart';
 import 'package:gameverse/data/services/game_api_client.dart';
 import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/transaction_model/transaction_model.dart';
 import 'package:gameverse/data/services/transaction_api_client.dart';
+import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 
 
 class TransactionRepository {
 
-  Future<List<TransactionModel>> getUserTransactions(String userId) async {
-    final response = await TransactionApiClient().getUserTransactions(userId);
+  Future<List<TransactionModel>> getUserTransactions(String token) async {
+    final response = await TransactionApiClient().getTransactions(token);
     if (response.code == 200) {
-      // To do: Handle response data
-      // return response.data as List<TransactionModel>;
-      return _getMockTransactions(userId);
+      return (response.data as List<dynamic>)
+          .map((item) => TransactionModel.fromJson(item as Map<String, dynamic>))
+          .toList();
     } else {
       throw Exception('Failed to fetch transactions: ${response.message}');
     }
@@ -80,7 +82,6 @@ class TransactionRepository {
   Future<String> getPayPalPaymentGatewayUrl(String token) async {
     final response = await TransactionApiClient().getPayPalPaymentGatewayUrl(token);
     if (response.code == 200) {
-      print(response.data);
       return response.data as String;
     } else {
       throw Exception('Failed to fetch PayPal payment gateway URL: ${response.message}');
@@ -89,36 +90,20 @@ class TransactionRepository {
   Future<String> getVNPayPaymentGatewayUrl(String token) async {
     final response = await TransactionApiClient().getVNPayPaymentGatewayUrl(token);
     if (response.code == 200) {
-      print(response.data);
       return response.data as String;
     } else {
       throw Exception('Failed to fetch PayPal payment gateway URL: ${response.message}');
     }
   }
 
-    // Mock data for development
-  List<TransactionModel> _getMockTransactions(String userId) {
-    return [
-      TransactionModel(
-        transactionId: 'txn_123456789',
-        senderId: userId,
-        amount: 19.99,
-        status: 'completed',
-        transactionDate: DateTime.now().subtract(const Duration(days: 3)),
-        paymentMethodId: 'pm_123456789',
-        gameId: 'game_1',
-        isRefundable: true,
-      ),
-      TransactionModel(
-        transactionId: 'txn_987654321',
-        senderId: userId,
-        amount: 24.99,
-        status: 'completed',
-        transactionDate: DateTime.now().subtract(const Duration(days: 10)),
-        paymentMethodId: 'pm_987654321',
-        gameId: 'game_2',
-        isRefundable: false,
-      ),
-    ];
+  Future<List<PaymentMethodModel>> getPaymentMethods() async {
+    final response = await TransactionApiClient().getPaymentMethods();
+    if (response.code == 200) {
+      return (response.data as List<dynamic>)
+          .map((item) => PaymentMethodModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw Exception('Failed to fetch payment methods: ${response.message}');
+    }
   }
 }

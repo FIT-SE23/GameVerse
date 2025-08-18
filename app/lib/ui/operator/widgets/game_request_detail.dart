@@ -6,11 +6,11 @@ class GameRequestDetail extends StatefulWidget {
   final VoidCallback onReject;
 
   const GameRequestDetail({
-    Key? key,
+    super.key,
     required this.request,
     required this.onApprove,
     required this.onReject,
-  }) : super(key: key);
+  });
   
   @override
   State<GameRequestDetail> createState() => _GameRequestDetailState();
