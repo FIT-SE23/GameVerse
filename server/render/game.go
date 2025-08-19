@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math"
 	"mime/multipart"
 	"net/http"
 	"slices"
@@ -16,7 +15,6 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/supabase-community/postgrest-go"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -315,7 +313,6 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortBy := c.QueryParam("sortby")
 	categories := c.QueryParam("categories")
-	categoryList := strings.Split(categories, ",")
 	start, err := strconv.Atoi(c.QueryParam("start"))
 	onSale := c.QueryParam("onsale") == "1"
 
@@ -327,166 +324,75 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	if start < 0 || cnt < 0 {
-		return jsonResponse(c, http.StatusOK, "", []map[string]string{})
+		return jsonResponse(c, http.StatusBadRequest, "", "")
 	}
 
-	var filter *postgrest.FilterBuilder
-	if onSale {
-		today := time.Now().UTC().UTC().Format("2006-01-02")
-		filter = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale!inner(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "").Lte("Game_Sale.startdate", today).Gte("Game_Sale.enddate", today)
-	} else {
-		filter = client.From("Game").Select("*, Category(categoryname), Resource(url, type), Game_Sale(*)", "", false).Like("name", "%"+gamename+"%").In("Resource.type", []string{"media_header", "media"}).Range(start, start+cnt-1, "")
+	rep := client.Rpc("searchgames", "", map[string]any{"gname": gamename, "categories": "{" + categories + "}", "start": start, "cnt": cnt, "onsale": onSale, "sortby": sortBy})
+	if rep == "" || rep == "null" {
+		rep = "[]"
 	}
-
-	var rep string
-	if sortBy == "price" {
-		rangeLimit := map[string]int{
-			"start": start,
-			"cnt":   cnt,
-		}
-		if onSale {
-			rep = client.Rpc("sortonsalegamebyprice", "", rangeLimit)
-		} else {
-			rep = client.Rpc("sortgamebyprice", "", rangeLimit)
-		}
-		var raw []map[string]string
-		err = json.Unmarshal([]byte(rep), &raw)
-		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-		}
-
-		gameids := []string{}
-		for _, info := range raw {
-			gameids = append(gameids, info["gameid"])
-		}
-		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
-		// return jsonResponse(c, http.StatusOK, "", resp)
-	} else if sortBy == "popularity" {
-		rangeLimit := map[string]int{
-			"start": start,
-			"cnt":   cnt,
-		}
-		if onSale {
-			rep = client.Rpc("sortonsalegamebypopularity", "", rangeLimit)
-		} else {
-			rep = client.Rpc("sortgamebypopularity", "", rangeLimit)
-		}
-		var raw []map[string]string
-		err = json.Unmarshal([]byte(rep), &raw)
-		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-		}
-
-		gameids := []string{}
-		for _, info := range raw {
-			gameids = append(gameids, info["gameid"])
-		}
-		rep, _, err = client.From("Game").Select("*, Category(*), Resource(url, type), Game_Sale(*)", "", false).In("gameid", gameids).In("Resource.type", []string{"media_header", "media"}).ExecuteString()
-	} else if sortBy == "date" {
-		rep, _, err = filter.Order("releasedate", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
-	} else if sortBy == "recommend" {
-		rep, _, err = filter.Order("recommend", &postgrest.OrderOpts{Ascending: false}).ExecuteString()
-	} else {
-		rep, _, err = filter.ExecuteString()
-	}
-
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-	}
-
 	var games []map[string]any
 	err = json.Unmarshal([]byte(rep), &games)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		fmt.Println(rep)
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "[]")
 	}
 
-	if len(categoryList) > 1 || (len(categoryList) == 1 && categoryList[0] != "") {
-		fmt.Println(categoryList)
-		sort.Strings(categoryList)
-		matchCategories := func(required []string, given []string) bool {
-			requiredIdx := 0
-			for requiredIdx < len(required) {
-				if _, found := slices.BinarySearch(given, required[requiredIdx]); found {
-					requiredIdx++
-				} else {
-					return false
-				}
-			}
-
-			return requiredIdx >= len(required)
-		}
-		games = slices.DeleteFunc(games, func(game map[string]any) bool {
-			gameCatsAny, ok := game["Category"].([]any)
-			if !ok {
-				return true
-			}
-
-			givenCat := []string{}
-			for _, gameCatAny := range gameCatsAny {
-				gameCatMap, ok := gameCatAny.(map[string]any)
+	for _, game := range games {
+		game["Category"] = []map[string]any{}
+		categories, ok := game["category"].([]any)
+		delete(game, "category")
+		if ok {
+			var gameCategory []map[string]any
+			for _, catAny := range categories {
+				category, ok := catAny.([]any)
 				if !ok {
-					return true
+					continue
 				}
-
-				gameCat, ok := gameCatMap["categoryname"].(string)
-				if !ok {
-					return true
-				}
-				givenCat = append(givenCat, gameCat)
+				gameCategory = append(gameCategory, map[string]any{
+					"categoryid":   category[0],
+					"categoryname": category[1],
+					"issensitive":  category[2],
+				})
 			}
-			fmt.Println(game["name"], givenCat)
-			return !matchCategories(categoryList, givenCat)
-		})
-	}
-
-	if sortBy == "price" {
-		calcuateNewPrice := func(game map[string]any) float64 {
-			price, ok := game["price"].(float64)
-			if !ok {
-				price = math.MaxFloat64
-			} else if game["Game_Sale"] != nil {
-				gameSale := game["Game_Sale"].(map[string]any)
-				discount, ok := gameSale["discountpercentage"].(float64)
-				if ok {
-					price = price * (100 - discount) / 100
-				}
-			}
-			return price
+			game["Category"] = gameCategory
 		}
-		sort.Slice(games, func(i, j int) bool {
-			priceI := calcuateNewPrice(games[i])
-			priceJ := calcuateNewPrice(games[j])
-			return priceI < priceJ
-		})
-	} else if sortBy == "popularity" {
-		calcuatePopularity := func(game map[string]any) float64 {
-			recommend, ok := game["recommend"].(float64)
-			if !ok {
-				fmt.Println("Parse failed: recommend")
-				return 0
-			}
 
-			releaseDateRaw, ok := game["releasedate"].(string)
-			if !ok {
-				fmt.Println("Parse failed: releasedate")
-				return 0
+		game["Resource"] = []map[string]any{}
+		resources, ok := game["resource"].([]any)
+		delete(game, "resource")
+		if ok {
+			var gameResource []map[string]any
+			for _, resAny := range resources {
+				resource, ok := resAny.([]any)
+				if !ok {
+					continue
+				}
+				gameResource = append(gameResource, map[string]any{
+					"url":  resource[0],
+					"type": resource[1],
+				})
 			}
+			game["Resource"] = gameResource
+		}
 
-			releaseDate, err := time.Parse("2006-01-02", releaseDateRaw)
+		game["Game_Sale"] = nil
+		saleInformation, ok := game["game_sale"].([]any)
+		delete(game, "game_sale")
+		if ok {
+			gameSale := map[string]any{
+				"startdate": saleInformation[1],
+				"enddate":   saleInformation[2],
+			}
+			discountPercentageStr, _ := saleInformation[0].(string)
+			discountPercentage, err := strconv.ParseInt(discountPercentageStr, 10, 32)
 			if err != nil {
 				fmt.Println(err)
-				return 0
+				continue
 			}
-
-			elapsed := time.Since(releaseDate)
-			return recommend / math.Pow(elapsed.Hours()/24.0, 3)
+			gameSale["discountpercentage"] = discountPercentage
+			game["Game_Sale"] = gameSale
 		}
-		sort.Slice(games, func(i, j int) bool {
-			priceI := calcuatePopularity(games[i])
-			priceJ := calcuatePopularity(games[j])
-			fmt.Println(priceI, priceJ)
-			return priceI > priceJ
-		})
 	}
 
 	return jsonResponse(c, http.StatusOK, "", games)
