@@ -628,19 +628,20 @@ func isRecommended(c echo.Context, client *supabase.Client, userID string, gameI
 		From("Game_Recommend").
 		Select("*", "", false).
 		Match(vote).
-		Single().
 		ExecuteString()
 	if err != nil {
+		fmt.Println(err.Error())
 		return jsonResponse(c, http.StatusOK, "", false)
 	}
 
-	var result map[string]any
+	var result []map[string]any
 	err = json.Unmarshal([]byte(rep), &result)
 	if err != nil {
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
 	}
+	fmt.Println(result, len(result))
 
-	return jsonResponse(c, http.StatusOK, "", result["gameid"] != nil)
+	return jsonResponse(c, http.StatusOK, "", len(result) == 1)
 }
 
 func downloadGame(c echo.Context, client *supabase.Client, userID string) error {
