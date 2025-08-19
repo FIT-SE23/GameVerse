@@ -194,7 +194,7 @@ class AuthRepository {
     try {
       // Clear local data
       _currentUser = null;
-      _accessToken = null;
+      _accessToken = '';
       
       // Clear secure storage
       await SecureStorageService.clearAuthData();
