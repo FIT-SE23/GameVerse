@@ -1,6 +1,5 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/ui/home/view_model/home_viewmodel.dart';
@@ -15,6 +14,7 @@ import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 import 'package:gameverse/ui/operator/view_model/operator_viewmodel.dart';
+import 'package:gameverse/ui/analytics/view_model/playtime_analysis_viewmodel.dart';
 
 import 'package:gameverse/ui/advanced_search/view_model/advanced_search_viewmodel.dart';
 
@@ -26,12 +26,12 @@ import '../data/repositories/post_repository.dart';
 import '../data/repositories/comment_repository.dart';
 import '../data/repositories/transaction_repository.dart';
 import '../data/repositories/operator_repository.dart';
+import '../data/repositories/playtime_repository.dart';
 
 import '../data/services/transaction_service.dart';
 Future<List<SingleChildWidget>> appProviders() async {
   return [
-    // Provider(create: (_) => GameRepository(httpClient: http.Client())),
-    FutureProvider(create: (_) => GameRepository.fromService(), initialData: GameRepository(httpClient: http.Client())),
+    Provider(create: (_) => GameRepository()),
     Provider(create: (_) => AuthRepository()),
     Provider(create: (_) => ForumRepository()),
     Provider(create: (_) => PostRepository()),
@@ -39,6 +39,7 @@ Future<List<SingleChildWidget>> appProviders() async {
     Provider(create: (_) => TransactionService()),
     Provider(create: (_) => TransactionRepository()),
     Provider(create: (_) => OperatorRepository()),
+    Provider(create: (_) => PlaytimeRepository()),
 
     // ViewModels
     ChangeNotifierProvider(
@@ -55,6 +56,7 @@ Future<List<SingleChildWidget>> appProviders() async {
       create: (context) => GameDetailsViewModel(
         gameRepository: context.read<GameRepository>(),
         authRepository: context.read<AuthRepository>(),
+        playtimeRepository: context.read<PlaytimeRepository>(),
       ),
     ),
     ChangeNotifierProvider<LibraryViewModel>(
@@ -110,6 +112,12 @@ Future<List<SingleChildWidget>> appProviders() async {
     ChangeNotifierProvider<OperatorViewModel>(
       create: (context) => OperatorViewModel(
         operatorRepository: context.read<OperatorRepository>(),
+        authRepository: context.read<AuthRepository>(),
+      ),
+    ),
+    ChangeNotifierProvider<PlaytimeAnalysisViewModel>(
+      create: (context) => PlaytimeAnalysisViewModel(
+        playtimeRepository: context.read<PlaytimeRepository>(),
         authRepository: context.read<AuthRepository>(),
       ),
     ),

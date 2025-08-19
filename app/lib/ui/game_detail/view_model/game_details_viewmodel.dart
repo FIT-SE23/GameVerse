@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
+import 'package:gameverse/data/repositories/playtime_repository.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 
 enum GameDetailsState { initial, loading, success, error }
@@ -8,10 +11,14 @@ enum GameDetailsState { initial, loading, success, error }
 class GameDetailsViewModel extends ChangeNotifier {
   final GameRepository _gameRepository;
   final AuthRepository _authRepository;
+  final PlaytimeRepository _playtimeRepository;
   
-  GameDetailsViewModel({required GameRepository gameRepository, required AuthRepository authRepository}) 
+  GameDetailsViewModel({required GameRepository gameRepository, 
+                          required AuthRepository authRepository,
+                          required PlaytimeRepository playtimeRepository}) 
       : _gameRepository = gameRepository,
-        _authRepository = authRepository;
+        _authRepository = authRepository,
+        _playtimeRepository = playtimeRepository;
 
   // State management
   GameDetailsState _state = GameDetailsState.initial;
@@ -35,6 +42,12 @@ class GameDetailsViewModel extends ChangeNotifier {
 
   bool _isRecommended = false;
   bool get isRecommended => _isRecommended;
+
+  // Playtime tracking
+  DateTime? _lastSessionStartTime;
+  DateTime? get lastSessionStartTime => _lastSessionStartTime;
+  Process? _gameProcess;
+  Process? get gameProcess => _gameProcess;
 
   Future<void> loadGameDetails(String gameId, {String gamePath = ''}) async {
     try {
@@ -134,6 +147,34 @@ class GameDetailsViewModel extends ChangeNotifier {
     } catch (e) {
       debugPrint('Failed to check if game is in wishlist: $e');
       return false;
+    }
+  }
+
+  void setLastSessionStartTime(DateTime? time) {
+    _lastSessionStartTime = time;
+    notifyListeners();
+  }
+
+  void setGameProcess(Process? process) {
+    _gameProcess = process;
+    notifyListeners();
+  }
+
+    Future<void> trackGameProcess() async {
+    try {
+      // Monitor the process exit code to know when the game ends
+      final exitCode = await _gameProcess?.exitCode;
+      debugPrint('Game process exited with code: $exitCode');
+      
+      await _playtimeRepository.addPlaytimeSession(
+        token: _authRepository.accessToken!,
+        begin: _lastSessionStartTime!,
+        end: DateTime.now(),
+      );
+      // Reset the last session start time after tracking
+      _lastSessionStartTime = null;
+    } catch (e) {
+      debugPrint('Error tracking game process: $e');
     }
   }
 }

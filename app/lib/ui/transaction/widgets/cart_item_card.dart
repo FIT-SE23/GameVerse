@@ -37,7 +37,7 @@ class CartItemCard extends StatelessWidget {
                   errorBuilder: (_, __, ___) => Container(
                     width: 100,
                     height: 60,
-                    color: theme.colorScheme.surfaceVariant,
+                    color: theme.colorScheme.onSurfaceVariant,
                     child: Icon(Icons.games,
                         color: theme.colorScheme.onSurfaceVariant),
                   ),
@@ -74,9 +74,12 @@ class CartItemCard extends StatelessWidget {
                     // Price
                     Row(
                       children: [
-                        if (game.isSale == true && game.discountPercent != null) ...[
+                        if (game.isSale == true && game.discountPercent != null
+                            && DateTime.now().isAfter(game.saleStartDate!)
+                            && DateTime.now().isBefore(game.saleEndDate!)
+                        ) ...[
                           Text(
-                            '\$${game.price.toStringAsFixed(2)}',
+                            '${game.price.toStringAsFixed(2)} VND',
                             style: theme.textTheme.bodySmall?.copyWith(
                               decoration: TextDecoration.lineThrough,
                               color: theme.colorScheme.onSurfaceVariant,
@@ -87,7 +90,7 @@ class CartItemCard extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.error.withOpacity(0.1),
+                              color: theme.colorScheme.error.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
                                   color: theme.colorScheme.error),
@@ -103,7 +106,7 @@ class CartItemCard extends StatelessWidget {
                           const SizedBox(width: 8),
                         ],
                         Text(
-                          '\$${cartItem.price.toStringAsFixed(2)}',
+                          '${cartItem.price.toStringAsFixed(2)} VND',
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,

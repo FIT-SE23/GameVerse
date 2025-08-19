@@ -18,6 +18,7 @@ import 'package:gameverse/ui/transaction/widgets/transaction_screen.dart';
 import 'package:gameverse/ui/publisher/widgets/publisher_registration_screen.dart';
 import 'package:gameverse/ui/publisher/widgets/publisher_dashboard_screen.dart';
 import 'package:gameverse/ui/operator/widgets/operator_dashboard_screen.dart';
+import 'package:gameverse/ui/analytics/widgets/playtime_analysis_screen.dart';
 
 import 'package:gameverse/ui/policy/widgets/terms_of_service_screen.dart';
 import 'package:gameverse/ui/policy/widgets/privacy_policy_screen.dart';
@@ -170,6 +171,11 @@ class AppRouter {
               path: Routes.operatorDashboard,
               builder: (context, state) => const OperatorDashboardScreen(),
             ),
+            GoRoute(
+              path: Routes.analytics,
+              builder: (context, state) => const PlaytimeAnalysisScreen(),
+            ),
+
           ],
         ),
         // Auth routes
