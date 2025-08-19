@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:http/http.dart' as http;
 
 import 'package:gameverse/data/services/comment_api_client.dart';
@@ -36,8 +34,6 @@ class CommentRepository {
       throw Exception('Failed to load comments: $e');
     }
   }
-
-  
 
   Future<void> addComment(CommentModel comment) async {
     // Simulate adding a comment
