@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/data/repositories/post_repository.dart';
 import 'package:gameverse/domain/models/post_model/post_model.dart';
 
@@ -6,9 +7,14 @@ enum ForumPostsState { initial, loading, success, error }
 
 class ForumPostsViewModel extends ChangeNotifier {
   final PostRepository _postRepository;
+  final AuthRepository _authRepository;
   
-  ForumPostsViewModel({required PostRepository postRepository})
-      : _postRepository = postRepository;
+  ForumPostsViewModel({
+    required PostRepository postRepository,
+    required AuthRepository authRepository
+  })
+      : _postRepository = postRepository,
+        _authRepository = authRepository;
 
   ForumPostsState _state = ForumPostsState.initial;
   ForumPostsState get state => _state;
@@ -28,7 +34,12 @@ class ForumPostsViewModel extends ChangeNotifier {
       _gameName = gameName;
       notifyListeners();
 
-      _posts = await _postRepository.getPostsForGame(gameId);
+      _posts = await _postRepository.searchPosts(
+        gameId,
+        '',
+        PostSortCriteria.date,
+        limit: 20
+      );
       _state = ForumPostsState.success;
     } catch (e) {
       _state = ForumPostsState.error;
@@ -40,17 +51,20 @@ class ForumPostsViewModel extends ChangeNotifier {
 
   Future<void> createPost(String gameId, String title, String content, String authorId) async {
     final newPost = PostModel(
-      postId: 'post_${DateTime.now().millisecondsSinceEpoch}',
+      postId: '0',              // this is generated on server side
       title: title,
       content: content,
       createdAt: DateTime.now(),
       upvotes: 0,
-      forumId: 'forum_$gameId',
+      forumId: gameId,
       authorId: authorId,
       commentsCount: 0,
     );
 
-    await _postRepository.createPost(newPost);
+    await _postRepository.createPost(
+      _authRepository.accessToken!,
+      newPost
+    );
     _posts.insert(0, newPost);
     notifyListeners();
   }

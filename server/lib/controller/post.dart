@@ -143,10 +143,10 @@ Future<Response> recommendPost(String token, String postId) async {
   return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
 }
 
-Future<Response> listPosts(String title, String sortBy, {int limit = 20}) async {
+Future<Response> listPosts(String forumId, String title, String sortBy, {int limit = 20}) async {
   final raw = await http.get(
     Uri.parse(serverURL +
-        "search?entity=post&title=${Uri.encodeComponent(title)}&sortby=$sortBy&limit=$limit")
+        "search?entity=post&forumid=$forumId&title=${Uri.encodeComponent(title)}&sortby=$sortBy&limit=$limit")
   );
 
   var jsonBody;
@@ -156,21 +156,15 @@ Future<Response> listPosts(String title, String sortBy, {int limit = 20}) async 
     return Response.fromJson(400, {"message": e.message});
   }
 
-  final response = Response.fromJson(raw.statusCode, jsonBody as Map<String, dynamic>);
-  final posts = (response.data as List).map((e) => Post.fromJson(e)).toList();
-  return Response(code: response.code, message: response.message, data: posts);
-}
-
-Future<Response> listComments(String postId, String sortBy, {int limit = 20}) async {
-  final raw = await http.get(
-    Uri.parse(serverURL +
-        "post/$postId/comment?sortby=$sortBy&limit=$limit")
-  );
-
   final response = Response.fromJson(
-    raw.statusCode, 
-    jsonDecode(raw.body) as Map<String, dynamic>,
+    raw.statusCode,
+    jsonBody as Map<String, dynamic>,
   );
 
-  return response;
+  final posts = <Post>[];
+  for (var post in response.data as List<dynamic>) {
+    posts.add(Post.fromJson(post as Map<String, dynamic>));
+  }
+
+  return Response(code: response.code, message: response.message, data: posts);
 }

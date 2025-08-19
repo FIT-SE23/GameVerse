@@ -7,9 +7,12 @@ part 'comment_model.g.dart';
 @freezed
 abstract class CommentModel with _$CommentModel {
   const factory CommentModel({
-    required String commentId,
-    required String relatedGameId,
-    List<String>? postsId,
+    @JsonKey(name: 'commentid') required String commentId,
+    @JsonKey(name: 'userid') required String userId,
+    @JsonKey(name: 'postid') required String postId,
+    required String content,
+    required int recommend,
+    @JsonKey(name: 'commentdate') required DateTime commentDate,
   }) = _CommentModel;
 
   factory CommentModel.fromJson(Map<String, Object?> json) => 

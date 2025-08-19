@@ -13,7 +13,7 @@ enum AuthProvider { server, google, facebook }
 class AuthRepository {
   final AuthApiClient _apiClient;
   UserModel? _currentUser;
-  String? _accessToken;
+  String? _accessToken = '';
   
   AuthRepository({AuthApiClient? apiClient}) : _apiClient = apiClient ?? AuthApiClient();
   
@@ -194,7 +194,7 @@ class AuthRepository {
     try {
       // Clear local data
       _currentUser = null;
-      _accessToken = null;
+      _accessToken = '';
       
       // Clear secure storage
       await SecureStorageService.clearAuthData();

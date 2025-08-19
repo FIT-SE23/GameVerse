@@ -31,9 +31,9 @@ class PostViewModel extends ChangeNotifier {
       _state = PostState.loading;
       notifyListeners();
 
-      _post = await _postRepository.getPostById(postId);
+      _post = await _postRepository.getPost(postId);
       if (_post != null) {
-        _comments = await _commentRepository.getCommentsForPost(postId);
+        _comments = await _commentRepository.getComments(postId);
         _state = PostState.success;
       } else {
         _state = PostState.error;
@@ -51,9 +51,12 @@ class PostViewModel extends ChangeNotifier {
     if (_post == null) return;
 
     final newComment = CommentModel(
-      commentId: 'comment_${DateTime.now().millisecondsSinceEpoch}',
-      relatedGameId: _post!.forumId.replaceFirst('forum_', ''),
-      postsId: [_post!.postId],
+      commentId: '0',
+      userId: authorId,
+      postId: '0',
+      content: content,
+      recommend: 0,
+      commentDate: DateTime.now()
     );
 
     await _commentRepository.addComment(newComment);

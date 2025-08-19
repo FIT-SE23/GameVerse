@@ -186,10 +186,12 @@ func verifyUserToken(c echo.Context) (string, error) {
 func login(c echo.Context, client *supabase.Client) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
+	fmt.Println("")
 	checkSum := sha256.Sum256([]byte(password))
 	hashPassword := hex.EncodeToString(checkSum[:])
 	rep, _, err := client.From("User").Select("userid, type", "", false).Eq("email", email).Eq("hashpassword", hashPassword).Single().ExecuteString()
 	if err != nil {
+
 		return jsonResponse(c, http.StatusBadRequest, "Invalid email or password" /*err.Error()*/, "")
 	}
 
@@ -255,7 +257,7 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 
 	rep, _, err := client.
 		From("Post").
-		Select("*", "", false).
+		Select("postid", "", false).
 		Eq("userid", userid).
 		Order("postdate", &postgrest.OrderOpts{Ascending: false}).
 		Limit(limit, "").
