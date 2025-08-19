@@ -3,7 +3,6 @@ import 'package:gameverse/domain/models/post_model/post_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/forum_posts/view_model/forum_posts_viewmodel.dart';
-import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 class ForumPostsScreen extends StatefulWidget {
   final String gameId;

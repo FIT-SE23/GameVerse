@@ -14,6 +14,7 @@ class GamePrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     if (game.price > 0) {
       if (game.isSale!) {
         final today = DateTime.now();
@@ -32,8 +33,11 @@ class GamePrice extends StatelessWidget {
 
               if (game.discountPercent != 100)
                 Text(
-                  '${(game.price * (100 - game.discountPercent!) / 100).toInt()} VND',
-                  style: textStyle,
+                  '${(game.price * (1 - game.discountPercent! / 100)).toInt()} VND',
+                  style: textStyle.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 )
               else
                 Text(

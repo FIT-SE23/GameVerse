@@ -489,4 +489,53 @@ class GameApiClient {
 
     return response;
   }
+
+
+  Future<Response> getPlaytimeSessions(
+    String token,
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    final raw = await _client.get(
+      Uri.parse(
+        "${ApiEndpoints.baseUrl}/user/playtime?startDate=${startDate.toIso8601String()}&endDate=${endDate.toIso8601String()}",
+      ),
+      headers: <String, String>{
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+    if (response.code != 200) {
+      return Future.error(response);
+    }
+    return response;
+  }
+
+  Future<Response> addPlaytimeSession(
+    String token,
+    DateTime begin,
+    DateTime end,
+  ) async {
+    final raw = await _client.post(
+      Uri.parse("${ApiEndpoints.baseUrl}/user/playtime"),
+      headers: <String, String>{
+        "Authorization": "Bearer $token",
+      },
+      body: <String, String>{
+        "begin": begin.toIso8601String(),
+        "end": end.toIso8601String(),
+      },
+    );
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    return response;
+  }
 }

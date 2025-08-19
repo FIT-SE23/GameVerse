@@ -17,6 +17,7 @@ abstract final class Routes {
   static const faqs = '/faqs';
   static const publisherRegistration = '/publisher-registration';
   static const publisherDashboard = '/publisher-dashboard';
+  static const analytics = '/analytics';
   // Legal routes
   static const privacyPolicy = '/privacy-policy';
   static const termsOfService = '/terms-of-service';

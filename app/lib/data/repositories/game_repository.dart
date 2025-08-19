@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
-import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
@@ -18,23 +17,17 @@ class GameSortCriteria {
 }
 
 class GameRepository {
-  final http.Client client;
-  static late GameApiClient gameApiClient;
-
-  static Set<GameModel> _allGames = {};
+  static final Set<GameModel> _allGames = {};
   Set<GameModel> get allGames => _allGames;
 
   static List<CategoryModel> _categories = [];
   List<CategoryModel> get categories => _categories;
 
   static Future<GameRepository> fromService() async {
-    gameApiClient = GameApiClient();
     var featuredGames = await _getMockFeaturedGames();
     _allGames.addAll(featuredGames);
     return GameRepository();
   }
-
-  GameRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
   
   Future<List<GameModel>> searchGames(
     String title,
@@ -44,17 +37,17 @@ class GameRepository {
     List<String> categories,
     bool onSale
   ) async {
-    return await _getDataFromResponse(gameApiClient.listGames(title, sortBy, start, cnt, categories.join(','), onSale)) as List<GameModel>;
+    return await _getDataFromResponse(GameApiClient().listGames(title, sortBy, start, cnt, categories.join(','), onSale)) as List<GameModel>;
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    _categories = await _getDataFromResponse(gameApiClient.getCategories()) as List<CategoryModel>;
+    _categories = await _getDataFromResponse(GameApiClient().getCategories()) as List<CategoryModel>;
 
     return _categories;
   }
 
   Future<List<GameModel>> getLibraryGames(String token, String userId) async {
-    final Response response = await gameApiClient.getLibraryGames(token, userId);
+    final Response response = await GameApiClient().getLibraryGames(token, userId);
 
     if (response.code != 200) {
       return Future.error(response.message);
@@ -74,7 +67,7 @@ class GameRepository {
       game = game.copyWith(isInstalled: isInstalled);
       // If the game is not installed, get download url
       if (!isInstalled) {
-        final response = await gameApiClient.downloadGame(token, game.gameId);
+        final response = await GameApiClient().downloadGame(token, game.gameId);
         List<String> binaries = [];
         List<String> exes = [];
         if (response.code == 200) {
@@ -92,6 +85,10 @@ class GameRepository {
           setGameInstallation(game.gameId);
         } else {
           debugPrint('Failed to get download URL for ${game.gameId}: ${response.message}');
+          _allGames.add(game.copyWith(
+            binaries: [],
+            exes: [],
+          ));
         }
       }
       _allGames.add(game);
@@ -101,7 +98,7 @@ class GameRepository {
   }
 
   Future<List<GameModel>> getWishlistGames(String token, String userId) async {
-    final Response response = await gameApiClient.getWishlistGames(token, userId);
+    final Response response = await GameApiClient().getWishlistGames(token, userId);
 
     if (response.code != 200) {
       return Future.error(response.message);
@@ -127,33 +124,49 @@ class GameRepository {
       existingGame = _allGames.firstWhere((game) => game.gameId == gameId);
     } catch (e) {
       debugPrint('Game with ID $gameId not found in repository.');
+      debugPrint('Available games: ${_allGames.map((game) => game.gameId).join(', ')}');
       return null;
     }
     return existingGame;
   }
 
   Future<String> getPublisherName(String publisherId) async {
-    return await _getDataFromResponse(gameApiClient.getPublisherName(publisherId)) as String;
+    return await _getDataFromResponse(GameApiClient().getPublisherName(publisherId)) as String;
   }
 
   Future<List<GameModel>> getDiscountededGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
+    final discountededGames =
+     await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
+    // _allGames.addAll(discountededGames);
+    return discountededGames;
   }
 
   Future<List<GameModel>> getNewGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.date, 0, 10, '', false)) as List<GameModel>;
+    final newGames =
+      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.date, 0, 10, '', false)) as List<GameModel>;
+
+    // _allGames.addAll(newGames);
+    return newGames;
   }
 
   Future<List<GameModel>> getPopularGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, '', false)) as List<GameModel>;
+    final popularGames =
+      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 10, '', false)) as List<GameModel>;
+
+    // _allGames.addAll(popularGames);
+    return popularGames;
   }
 
   Future<List<GameModel>> getTopRecommendedGames() async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.recommend, 0, 10, '', false)) as List<GameModel>;
+    final topRecommendedGames =
+      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.recommend, 0, 10, '', false)) as List<GameModel>;
+
+    // _allGames.addAll(topRecommendedGames);
+    return topRecommendedGames;
   }
 
   Future<List<GameModel>> getGamesByCategory(String category) async {
-    return await _getDataFromResponse(gameApiClient.listGames('', GameSortCriteria.popularity, 0, 5, category, false)) as List<GameModel>;
+    return await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 5, category, false)) as List<GameModel>;
   }
 
   static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {
@@ -163,11 +176,11 @@ class GameRepository {
 
   static Future<List<GameModel>> _getMockFeaturedGames() async {
     return [
-      await _getDataFromResponse(gameApiClient.getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
-      await _getDataFromResponse(gameApiClient.getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
-      await _getDataFromResponse(gameApiClient.getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
-      await _getDataFromResponse(gameApiClient.getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
-      await _getDataFromResponse(gameApiClient.getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
+      await _getDataFromResponse(GameApiClient().getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
+      await _getDataFromResponse(GameApiClient().getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
+      await _getDataFromResponse(GameApiClient().getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
+      await _getDataFromResponse(GameApiClient().getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
+      await _getDataFromResponse(GameApiClient().getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
     ];
   }
 
@@ -233,7 +246,7 @@ class GameRepository {
   }
 
   Future<bool> requestGamePublication(String token, GameRequestModel request) async {
-    final Response response = await gameApiClient.addGame(
+    final Response response = await GameApiClient().addGame(
       token,
       request.gameName,
       request.description,
@@ -257,7 +270,7 @@ class GameRepository {
   }
 
   Future<bool> recommendGame(String token, String gameId) async {
-    final Response response = await gameApiClient.recommendGame(
+    final Response response = await GameApiClient().recommendGame(
       token,
       gameId,
     );
@@ -269,7 +282,7 @@ class GameRepository {
   }
 
   Future<bool> isRecommended(String token, String gameId) async {
-    final Response response = await gameApiClient.isRecommended(
+    final Response response = await GameApiClient().isRecommended(
       token,
       gameId,
     );

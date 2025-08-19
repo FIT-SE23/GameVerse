@@ -74,6 +74,17 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
+	e.POST("/user/playtime", func(c echo.Context) error {
+		return addPlaytimeData(c, client)
+	})
+	e.GET("/user/playtime", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+		return getPlaytimeData(c, client, userid)
+	})
+
 	e.POST("/addgameto", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
