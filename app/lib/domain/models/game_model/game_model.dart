@@ -38,7 +38,7 @@ abstract class GameModel with _$GameModel {
     // Field for User only
     @JsonKey(name: 'isowned') @Default(false) bool isOwned,
     @JsonKey(name: 'isinstalled') @Default(false) bool isInstalled,
-    @Default(false) bool favorite,
+    @JsonKey(name: 'isinwishlist') @Default(false) bool isInWishlist,
     @JsonKey(name: 'playtimehours') double? playtimeHours,
   }) = _GameModel;
 

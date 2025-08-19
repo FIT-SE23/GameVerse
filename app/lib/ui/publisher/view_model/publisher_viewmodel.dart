@@ -145,7 +145,7 @@ class PublisherViewModel extends ChangeNotifier {
           saleEndDate: DateTime.now().add(const Duration(days: 10)),
           isOwned: false,
           isInstalled: false,
-          favorite: false,
+          isInWishlist: false,
         ),
         GameModel(
           gameId: 'game_002',
@@ -169,7 +169,7 @@ class PublisherViewModel extends ChangeNotifier {
           isSale: false,
           isOwned: false,
           isInstalled: false,
-          favorite: false,
+          isInWishlist: false,
         ),
       ];
 

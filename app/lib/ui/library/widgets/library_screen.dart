@@ -26,7 +26,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
@@ -55,12 +55,14 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
         builder: (context, libraryViewModel, child) {
           final tabList = const [
             Tab(text: 'All Games'),
+            Tab(text: 'Owned'),
             Tab(text: 'Downloaded'),
             Tab(text: 'Wishlist'),
           ];
 
           final gameLists = [
             libraryViewModel.filteredGames,
+            libraryViewModel.ownedGames,
             libraryViewModel.downloadedGames,
             libraryViewModel.wishlistGames,
           ];

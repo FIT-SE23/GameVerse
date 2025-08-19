@@ -30,8 +30,8 @@ class GameDetailsViewModel extends ChangeNotifier {
   bool _isInLibrary = false;
   bool get isInLibrary => _isInLibrary;
 
-  bool _isFavorite = false;
-  bool get isFavorite => _isFavorite;
+  bool _isInWishlist = false;
+  bool get isInWishlist => _isInWishlist;
 
   bool _isRecommended = false;
   bool get isRecommended => _isRecommended;
@@ -41,21 +41,23 @@ class GameDetailsViewModel extends ChangeNotifier {
       _state = GameDetailsState.loading;
       notifyListeners();
 
-      _gameDetail = await _gameRepository.getGameDetails(gameId);
+      _gameDetail = _gameRepository.getGameDetails(gameId);
       _gameDetail = _gameDetail?.copyWith(
         isInstalled: await _gameRepository.setGameInstallation(gameId),
+        isInWishlist: checkInWishlist(gameId),
         path: gamePath.isNotEmpty ? gamePath : _gameDetail?.path,
       );
-      _isRecommended = await _gameRepository.isRecommended(
-        _authRepository.accessToken!,
-        gameId,
-      );
-
+      _isRecommended = _authRepository.accessToken != null 
+          ? await _gameRepository.isRecommended(
+              _authRepository.accessToken!,
+              gameId,
+            )
+          : false;
       _publisherName = _gameDetail != null ? await _gameRepository.getPublisherName(_gameDetail!.publisherId) : '';
       
       if (_gameDetail != null) {
         _isInLibrary = _gameDetail!.isOwned;
-        _isFavorite = _gameDetail!.favorite;
+        _isInWishlist = _gameDetail!.isInWishlist;
         _state = GameDetailsState.success;
       } else {
         _state = GameDetailsState.error;
@@ -94,6 +96,24 @@ class GameDetailsViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> toggleWishlist(String gameId) async {
+    try {
+      final success = await _gameRepository.toggleWishlist(
+        _authRepository.accessToken!,
+        gameId,
+        _isInWishlist
+      );
+      if (success) {
+        _isInWishlist = !_isInWishlist;
+        notifyListeners();
+      }
+      return success;
+    } catch (e) {
+      debugPrint('Failed to toggle wishlist: $e');
+      return false;
+    }
+  }
+
   Future<bool> checkRecommended(String gameId) async {
     try {
       return await _gameRepository.isRecommended(
@@ -106,26 +126,14 @@ class GameDetailsViewModel extends ChangeNotifier {
     }
   }
 
-  void toggleLibrary() {
-    if (_gameDetail != null) {
-      _isInLibrary = !_isInLibrary;
-      _gameDetail = _gameDetail!.copyWith(isOwned: _isInLibrary);
-      notifyListeners();
-    }
-  }
-
-  void toggleFavorite() {
-    if (_gameDetail != null) {
-      _isFavorite = !_isFavorite;
-      _gameDetail = _gameDetail!.copyWith(favorite: _isFavorite);
-      notifyListeners();
-    }
-  }
-
-  void toggleInstalled() {
-    if (_gameDetail != null && _isInLibrary) {
-      _gameDetail = _gameDetail!.copyWith(isInstalled: !_gameDetail!.isInstalled);
-      notifyListeners();
+  bool checkInWishlist(String gameId) {
+    try {
+      _isInWishlist = _gameRepository.allGames
+          .any((game) => game.gameId == gameId && game.isInWishlist);
+      return _isInWishlist;
+    } catch (e) {
+      debugPrint('Failed to check if game is in wishlist: $e');
+      return false;
     }
   }
 }

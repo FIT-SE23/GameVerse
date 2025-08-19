@@ -36,15 +36,14 @@ class LibraryViewModel extends ChangeNotifier {
   List<String> get availableTags => _availableTags;
 
   // Computed properties
+  List<GameModel> get ownedGames => 
+      _games.where((game) => game.isOwned).toList();
+
   List<GameModel> get downloadedGames => 
       _games.where((game) => game.isInstalled).toList();
 
   List<GameModel> get wishlistGames => 
-      _games.where((game) => _isInWishlist(game.gameId)).toList();
-
-  List<GameModel> get recentGames => 
-      _games.where((game) => game.playtimeHours != null && game.playtimeHours! > 0)
-           .toList()..sort((a, b) => (b.playtimeHours ?? 0).compareTo(a.playtimeHours ?? 0));
+      _games.where((game) => game.isInWishlist).toList();
 
   int get downloadedCount => downloadedGames.length;
 
@@ -56,7 +55,10 @@ class LibraryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _games = await _gameRepository.getLibraryGames(token, userId);
+      await _gameRepository.getLibraryGames(token, userId);
+      await _gameRepository.getWishlistGames(token, userId);
+      _games = _gameRepository.allGames.where((game) => game.isOwned || game.isInWishlist).toList();
+
       _availableTags = _extractTags(_games);
       _applyFilters();
     } catch (e) {
@@ -114,8 +116,6 @@ class LibraryViewModel extends ChangeNotifier {
       _applyFilters();
     }
   }
-
-  bool _isInWishlist(String gameId) => _wishlistGameIds.contains(gameId);
 
   void _applyFilters() {
     _filteredGames = _games.where((game) {

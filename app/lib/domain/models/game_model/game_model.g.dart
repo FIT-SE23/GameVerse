@@ -37,7 +37,7 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
   exes: (json['exes'] as List<dynamic>?)?.map((e) => e as String).toList(),
   isOwned: json['isowned'] as bool? ?? false,
   isInstalled: json['isinstalled'] as bool? ?? false,
-  favorite: json['favorite'] as bool? ?? false,
+  isInWishlist: json['isinwishlist'] as bool? ?? false,
   playtimeHours: (json['playtimehours'] as num?)?.toDouble(),
 );
 
@@ -65,6 +65,6 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'exes': instance.exes,
       'isowned': instance.isOwned,
       'isinstalled': instance.isInstalled,
-      'favorite': instance.favorite,
+      'isinwishlist': instance.isInWishlist,
       'playtimehours': instance.playtimeHours,
     };

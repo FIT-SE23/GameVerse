@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:gameverse/data/services/game_api_client.dart';
 import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
@@ -65,17 +64,6 @@ class TransactionRepository {
       return cartItems;
     } else {
       throw Exception('Failed to fetch cart items: ${response.message}');
-    }
-  }
-  Future<List<GameModel>> getWishlistItems(String userId) async {
-    final response = await GameApiClient().getWishListGames(userId);
-    if (response.code == 200) {
-      // Assuming the response data is a list of games
-      return (response.data as List<dynamic>)
-          .map((item) => GameModel.fromJson(item as Map<String, dynamic>))
-          .toList();
-    } else {
-      throw Exception('Failed to fetch wishlist items: ${response.message}');
     }
   }
 

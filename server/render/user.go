@@ -221,6 +221,10 @@ func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, 
 }
 
 func addGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
+	// Print userGame for debugging
+	fmt.Println("User ID:", userGame["userid"])
+	fmt.Println("Game ID:", userGame["gameid"])
+	fmt.Println("Status:", userGame["status"])
 	_, _, err := client.From("User_Game").Insert(userGame, false, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
