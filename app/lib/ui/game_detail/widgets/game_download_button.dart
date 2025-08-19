@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gameverse/ui/game_detail/view_model/game_details_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:flutter/foundation.dart';
 
 import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/data/services/game_download_service.dart';
@@ -107,6 +108,17 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Download URL not available for this game'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // If application is on web, show a error message
+    if (kIsWeb) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Downloading games is not supported on web'),
           backgroundColor: Colors.red,
         ),
       );
