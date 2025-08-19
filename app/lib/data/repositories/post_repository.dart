@@ -101,4 +101,18 @@ class PostRepository {
       throw Exception('Failed to update post: $e');
     }
   }
+
+  Future<void> recommendPost(String token, String postId) async {
+    try {
+      final response = await PostApiClient().recommendPost(token, postId);
+      
+      if (response.code != 200) {
+        throw Exception('Failed to recommend post: ${response.message}');
+      } else {
+        return;
+      } 
+    } catch (e) {
+      throw Exception('Failed to recommend post: $e');
+    }
+  }
 }
