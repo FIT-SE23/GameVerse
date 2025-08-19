@@ -13,7 +13,7 @@ enum AuthProvider { server, google, facebook }
 class AuthRepository {
   final AuthApiClient _apiClient;
   UserModel? _currentUser;
-  String? _accessToken;
+  String? _accessToken = '';
   
   AuthRepository({AuthApiClient? apiClient}) : _apiClient = apiClient ?? AuthApiClient();
   

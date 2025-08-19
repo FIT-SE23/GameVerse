@@ -70,6 +70,7 @@ Future<List<SingleChildWidget>> appProviders() async {
     ChangeNotifierProvider<ForumPostsViewModel>(
       create: (context) => ForumPostsViewModel(
         postRepository: context.read<PostRepository>(),
+        authRepository: context.read<AuthRepository>()
       ),
     ),
     ChangeNotifierProvider<PostViewModel>(

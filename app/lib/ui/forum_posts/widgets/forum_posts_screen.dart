@@ -3,6 +3,7 @@ import 'package:gameverse/domain/models/post_model/post_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/forum_posts/view_model/forum_posts_viewmodel.dart';
+import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 class ForumPostsScreen extends StatefulWidget {
   final String gameId;
@@ -505,14 +506,25 @@ class _PostCard extends StatelessWidget {
               // Post content with better formatting
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(
-                  post.content,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.5,
-                  ),
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    Text(
+                      post.title,
+                      style: theme.textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    Text(
+                      post.content,
+                      style: theme.textTheme.bodyMedium,
+                      maxLines: 4,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ],
+                )
               ),
               
               const SizedBox(height: 12),

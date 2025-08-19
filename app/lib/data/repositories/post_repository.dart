@@ -1,129 +1,104 @@
+// import 'package:dio/dio.dart';
+// import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:gameverse/data/services/post_api_client.dart';
 import 'package:gameverse/domain/models/post_model/post_model.dart';
+
+class PostSortCriteria {
+  static final date = 'date';
+  static final recommend = 'recommend';
+}
 
 class PostRepository {
   final http.Client client;
 
   PostRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
 
-  Future<List<PostModel>> getPostsForGame(String gameId) async {
-    return _getMockPostsForGame(gameId);
+  Future<List<PostModel>> searchPosts(String gameId, String title, String sortBy, {int limit = 20}) async {
+    try {
+      final response = await PostApiClient().listPosts(gameId, title, sortBy, limit: limit);
+
+      if (response.code != 200) {
+        throw Exception('Failed to load posts: ${response.message}');
+      } else {
+        final posts = <PostModel>[];
+        for (final json in response.data as List<dynamic>) {
+          posts.add(PostModel.fromJson(json as Map<String, dynamic>));
+        }
+        return posts;
+      }
+
+    } catch (e) {
+      throw Exception('Failed to load posts: $e');
+    }
   }
 
-  Future<PostModel?> getPostById(String postId) async {
-    final allPosts = [
-      ..._getMockPostsForGame('1'),
-      ..._getMockPostsForGame('2'),
-      ..._getMockPostsForGame('3'),
-    ];
-    
+  Future<PostModel?> getPost(String postId) async {  
     try {
-      return allPosts.firstWhere((post) => post.postId == postId);
+      final response = await PostApiClient().getPost(postId);
+      
+      if (response.code != 200) {
+        throw Exception('Failed to load post: ${response.message}');
+      } else {
+        final post = PostModel.fromJson(response.data as Map<String, dynamic>);
+        return post;
+      }
     } catch (e) {
       return null;
     }
   }
+  
+  Future<void> createPost(String token, PostModel post) async {
+    try {
+      final response = await PostApiClient().addPost(
+        token,
+        post.forumId,
+        post.title,
+        post.content,
+      );
 
-  List<PostModel> _getMockPostsForGame(String gameId) {
-    final now = DateTime.now();
-    
-    switch (gameId) {
-      case '1': // Cyberpunk 2077
-        return [
-          PostModel(
-            postId: 'cp_post_1',
-            title: 'Best Stealth Build for Netrunners',
-            content: 'I\'ve been experimenting with different builds and found that focusing on Cool and Intelligence stats creates an amazing stealth experience. The combination of quickhacking and silent takedowns makes you feel like a true netrunner. Here\'s my recommended build path for anyone interested in stealth gameplay...',
-            createdAt: now.subtract(const Duration(hours: 2)),
-            upvotes: 42,
-            forumId: 'forum_1091500',
-            authorId: 'user1',
-            commentsCount: 5,
-          ),
-          PostModel(
-            postId: 'cp_post_2',
-            title: 'Photo Mode Tips for Stunning Screenshots',
-            content: 'Night City is absolutely stunning! I\'ve been using photo mode to capture some incredible shots. The lighting system in this game is phenomenal, especially during the golden hour. Check out these locations for the best photos and share your own screenshots!',
-            createdAt: now.subtract(const Duration(hours: 5)),
-            upvotes: 28,
-            forumId: 'forum_1091500',
-            authorId: 'user2',
-            commentsCount: 3,
-          ),
-          PostModel(
-            postId: 'cp_post_3',
-            title: 'RTX Settings for Optimal Performance',
-            content: 'After tweaking settings for weeks, I\'ve found the perfect balance between visual quality and performance. Here are my recommended settings for different RTX cards to maintain 60+ FPS with raytracing enabled. Let me know if you need help optimizing your setup!',
-            createdAt: now.subtract(const Duration(days: 1)),
-            upvotes: 67,
-            forumId: 'forum_1091500',
-            authorId: 'user3',
-            commentsCount: 10,
-          ),
-        ];
-
-      case '2': // Counter-Strike 2
-        return [
-          PostModel(
-            postId: 'cs_post_1',
-            title: 'Essential Smoke Lineups for Mirage',
-            content: 'The new smoke mechanics in CS2 have completely changed how we approach site takes. Here are the essential smoke lineups for Mirage that every player should know. These smokes will help you execute perfect A and B site takes and improve your team coordination.',
-            createdAt: now.subtract(const Duration(hours: 4)),
-            upvotes: 89,
-            forumId: 'forum_730',
-            authorId: 'user4',
-            commentsCount: 8,
-          ),
-          PostModel(
-            postId: 'cs_post_2',
-            title: 'Best Training Maps for Aim Improvement',
-            content: 'After months of inconsistent aim, I developed this training routine that improved my headshot percentage by 40%. The key is consistency and focusing on muscle memory rather than just flicking to targets. Here\'s my daily routine that actually works.',
-            createdAt: now.subtract(const Duration(hours: 8)),
-            upvotes: 156,
-            forumId: 'forum_730',
-            authorId: 'user5',
-            commentsCount: 12,
-          ),
-        ];
-
-      case '3': // Dota 2
-        return [
-          PostModel(
-            postId: 'dota_post_1',
-            title: 'Meta Heroes for Each Role in the Latest Patch',
-            content: 'The latest patch has shaken up the meta significantly. After analyzing over 1000 matches, here are the heroes that are dominating each role. Pudge and Crystal Maiden are surprisingly strong in the current patch due to recent buffs.',
-            createdAt: now.subtract(const Duration(hours: 6)),
-            upvotes: 234,
-            forumId: 'forum_570',
-            authorId: 'user6',
-            commentsCount: 15,
-          ),
-          PostModel(
-            postId: 'dota_post_2',
-            title: 'Warding Guide: Best Spots for Vision Control',
-            content: 'Good warding can single-handedly win games, but many support players place wards without strategic thinking. Here are the ward spots that provide maximum map control and help your team make better decisions throughout the match.',
-            createdAt: now.subtract(const Duration(hours: 12)),
-            upvotes: 178,
-            forumId: 'forum_570',
-            authorId: 'user7',
-            commentsCount: 9,
-          ),
-        ];
-
-      default:
-        return [];
+      if (response.code != 200) {
+        throw Exception('Failed to create post: ${response.message}');
+      } else {
+        return;
+      }
+    } catch (e) {
+      throw Exception('Failed to create post: $e');
     }
   }
-  Future<void> createPost(PostModel post) async {
-    // Simulate adding a post
+
+  Future<void> deletePost(String token, String postId) async {
+    try {
+      final response = await PostApiClient().deletePost(token, postId);
+
+      if (response.code != 200) {
+        throw Exception('Failed to delete post: ${response.message}');
+      } else {
+        return;
+      }
+
+    } catch (e) {
+      throw Exception('Failed to delete post: $e');
+    }
   }
 
-  Future<void> deletePost(String postId) async {
-    // Simulate deleting a post
-  }
-
-  Future<void> updatePost(PostModel post) async {
-    // Simulate updating a post
+  Future<void> updatePost(String token, PostModel post) async {
+    try {
+      final response = await PostApiClient().updatePost(
+        token,
+        post.postId,
+        post.title,
+        post.content
+      );
+      
+      if (response.code != 200) {
+        throw Exception('Failed to update post: ${response.message}');
+      } else {
+        return;
+      }
+    } catch (e) {
+      throw Exception('Failed to update post: $e');
+    }
   }
 }

@@ -1,87 +1,43 @@
+import 'dart:ffi';
+
 import 'package:http/http.dart' as http;
 
+import 'package:gameverse/data/services/comment_api_client.dart';
 import 'package:gameverse/domain/models/comment_model/comment_model.dart';
+
+class CommentSortCriteria {
+  static final date = 'date';
+  static final recommend = 'recommend';
+}
 
 class CommentRepository {
   final http.Client client;
 
   CommentRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
 
-  Future<List<CommentModel>> getCommentsForPost(String postId) async {
-    return _getMockCommentsForPost(postId);
-  }
+  Future<List<CommentModel>> getComments(String postId, {String? sortBy, int limit = 20}) async {
+    try {
+      final response = await CommentApiClient().listComments(
+        postId,
+        sortBy ?? CommentSortCriteria.recommend,
+        limit: limit
+      );
 
-  List<CommentModel> _getMockCommentsForPost(String postId) {
-    // final now = DateTime.now();
-    
-    switch (postId) {
-      case 'cp_post_1':
-        return [
-          CommentModel(
-            commentId: 'cp_comment_1',
-            relatedGameId: '1091500',
-            postsId: ['cp_post_1'],
-          ),
-          CommentModel(
-            commentId: 'cp_comment_2',
-            relatedGameId: '1091500',
-            postsId: ['cp_post_1'],
-          ),
-        ];
-      case 'cp_post_2':
-        return [
-          CommentModel(
-            commentId: 'cp_comment_3',
-            relatedGameId: '1091500',
-            postsId: ['cp_post_2'],
-          ),
-        ];
-      case 'cs_post_1':
-        return [
-          CommentModel(
-            commentId: 'cs_comment_1',
-            relatedGameId: '730',
-            postsId: ['cs_post_1'],
-          ),
-          CommentModel(
-            commentId: 'cs_comment_2',
-            relatedGameId: '730',
-            postsId: ['cs_post_1'],
-          ),
-        ];
-      case 'cs_post_2':
-        return [
-          CommentModel(
-            commentId: 'cs_comment_3',
-            relatedGameId: '730',
-            postsId: ['cs_post_2'],
-          ),
-        ];
-      case 'dota_post_1':
-        return [
-          CommentModel(
-            commentId: 'dota_comment_1',
-            relatedGameId: '570',
-            postsId: ['dota_post_1'],
-          ),
-          CommentModel(
-            commentId: 'dota_comment_2',
-            relatedGameId: '570',
-            postsId: ['dota_post_1'],
-          ),
-        ];
-      case 'dota_post_2':
-        return [
-          CommentModel(
-            commentId: 'dota_comment_3',
-            relatedGameId: '570',
-            postsId: ['dota_post_2'],
-          ),
-        ];
-      default:
-        return [];
+      if (response.code != 200) {
+        throw Exception('Failed to load comments: ${response.message}');
+      } else {
+        final comments = <CommentModel>[];
+        for (final json in response.data as List<dynamic>) {
+          comments.add(CommentModel.fromJson(json as Map<String, dynamic>));
+        }
+        return comments;
+      }
+    } catch (e) {
+      throw Exception('Failed to load comments: $e');
     }
   }
+
+  
 
   Future<void> addComment(CommentModel comment) async {
     // Simulate adding a comment
