@@ -137,7 +137,7 @@ class _GameRequestDetailState extends State<GameRequestDetail> with SingleTicker
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       child: Center(
                         child: Icon(
                           Icons.image_not_supported,
@@ -341,7 +341,7 @@ class _GameRequestDetailState extends State<GameRequestDetail> with SingleTicker
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
-                                    color: theme.colorScheme.surfaceVariant,
+                                    color: theme.colorScheme.surfaceContainerHighest,
                                     child: const Center(
                                       child: Icon(Icons.image_not_supported),
                                     ),
@@ -379,7 +379,7 @@ class _GameRequestDetailState extends State<GameRequestDetail> with SingleTicker
             padding: const EdgeInsets.all(16),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+              color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: theme.colorScheme.outline.withOpacity(0.3)),
             ),

@@ -595,6 +595,36 @@ func recommendGame(c echo.Context, client *supabase.Client, userID string) error
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
+func isRecommended(c echo.Context, client *supabase.Client, userID string, gameID string) error {
+	if gameID == "" {
+		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+	}
+
+	vote := map[string]string{
+		"userid": userID,
+		"gameid": gameID,
+	}
+
+	rep, _, err := client.
+		From("Game_Recommend").
+		Select("*", "", false).
+		Match(vote).
+		Single().
+		ExecuteString()
+
+	if err != nil {
+		return jsonResponse(c, http.StatusOK, "", false)
+	}
+
+	var result map[string]any
+	err = json.Unmarshal([]byte(rep), &result)
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
+	}
+
+	return jsonResponse(c, http.StatusOK, "", result["gameid"] != nil)
+}
+
 func downloadGame(c echo.Context, client *supabase.Client, userID string) error {
 	gameID := c.FormValue("gameid")
 	if gameID == "" {

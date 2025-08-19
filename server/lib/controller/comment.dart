@@ -124,3 +124,29 @@ Future<Response> recommendComment(String token, String commentId) async {
 
   return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
 }
+
+Future<Response> listComments(String postId, String sortBy, {int limit = 20}) async {
+  final raw = await http.get(
+    Uri.parse(serverURL +
+        "post/$postId/comment?sortby=$sortBy&limit=$limit")
+  );
+
+  var jsonBody;
+  try {
+    jsonBody = jsonDecode(raw.body);
+  } on FormatException catch (e) {
+    return Response.fromJson(400, {"message": e.message});
+  }
+
+  final response = Response.fromJson(
+    raw.statusCode, 
+    jsonBody as Map<String, dynamic>,
+  );
+
+  final comments = <Comment>[];
+  for (var comment in response.data as List<dynamic>) {
+    comments.add(Comment.fromJson(comment as Map<String, dynamic>));
+  }
+
+  return Response(code: response.code, message: response.message, data: comments);
+}

@@ -12,9 +12,9 @@ abstract class PostModel with _$PostModel {
     @JsonKey(name: 'forumid') required String forumId,
     required String title,
     required String content,
-    required int upvotes,
+    @JsonKey(name: 'recommend') required int upvotes,
     @JsonKey(name: 'postdate') required DateTime createdAt,
-    List<String>? commentsId,
+    @JsonKey(name: 'comments') required int commentsCount,
   }) = _PostModel;
 
   factory PostModel.fromJson(Map<String, Object?> json) => 

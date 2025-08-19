@@ -17,7 +17,7 @@ class ApiEndpoints {
   static const String gameUrl = '$baseUrl/game';
   static const String addGameToUrl = '$baseUrl/addgameto';
   static const String removeGameFromUrl = '$baseUrl/removegamefrom';
-  static const String recommendedGamesUrl = '$baseUrl/recommended';
+  static const String recommendedGamesUrl = '$baseUrl/recommend';
 
   // Transaction endpoints
   static const String transactionUrl = '$baseUrl/transaction';

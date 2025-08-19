@@ -335,14 +335,14 @@ class OperatorViewModel extends ChangeNotifier {
       notifyListeners();
       
       // For development/testing, simulate API call
-      if (kDebugMode) {
-        await Future.delayed(const Duration(seconds: 1));
-        // Update local data for testing
-        _pendingGameRequests.removeWhere((req) => req.requestId == requestId);
-        if (_selectedGameRequest?.requestId == requestId) {
-          _selectedGameRequest = null;
-        }
-      } else {
+      // if (kDebugMode) {
+      //   await Future.delayed(const Duration(seconds: 1));
+      //   // Update local data for testing
+      //   _pendingGameRequests.removeWhere((req) => req.requestId == requestId);
+      //   if (_selectedGameRequest?.requestId == requestId) {
+      //     _selectedGameRequest = null;
+      //   }
+      // } else {
         // For production, call actual API
         final success = await _operatorRepository.approveGameRequest(
           _authRepository.accessToken!,
@@ -361,7 +361,7 @@ class OperatorViewModel extends ChangeNotifier {
           notifyListeners();
           return false;
         }
-      }
+      // }
       
       _state = OperatorViewState.success;
       notifyListeners();

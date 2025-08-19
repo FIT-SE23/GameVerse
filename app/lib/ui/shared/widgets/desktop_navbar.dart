@@ -48,18 +48,21 @@ class DesktopNavbar extends StatelessWidget {
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
 
-          // Reload page button
-          IconButton(
+            // Reload page button
+            IconButton(
             tooltip: 'Reload page',
             icon: const Icon(
               Icons.refresh,
               size: 20,
             ),
-            onPressed: () {
-              context.go(currentLocation);
+            onPressed:() async => {
+              context.push(currentLocation),
+              await Future.delayed(const Duration(milliseconds: 100)),
+              if (context.mounted)
+                context.pop(),
             },
             color: Theme.of(context).appBarTheme.foregroundColor,
-          ),
+            ),
 
           // Logo/header
           Container(

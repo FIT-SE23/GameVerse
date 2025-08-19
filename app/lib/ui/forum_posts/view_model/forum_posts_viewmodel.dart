@@ -47,7 +47,7 @@ class ForumPostsViewModel extends ChangeNotifier {
       upvotes: 0,
       forumId: 'forum_$gameId',
       authorId: authorId,
-      commentsId: [],
+      commentsCount: 0,
     );
 
     await _postRepository.createPost(newPost);

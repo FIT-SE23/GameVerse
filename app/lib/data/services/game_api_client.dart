@@ -45,7 +45,7 @@ class GameApiClient {
   ) async {
     final request =
         http.MultipartRequest("POST", Uri.parse(ApiEndpoints.gameUrl))
-          ..headers["Authorization"] = token
+          ..headers["Authorization"] = 'Bearer $token'
           ..fields["gamename"] = name
           ..fields["description"] = description
           ..fields["briefdescription"] = briefDescription
@@ -306,6 +306,19 @@ class GameApiClient {
       Uri.parse("${ApiEndpoints.recommendedGamesUrl}/game"),
       headers: <String, String>{"Authorization": "Bearer $token"},
       body: <String, String>{"gameid": gameId},
+    );
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    return response;
+  }
+
+  Future<Response> isRecommended(String token, String gameId) async {
+    final raw = await http.get(
+      Uri.parse("${ApiEndpoints.recommendedGamesUrl}/game/$gameId"),
+      headers: <String, String>{"Authorization": "Bearer $token"},
     );
     final response = Response.fromJson(
       raw.statusCode,

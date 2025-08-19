@@ -39,7 +39,7 @@ class PostRepository {
             upvotes: 42,
             forumId: 'forum_1091500',
             authorId: 'user1',
-            commentsId: ['cp_comment_1', 'cp_comment_2'],
+            commentsCount: 5,
           ),
           PostModel(
             postId: 'cp_post_2',
@@ -49,7 +49,7 @@ class PostRepository {
             upvotes: 28,
             forumId: 'forum_1091500',
             authorId: 'user2',
-            commentsId: ['cp_comment_3'],
+            commentsCount: 3,
           ),
           PostModel(
             postId: 'cp_post_3',
@@ -59,7 +59,7 @@ class PostRepository {
             upvotes: 67,
             forumId: 'forum_1091500',
             authorId: 'user3',
-            commentsId: [],
+            commentsCount: 10,
           ),
         ];
 
@@ -73,7 +73,7 @@ class PostRepository {
             upvotes: 89,
             forumId: 'forum_730',
             authorId: 'user4',
-            commentsId: ['cs_comment_1', 'cs_comment_2'],
+            commentsCount: 8,
           ),
           PostModel(
             postId: 'cs_post_2',
@@ -83,7 +83,7 @@ class PostRepository {
             upvotes: 156,
             forumId: 'forum_730',
             authorId: 'user5',
-            commentsId: ['cs_comment_3'],
+            commentsCount: 12,
           ),
         ];
 
@@ -97,7 +97,7 @@ class PostRepository {
             upvotes: 234,
             forumId: 'forum_570',
             authorId: 'user6',
-            commentsId: ['dota_comment_1', 'dota_comment_2'],
+            commentsCount: 15,
           ),
           PostModel(
             postId: 'dota_post_2',
@@ -107,7 +107,7 @@ class PostRepository {
             upvotes: 178,
             forumId: 'forum_570',
             authorId: 'user7',
-            commentsId: ['dota_comment_3'],
+            commentsCount: 9,
           ),
         ];
 

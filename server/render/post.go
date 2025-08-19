@@ -189,6 +189,11 @@ func deletePost(c echo.Context, client *supabase.Client, userid string) error {
 }
 
 func searchPosts(c echo.Context, client *supabase.Client) error {
+	forumId := c.QueryParam("forumid")
+	if forumId == "" {
+		return jsonResponse(c, http.StatusBadRequest, "forumid is required", "")
+	}
+
 	title := c.QueryParam("title")
 	sortBy := c.QueryParam("sortby")
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
@@ -201,8 +206,9 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 
 	filter := client.
 		From("Post").
-		Select("*, User(username)", "", false).
-		Limit(limit, "")
+		Select("*", "", false).
+		Limit(limit, "").
+		Eq("forumid", forumId)
 
 	if title != "" {
 		filter = filter.Like("title", "%"+title+"%")
@@ -241,7 +247,7 @@ func listComments(c echo.Context, client *supabase.Client, postid string) error 
 
 	filter := client.
 		From("Comment").
-		Select("*, User(username)", "", false).
+		Select("*", "", false).
 		Eq("postid", postid).
 		Limit(limit, "")
 
@@ -254,13 +260,13 @@ func listComments(c echo.Context, client *supabase.Client, postid string) error 
 
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), nil)
 	}
 
 	var comments []map[string]any
 	err = json.Unmarshal([]byte(rep), &comments)
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse comments", "")
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse comments", nil)
 	}
 
 	return jsonResponse(c, http.StatusOK, "", comments)

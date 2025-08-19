@@ -43,17 +43,6 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        // Hide the back button
-        automaticallyImplyLeading: false,
-        title: Text('${widget.gameName} Forum'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        elevation: 1,
-      ),
       body: Consumer<ForumPostsViewModel>(
         builder: (context, viewModel, child) {
           // Filter and sort posts
@@ -588,7 +577,7 @@ class _PostCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${post.commentsId?.length ?? 0}',
+                            '${post.commentsCount} comments',
                             style: TextStyle(
                               color: theme.colorScheme.onSurfaceVariant,
                               fontSize: 12,
