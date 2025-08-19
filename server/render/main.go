@@ -182,6 +182,12 @@ func main() {
 	e.PATCH("/publisher/:id", func(c echo.Context) error {
 		return updatePublisher(c, client)
 	})
+	e.POST("/publisher/requests", func(c echo.Context) error {
+		return getPublisherRequests(c, client)
+	})
+	e.POST("/publisher/verify", func(c echo.Context) error {
+		return verifyPublisher(c, client)
+	})
 
 	e.POST("/transactions", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)

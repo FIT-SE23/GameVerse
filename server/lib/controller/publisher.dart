@@ -74,6 +74,39 @@ Future<Response> addPublisher(
   return response;
 }
 
+Future<Response> getPublisherRequests(String token) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "publisher/requests"),
+    headers: {"Authorization": "Bearer " + token},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> verifyPublisher(
+  String token,
+  String gameid,
+  bool isApprove,
+) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "publisher/requests"),
+    body: {"gameid": gameid, "isApprove": isApprove},
+    headers: {"Authorization": "Bearer " + token},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 Future<Response> updatePublisher({
   required String publisherId,
   String? paymentMethodId,
