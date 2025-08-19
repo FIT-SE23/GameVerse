@@ -29,7 +29,7 @@ func getPublisherRequests(c echo.Context, client *supabase.Client) error {
 	_, err := verifyUserToken(c)
 	if err != nil {
 		// TODO: check user is operator
-		return jsonResponse(c, http.StatusBadRequest, "Please login", "")
+		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
 	}
 	rep, _, err := client.From("Publisher").Select("*", "", false).Eq("isverified", "false").ExecuteString()
 	if err != nil {
@@ -78,7 +78,7 @@ func verifyPublisher(c echo.Context, client *supabase.Client) error {
 	_, err := verifyUserToken(c)
 	if err != nil {
 		// TODO: check user is operator
-		return jsonResponse(c, http.StatusBadRequest, "Please login", "")
+		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
 	}
 
 	publisherid := c.FormValue("publisherid")

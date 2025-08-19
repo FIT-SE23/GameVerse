@@ -90,12 +90,12 @@ Future<Response> getPublisherRequests(String token) async {
 
 Future<Response> verifyPublisher(
   String token,
-  String gameid,
+  String publisherid,
   bool isApprove,
 ) async {
   final raw = await http.post(
     Uri.parse(serverURL + "publisher/requests"),
-    body: {"gameid": gameid, "isApprove": isApprove},
+    body: {"publisherid": publisherid, "isApprove": isApprove},
     headers: {"Authorization": "Bearer " + token},
   );
 

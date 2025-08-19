@@ -251,6 +251,35 @@ Future<Response> getGame(String token, String gameid) async {
   return Response(code: response.code, message: response.message, data: game);
 }
 
+Future<Response> getGameRequests(String token) async {
+  final raw = await http.get(Uri.parse(serverURL + "game/requests"));
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> verifyPublisher(
+  String token,
+  String gameid,
+  bool isApprove,
+) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "game/verify"),
+    body: {"gameid": gameid, "isApprove": isApprove},
+    headers: {"Authorization": "Bearer " + token},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 Future<Response> listGames(
   String gamename,
   String sortBy,
