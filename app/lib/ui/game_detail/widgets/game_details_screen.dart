@@ -174,83 +174,86 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                             )
                           ),
                     
-                          Padding(
-                            padding: getNegativeSpacePadding(context),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 64),
-                                      Text(
-                                        gameDetailsViewModel.gameDetail!.name,
-                                        style: theme.textTheme.displayLarge,
-                                      ),
-                    
-                                      const SizedBox(height: 32),
-                                      
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                if (gameDetailsViewModel.gameDetail!.media != null)
-                                                  if (gameDetailsViewModel.gameDetail!.media!.isNotEmpty)
-                                                    Column(
-                                                      children: [
-                                                        GameMediaCarousel(media: gameDetailsViewModel.gameDetail!.media!),
-                                                        const SizedBox(height: 32),
-                                                      ],
-                                                    ),
-                                                Text(
-                                                  'About this game',
-                                                  style: theme.textTheme.displayMedium
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  gameDetailsViewModel.gameDetail!.description,
-                                                  style: theme.textTheme.bodyLarge,
-                                                ),
-                                                const SizedBox(height: 32),
-                                                Text(
-                                                  'System requirements',
-                                                  style: theme.textTheme.displayMedium
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  gameDetailsViewModel.gameDetail!.requirement.isNotEmpty
-                                                    ? gameDetailsViewModel.gameDetail!.requirement
-                                                    : 'No requirements',
-                                                  style: theme.textTheme.bodyLarge,
-                                                )
-                                                // Row(
-                                                //   children: [
-                                                //     Expanded(
-                                                //       flex: 1,
-                                                //       child: Center(),
-                                                //     ),
-                                                //     const SizedBox(width: 16),
-                                                //     Expanded(
-                                                //       flex: 1,
-                                                //       child: Center(),
-                                                //     ),
-                                                //   ],
-                                                // )
-                                              ],
-                                            )
-                                          ),
-                    
-                                          const SizedBox(width: 32 + sidebarWidth),
-                                        ],
-                                      ),
-                    
-                                      const SizedBox(height: 96), // Extra space before footer
-                                    ],
-                                  )
-                              ],
+                          Container(
+                            constraints: BoxConstraints(minHeight: 700),
+                            child: Padding(
+                              padding: getNegativeSpacePadding(context),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 64),
+                                        Text(
+                                          gameDetailsViewModel.gameDetail!.name,
+                                          style: theme.textTheme.displayLarge,
+                                        ),
+                                                
+                                        const SizedBox(height: 32),
+                                        
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  if (gameDetailsViewModel.gameDetail!.media != null)
+                                                    if (gameDetailsViewModel.gameDetail!.media!.isNotEmpty)
+                                                      Column(
+                                                        children: [
+                                                          GameMediaCarousel(media: gameDetailsViewModel.gameDetail!.media!),
+                                                          const SizedBox(height: 32),
+                                                        ],
+                                                      ),
+                                                  Text(
+                                                    'About this game',
+                                                    style: theme.textTheme.displayMedium
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    gameDetailsViewModel.gameDetail!.description,
+                                                    style: theme.textTheme.bodyLarge,
+                                                  ),
+                                                  const SizedBox(height: 32),
+                                                  Text(
+                                                    'System requirements',
+                                                    style: theme.textTheme.displayMedium
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    gameDetailsViewModel.gameDetail!.requirement.isNotEmpty
+                                                      ? gameDetailsViewModel.gameDetail!.requirement
+                                                      : 'No requirements',
+                                                    style: theme.textTheme.bodyLarge,
+                                                  )
+                                                  // Row(
+                                                  //   children: [
+                                                  //     Expanded(
+                                                  //       flex: 1,
+                                                  //       child: Center(),
+                                                  //     ),
+                                                  //     const SizedBox(width: 16),
+                                                  //     Expanded(
+                                                  //       flex: 1,
+                                                  //       child: Center(),
+                                                  //     ),
+                                                  //   ],
+                                                  // )
+                                                ],
+                                              )
+                                            ),
+                                                
+                                            const SizedBox(width: 32 + sidebarWidth),
+                                          ],
+                                        ),
+                                                
+                                        const SizedBox(height: 96), // Extra space before footer
+                                      ],
+                                    )
+                                ],
+                              ),
                             ),
                           ),
                         ],

@@ -83,6 +83,9 @@ dependencies:
   # Time format
   intl: ^0.20.2
 
+  # Misc.
+  collection: ^1.19.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

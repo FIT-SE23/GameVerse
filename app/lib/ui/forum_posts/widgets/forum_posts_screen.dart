@@ -323,10 +323,10 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
     );
   }
 
-  int _getActiveUsersCount() {
-    // Mock active users count
-    return 42;
-  }
+  // int _getActiveUsersCount() {
+  //   // Mock active users count
+  //   return 42;
+  // }
 
   void _showCreatePostDialog(BuildContext context, viewModel) {
     final titleController = TextEditingController();
