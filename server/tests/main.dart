@@ -1,4 +1,5 @@
 import "package:gameverse_server/controller/checkout.dart";
+import "package:gameverse_server/controller/comment.dart";
 import "package:gameverse_server/controller/game.dart";
 import "package:gameverse_server/controller/user.dart";
 import "package:gameverse_server/controller/publisher.dart";
@@ -134,5 +135,11 @@ void main() async {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
     print(await downloadGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
+  }
+
+  if (true) {
+    final resp = await login("gamingizmylife@gmail.com", "noobmaster");
+    final token = resp.data["token"].toString();
+    print(await addComment(token, "1a6de353-8e25-42d0-a486-04f62f78c69c", "hello"));
   }
 }

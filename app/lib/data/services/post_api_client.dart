@@ -103,4 +103,16 @@ class PostApiClient {
 
     return response;
   }
+
+  Future<Response> isPostRecommended(String token, String postId) async {
+    final raw = await http.get(
+      Uri.parse("${ApiEndpoints.baseUrl}/recommend/post/$postId"),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    return Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+  }
 }

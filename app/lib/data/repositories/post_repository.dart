@@ -1,5 +1,6 @@
 // import 'package:dio/dio.dart';
 // import 'package:flutter/gestures.dart';
+// import 'package:gameverse/utils/response.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:gameverse/data/services/post_api_client.dart';
@@ -49,21 +50,21 @@ class PostRepository {
     }
   }
   
-  Future<void> createPost(String token, PostModel post) async {
-    try {
+  Future<String> createPost(String token, PostModel post) async {
+    try {      
       final response = await PostApiClient().addPost(
         token,
         post.forumId,
         post.title,
         post.content,
-      );
+      );      
 
-      if (response.code != 200) {
+      if (response.code != 200) {        
         throw Exception('Failed to create post: ${response.message}');
-      } else {
-        return;
+      } else {        
+        return response.data as String;
       }
-    } catch (e) {
+    } catch (e) {      
       throw Exception('Failed to create post: $e');
     }
   }
@@ -113,6 +114,20 @@ class PostRepository {
       } 
     } catch (e) {
       throw Exception('Failed to recommend post: $e');
+    }
+  }
+
+  Future<bool> recommendStatus(String token, String postId) async {
+    try {
+      final response = await PostApiClient().isPostRecommended(token, postId);
+      
+      if (response.code != 200) {
+        throw Exception('Failed to get post recommend status: ${response.message}');
+      } else {
+        return response.data as bool;
+      } 
+    } catch (e) {
+      throw Exception('Failed to get post recommend status: $e');
     }
   }
 }
