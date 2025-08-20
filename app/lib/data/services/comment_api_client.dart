@@ -92,4 +92,16 @@ class CommentApiClient {
 
     return response;
   }
+
+  Future<Response> isCommentRecommended(String token, String commentId) async {
+  final raw = await http.get(
+    Uri.parse("${ApiEndpoints.baseUrl}/recommend/comment/$commentId"),
+    headers: {"Authorization": "Bearer $token"},
+  );
+
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+}
 }

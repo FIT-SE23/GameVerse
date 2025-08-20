@@ -14,7 +14,7 @@ class OperatorApiClient {
   Future<Response> getPendingGameRequests(String token) async {
     try {
       
-      final raw = await _client.get(
+      final raw = await _client.post(
         Uri.parse(ApiEndpoints.operatorGameRequests),
         headers: {
           'Authorization': 'Bearer $token',

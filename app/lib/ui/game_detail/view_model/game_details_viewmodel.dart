@@ -87,7 +87,7 @@ class GameDetailsViewModel extends ChangeNotifier {
   Future<bool> recommendGame(String gameId) async {
     try {
       final success = await _gameRepository.recommendGame(
-        _authRepository.accessToken!,
+        _authRepository.accessToken,
         gameId,
       );
       if (success) {
@@ -112,15 +112,16 @@ class GameDetailsViewModel extends ChangeNotifier {
   Future<bool> toggleWishlist(String gameId) async {
     try {
       final success = await _gameRepository.toggleWishlist(
-        _authRepository.accessToken!,
+        _authRepository.accessToken,
         gameId,
         _isInWishlist
       );
       if (success) {
         _isInWishlist = !_isInWishlist;
         notifyListeners();
+        return true;
       }
-      return success;
+      return false;
     } catch (e) {
       debugPrint('Failed to toggle wishlist: $e');
       return false;
@@ -130,7 +131,7 @@ class GameDetailsViewModel extends ChangeNotifier {
   Future<bool> checkRecommended(String gameId) async {
     try {
       return await _gameRepository.isRecommended(
-        _authRepository.accessToken!,
+        _authRepository.accessToken,
         gameId,
       );
     } catch (e) {
@@ -167,7 +168,7 @@ class GameDetailsViewModel extends ChangeNotifier {
       debugPrint('Game process exited with code: $exitCode');
       
       await _playtimeRepository.addPlaytimeSession(
-        token: _authRepository.accessToken!,
+        token: _authRepository.accessToken,
         begin: _lastSessionStartTime!,
         end: DateTime.now(),
       );

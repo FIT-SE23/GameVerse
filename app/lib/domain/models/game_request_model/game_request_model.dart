@@ -19,9 +19,6 @@ abstract class GameRequestModel with _$GameRequestModel {
     required List<String> media,
     @JsonKey(name: 'releasedate') required DateTime submissionDate,
 
-    // Request related fields
-    @JsonKey(name: 'status') required String status, // e.g., 'pending', 'approved', 'rejected
-
     // Upload related fields
     required List<String> binaries,
     required List<String> exes,

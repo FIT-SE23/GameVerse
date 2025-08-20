@@ -65,12 +65,15 @@ class ForumPostsViewModel extends ChangeNotifier {
       commentsCount: 0,
     );
 
-    await _postRepository.createPost(
+    final newPostId = await _postRepository.createPost(
       _authRepository.accessToken,
       newPost
     );
-    _posts.insert(0, newPost);
-    notifyListeners();
+    final realNewPost = await _postRepository.getPost(newPostId);
+    if (realNewPost != null) {
+      _posts.insert(0, realNewPost);
+      notifyListeners();
+    }
   }
 
   void upvotePost(String postId) {

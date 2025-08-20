@@ -45,8 +45,8 @@ class TransactionViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       // Load initial data
-      await loadUserTransactions(_authRepository.accessToken!);
-      await loadCartItems(_authRepository.accessToken!);
+      await loadUserTransactions(_authRepository.accessToken);
+      await loadCartItems(_authRepository.accessToken);
       await loadPaymentMethods();
       // await loadPaymentMethods();
       _state = TransactionViewState.success;
@@ -74,7 +74,7 @@ class TransactionViewModel extends ChangeNotifier {
       );
       
       _cartItems.add(cartItem);
-      _transactionRepository.addToCart(_authRepository.accessToken!, game.gameId);
+      _transactionRepository.addToCart(_authRepository.accessToken, game.gameId);
       notifyListeners();
     }
   }
@@ -82,7 +82,7 @@ class TransactionViewModel extends ChangeNotifier {
   // Remove game from cart
   void removeFromCart(String gameId) {
     _cartItems.removeWhere((item) => item.game.gameId == gameId);
-    _transactionRepository.removeFromCart(_authRepository.accessToken!, gameId);
+    _transactionRepository.removeFromCart(_authRepository.accessToken, gameId);
     notifyListeners();
   }
 
@@ -90,7 +90,7 @@ class TransactionViewModel extends ChangeNotifier {
   void clearCart() {
     _cartItems.clear();
     for (var item in _cartItems) {
-      _transactionRepository.removeFromCart(_authRepository.accessToken!, item.game.gameId);
+      _transactionRepository.removeFromCart(_authRepository.accessToken, item.game.gameId);
     }
     notifyListeners();
   }
@@ -174,11 +174,11 @@ class TransactionViewModel extends ChangeNotifier {
       // Assuming the repository has a method to get the payment gateway URL
       if (method == 'paypal') {
         _urlToPaymentGateway = await _transactionRepository.getPayPalPaymentGatewayUrl(
-          _authRepository.accessToken!,
+          _authRepository.accessToken,
         );
       } else if (method == 'vnpay') {
         _urlToPaymentGateway = await _transactionRepository.getVNPayPaymentGatewayUrl(
-          _authRepository.accessToken!,
+          _authRepository.accessToken,
         );
       } else {
         throw Exception('Unsupported payment method');

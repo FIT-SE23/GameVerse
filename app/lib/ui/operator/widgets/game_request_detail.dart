@@ -110,17 +110,9 @@ class _GameRequestDetailState extends State<GameRequestDetail> with SingleTicker
           Container(
             margin: const EdgeInsets.only(top: 8, bottom: 16),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: _getStatusColor(widget.request.status, theme).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: _getStatusColor(widget.request.status, theme),
-              ),
-            ),
             child: Text(
-              'Status: ${_getStatusText(widget.request.status)} | Publisher ID: ${widget.request.publisherId}',
+              'Publisher ID: ${widget.request.publisherId}',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: _getStatusColor(widget.request.status, theme),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -507,36 +499,6 @@ class _GameRequestDetailState extends State<GameRequestDetail> with SingleTicker
         return Icons.attach_money;
       default:
         return Icons.info_outline;
-    }
-  }
-  
-  String _getStatusText(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'Pending Review';
-      case 'approved':
-        return 'Approved';
-      case 'rejected':
-        return 'Rejected';
-      case 'moreinfo':
-        return 'Needs More Information';
-      default:
-        return 'Unknown';
-    }
-  }
-  
-  Color _getStatusColor(String status, ThemeData theme) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return Colors.orange;
-      case 'approved':
-        return Colors.green;
-      case 'rejected':
-        return theme.colorScheme.error;
-      case 'moreinfo':
-        return Colors.blue;
-      default:
-        return Colors.grey;
     }
   }
 }

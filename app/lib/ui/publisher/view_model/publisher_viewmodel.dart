@@ -191,7 +191,6 @@ class PublisherViewModel extends ChangeNotifier {
             CategoryModel(categoryId: '6', name: 'Fighting', isSensitive: false),
           ],
           price: 14.99,
-          status: 'pending',
           binaries: [
             'https://example.com/binaries/pixel_warriors_v1.0.bin',
           ],
@@ -216,7 +215,6 @@ class PublisherViewModel extends ChangeNotifier {
             CategoryModel(categoryId: '8', name: 'Farming', isSensitive: false),
           ],
           price: 24.99,
-          status: 'pending',
           binaries: [
             'https://example.com/binaries/farm_simulator_pro_v1.0.bin',
           ],
@@ -265,7 +263,6 @@ class PublisherViewModel extends ChangeNotifier {
         media: media,
         categories: categories,
         price: price,
-        status: 'pending',
         binaries: binaries,
         exes: exes,
         submissionDate: DateTime.now(),
@@ -273,7 +270,7 @@ class PublisherViewModel extends ChangeNotifier {
 
       // debugPrint('Requesting game publication: $newRequest');
       bool isSuccess = await _gameRepository.
-                              requestGamePublication(_authRepository.accessToken!, newRequest);
+                              requestGamePublication(_authRepository.accessToken, newRequest);
       if (!isSuccess) {
         _errorMessage = 'Failed to request game publication';
         notifyListeners();

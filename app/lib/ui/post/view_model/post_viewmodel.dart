@@ -35,8 +35,14 @@ class PostViewModel extends ChangeNotifier {
   List<CommentModel> _comments = [];
   List<CommentModel> get comments => _comments;
 
+  Map<String, bool> _commentRecommendStatuses = {};
+  Map<String, bool> get commentRecommendStatuses => _commentRecommendStatuses;
+
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
+
+  bool _isPostRecommended = false;
+  bool get isPostRecommended => _isPostRecommended;
 
   Future<void> loadPost(String postId) async {
     try {
@@ -46,6 +52,10 @@ class PostViewModel extends ChangeNotifier {
       _post = await _postRepository.getPost(postId);
       if (_post != null) {
         _comments = await _commentRepository.getComments(postId);
+        updatePostRecommendStatus();
+        for (final comment in _comments) {
+          _commentRecommendStatuses[comment.commentId] = await _commentRepository.recommendStatus(_authRepository.accessToken, comment.commentId);
+        }
         _state = PostState.success;
       } else {
         _state = PostState.error;
@@ -71,8 +81,12 @@ class PostViewModel extends ChangeNotifier {
       commentDate: DateTime.now()
     );
 
-    await _commentRepository.addComment(_authRepository.accessToken, newComment);
-    _comments.add(newComment);
+    final newCommentId = await _commentRepository.addComment(_authRepository.accessToken, newComment);
+    final realNewComment = await _commentRepository.getComment(newCommentId);
+    if (realNewComment != null) {
+      _comments.add(realNewComment);
+      notifyListeners();
+    }
     notifyListeners();
   }
 
@@ -80,8 +94,42 @@ class PostViewModel extends ChangeNotifier {
     if (_post != null) {
       await _postRepository.recommendPost(_authRepository.accessToken, _post!.postId);
       _post = await _postRepository.getPost(_post!.postId);
+      updatePostRecommendStatus();
 
       notifyListeners();
     }
+  }
+
+  void recommendComment(String commentId) async {
+    await _commentRepository.recommendComment(_authRepository.accessToken, commentId);
+    updateCommentRecommendStatuses(commentId);
+    
+    final idx = _comments.indexWhere((element) => element.commentId == commentId);
+    if (idx != -1) {
+      final reloadedComment = await _commentRepository.getComment(commentId);
+      if (reloadedComment != null) {
+        _comments[idx] = reloadedComment;
+      }
+    }
+
+    notifyListeners();
+  }
+
+  void updateCommentRecommendStatuses(String commentId) async {
+    if (!isLoggedIn()) {
+      _commentRecommendStatuses[commentId] = false;
+    } else {
+      _commentRecommendStatuses[commentId] = await _commentRepository.recommendStatus(_authRepository.accessToken, commentId);
+    }
+    notifyListeners();
+  }
+
+  void updatePostRecommendStatus() async {
+    if (!isLoggedIn()) {
+      _isPostRecommended = false;
+    } else {
+      _isPostRecommended = await _postRepository.recommendStatus(_authRepository.accessToken, _post!.postId);
+    }
+    notifyListeners();
   }
 }

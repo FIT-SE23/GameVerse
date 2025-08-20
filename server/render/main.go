@@ -366,5 +366,18 @@ func main() {
 		return verifyToken(c)
 	})
 
+	e.POST("/messages/game", func(c echo.Context) error {
+		return addGameMessage(c, client)
+	})
+	e.GET("/messages/game", func(c echo.Context) error {
+		return getGameMessage(c, client)
+	})
+	e.POST("/messages/publisher", func(c echo.Context) error {
+		return addPublisherMessage(c, client)
+	})
+	e.GET("/messages/publisher", func(c echo.Context) error {
+		return getPublisherMessage(c, client)
+	})
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

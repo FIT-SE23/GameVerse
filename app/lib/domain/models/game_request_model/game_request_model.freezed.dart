@@ -15,9 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GameRequestModel {
 
-@JsonKey(name: 'requestid') String? get requestId;@JsonKey(name: 'publisherid') String get publisherId;@JsonKey(name: 'gamename') String get gameName;@JsonKey(name: 'briefdescription') String get briefDescription; String get description; String get requirements;@JsonKey(name: 'headerimage') String get headerImage; double get price; List<CategoryModel> get categories; List<String> get media;@JsonKey(name: 'releasedate') DateTime get submissionDate;// Request related fields
-@JsonKey(name: 'status') String get status;// e.g., 'pending', 'approved', 'rejected
-// Upload related fields
+@JsonKey(name: 'requestid') String? get requestId;@JsonKey(name: 'publisherid') String get publisherId;@JsonKey(name: 'gamename') String get gameName;@JsonKey(name: 'briefdescription') String get briefDescription; String get description; String get requirements;@JsonKey(name: 'headerimage') String get headerImage; double get price; List<CategoryModel> get categories; List<String> get media;@JsonKey(name: 'releasedate') DateTime get submissionDate;// Upload related fields
  List<String> get binaries; List<String> get exes;
 /// Create a copy of GameRequestModel
 /// with the given fields replaced by the non-null parameter values.
@@ -31,16 +29,16 @@ $GameRequestModelCopyWith<GameRequestModel> get copyWith => _$GameRequestModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameRequestModel&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.gameName, gameName) || other.gameName == gameName)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.price, price) || other.price == price)&&const DeepCollectionEquality().equals(other.categories, categories)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.submissionDate, submissionDate) || other.submissionDate == submissionDate)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.binaries, binaries)&&const DeepCollectionEquality().equals(other.exes, exes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameRequestModel&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.gameName, gameName) || other.gameName == gameName)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.price, price) || other.price == price)&&const DeepCollectionEquality().equals(other.categories, categories)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.submissionDate, submissionDate) || other.submissionDate == submissionDate)&&const DeepCollectionEquality().equals(other.binaries, binaries)&&const DeepCollectionEquality().equals(other.exes, exes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,requestId,publisherId,gameName,briefDescription,description,requirements,headerImage,price,const DeepCollectionEquality().hash(categories),const DeepCollectionEquality().hash(media),submissionDate,status,const DeepCollectionEquality().hash(binaries),const DeepCollectionEquality().hash(exes));
+int get hashCode => Object.hash(runtimeType,requestId,publisherId,gameName,briefDescription,description,requirements,headerImage,price,const DeepCollectionEquality().hash(categories),const DeepCollectionEquality().hash(media),submissionDate,const DeepCollectionEquality().hash(binaries),const DeepCollectionEquality().hash(exes));
 
 @override
 String toString() {
-  return 'GameRequestModel(requestId: $requestId, publisherId: $publisherId, gameName: $gameName, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, price: $price, categories: $categories, media: $media, submissionDate: $submissionDate, status: $status, binaries: $binaries, exes: $exes)';
+  return 'GameRequestModel(requestId: $requestId, publisherId: $publisherId, gameName: $gameName, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, price: $price, categories: $categories, media: $media, submissionDate: $submissionDate, binaries: $binaries, exes: $exes)';
 }
 
 
@@ -51,7 +49,7 @@ abstract mixin class $GameRequestModelCopyWith<$Res>  {
   factory $GameRequestModelCopyWith(GameRequestModel value, $Res Function(GameRequestModel) _then) = _$GameRequestModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'requestid') String? requestId,@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String> media,@JsonKey(name: 'releasedate') DateTime submissionDate,@JsonKey(name: 'status') String status, List<String> binaries, List<String> exes
+@JsonKey(name: 'requestid') String? requestId,@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String> media,@JsonKey(name: 'releasedate') DateTime submissionDate, List<String> binaries, List<String> exes
 });
 
 
@@ -68,7 +66,7 @@ class _$GameRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of GameRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? requestId = freezed,Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = null,Object? submissionDate = null,Object? status = null,Object? binaries = null,Object? exes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? requestId = freezed,Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = null,Object? submissionDate = null,Object? binaries = null,Object? exes = null,}) {
   return _then(_self.copyWith(
 requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
 as String?,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
@@ -81,8 +79,7 @@ as String,price: null == price ? _self.price : price // ignore: cast_nullable_to
 as double,categories: null == categories ? _self.categories : categories // ignore: cast_nullable_to_non_nullable
 as List<CategoryModel>,media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
 as List<String>,submissionDate: null == submissionDate ? _self.submissionDate : submissionDate // ignore: cast_nullable_to_non_nullable
-as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,binaries: null == binaries ? _self.binaries : binaries // ignore: cast_nullable_to_non_nullable
+as DateTime,binaries: null == binaries ? _self.binaries : binaries // ignore: cast_nullable_to_non_nullable
 as List<String>,exes: null == exes ? _self.exes : exes // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
@@ -169,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'requestid')  String? requestId, @JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'releasedate')  DateTime submissionDate, @JsonKey(name: 'status')  String status,  List<String> binaries,  List<String> exes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'requestid')  String? requestId, @JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'releasedate')  DateTime submissionDate,  List<String> binaries,  List<String> exes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameRequestModel() when $default != null:
-return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.submissionDate,_that.status,_that.binaries,_that.exes);case _:
+return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.submissionDate,_that.binaries,_that.exes);case _:
   return orElse();
 
 }
@@ -190,10 +187,10 @@ return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDesc
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'requestid')  String? requestId, @JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'releasedate')  DateTime submissionDate, @JsonKey(name: 'status')  String status,  List<String> binaries,  List<String> exes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'requestid')  String? requestId, @JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'releasedate')  DateTime submissionDate,  List<String> binaries,  List<String> exes)  $default,) {final _that = this;
 switch (_that) {
 case _GameRequestModel():
-return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.submissionDate,_that.status,_that.binaries,_that.exes);case _:
+return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.submissionDate,_that.binaries,_that.exes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +207,10 @@ return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDesc
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'requestid')  String? requestId, @JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'releasedate')  DateTime submissionDate, @JsonKey(name: 'status')  String status,  List<String> binaries,  List<String> exes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'requestid')  String? requestId, @JsonKey(name: 'publisherid')  String publisherId, @JsonKey(name: 'gamename')  String gameName, @JsonKey(name: 'briefdescription')  String briefDescription,  String description,  String requirements, @JsonKey(name: 'headerimage')  String headerImage,  double price,  List<CategoryModel> categories,  List<String> media, @JsonKey(name: 'releasedate')  DateTime submissionDate,  List<String> binaries,  List<String> exes)?  $default,) {final _that = this;
 switch (_that) {
 case _GameRequestModel() when $default != null:
-return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.submissionDate,_that.status,_that.binaries,_that.exes);case _:
+return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDescription,_that.description,_that.requirements,_that.headerImage,_that.price,_that.categories,_that.media,_that.submissionDate,_that.binaries,_that.exes);case _:
   return null;
 
 }
@@ -225,7 +222,7 @@ return $default(_that.requestId,_that.publisherId,_that.gameName,_that.briefDesc
 @JsonSerializable()
 
 class _GameRequestModel implements GameRequestModel {
-  const _GameRequestModel({@JsonKey(name: 'requestid') this.requestId, @JsonKey(name: 'publisherid') required this.publisherId, @JsonKey(name: 'gamename') required this.gameName, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.description, required this.requirements, @JsonKey(name: 'headerimage') required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String> media, @JsonKey(name: 'releasedate') required this.submissionDate, @JsonKey(name: 'status') required this.status, required final  List<String> binaries, required final  List<String> exes}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
+  const _GameRequestModel({@JsonKey(name: 'requestid') this.requestId, @JsonKey(name: 'publisherid') required this.publisherId, @JsonKey(name: 'gamename') required this.gameName, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.description, required this.requirements, @JsonKey(name: 'headerimage') required this.headerImage, required this.price, required final  List<CategoryModel> categories, required final  List<String> media, @JsonKey(name: 'releasedate') required this.submissionDate, required final  List<String> binaries, required final  List<String> exes}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
   factory _GameRequestModel.fromJson(Map<String, dynamic> json) => _$GameRequestModelFromJson(json);
 
 @override@JsonKey(name: 'requestid') final  String? requestId;
@@ -251,12 +248,8 @@ class _GameRequestModel implements GameRequestModel {
 }
 
 @override@JsonKey(name: 'releasedate') final  DateTime submissionDate;
-// Request related fields
-@override@JsonKey(name: 'status') final  String status;
-// e.g., 'pending', 'approved', 'rejected
 // Upload related fields
  final  List<String> _binaries;
-// e.g., 'pending', 'approved', 'rejected
 // Upload related fields
 @override List<String> get binaries {
   if (_binaries is EqualUnmodifiableListView) return _binaries;
@@ -285,16 +278,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameRequestModel&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.gameName, gameName) || other.gameName == gameName)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.price, price) || other.price == price)&&const DeepCollectionEquality().equals(other._categories, _categories)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.submissionDate, submissionDate) || other.submissionDate == submissionDate)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._binaries, _binaries)&&const DeepCollectionEquality().equals(other._exes, _exes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameRequestModel&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.gameName, gameName) || other.gameName == gameName)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.price, price) || other.price == price)&&const DeepCollectionEquality().equals(other._categories, _categories)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.submissionDate, submissionDate) || other.submissionDate == submissionDate)&&const DeepCollectionEquality().equals(other._binaries, _binaries)&&const DeepCollectionEquality().equals(other._exes, _exes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,requestId,publisherId,gameName,briefDescription,description,requirements,headerImage,price,const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_media),submissionDate,status,const DeepCollectionEquality().hash(_binaries),const DeepCollectionEquality().hash(_exes));
+int get hashCode => Object.hash(runtimeType,requestId,publisherId,gameName,briefDescription,description,requirements,headerImage,price,const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_media),submissionDate,const DeepCollectionEquality().hash(_binaries),const DeepCollectionEquality().hash(_exes));
 
 @override
 String toString() {
-  return 'GameRequestModel(requestId: $requestId, publisherId: $publisherId, gameName: $gameName, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, price: $price, categories: $categories, media: $media, submissionDate: $submissionDate, status: $status, binaries: $binaries, exes: $exes)';
+  return 'GameRequestModel(requestId: $requestId, publisherId: $publisherId, gameName: $gameName, briefDescription: $briefDescription, description: $description, requirements: $requirements, headerImage: $headerImage, price: $price, categories: $categories, media: $media, submissionDate: $submissionDate, binaries: $binaries, exes: $exes)';
 }
 
 
@@ -305,7 +298,7 @@ abstract mixin class _$GameRequestModelCopyWith<$Res> implements $GameRequestMod
   factory _$GameRequestModelCopyWith(_GameRequestModel value, $Res Function(_GameRequestModel) _then) = __$GameRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'requestid') String? requestId,@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String> media,@JsonKey(name: 'releasedate') DateTime submissionDate,@JsonKey(name: 'status') String status, List<String> binaries, List<String> exes
+@JsonKey(name: 'requestid') String? requestId,@JsonKey(name: 'publisherid') String publisherId,@JsonKey(name: 'gamename') String gameName,@JsonKey(name: 'briefdescription') String briefDescription, String description, String requirements,@JsonKey(name: 'headerimage') String headerImage, double price, List<CategoryModel> categories, List<String> media,@JsonKey(name: 'releasedate') DateTime submissionDate, List<String> binaries, List<String> exes
 });
 
 
@@ -322,7 +315,7 @@ class __$GameRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of GameRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? requestId = freezed,Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = null,Object? submissionDate = null,Object? status = null,Object? binaries = null,Object? exes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? requestId = freezed,Object? publisherId = null,Object? gameName = null,Object? briefDescription = null,Object? description = null,Object? requirements = null,Object? headerImage = null,Object? price = null,Object? categories = null,Object? media = null,Object? submissionDate = null,Object? binaries = null,Object? exes = null,}) {
   return _then(_GameRequestModel(
 requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
 as String?,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
@@ -335,8 +328,7 @@ as String,price: null == price ? _self.price : price // ignore: cast_nullable_to
 as double,categories: null == categories ? _self._categories : categories // ignore: cast_nullable_to_non_nullable
 as List<CategoryModel>,media: null == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
 as List<String>,submissionDate: null == submissionDate ? _self.submissionDate : submissionDate // ignore: cast_nullable_to_non_nullable
-as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,binaries: null == binaries ? _self._binaries : binaries // ignore: cast_nullable_to_non_nullable
+as DateTime,binaries: null == binaries ? _self._binaries : binaries // ignore: cast_nullable_to_non_nullable
 as List<String>,exes: null == exes ? _self._exes : exes // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));

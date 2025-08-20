@@ -104,7 +104,6 @@ class PublisherApiClient {
 
           ],
           price: 29.99,
-          status: 'pending',
           headerImage: 'https://example.com/header.jpg',
           media: [
             'https://example.com/media1.jpg',
