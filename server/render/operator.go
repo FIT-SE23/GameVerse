@@ -14,7 +14,7 @@ func getGameRequests(c echo.Context, client *supabase.Client) error {
 		// TODO: check user is operator
 		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
 	}
-	rep, _, err := client.From("Game").Select("*, Game_Category(*), Game_Resource(*)", "", false).Eq("isverified", "false").ExecuteString()
+	rep, _, err := client.From("Game").Select("*, Category(*), Resource(*)", "", false).Eq("isverified", "false").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error() /*err.Error()*/, "")
 	}
