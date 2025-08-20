@@ -84,7 +84,7 @@ class PostViewModel extends ChangeNotifier {
     final newCommentId = await _commentRepository.addComment(_authRepository.accessToken, newComment);
     final realNewComment = await _commentRepository.getComment(newCommentId);
     if (realNewComment != null) {
-      _comments.add(realNewComment);
+      _comments.insert(0, realNewComment);
       notifyListeners();
     }
     notifyListeners();

@@ -51,25 +51,20 @@ class PostRepository {
   }
   
   Future<String> createPost(String token, PostModel post) async {
-    try {
-      // print('hello');
+    try {      
       final response = await PostApiClient().addPost(
         token,
         post.forumId,
         post.title,
         post.content,
-      );
-      // print('something here');
+      );      
 
-      if (response.code != 200) {
-        // print('Data is: ${response.data}');
+      if (response.code != 200) {        
         throw Exception('Failed to create post: ${response.message}');
-      } else {
-        // print('Data is: ${response.data}');
+      } else {        
         return response.data as String;
       }
-    } catch (e) {
-      // print('Fail here');
+    } catch (e) {      
       throw Exception('Failed to create post: $e');
     }
   }
