@@ -160,7 +160,7 @@ class _PostScreenState extends State<PostScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    Icons.thumb_up_outlined,
+                                    viewModel.isPostRecommended ? Icons.thumb_up : Icons.thumb_up_outlined,
                                     size: 18,
                                     color: theme.colorScheme.primary,
                                   ),
@@ -304,7 +304,10 @@ class _PostScreenState extends State<PostScreen> {
                           separatorBuilder: (context, index) => const SizedBox(height: 16),
                           itemBuilder: (context, index) {
                             final comment = viewModel.comments[index];
-                            return _CommentCard(comment: comment);
+                            return _CommentCard(
+                              comment: comment,
+                              viewModel: viewModel,
+                            );
                           },
                         ),
                       ],
@@ -340,8 +343,12 @@ String _formatDate(DateTime dateTime) {
 
 class _CommentCard extends StatelessWidget {
   final CommentModel comment;
+  final PostViewModel viewModel;
 
-  const _CommentCard({required this.comment});
+  const _CommentCard({
+    required this.comment,
+    required this.viewModel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -394,6 +401,44 @@ class _CommentCard extends StatelessWidget {
           Text(
             comment.content,
             style: theme.textTheme.bodyMedium,
+          ),
+
+          const SizedBox(height: 12),
+
+          InkWell(
+            onTap: () {
+              if (Provider.of<PostViewModel>(context, listen: false).isLoggedIn()) {
+                viewModel.recommendComment(comment.commentId);
+              } else {
+                context.push('/login');
+              }                              
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: theme.colorScheme.outline),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    (viewModel.commentRecommendStatuses[comment.commentId] ?? false) ? Icons.thumb_up : Icons.thumb_up_outlined,
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${comment.recommend}',
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

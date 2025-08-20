@@ -13,6 +13,20 @@ class CommentRepository {
 
   CommentRepository({http.Client? httpClient}) : client = httpClient ?? http.Client();
 
+  Future<CommentModel?> getComment(String commentId) async {
+    try {
+      final response = await CommentApiClient().getComment(commentId);
+
+      if (response.code != 200) {
+        throw Exception('Failed to get comment: ${response.message}');
+      } else {
+        return CommentModel.fromJson(response.data);
+      }
+    } catch (e) {
+      throw Exception('Failed to get comment: $e');
+    }
+  }
+
   Future<List<CommentModel>> getComments(String postId, {String? sortBy, int limit = 20}) async {
     try {
       final response = await CommentApiClient().listComments(
@@ -35,7 +49,7 @@ class CommentRepository {
     }
   }
 
-  Future<void> addComment(String token, CommentModel comment) async {
+  Future<String> addComment(String token, CommentModel comment) async {
     try {
       final response = await CommentApiClient().addComment(
         token,
@@ -46,12 +60,13 @@ class CommentRepository {
       if (response.code != 200) {
         throw Exception('Failed to comment: ${response.message}');
       } else {
-        return;
+        return response.data as String;
       }
     } catch (e) {
       throw Exception('Failed to comment: $e');
     }
   }
+
   Future<void> deleteComment(String token, String commentId) async {
     try {
       final response = await CommentApiClient().deleteComment(
@@ -68,6 +83,7 @@ class CommentRepository {
       throw Exception('Failed to delete comment: $e');
     }
   }
+
   Future<void> updateComment(String token, CommentModel comment) async {
     try {
       final response = await CommentApiClient().updateComment(
@@ -83,6 +99,34 @@ class CommentRepository {
       }
     } catch (e) {
       throw Exception('Failed to update comment: $e');
+    }
+  }
+
+  Future<void> recommendComment(String token, String commentId) async {
+    try {
+      final response = await CommentApiClient().recommendComment(token, commentId);
+
+      if (response.code != 200) {
+        throw Exception('Failed to recommend comment: ${response.message}');
+      } else {
+        return;
+      }
+    } catch (e) {
+      throw Exception('Failed to recommend comment: $e');
+    }
+  }
+
+  Future<bool> recommendStatus(String token, String commentId) async {
+    try {
+      final response = await CommentApiClient().isCommentRecommended(token, commentId);
+      
+      if (response.code != 200) {
+        throw Exception('Failed to get comment recommend status: ${response.message}');
+      } else {
+        return response.data as bool;
+      } 
+    } catch (e) {
+      throw Exception('Failed to get comment recommend status: $e');
     }
   }
 }
