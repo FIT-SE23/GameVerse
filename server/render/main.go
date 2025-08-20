@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"runtime"
 
 	"github.com/labstack/echo/v4"
@@ -25,8 +26,8 @@ func jsonResponse(c echo.Context, code int, message string, returnVal any) error
 }
 
 func main() {
-	supabaseURL := "https://vvarlrikusfwrlxshmdj.supabase.co"
-	supabaseKEY := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2YXJscmlrdXNmd3JseHNobWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxNzU3OTIsImV4cCI6MjA2NTc1MTc5Mn0.aAqTNT13eh1nDTlRRUd_Nnf2tFwuwSrIBMj1iSiLgjg"
+	supabaseURL := os.Getenv("SUPABASE_URL")
+	supabaseKEY := os.Getenv("SUPABASE_KEY")
 	client, err := supabase.NewClient(supabaseURL, supabaseKEY, nil)
 	if err != nil {
 		fmt.Println("cannot initalize client", err)
