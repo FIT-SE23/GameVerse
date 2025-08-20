@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+
+import 'package:gameverse/data/repositories/game_repository.dart';
+import 'package:gameverse/domain/models/game_model/game_model.dart';
+import 'package:gameverse/ui/shared/widgets/search_result_item.dart';
 
 import 'package:gameverse/routing/routes.dart';
 import 'package:gameverse/ui/shared/theme_viewmodel.dart';
@@ -9,13 +13,61 @@ import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 
 import 'package:gameverse/config/app_theme.dart';
 
-class DesktopNavbar extends StatelessWidget {
+class DesktopNavbar extends StatefulWidget {
   final String currentLocation;
   const DesktopNavbar({
     super.key,
     required this.currentLocation,
   });
 
+  @override
+  State<DesktopNavbar> createState() => _DesktopNavbarState();
+}
+
+class _DesktopNavbarState extends State<DesktopNavbar> {
+  final SearchController _searchController = SearchController();
+  List<GameModel> _searchResults = [];
+  bool _isSearching = false;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _performSearch(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        _searchResults = [];
+        _isSearching = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isSearching = true;
+    });
+
+    try {
+      final results = await Provider.of<GameRepository>(context, listen: false)
+                      .searchGames(query, GameSortCriteria.popularity, 0, 5, [], false);
+  
+      if (mounted) {
+        setState(() {
+          _searchResults = results;
+          _isSearching = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+          _isSearching = false;
+        });
+      }
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     String logoAddr;
@@ -56,7 +108,7 @@ class DesktopNavbar extends StatelessWidget {
               size: 20,
             ),
             onPressed:() async => {
-              context.push(currentLocation),
+              context.push(widget.currentLocation),
               await Future.delayed(const Duration(milliseconds: 100)),
               if (context.mounted)
                 context.pop(),
@@ -79,16 +131,16 @@ class DesktopNavbar extends StatelessWidget {
           // Navigation items
           Row(
             children: [
-              _buildNavItem(context, Routes.home, 'Home', currentLocation),
-              _buildNavItem(context, Routes.library, 'Library', currentLocation),
-              _buildNavItem(context, Routes.forums, 'Forums', currentLocation),
-              _buildNavItem(context, Routes.advancedSearch, 'Search', currentLocation),
+              _buildNavItem(context, Routes.home, 'Home', widget.currentLocation),
+              _buildNavItem(context, Routes.library, 'Library', widget.currentLocation),
+              _buildNavItem(context, Routes.forums, 'Forums', widget.currentLocation),
+              _buildNavItem(context, Routes.advancedSearch, 'Search', widget.currentLocation),
               // If the user type is operator, show the admin panel
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
-                _buildNavItem(context, Routes.operatorDashboard, 'Operator Dashboard', currentLocation),
+                _buildNavItem(context, Routes.operatorDashboard, 'Operator Dashboard', widget.currentLocation),
               // If the user type is publisher, show the publisher dashboard
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
-                _buildNavItem(context, Routes.publisherDashboard, 'Publisher Dashboard', currentLocation),
+                _buildNavItem(context, Routes.publisherDashboard, 'Publisher Dashboard', widget.currentLocation),
             ],
           ),
           const SizedBox(width: 16),
@@ -98,19 +150,18 @@ class DesktopNavbar extends StatelessWidget {
             height: 30,
             margin: const EdgeInsets.symmetric(horizontal: 0),
             child: SearchAnchor(
-              viewShape: RoundedRectangleBorder(
-                // borderRadius: BorderRadius.circular(0),
-              ),
+              viewShape: RoundedRectangleBorder(),
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
                   controller: controller,
                   padding: const WidgetStatePropertyAll<EdgeInsets>(
                     EdgeInsets.symmetric(horizontal: 8.0),
                   ),
-                  onTap: () => controller.openView(),
-                  onChanged: (_) => controller.openView(),
                   leading: Icon(Icons.search, size: 20, color: theme.colorScheme.onSurfaceVariant),
                   hintText: 'Search games...',
+                  onTap: () {
+                    controller.openView();
+                  },
                   hintStyle: const WidgetStatePropertyAll<TextStyle>(
                     TextStyle(color: Color.fromARGB(179, 150, 150, 150), fontSize: 14),
                   ),
@@ -124,8 +175,23 @@ class DesktopNavbar extends StatelessWidget {
                   backgroundColor: WidgetStateProperty.all(theme.appBarTheme.backgroundColor),
                 );
               },
-              suggestionsBuilder: (BuildContext context, SearchController controller) {
-                return _buildSearchSuggestions(controller);
+              suggestionsBuilder: (BuildContext context, SearchController controller) async {
+                
+                if (controller.text.isEmpty) {
+                  return [];
+                }
+                String query = controller.text.trim();
+                await Future.delayed(const Duration(milliseconds: 1000));
+                if (query != controller.text) {
+                  return [];
+                }
+
+                // Perform search and return results
+                await _performSearch(controller.text);
+                if (context.mounted) {
+                  return _buildSearchSuggestions(context, controller);
+                }
+                return [];
               },
             ),
           ),
@@ -161,18 +227,42 @@ class DesktopNavbar extends StatelessWidget {
   }
 
   // Search suggestions
-  List<Widget> _buildSearchSuggestions(SearchController controller) {
-    return List<ListTile>.generate(5, (int index) {
-      final String item = 'Game Suggestion ${index + 1}';
-      return ListTile(
-        leading: const Icon(Icons.games),
-        title: Text(item),
+  List<Widget> _buildSearchSuggestions(BuildContext context, SearchController controller) {
+    if (_isSearching) {
+      return [
+        const SizedBox(
+          height: 100,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ];
+    }
+    
+    if (_searchResults.isEmpty) {
+      if (controller.text.isEmpty) {
+        return [];
+      }
+      
+      return [
+        const SizedBox(
+          height: 100,
+          child: Center(
+            child: Text('No games found'),
+          ),
+        ),
+      ];
+    }
+    
+    return _searchResults.map((game) {
+      return GameSearchResultItem(
+        game: game,
+        controller: controller,
         onTap: () {
-          controller.closeView(item);
-          // Handle search selection
+          context.push('/game/${game.gameId}');
         },
       );
-    });
+    }).toList();
   }
 
   // Account section for desktop
