@@ -50,21 +50,24 @@ func addPost(c echo.Context, client *supabase.Client, userid string) error {
 		"comments":  0,
 	}
 
-	rep, _, err := client.From("Post").Insert(post, true, "", "", "").ExecuteString()
+	rep, _, err := client.From("Post").Insert(post, false, "", "representation", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	var newPost []map[string]any
-	if err := json.Unmarshal([]byte(rep), &newPost); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse inserted post", "")
+	var results []map[string]any
+	if err := json.Unmarshal([]byte(rep), &results); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", "")
 	}
 
-	if len(newPost) == 0 {
-		return jsonResponse(c, http.StatusInternalServerError, "Insert did not return ID", "")
+	if len(results) == 0 {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to return post", "")
 	}
 
-	postId := newPost[0]["id"].(string)
+	postId, ok := results[0]["postid"].(string)
+	if !ok {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to get id from response", "")
+	}
 
 	return jsonResponse(c, http.StatusOK, "", postId)
 }

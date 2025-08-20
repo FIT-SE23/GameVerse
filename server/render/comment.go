@@ -45,21 +45,24 @@ func addComment(c echo.Context, client *supabase.Client, userid string) error {
 		"recommend": 0,
 	}
 
-	rep, _, err := client.From("Comment").Insert(comment, true, "", "", "").ExecuteString()
+	rep, _, err := client.From("Comment").Insert(comment, false, "", "representation", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var newComment []map[string]any
 	if err := json.Unmarshal([]byte(rep), &newComment); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse inserted comment", "")
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", "")
 	}
 
 	if len(newComment) == 0 {
-		return jsonResponse(c, http.StatusInternalServerError, "Insert did not return ID", "")
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to return id", "")
 	}
 	
-	commentId := newComment[0]["id"].(string)
+	commentId, ok := newComment[0]["commentid"].(string)
+	if !ok {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to get id from response", "")
+	}
 
 	return jsonResponse(c, http.StatusOK, "", commentId)
 }
