@@ -348,23 +348,6 @@ class _OperatorDashboardScreenState extends State<OperatorDashboardScreen> with 
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(request.status, theme).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _getStatusColor(request.status, theme),
-                      ),
-                    ),
-                    child: Text(
-                      _getStatusText(request.status),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: _getStatusColor(request.status, theme),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(height: 8),

@@ -285,6 +285,15 @@ func main() {
 		return recommendPost(c, client, userid)
 	})
 
+	e.GET("/recommend/post/:id", func(c echo.Context) error {
+		postid := c.Param("id")
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return isPostRecommended(c, client, userid, postid)
+	})
+
 	e.DELETE("/post/:id", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
@@ -324,6 +333,15 @@ func main() {
 			return err
 		}
 		return recommendComment(c, client, userid)
+	})
+
+	e.GET("/recommend/comment/:id", func(c echo.Context) error {
+		commentid := c.Param("id")
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return err
+		}
+		return isCommentRecommended(c, client, userid, commentid)
 	})
 
 	e.DELETE("/comment/:id", func(c echo.Context) error {

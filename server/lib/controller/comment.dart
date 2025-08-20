@@ -63,7 +63,7 @@ class Comment {
 Future<Response> addComment(
   String token,
   String postId,
-  String content
+  String content,
 ) async {
   final raw = await http.post(
     Uri.parse(serverURL + "comment"),
@@ -71,7 +71,7 @@ Future<Response> addComment(
     body: {
       "postid": postId,
       "content": content,
-    }
+    },
   );
 
   return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
@@ -123,6 +123,18 @@ Future<Response> recommendComment(String token, String commentId) async {
   );
 
   return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+}
+
+Future<Response> isCommentRecommended(String token, String commentId) async {
+  final raw = await http.get(
+    Uri.parse(serverURL + "recommend/comment/$commentId"),
+    headers: {"Authorization": "Bearer $token"},
+  );
+
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 }
 
 Future<Response> listComments(String postId, String sortBy, {int limit = 20}) async {

@@ -39,18 +39,29 @@ func addComment(c echo.Context, client *supabase.Client, userid string) error {
 	}
 
 	comment := map[string]any{
-		"userid":   userid,
-		"postid":  postid,
-		"content":  content,
-		"recommend":   0,
+		"userid":    userid,
+		"postid":    postid,
+		"content":   content,
+		"recommend": 0,
 	}
 
-	_, _, err := client.From("Comment").Insert(comment, false, "", "", "").ExecuteString()
+	rep, _, err := client.From("Comment").Insert(comment, true, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	var newComment []map[string]any
+	if err := json.Unmarshal([]byte(rep), &newComment); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse inserted comment", "")
+	}
+
+	if len(newComment) == 0 {
+		return jsonResponse(c, http.StatusInternalServerError, "Insert did not return ID", "")
+	}
+	
+	commentId := newComment[0]["id"].(string)
+
+	return jsonResponse(c, http.StatusOK, "", commentId)
 }
 
 func updateComment(c echo.Context, client *supabase.Client, userid string) error {
@@ -141,6 +152,33 @@ func recommendComment(c echo.Context, client *supabase.Client, userid string) er
 	}
 
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func isCommentRecommended(c echo.Context, client *supabase.Client, userID string, commentID string) error {
+	if commentID == "" {
+		return jsonResponse(c, http.StatusBadRequest, "Missing comment ID", "")
+	}
+
+	vote := map[string]string{
+		"commentid": commentID,
+		"userid":   userID,
+	}
+
+	rep, _, err := client.
+		From("Comment_Recommend").
+		Select("*", "", false).
+		Match(vote).
+		ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Cant query from database", err.Error())
+	}
+
+	var result []map[string]any
+	if err := json.Unmarshal([]byte(rep), &result); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
+	}
+
+	return jsonResponse(c, http.StatusOK, "", len(result) > 0)
 }
 
 func deleteComment(c echo.Context, client *supabase.Client, userid string) error {

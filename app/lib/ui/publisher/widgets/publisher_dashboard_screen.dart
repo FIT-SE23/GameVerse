@@ -444,16 +444,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: _getStatusColor(request.status).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _getStatusColor(request.status)),
-          ),
-          child: Text(
-            request.status.toUpperCase(),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: _getStatusColor(request.status),
-              fontWeight: FontWeight.w600,
-            ),
           ),
         ),
       ),
@@ -545,19 +536,6 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
         ],
       ),
     );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return Colors.orange;
-      case 'approved':
-        return Colors.green;
-      case 'rejected':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
   }
 
   void _showRequestGameDialog(BuildContext context) {
