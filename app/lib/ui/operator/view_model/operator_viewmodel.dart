@@ -81,6 +81,10 @@ class OperatorViewModel extends ChangeNotifier {
     try {
       _state = OperatorViewState.loading;
       notifyListeners();
+
+      await OperatorRepository().getPendingGameRequests(
+        _authRepository.accessToken,
+      );
       
       // For development/testing, use mock data
       // if (kDebugMode) {
@@ -152,7 +156,6 @@ class OperatorViewModel extends ChangeNotifier {
           "https://picsum.photos/id/239/800/450",
           "https://picsum.photos/id/240/800/450",
         ],
-        status: "pending",
         binaries: ["game_data.bin", "resources.pak"],
         exes: ["epic_adventure.exe", "launcher.exe"],
         submissionDate: DateTime.now().subtract(const Duration(days: 2)),
@@ -175,7 +178,6 @@ class OperatorViewModel extends ChangeNotifier {
           "https://picsum.photos/id/21/800/450",
           "https://picsum.photos/id/22/800/450",
         ],
-        status: "pending",
         binaries: ["space_odyssey.bin", "space_resources.pak"],
         exes: ["space_odyssey.exe"],
         submissionDate: DateTime.now().subtract(const Duration(days: 3)),
@@ -201,7 +203,6 @@ class OperatorViewModel extends ChangeNotifier {
           "https://picsum.photos/id/99/800/450",
           "https://picsum.photos/id/100/800/450",
         ],
-        status: "pending",
         binaries: ["pixel_data.bin"],
         exes: ["pixel_warrior.exe"],
         submissionDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -224,7 +225,6 @@ class OperatorViewModel extends ChangeNotifier {
           "https://picsum.photos/id/65/800/450",
           "https://picsum.photos/id/66/800/450",
         ],
-        status: "pending",
         binaries: ["strategic_conquest.bin", "conquest_data.pak"],
         exes: ["strategic_conquest.exe", "editor.exe"],
         submissionDate: DateTime.now().subtract(const Duration(days: 4)),
@@ -248,7 +248,6 @@ class OperatorViewModel extends ChangeNotifier {
           "https://picsum.photos/id/135/800/450",
           "https://picsum.photos/id/136/800/450",
         ],
-        status: "pending",
         binaries: ["racing_data.bin", "car_models.pak"],
         exes: ["racing_extreme.exe", "car_config.exe"],
         submissionDate: DateTime.now().subtract(const Duration(days: 6)),
@@ -345,7 +344,7 @@ class OperatorViewModel extends ChangeNotifier {
       // } else {
         // For production, call actual API
         final success = await _operatorRepository.approveGameRequest(
-          _authRepository.accessToken!,
+          _authRepository.accessToken,
           requestId,
           feedback: feedback,
         );
@@ -394,7 +393,7 @@ class OperatorViewModel extends ChangeNotifier {
       } else {
         // For production, call actual API
         final success = await _operatorRepository.rejectGameRequest(
-          _authRepository.accessToken!,
+          _authRepository.accessToken,
           requestId,
           feedback: feedback,
         );
@@ -443,7 +442,7 @@ class OperatorViewModel extends ChangeNotifier {
       } else {
         // For production, call actual API
         final success = await _operatorRepository.approvePublisherRequest(
-          _authRepository.accessToken!,
+          _authRepository.accessToken,
           requestId,
           feedback: feedback,
         );
@@ -492,7 +491,7 @@ class OperatorViewModel extends ChangeNotifier {
       } else {
         // For production, call actual API
         final success = await _operatorRepository.rejectPublisherRequest(
-          _authRepository.accessToken!,
+          _authRepository.accessToken,
           requestId,
           feedback: feedback,
         );

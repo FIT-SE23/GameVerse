@@ -17,9 +17,10 @@ class OperatorRepository {
     if (response.code != 200) {
       throw Exception(response.message);
     }
-    
-    final List<dynamic> requestsData = response.data;
-    return requestsData.map((data) => GameRequestModel.fromJson(data)).toList();
+    print("Response Data: ${response.data}");
+    return [];
+    // final List<dynamic> requestsData = response.data;
+    // return requestsData.map((data) => GameRequestModel.fromJson(data)).toList();
   }
   Future<List<PublisherRequestModel>> getPendingPublisherRequests(String token) async {
     final response = await _apiClient.getPendingPublisherRequests(

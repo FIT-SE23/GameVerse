@@ -150,7 +150,7 @@ class GameRepository {
   Future<List<GameModel>> getDiscountededGames() async {
     final discountededGames =
      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
-    // _allGames.addAll(discountededGames);
+    _allGames.addAll(discountededGames);
     return discountededGames;
   }
 
@@ -158,7 +158,7 @@ class GameRepository {
     final newGames =
       await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.date, 0, 10, '', false)) as List<GameModel>;
 
-    // _allGames.addAll(newGames);
+    _allGames.addAll(newGames);
     return newGames;
   }
 
@@ -166,7 +166,7 @@ class GameRepository {
     final popularGames =
       await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 5, '', false)) as List<GameModel>;
 
-    // _allGames.addAll(popularGames);
+    _allGames.addAll(popularGames);
     return popularGames;
   }
 
@@ -174,7 +174,7 @@ class GameRepository {
     final topRecommendedGames =
       await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.recommend, 0, 10, '', false)) as List<GameModel>;
 
-    // _allGames.addAll(topRecommendedGames);
+    _allGames.addAll(topRecommendedGames);
     return topRecommendedGames;
   }
 
@@ -328,6 +328,8 @@ class GameRepository {
       game = _allGames.firstWhere((g) => g.gameId == gameId);
     } catch (e) {
       debugPrint('Game with ID $gameId not found in repository.');
+      // Print the available games for debugging
+      debugPrint('Available games: ${_allGames.map((game) => game.gameId).join(', ')}');
       return false;
     }
     _allGames.remove(game);

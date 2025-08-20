@@ -21,7 +21,6 @@ _GameRequestModel _$GameRequestModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       media: (json['media'] as List<dynamic>).map((e) => e as String).toList(),
       submissionDate: DateTime.parse(json['releasedate'] as String),
-      status: json['status'] as String,
       binaries: (json['binaries'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -41,7 +40,6 @@ Map<String, dynamic> _$GameRequestModelToJson(_GameRequestModel instance) =>
       'categories': instance.categories,
       'media': instance.media,
       'releasedate': instance.submissionDate.toIso8601String(),
-      'status': instance.status,
       'binaries': instance.binaries,
       'exes': instance.exes,
     };
