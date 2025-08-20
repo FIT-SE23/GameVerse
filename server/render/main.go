@@ -74,6 +74,17 @@ func main() {
 		return getGamesWithStatus(c, client, userid, "In cart")
 	})
 
+	e.POST("/user/playtime", func(c echo.Context) error {
+		return addPlaytimeData(c, client)
+	})
+	e.GET("/user/playtime", func(c echo.Context) error {
+		userid, err := verifyUserToken(c)
+		if err != nil {
+			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		}
+		return getPlaytimeData(c, client, userid)
+	})
+
 	e.POST("/addgameto", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
 		if err != nil {
@@ -121,12 +132,17 @@ func main() {
 	e.POST("/game", func(c echo.Context) error {
 		return addGame(c, client, bucketId)
 	})
-
 	e.GET("/game/:id", func(c echo.Context) error {
 		return getGame(c, client)
 	})
 	e.PATCH("/game/:id", func(c echo.Context) error {
 		return updateGame(c, client, bucketId)
+	})
+	e.POST("/game/requests", func(c echo.Context) error {
+		return getGameRequests(c, client)
+	})
+	e.POST("/game/verify", func(c echo.Context) error {
+		return verifyGame(c, client)
 	})
 	e.POST("/download/game", func(c echo.Context) error {
 		userid, err := verifyUserToken(c)
@@ -168,7 +184,6 @@ func main() {
 	e.POST("/payment", func(c echo.Context) error {
 		return addPaymentMethod(c, client)
 	})
-
 	e.GET("/payment", func(c echo.Context) error {
 		return getPaymentMethods(c, client)
 	})
@@ -181,6 +196,12 @@ func main() {
 	})
 	e.PATCH("/publisher/:id", func(c echo.Context) error {
 		return updatePublisher(c, client)
+	})
+	e.POST("/publisher/requests", func(c echo.Context) error {
+		return getPublisherRequests(c, client)
+	})
+	e.POST("/publisher/verify", func(c echo.Context) error {
+		return verifyPublisher(c, client)
 	})
 
 	e.POST("/transactions", func(c echo.Context) error {

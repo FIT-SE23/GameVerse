@@ -74,8 +74,17 @@ dependencies:
   # A http networking package, supports Request cancelation, File uploading/downloading
   dio: ^5.9.0
 
-  # # A secure way to store dotenv by obfuscating
-  # envied: ^1.2.0
+  # For google generative AI (gemini)
+  google_generative_ai: ^0.4.7
+
+  # For charts
+  fl_chart: ^1.0.0
+
+  # Time format
+  intl: ^0.20.2
+
+  # Misc.
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:

@@ -229,6 +229,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
     // Launch the game using the installed path
     final gamePath = await Provider.of<GameRepository>(context, listen: false)
         .checkGameInstallation(widget.game.path!);
+    final gameDetailsViewModel = Provider.of<GameDetailsViewModel>(context, listen: false);
 
     if (gamePath.isEmpty && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -250,7 +251,19 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
       }
       // Delay to ensure the snackbar is shown
       await Future.delayed(const Duration(milliseconds: 500));
-      await Process.start(gamePath, [], mode: ProcessStartMode.normal);
+      gameDetailsViewModel.setLastSessionStartTime(DateTime.now());
+      gameDetailsViewModel.setGameProcess(
+        await Process.start(gamePath, [], mode: ProcessStartMode.normal, runInShell: true)
+      );
+      gameDetailsViewModel.trackGameProcess().then((_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Game session ended'),
+            ),
+          );
+        }
+      });
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

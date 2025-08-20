@@ -74,6 +74,50 @@ Future<Response> addPublisher(
   return response;
 }
 
+Future<Response> getPublisher(String publisherid) async {
+  final raw = await http.get(Uri.parse(serverURL + "publisher/" + publisherid));
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> getPublisherRequests(String token) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "publisher/requests"),
+    headers: {"Authorization": "Bearer " + token},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
+Future<Response> verifyPublisher(
+  String token,
+  String publisherid,
+  bool isApprove,
+) async {
+  final raw = await http.post(
+    Uri.parse(serverURL + "publisher/requests"),
+    body: {"publisherid": publisherid, "isApprove": isApprove},
+    headers: {"Authorization": "Bearer " + token},
+  );
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 Future<Response> updatePublisher({
   required String publisherId,
   String? paymentMethodId,

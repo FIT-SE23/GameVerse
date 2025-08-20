@@ -309,6 +309,25 @@ func getGame(c echo.Context, client *supabase.Client) error {
 	return jsonResponse(c, http.StatusOK, "", gameBasicInfo)
 }
 
+func getGameRequests(c echo.Context, client *supabase.Client) error {
+	_, err := verifyUserToken(c)
+	if err != nil {
+		// TODO: check user is operator
+		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
+	}
+	rep, _, err := client.From("Game").Select("*", "", false).Eq("isverified", "false").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error() /*err.Error()*/, "")
+	}
+
+	var games []map[string]any
+	err = json.Unmarshal([]byte(rep), &games)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, "Could not get requests" /*err.Error()*/, "")
+	}
+	return jsonResponse(c, http.StatusOK, "", games)
+}
+
 func searchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortBy := c.QueryParam("sortby")
@@ -609,20 +628,20 @@ func isRecommended(c echo.Context, client *supabase.Client, userID string, gameI
 		From("Game_Recommend").
 		Select("*", "", false).
 		Match(vote).
-		Single().
 		ExecuteString()
-
 	if err != nil {
+		fmt.Println(err.Error())
 		return jsonResponse(c, http.StatusOK, "", false)
 	}
 
-	var result map[string]any
+	var result []map[string]any
 	err = json.Unmarshal([]byte(rep), &result)
 	if err != nil {
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
 	}
+	fmt.Println(result, len(result))
 
-	return jsonResponse(c, http.StatusOK, "", result["gameid"] != nil)
+	return jsonResponse(c, http.StatusOK, "", len(result) == 1)
 }
 
 func downloadGame(c echo.Context, client *supabase.Client, userID string) error {
@@ -671,4 +690,28 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 	}
 
 	return jsonResponse(c, http.StatusOK, "", resources)
+}
+
+func verifyGame(c echo.Context, client *supabase.Client) error {
+	_, err := verifyUserToken(c)
+	if err != nil {
+		// TODO: check user is operator
+		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
+	}
+
+	gameid := c.FormValue("gameid")
+	isApprove := c.FormValue("isapprove") == "1"
+
+	if isApprove {
+		_, _, err := client.From("Game").Update(map[string]bool{"isverified": true}, "", "").Eq("gameid", gameid).ExecuteString()
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+	} else {
+		_, _, err := client.From("Game").Delete("", "").Eq("gameid", gameid).ExecuteString()
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+	}
+	return jsonResponse(c, http.StatusOK, "", "")
 }

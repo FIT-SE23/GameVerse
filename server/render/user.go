@@ -223,10 +223,6 @@ func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, 
 }
 
 func addGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
-	// Print userGame for debugging
-	fmt.Println("User ID:", userGame["userid"])
-	fmt.Println("Game ID:", userGame["gameid"])
-	fmt.Println("Status:", userGame["status"])
 	_, _, err := client.From("User_Game").Insert(userGame, false, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
@@ -273,4 +269,59 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 	}
 
 	return jsonResponse(c, http.StatusOK, "", posts)
+}
+
+// function to add playtime data
+func addPlaytimeData(c echo.Context, client *supabase.Client) error {
+	userid, err := verifyUserToken(c)
+	if err != nil {
+		return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+	}
+
+	begin := c.FormValue("begin")
+	end := c.FormValue("end")
+
+	data := map[string]any{
+		"userid": userid,
+		"begin":  begin,
+		"end":    end,
+	}
+
+	_, _, err = client.From("User_Playtime").Insert(data, false, "", "", "").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	return jsonResponse(c, http.StatusOK, "Playtime data added successfully", "")
+}
+
+func getPlaytimeData(c echo.Context, client *supabase.Client, userid string) error {
+
+	startDate := c.QueryParam("startDate")
+	endDate := c.QueryParam("endDate")
+
+	filter := client.
+		From("User_Playtime").
+		Select("*", "", false).
+		Eq("userid", userid)
+
+	if startDate != "" {
+		filter = filter.Gt("begin", startDate)
+	}
+	if endDate != "" {
+		filter = filter.Lt("end", endDate)
+	}
+
+	rep, _, err := filter.ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	var playtimeData []map[string]any
+	err = json.Unmarshal([]byte(rep), &playtimeData)
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse playtime data", "")
+	}
+
+	return jsonResponse(c, http.StatusOK, "", playtimeData)
 }

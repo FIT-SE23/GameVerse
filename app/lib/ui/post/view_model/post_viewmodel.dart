@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/data/repositories/post_repository.dart';
 import 'package:gameverse/data/repositories/comment_repository.dart';
+
+import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/domain/models/post_model/post_model.dart';
 import 'package:gameverse/domain/models/comment_model/comment_model.dart';
 
@@ -9,10 +11,20 @@ enum PostState { initial, loading, success, error }
 class PostViewModel extends ChangeNotifier {
   final PostRepository _postRepository;
   final CommentRepository _commentRepository;
+  final AuthRepository _authRepository;
   
-  PostViewModel({required PostRepository postRepository, required CommentRepository commentRepository})
+  PostViewModel({
+    required PostRepository postRepository,
+    required CommentRepository commentRepository,
+    required AuthRepository authRepository
+  })
       : _postRepository = postRepository,
-        _commentRepository = commentRepository;
+        _commentRepository = commentRepository,
+        _authRepository = authRepository;
+
+  bool isLoggedIn() {
+    return _authRepository.isAuthenticated;
+  }
 
   PostState _state = PostState.initial;
   PostState get state => _state;
@@ -53,20 +65,22 @@ class PostViewModel extends ChangeNotifier {
     final newComment = CommentModel(
       commentId: '0',
       userId: authorId,
-      postId: '0',
+      postId: _post != null ? _post!.postId : '',
       content: content,
       recommend: 0,
       commentDate: DateTime.now()
     );
 
-    await _commentRepository.addComment(newComment);
+    await _commentRepository.addComment(_authRepository.accessToken, newComment);
     _comments.add(newComment);
     notifyListeners();
   }
 
-  void upvotePost() {
+  void upvotePost() async {
     if (_post != null) {
-      _post = _post!.copyWith(upvotes: _post!.upvotes + 1);
+      await _postRepository.recommendPost(_authRepository.accessToken, _post!.postId);
+      _post = await _postRepository.getPost(_post!.postId);
+
       notifyListeners();
     }
   }

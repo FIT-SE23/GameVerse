@@ -252,6 +252,14 @@ class DesktopNavbar extends StatelessWidget {
                     title: Text('Publisher Registration'),
                   ),
               ),
+              const PopupMenuItem(
+                value: 'analytics',
+                mouseCursor: SystemMouseCursors.click,
+                child: ListTile(
+                  leading: Icon(Icons.analytics),
+                  title: Text('Playtime Analysis'),
+                ),
+              ),
               const PopupMenuDivider(),
               const PopupMenuItem(
                 value: 'logout',

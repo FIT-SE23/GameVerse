@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/post/view_model/post_viewmodel.dart';
 
+import 'package:gameverse/config/spacing_config.dart';
+import 'package:gameverse/config/app_theme.dart';
+
 class PostScreen extends StatefulWidget {
   final String postId;
 
@@ -37,56 +40,55 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Post'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: Consumer<PostViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.state == PostState.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return Consumer<PostViewModel>(
+      builder: (context, viewModel, child) {
+        if (viewModel.state == PostState.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          if (viewModel.state == PostState.error || viewModel.post == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: theme.colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    viewModel.errorMessage.isNotEmpty
-                        ? viewModel.errorMessage
-                        : 'Post not found',
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.pop(),
-                    child: const Text('Go Back'),
-                  ),
-                ],
-              ),
-            );
-          }
+        if (viewModel.state == PostState.error || viewModel.post == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: theme.colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  viewModel.errorMessage.isNotEmpty
+                      ? viewModel.errorMessage
+                      : 'Post not found',
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => context.pop(),
+                  child: const Text('Go Back'),
+                ),
+              ],
+            ),
+          );
+        }
 
-          final post = viewModel.post!;
+        final post = viewModel.post!;
 
-          return SingleChildScrollView(
+        return SingleChildScrollView(
+          child: Padding(
+            padding: getNegativeSpacePadding(context),
             child: Column(
               children: [
+                const SizedBox(height: 64),
                 // Post content
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppTheme.currentThemeColors(theme.brightness).getShell,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -140,7 +142,13 @@ class _PostScreenState extends State<PostScreen> {
                       Row(
                         children: [
                           InkWell(
-                            onTap: () => viewModel.upvotePost(),
+                            onTap: () {
+                              if (Provider.of<PostViewModel>(context, listen: false).isLoggedIn()) {
+                                viewModel.upvotePost();
+                              } else {
+                                context.push('/login');
+                              }                              
+                            },
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -198,49 +206,83 @@ class _PostScreenState extends State<PostScreen> {
                     ],
                   ),
                 ),
-                
-                const Divider(),
-                
+                                
                 // Add comment section
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Add a comment',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                if (Provider.of<PostViewModel>(context, listen: false).isLoggedIn())
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Add a comment',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _commentController,
-                        maxLines: 3,
-                        decoration: const InputDecoration(
-                          hintText: 'Write your comment...',
-                          border: OutlineInputBorder(),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _commentController,
+                          maxLines: 3,
+                          decoration: const InputDecoration(
+                            hintText: 'Write your comment...',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_commentController.text.isNotEmpty) {
-                            viewModel.addComment(
-                              _commentController.text,
-                              'current_user',
-                            );
-                            _commentController.clear();
-                          }
-                        },
-                        child: const Text('Post Comment'),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_commentController.text.isNotEmpty) {
+                              viewModel.addComment(
+                                _commentController.text,
+                                'current_user',
+                              );
+                              _commentController.clear();
+                            }
+                          },
+                          child: const Text('Post Comment'),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                
-                const Divider(),
-                
+                if (!Provider.of<PostViewModel>(context, listen: false).isLoggedIn())
+                  SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 64),
+            
+                        Icon(
+                          Icons.forum_outlined,
+                          size: 60,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Join the conversation',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        OutlinedButton(
+                          onPressed: () => context.push('/login'),
+                          child: const Text(
+                            'Log in'
+                          )
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () => context.push('/signup'),
+                          child: const Text(
+                            'Sign up'
+                          ),
+                        ),
+            
+                        const SizedBox(height: 64)
+                      ],
+                    ),
+                  ),
+                                
                 // Comments list
                 if (viewModel.comments.isNotEmpty)
                   Padding(
@@ -270,25 +312,29 @@ class _PostScreenState extends State<PostScreen> {
                   ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
+}
 
-  String _formatDate(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
+String _formatDate(DateTime dateTime) {
+  final now = DateTime.now();
+  final difference = now.difference(dateTime) - const Duration(hours: 7);
 
-    if (difference.inDays > 0) {
-      return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago';
-    } else {
-      return 'Just now';
-    }
+  if (difference.inDays > 30) {
+    return dateTime.toString().split(' ')[0];
+  }
+
+  if (difference.inDays > 0) {
+    return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago';
+  } else {
+    return 'Just now';
   }
 }
 
@@ -330,24 +376,23 @@ class _CommentCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'User ${comment.commentId.substring(0, 4)}',
+                'User ${comment.userId.substring(0, 4)}',
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const Spacer(),
               Text(
-                'Just now',
+                _formatDate(comment.commentDate),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          // Comment content (mock)
+          const SizedBox(height: 16),
           Text(
-            'This is a sample comment for demonstration purposes.',
+            comment.content,
             style: theme.textTheme.bodyMedium,
           ),
         ],
