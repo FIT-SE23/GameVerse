@@ -87,8 +87,9 @@ Future<Response> addPost(
       "content": content,
     }
   );
-
-  return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+  
+  final response = Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+  return response;
 }
 
 Future<Response> getPost(String postId) async {
@@ -141,6 +142,18 @@ Future<Response> recommendPost(String token, String postId) async {
   );
 
   return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+}
+
+Future<Response> isPostRecommended(String token, String postId) async {
+  final raw = await http.get(
+    Uri.parse(serverURL + "recommend/post/$postId"),
+    headers: {"Authorization": "Bearer $token"},
+  );
+
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 }
 
 Future<Response> listPosts(String forumId, String title, String sortBy, {int limit = 20}) async {

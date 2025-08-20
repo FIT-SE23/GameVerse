@@ -42,20 +42,31 @@ func addPost(c echo.Context, client *supabase.Client, userid string) error {
 	}
 
 	post := map[string]any{
-		"userid":   userid,
-		"forumid":  forumid,
-		"title":    title,
-		"content":  content,
-		"recommend":   0,
-		"comments": 0,
+		"userid":    userid,
+		"forumid":   forumid,
+		"title":     title,
+		"content":   content,
+		"recommend": 0,
+		"comments":  0,
 	}
 
-	_, _, err := client.From("Post").Insert(post, false, "", "", "").ExecuteString()
+	rep, _, err := client.From("Post").Insert(post, true, "", "", "").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	var newPost []map[string]any
+	if err := json.Unmarshal([]byte(rep), &newPost); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse inserted post", "")
+	}
+
+	if len(newPost) == 0 {
+		return jsonResponse(c, http.StatusInternalServerError, "Insert did not return ID", "")
+	}
+
+	postId := newPost[0]["id"].(string)
+
+	return jsonResponse(c, http.StatusOK, "", postId)
 }
 
 func updatePost(c echo.Context, client *supabase.Client, userid string) error {
@@ -150,6 +161,34 @@ func recommendPost(c echo.Context, client *supabase.Client, userid string) error
 	}
 
 	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func isPostRecommended(c echo.Context, client *supabase.Client, userID string, postID string) error {
+	if postID == "" {
+		return jsonResponse(c, http.StatusBadRequest, "Missing post ID", "")
+	}
+
+	vote := map[string]string{
+		"postid": postID,
+		"userid": userID,
+	}
+
+	rep, _, err := client.
+		From("Post_Recommend").
+		Select("*", "", false).
+		Match(vote).
+		ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Cant query from database", err.Error())
+	}
+
+	var result []map[string]any
+	err = json.Unmarshal([]byte(rep), &result)
+	if err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
+	}
+
+	return jsonResponse(c, http.StatusOK, "", len(result) > 0)
 }
 
 func deletePost(c echo.Context, client *supabase.Client, userid string) error {
