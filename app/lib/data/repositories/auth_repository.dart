@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:gameverse/data/repositories/game_repository.dart';
 import 'package:gameverse/utils/response.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:gameverse/domain/models/user_model/user_model.dart';
@@ -190,7 +193,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     try {
       // Clear local data
       _currentUser = null;
@@ -199,6 +202,7 @@ class AuthRepository {
       // Clear secure storage
       await SecureStorageService.clearAuthData();
       await supabase.auth.signOut();
+      await Provider.of<GameRepository>(context, listen: false).clearCache();
     } catch (e) {
       debugPrint('Logout error: $e');
     }

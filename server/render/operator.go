@@ -68,10 +68,11 @@ func getGameMessage(c echo.Context, client *supabase.Client) error {
 }
 
 func addGameMessage(c echo.Context, client *supabase.Client) error {
-	publisherid, err := verifyUserToken(c)
+	_, err := verifyUserToken(c)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+	publisherid := c.FormValue("publisherid")
 	gamename := c.FormValue("gamename")
 	message := c.FormValue("message")
 
@@ -104,10 +105,11 @@ func getPublisherMessage(c echo.Context, client *supabase.Client) error {
 }
 
 func addPublisherMessage(c echo.Context, client *supabase.Client) error {
-	userid, err := verifyUserToken(c)
+	_, err := verifyUserToken(c)
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
+	userid := c.FormValue("userid")
 	message := c.FormValue("message")
 
 	rep, _, err := client.From("Publisher_Message").Insert(map[string]string{"userid": userid, "message": message}, false, "", "", "").ExecuteString()
@@ -129,7 +131,10 @@ func getPublisherRequests(c echo.Context, client *supabase.Client) error {
 		// TODO: check user is operator
 		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
 	}
-	rep, _, err := client.From("Publisher").Select("*", "", false).Eq("isverified", "false").ExecuteString()
+	rep, _, err := client.From("Publisher").
+		Select("*, User(username, email), PaymentMethod(*)", "", false).
+		Eq("isverified", "false").
+		ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error() /*err.Error()*/, "")
 	}

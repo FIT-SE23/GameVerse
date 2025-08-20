@@ -55,18 +55,10 @@ class PublisherRequestDetail extends StatelessWidget {
             margin: const EdgeInsets.only(top: 8, bottom: 16),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _getStatusColor(request.status, theme).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: _getStatusColor(request.status, theme),
-              ),
             ),
             child: Text(
-              'Status: ${_getStatusText(request.status)} | Email: ${request.email}',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: _getStatusColor(request.status, theme),
-                fontWeight: FontWeight.bold,
-              ),
+              'Email: ${request.email}'
             ),
           ),
           
@@ -114,14 +106,14 @@ class PublisherRequestDetail extends StatelessWidget {
                   _buildDetailRow(
                     theme,
                     'Payment Type',
-                    request.paymentMethod.type,
+                    request.paymentMethod.information,
                     icon: Icons.account_balance,
                   ),
                   
                   _buildDetailRow(
                     theme,
                     'Account Information',
-                    request.paymentMethod.information,
+                    request.paymentCardNumber,
                     icon: Icons.info_outline,
                   ),
                 ],
@@ -232,32 +224,6 @@ class PublisherRequestDetail extends StatelessWidget {
         ],
       ),
     );
-  }
-  
-  String _getStatusText(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'Pending Review';
-      case 'approved':
-        return 'Approved';
-      case 'rejected':
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
-  }
-  
-  Color _getStatusColor(String status, ThemeData theme) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return Colors.orange;
-      case 'approved':
-        return Colors.green;
-      case 'rejected':
-        return theme.colorScheme.error;
-      default:
-        return Colors.grey;
-    }
   }
   
   String _formatDate(DateTime date) {

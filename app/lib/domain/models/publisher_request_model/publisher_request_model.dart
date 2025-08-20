@@ -12,9 +12,8 @@ abstract class PublisherRequestModel with _$PublisherRequestModel {
     @JsonKey(name: 'username') required String username,
     @JsonKey(name: 'email') required String email,
     required String description,
-    @JsonKey(name: 'paymentmethod') required PaymentMethodModel paymentMethod,
-    required String status, // 'pending', 'approved', 'rejected'
-    String? feedback, // Operator feedback for rejections
+    required PaymentMethodModel paymentMethod,
+    @JsonKey(name: 'paymentcartnumber') required String paymentCardNumber,
     @JsonKey(name: 'submissiondate') DateTime? submissionDate,
   }) = _PublisherRequestModel;
 
