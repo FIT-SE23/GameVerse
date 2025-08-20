@@ -299,7 +299,13 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
             if (_searchQuery.isEmpty) ...[
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () => _showCreatePostDialog(context, viewModel),
+                onPressed: () {
+                  if (Provider.of<ForumPostsViewModel>(context, listen: false).isLoggedIn()) {
+                    _showCreatePostDialog(context, viewModel);
+                  } else {
+                    context.push('/login');
+                  }
+                },
                 icon: const Icon(Icons.add),
                 label: const Text('Create First Post'),
               ),
