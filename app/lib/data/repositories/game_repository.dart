@@ -24,12 +24,6 @@ class GameRepository {
 
   static List<CategoryModel> _categories = [];
   List<CategoryModel> get categories => _categories;
-
-  static Future<GameRepository> fromService() async {
-    var featuredGames = await _getMockFeaturedGames();
-    _allGames.addAll(featuredGames);
-    return GameRepository();
-  }
   
   Future<List<GameModel>> searchGames(
     String title,
@@ -187,15 +181,15 @@ class GameRepository {
     return response.data;
   }
 
-  static Future<List<GameModel>> _getMockFeaturedGames() async {
-    return [
-      await _getDataFromResponse(GameApiClient().getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
-      await _getDataFromResponse(GameApiClient().getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
-      await _getDataFromResponse(GameApiClient().getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
-      await _getDataFromResponse(GameApiClient().getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
-      await _getDataFromResponse(GameApiClient().getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
-    ];
-  }
+  // static Future<List<GameModel>> _getMockFeaturedGames() async {
+  //   return [
+  //     await _getDataFromResponse(GameApiClient().getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
+  //     await _getDataFromResponse(GameApiClient().getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
+  //     await _getDataFromResponse(GameApiClient().getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
+  //     await _getDataFromResponse(GameApiClient().getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
+  //     await _getDataFromResponse(GameApiClient().getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
+  //   ];
+  // }
 
   // Set folder path for game installation
   void setGameInstallationPath(String gameId, String path) {
@@ -350,4 +344,9 @@ class GameRepository {
     _allGames.add(updatedGame);
   }
 
+  // Clear the game cache
+  Future<void> clearCache() async {
+    _allGames.clear();
+    _categories.clear();
+  }
 }

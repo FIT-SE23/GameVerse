@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gameverse/routing/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -259,7 +260,7 @@ class _SignUpFormState extends State<SignupForm> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.push('/terms');
+                          context.push(Routes.termsOfService);
                         },
                     ),
                     const TextSpan(text: ' and the '),
@@ -271,7 +272,7 @@ class _SignUpFormState extends State<SignupForm> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.push('/eula');
+                          context.push(Routes.eula);
                         },
                     ),
                   ],

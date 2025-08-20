@@ -193,7 +193,7 @@ class MobileNavbar extends StatelessWidget {
                                   title: const Text('Logout'),
                                   onTap: () {
                                     context.push('/login');
-                                    authProvider.logout();
+                                    authProvider.logout(context);
                                   },
                                 ),
                               ],
@@ -340,7 +340,7 @@ class MobileNavbar extends StatelessWidget {
                   title: const Text('Logout'),
                   onTap: () {
                     Navigator.pop(context);
-                    authProvider.logout();
+                    authProvider.logout(context);
                   },
                 ),
               ],

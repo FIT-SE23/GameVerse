@@ -408,23 +408,6 @@ class _OperatorDashboardScreenState extends State<OperatorDashboardScreen> with 
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(request.status, theme).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _getStatusColor(request.status, theme),
-                      ),
-                    ),
-                    child: Text(
-                      _getStatusText(request.status),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: _getStatusColor(request.status, theme),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -474,32 +457,6 @@ class _OperatorDashboardScreenState extends State<OperatorDashboardScreen> with 
     }
   }
   
-  String _getStatusText(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'Pending';
-      case 'approved':
-        return 'Approved';
-      case 'rejected':
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
-  }
-  
-  Color _getStatusColor(String status, ThemeData theme) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return Colors.orange;
-      case 'approved':
-        return Colors.green;
-      case 'rejected':
-        return theme.colorScheme.error;
-      default:
-        return Colors.grey;
-    }
-  }
-  
   // Show dialog for approving a game request
   Future<void> _showGameApprovalDialog(BuildContext context, OperatorViewModel viewModel) async {
     final feedback = await showDialog<String>(
@@ -514,7 +471,7 @@ class _OperatorDashboardScreenState extends State<OperatorDashboardScreen> with 
     
     if (feedback != null && viewModel.hasSelectedGameRequest) {
       final requestId = viewModel.selectedGameRequest!.requestId;
-      final success = await viewModel.approveGameRequest(requestId, feedback: feedback);
+      final success = await viewModel.approveGameRequest(requestId);
       
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

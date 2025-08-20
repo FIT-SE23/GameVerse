@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/data/repositories/auth_repository.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
@@ -8,9 +9,12 @@ enum HomeViewState { initial, loading, success, error }
 
 class HomeViewModel extends ChangeNotifier {
   final GameRepository _gameRepository;
+  final AuthRepository _authRepository;
   
-  HomeViewModel({required GameRepository gameRepository}) 
-      : _gameRepository = gameRepository;
+  HomeViewModel({required GameRepository gameRepository,
+                 required AuthRepository authRepository})  
+      : _gameRepository = gameRepository,
+        _authRepository = authRepository;
   
   // State management
   HomeViewState _state = HomeViewState.initial;
@@ -49,6 +53,15 @@ class HomeViewModel extends ChangeNotifier {
       _popularGames = await _gameRepository.getPopularGames();
       _topRecommendedGames = await _gameRepository.getTopRecommendedGames();
       _categories = await _gameRepository.getCategories();
+      if (_authRepository.accessToken != '') {
+        print('User is authenticated, loading library and wishlist');
+        await _gameRepository.getLibraryGames(
+          _authRepository.accessToken,
+          _authRepository.currentUser!.id);
+        await _gameRepository.getWishlistGames(
+          _authRepository.accessToken,
+          _authRepository.currentUser!.id);
+      }
 
       for (final category in _categories) {
         final games = await _gameRepository.getGamesByCategory(category.name);
