@@ -315,7 +315,7 @@ func getGameRequests(c echo.Context, client *supabase.Client) error {
 		// TODO: check user is operator
 		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
 	}
-	rep, _, err := client.From("Game").Select("*", "", false).Eq("isverified", "false").ExecuteString()
+	rep, _, err := client.From("Game").Select("*, Game_Category(*), Game_Resource(*)", "", false).Eq("isverified", "false").ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error() /*err.Error()*/, "")
 	}
@@ -325,6 +325,7 @@ func getGameRequests(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, "Could not get requests" /*err.Error()*/, "")
 	}
+
 	return jsonResponse(c, http.StatusOK, "", games)
 }
 
@@ -628,19 +629,20 @@ func isRecommended(c echo.Context, client *supabase.Client, userID string, gameI
 		From("Game_Recommend").
 		Select("*", "", false).
 		Match(vote).
-		Single().
 		ExecuteString()
 	if err != nil {
+		fmt.Println(err.Error())
 		return jsonResponse(c, http.StatusOK, "", false)
 	}
 
-	var result map[string]any
+	var result []map[string]any
 	err = json.Unmarshal([]byte(rep), &result)
 	if err != nil {
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
 	}
+	fmt.Println(result, len(result))
 
-	return jsonResponse(c, http.StatusOK, "", result["gameid"] != nil)
+	return jsonResponse(c, http.StatusOK, "", len(result) == 1)
 }
 
 func downloadGame(c echo.Context, client *supabase.Client, userID string) error {

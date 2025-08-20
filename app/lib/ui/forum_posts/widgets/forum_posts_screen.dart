@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/forum_posts/view_model/forum_posts_viewmodel.dart';
 
+import 'package:gameverse/config/spacing_config.dart';
+
 class ForumPostsScreen extends StatefulWidget {
   final String gameId;
   final String gameName;
@@ -93,18 +95,24 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${viewModel.posts.length} posts • ${_getActiveUsersCount()} active users',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
+                              // const SizedBox(height: 4),
+                              // Text(
+                              //   '${viewModel.posts.length} posts • ${_getActiveUsersCount()} active users',
+                              //   style: theme.textTheme.bodyMedium?.copyWith(
+                              //     color: theme.colorScheme.onSurfaceVariant,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
                         ElevatedButton.icon(
-                          onPressed: () => _showCreatePostDialog(context, viewModel),
+                          onPressed: () {
+                            if (Provider.of<ForumPostsViewModel>(context, listen: false).isLoggedIn()) {
+                              _showCreatePostDialog(context, viewModel);
+                            } else {
+                              context.push('/login');
+                            }
+                          },
                           icon: const Icon(Icons.add, size: 18),
                           label: const Text('New Post'),
                           style: ElevatedButton.styleFrom(
@@ -170,45 +178,45 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
                         ),
                         const SizedBox(width: 12),
                         // Sort dropdown
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: theme.colorScheme.outline.withValues(alpha: 0.3),
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: DropdownButton<String>(
-                            value: _sortBy,
-                            underline: const SizedBox(),
-                            icon: Icon(
-                              Icons.sort,
-                              color: theme.colorScheme.onSurfaceVariant,
-                              size: 20,
-                            ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'newest',
-                                child: Text('Newest'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'oldest',
-                                child: Text('Oldest'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'popular',
-                                child: Text('Popular'),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  _sortBy = value;
-                                });
-                              }
-                            },
-                          ),
-                        ),
+                        // Container(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 12),
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(
+                        //       color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                        //     ),
+                        //     borderRadius: BorderRadius.circular(8),
+                        //   ),
+                        //   child: DropdownButton<String>(
+                        //     value: _sortBy,
+                        //     underline: const SizedBox(),
+                        //     icon: Icon(
+                        //       Icons.sort,
+                        //       color: theme.colorScheme.onSurfaceVariant,
+                        //       size: 20,
+                        //     ),
+                        //     items: const [
+                        //       DropdownMenuItem(
+                        //         value: 'newest',
+                        //         child: Text('Newest'),
+                        //       ),
+                        //       DropdownMenuItem(
+                        //         value: 'oldest',
+                        //         child: Text('Oldest'),
+                        //       ),
+                        //       DropdownMenuItem(
+                        //         value: 'popular',
+                        //         child: Text('Popular'),
+                        //       ),
+                        //     ],
+                        //     onChanged: (value) {
+                        //       if (value != null) {
+                        //         setState(() {
+                        //           _sortBy = value;
+                        //         });
+                        //       }
+                        //     },
+                        //   ),
+                        // ),
                       ],
                     ),
                     
@@ -291,7 +299,13 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
             if (_searchQuery.isEmpty) ...[
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () => _showCreatePostDialog(context, viewModel),
+                onPressed: () {
+                  if (Provider.of<ForumPostsViewModel>(context, listen: false).isLoggedIn()) {
+                    _showCreatePostDialog(context, viewModel);
+                  } else {
+                    context.push('/login');
+                  }
+                },
                 icon: const Icon(Icons.add),
                 label: const Text('Create First Post'),
               ),
@@ -302,7 +316,7 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
+      padding: getNegativeSpacePadding(context),
       itemCount: filteredPosts.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
@@ -315,10 +329,10 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
     );
   }
 
-  int _getActiveUsersCount() {
-    // Mock active users count
-    return 42;
-  }
+  // int _getActiveUsersCount() {
+  //   // Mock active users count
+  //   return 42;
+  // }
 
   void _showCreatePostDialog(BuildContext context, viewModel) {
     final titleController = TextEditingController();
@@ -353,7 +367,7 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
               // Title input
               TextField(
                 controller: titleController,
-                maxLines: 6,
+                maxLines: 1,
                 decoration: const InputDecoration(
                   labelText: 'Post Title',
                   border: OutlineInputBorder(),
@@ -362,6 +376,7 @@ class _ForumPostsScreenState extends State<ForumPostsScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: contentController,
+                maxLines: 6,
                 decoration: const InputDecoration(
                   labelText: 'What\'s on your mind?',
                   border: OutlineInputBorder(),
@@ -466,38 +481,38 @@ class _PostCard extends StatelessWidget {
                     ),
                   ),
                   // Quick action menu
-                  PopupMenuButton<String>(
-                    icon: Icon(
-                      Icons.more_vert,
-                      color: theme.colorScheme.onSurfaceVariant,
-                      size: 20,
-                    ),
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'report',
-                        child: Row(
-                          children: [
-                            Icon(Icons.flag_outlined, size: 16),
-                            SizedBox(width: 8),
-                            Text('Report'),
-                          ],
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'share',
-                        child: Row(
-                          children: [
-                            Icon(Icons.share_outlined, size: 16),
-                            SizedBox(width: 8),
-                            Text('Share'),
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      // Handle menu actions
-                    },
-                  ),
+                  // PopupMenuButton<String>(
+                  //   icon: Icon(
+                  //     Icons.more_vert,
+                  //     color: theme.colorScheme.onSurfaceVariant,
+                  //     size: 20,
+                  //   ),
+                  //   itemBuilder: (context) => [
+                  //     const PopupMenuItem(
+                  //       value: 'report',
+                  //       child: Row(
+                  //         children: [
+                  //           Icon(Icons.flag_outlined, size: 16),
+                  //           SizedBox(width: 8),
+                  //           Text('Report'),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     const PopupMenuItem(
+                  //       value: 'share',
+                  //       child: Row(
+                  //         children: [
+                  //           Icon(Icons.share_outlined, size: 16),
+                  //           SizedBox(width: 8),
+                  //           Text('Share'),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ],
+                  //   onSelected: (value) {
+                  //     // Handle menu actions
+                  //   },
+                  // ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -636,7 +651,11 @@ class _PostCard extends StatelessWidget {
 
   String _formatTimeAgo(DateTime dateTime) {
     final now = DateTime.now();
-    final difference = now.difference(dateTime);
+    final difference = now.difference(dateTime) - const Duration(hours: 7);
+
+    if (difference.inDays > 30) {
+      return dateTime.toString().split(' ')[0];
+    }
 
     if (difference.inDays > 0) {
       return '${difference.inDays}d ago';

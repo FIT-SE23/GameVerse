@@ -54,7 +54,7 @@ class GameDetailsViewModel extends ChangeNotifier {
       _state = GameDetailsState.loading;
       notifyListeners();
 
-      _gameDetail = _gameRepository.getGameDetails(gameId);
+      _gameDetail = await _gameRepository.getGameDetails(gameId);
       _gameDetail = _gameDetail?.copyWith(
         isInstalled: await _gameRepository.setGameInstallation(gameId),
         isInWishlist: checkInWishlist(gameId),

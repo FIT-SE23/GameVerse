@@ -74,6 +74,17 @@ Future<Response> addPublisher(
   return response;
 }
 
+Future<Response> getPublisher(String publisherid) async {
+  final raw = await http.get(Uri.parse(serverURL + "publisher/" + publisherid));
+
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
+
+  return response;
+}
+
 Future<Response> getPublisherRequests(String token) async {
   final raw = await http.post(
     Uri.parse(serverURL + "publisher/requests"),

@@ -35,13 +35,54 @@ class CommentRepository {
     }
   }
 
-  Future<void> addComment(CommentModel comment) async {
-    // Simulate adding a comment
+  Future<void> addComment(String token, CommentModel comment) async {
+    try {
+      final response = await CommentApiClient().addComment(
+        token,
+        comment.postId,
+        comment.content
+      );
+
+      if (response.code != 200) {
+        throw Exception('Failed to comment: ${response.message}');
+      } else {
+        return;
+      }
+    } catch (e) {
+      throw Exception('Failed to comment: $e');
+    }
   }
-  Future<void> deleteComment(String commentId) async {
-    // Simulate deleting a comment
+  Future<void> deleteComment(String token, String commentId) async {
+    try {
+      final response = await CommentApiClient().deleteComment(
+        token,
+        commentId,
+      );
+
+      if (response.code != 200) {
+        throw Exception('Failed to delete comment: ${response.message}');
+      } else {
+        return;
+      }
+    } catch (e) {
+      throw Exception('Failed to delete comment: $e');
+    }
   }
-  Future<void> updateComment(CommentModel comment) async {
-    // Simulate updating a comment
+  Future<void> updateComment(String token, CommentModel comment) async {
+    try {
+      final response = await CommentApiClient().updateComment(
+        token,
+        comment.commentId,
+        comment.content
+      );
+
+      if (response.code != 200) {
+        throw Exception('Failed to update comment: ${response.message}');
+      } else {
+        return;
+      }
+    } catch (e) {
+      throw Exception('Failed to update comment: $e');
+    }
   }
 }

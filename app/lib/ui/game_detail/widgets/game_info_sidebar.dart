@@ -114,52 +114,56 @@ class GameInfoSidebar extends StatelessWidget {
               if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.authenticated) ...[
                 Consumer(
                   builder: (context, GameDetailsViewModel gameDetailsViewModel, child) {
-                    return ElevatedButton(
-                      style: theme.elevatedButtonTheme.style!.copyWith(
-                        backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                    return Expanded(
+                      child: ElevatedButton(
+                        style: theme.elevatedButtonTheme.style!.copyWith(
+                          backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                        ),
+                        onPressed: () async {
+                          bool ok = await gameDetailsViewModel.toggleWishlist(game.gameId);
+                          if (ok && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: gameDetailsViewModel.isInWishlist
+                                    ? Text('Added ${game.name} to wishlist!')
+                                    : Text('Removed ${game.name} from wishlist!'),
+                                duration: const Duration(seconds: 2),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Failed to update wishlist for ${game.name}.'),
+                                duration: const Duration(seconds: 2),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                        child: Icon(
+                          gameDetailsViewModel.isInWishlist
+                              ? Icons.bookmark
+                              : Icons.bookmark_add_outlined,
+                          color: AppTheme.currentThemeColors(theme.brightness).getText,
+                        )
                       ),
-                      onPressed: () async {
-                        bool ok = await gameDetailsViewModel.toggleWishlist(game.gameId);
-                        if (ok && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: gameDetailsViewModel.isInWishlist
-                                  ? Text('Added ${game.name} to wishlist!')
-                                  : Text('Removed ${game.name} from wishlist!'),
-                              duration: const Duration(seconds: 2),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        } else if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Failed to update wishlist for ${game.name}.'),
-                              duration: const Duration(seconds: 2),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      },
-                      child: Icon(
-                        gameDetailsViewModel.isInWishlist
-                            ? Icons.bookmark
-                            : Icons.bookmark_add_outlined,
-                        color: AppTheme.currentThemeColors(theme.brightness).getText,
-                      )
                     );
                   },
                 ),
               ] else
               // If user is not authenticated, redirect to login page
-              ElevatedButton(
-                style: theme.elevatedButtonTheme.style!.copyWith(
-                  backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+              Expanded(
+                child: ElevatedButton(
+                  style: theme.elevatedButtonTheme.style!.copyWith(
+                    backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                  ),
+                  onPressed: () => context.push(Routes.login),
+                  child: Icon(
+                    Icons.bookmark_add_outlined,
+                    color: AppTheme.currentThemeColors(theme.brightness).getText,
+                  )
                 ),
-                onPressed: () => context.push(Routes.login),
-                child: Icon(
-                  Icons.bookmark_add_outlined,
-                  color: AppTheme.currentThemeColors(theme.brightness).getText,
-                )
               ),
               const SizedBox(width: 8),
               Expanded(

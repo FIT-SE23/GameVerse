@@ -8,6 +8,8 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/data/services/game_api_client.dart';
 import 'package:gameverse/utils/response.dart';
 
+import 'package:collection/collection.dart';
+
 
 class GameSortCriteria {
   static final popularity = 'popularity';
@@ -118,10 +120,21 @@ class GameRepository {
     return wishlistGames;
   }
 
-  GameModel? getGameDetails(String gameId) {
-    GameModel existingGame;
+  Future<GameModel?> getGameDetails(String gameId, {String token = ''}) async {
+    GameModel? existingGame;
     try {
-      existingGame = _allGames.firstWhere((game) => game.gameId == gameId);
+      existingGame = _allGames.firstWhereOrNull(
+        (game) => game.gameId == gameId
+      );
+      if (existingGame == null) {
+        final response = await GameApiClient().getGame(token, gameId);
+        if (response.code != 200) {
+          throw Exception('Failed to load game details: ${response.message}');
+        } else {
+          existingGame = response.data as GameModel;
+        }
+      }
+      
     } catch (e) {
       debugPrint('Game with ID $gameId not found in repository.');
       debugPrint('Available games: ${_allGames.map((game) => game.gameId).join(', ')}');
@@ -151,7 +164,7 @@ class GameRepository {
 
   Future<List<GameModel>> getPopularGames() async {
     final popularGames =
-      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 10, '', false)) as List<GameModel>;
+      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 5, '', false)) as List<GameModel>;
 
     // _allGames.addAll(popularGames);
     return popularGames;

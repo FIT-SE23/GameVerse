@@ -79,6 +79,7 @@ Future<List<SingleChildWidget>> appProviders() async {
       create: (context) => PostViewModel(
         postRepository: context.read<PostRepository>(),
         commentRepository: context.read<CommentRepository>(),
+        authRepository: context.read<AuthRepository>(),
       ),
     ),
     ChangeNotifierProvider<ProfileViewModel>(

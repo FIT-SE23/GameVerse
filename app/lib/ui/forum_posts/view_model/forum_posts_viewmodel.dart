@@ -16,6 +16,10 @@ class ForumPostsViewModel extends ChangeNotifier {
       : _postRepository = postRepository,
         _authRepository = authRepository;
 
+  bool isLoggedIn() {
+    return _authRepository.isAuthenticated;
+  }
+
   ForumPostsState _state = ForumPostsState.initial;
   ForumPostsState get state => _state;
 
@@ -62,7 +66,7 @@ class ForumPostsViewModel extends ChangeNotifier {
     );
 
     await _postRepository.createPost(
-      _authRepository.accessToken!,
+      _authRepository.accessToken,
       newPost
     );
     _posts.insert(0, newPost);

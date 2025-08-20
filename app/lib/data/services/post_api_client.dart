@@ -103,17 +103,4 @@ class PostApiClient {
 
     return response;
   }
-
-  // Future<Response> listComments(String postId, String sortBy, {int limit = 20}) async {
-  //   final raw = await http.get(
-  //     Uri.parse("${ApiEndpoints.baseUrl}/post/$postId/comment?sortby=$sortBy&limit=$limit")
-  //   );
-
-  //   final response = Response.fromJson(
-  //     raw.statusCode, 
-  //     jsonDecode(raw.body) as Map<String, dynamic>,
-  //   );
-
-  //   return response;
-  // }
 }
