@@ -25,25 +25,6 @@ func getPublisher(c echo.Context, client *supabase.Client) error {
 	return jsonResponse(c, http.StatusOK, "", user)
 }
 
-func getPublisherRequests(c echo.Context, client *supabase.Client) error {
-	_, err := verifyUserToken(c)
-	if err != nil {
-		// TODO: check user is operator
-		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
-	}
-	rep, _, err := client.From("Publisher").Select("*", "", false).Eq("isverified", "false").ExecuteString()
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error() /*err.Error()*/, "")
-	}
-
-	var users []map[string]any
-	err = json.Unmarshal([]byte(rep), &users)
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Could not get requests" /*err.Error()*/, "")
-	}
-	return jsonResponse(c, http.StatusOK, "", users)
-}
-
 func addPublisher(c echo.Context, client *supabase.Client) error {
 	userid, err := verifyUserToken(c)
 	if err != nil {
@@ -71,30 +52,6 @@ func addPublisher(c echo.Context, client *supabase.Client) error {
 	// 	return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	// }
 
-	return jsonResponse(c, http.StatusOK, "", "")
-}
-
-func verifyPublisher(c echo.Context, client *supabase.Client) error {
-	_, err := verifyUserToken(c)
-	if err != nil {
-		// TODO: check user is operator
-		return jsonResponse(c, http.StatusBadRequest, "Please login as operator", "")
-	}
-
-	publisherid := c.FormValue("publisherid")
-	isApprove := c.FormValue("isapprove") == "1"
-
-	if isApprove {
-		_, _, err := client.From("Publisher").Update(map[string]bool{"isverified": true}, "", "").Eq("publisherid", publisherid).ExecuteString()
-		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-		}
-	} else {
-		_, _, err := client.From("Publisher").Delete("", "").Eq("publisherid", publisherid).ExecuteString()
-		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-		}
-	}
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
