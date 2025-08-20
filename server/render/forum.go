@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -12,9 +13,9 @@ import (
 func getAllForums(c echo.Context, client *supabase.Client) error {
 	rep, _, err := client.
 		From("Forum").
-		Select("forumid", "", false).
+		Select("forumid, Game!inner(isverified)", "", false).
+		Eq("Game.isverified", "true").
 		ExecuteString()
-
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
@@ -33,7 +34,7 @@ func getForum(c echo.Context, client *supabase.Client) error {
 	gameID := c.Param("id")
 
 	// TODO: check game status if user already signed in
-	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID).In("Resource.type", []string{"media_header"})
+	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID).Eq("isverified", "true").In("Resource.type", []string{"media_header"})
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
@@ -53,6 +54,7 @@ func getForum(c echo.Context, client *supabase.Client) error {
 		}
 		delete(gameBasicInfo[i], "Resource")
 	}
+	fmt.Println(gameBasicInfo)
 
 	return jsonResponse(c, http.StatusOK, "", gameBasicInfo)
 }
