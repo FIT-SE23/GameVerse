@@ -7,16 +7,22 @@ import 'package:gameverse/domain/models/game_request_model/game_request_model.da
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 import 'package:gameverse/domain/models/user_model/user_model.dart';
+import 'package:gameverse/data/repositories/publisher_repository.dart';
 
 enum PublisherViewState { loading, success, error }
 
 class PublisherViewModel extends ChangeNotifier {
   final GameRepository _gameRepository;
   final AuthRepository _authRepository;
+  final PublisherRepository _publisherRepository;
 
-  PublisherViewModel({required GameRepository gameRepository, required AuthRepository authRepository})
+  PublisherViewModel({required GameRepository gameRepository, 
+    required AuthRepository authRepository,
+    required PublisherRepository publisherRepository
+    })
       : _gameRepository = gameRepository,
-        _authRepository = authRepository;
+        _authRepository = authRepository,
+        _publisherRepository = publisherRepository;
   
   PublisherViewState _state = PublisherViewState.loading;
   PublisherViewState get state => _state;
@@ -41,32 +47,29 @@ class PublisherViewModel extends ChangeNotifier {
     required String userId,
     required String description,
     required PaymentMethodModel paymentMethod,
+    required String paymentCardNumber,
   }) async {
     try {
       _state = PublisherViewState.loading;
       notifyListeners();
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Create mock publisher profile
-      _publisherProfile = UserModel(
-        id: userId,
-        username: 'Publisher_$userId',
-        email: '123@gmail.com',
-        type: 'publisher',
+      bool isRegistered = await _publisherRepository.registerAsPublisher(
+        token: _authRepository.accessToken,
+        userId: userId,
         description: description,
-        paymentMethod: PaymentMethodModel(
-          paymentMethodId: 'pm_${DateTime.now().millisecondsSinceEpoch}',
-          type: 'Banking',
-          information: 'Paypal',
-        ),
-        publishedGamesID: [],
+        paymentMethodId: paymentMethod.paymentMethodId,
+        paymentCardNumber: paymentCardNumber,
       );
+      if (!isRegistered) {
+        _state = PublisherViewState.error;
+        _errorMessage = 'Registration failed';
+        notifyListeners();
+        return false;
+      }
 
       _state = PublisherViewState.success;
       notifyListeners();
-      return true;
+      return isRegistered;
     } catch (e) {
       _state = PublisherViewState.error;
       _errorMessage = 'Registration failed: $e';

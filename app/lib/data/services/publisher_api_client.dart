@@ -12,29 +12,27 @@ class PublisherApiClient {
   PublisherApiClient({http.Client? client}) : _client = client ?? http.Client();
 
   Future<bool> registerAsPublisher({
+    required String token,
     required String userId,
     required String description,
     required String paymentMethodId,
+    required String paymentCardNumber,
   }) async {
     try {
       final response = await _client.post(
         Uri.parse('${ApiEndpoints.baseUrl}/publisher'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
         body: {
           'userid': userId,
           'description': description,
           'paymentmethodid': paymentMethodId,
+          'paymentcardnumber': paymentCardNumber,
         },
       );
-      
-      debugPrint('Register publisher response status: ${response.statusCode}');
-      debugPrint('Register publisher response body: ${response.body}');
-      
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        return jsonData['code'] == 200;
-      }
-      return false;
+
+      return response.statusCode == 200;
     } catch (e) {
       debugPrint('Register publisher error: $e');
       return false;

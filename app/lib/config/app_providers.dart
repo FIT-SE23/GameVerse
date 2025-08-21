@@ -27,6 +27,7 @@ import '../data/repositories/comment_repository.dart';
 import '../data/repositories/transaction_repository.dart';
 import '../data/repositories/operator_repository.dart';
 import '../data/repositories/playtime_repository.dart';
+import '../data/repositories/publisher_repository.dart';
 
 import '../data/services/transaction_service.dart';
 Future<List<SingleChildWidget>> appProviders() async {
@@ -40,6 +41,7 @@ Future<List<SingleChildWidget>> appProviders() async {
     Provider(create: (_) => TransactionRepository()),
     Provider(create: (_) => OperatorRepository()),
     Provider(create: (_) => PlaytimeRepository()),
+    Provider(create: (_) => PublisherRepository()),
 
     // ViewModels
     ChangeNotifierProvider(
@@ -102,6 +104,7 @@ Future<List<SingleChildWidget>> appProviders() async {
       create: (context) => PublisherViewModel(
         gameRepository: context.read<GameRepository>(),
         authRepository: context.read<AuthRepository>(),
+        publisherRepository: context.read<PublisherRepository>()
       ),
     ),
     ChangeNotifierProvider<AdvancedSearchViewmodel>(

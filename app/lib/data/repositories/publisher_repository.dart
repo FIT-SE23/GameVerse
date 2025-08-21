@@ -9,14 +9,18 @@ class PublisherRepository {
       : _apiClient = apiClient ?? PublisherApiClient();
 
   Future<bool> registerAsPublisher({
+    required String token,
     required String userId,
     required String description,
     required String paymentMethodId,
+    required String paymentCardNumber,
   }) async {
     return await _apiClient.registerAsPublisher(
+      token: token,
       userId: userId,
       description: description,
       paymentMethodId: paymentMethodId,
+      paymentCardNumber: paymentCardNumber,
     );
   }
 

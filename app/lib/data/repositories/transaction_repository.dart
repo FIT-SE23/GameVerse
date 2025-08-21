@@ -7,6 +7,8 @@ import 'package:gameverse/domain/models/payment_method_model/payment_method_mode
 
 
 class TransactionRepository {
+  final List<PaymentMethodModel> _paymentMethods = [];
+  List<PaymentMethodModel> get paymentMethods => _paymentMethods;
 
   Future<List<TransactionModel>> getUserTransactions(String token) async {
     final response = await TransactionApiClient().getTransactions(token);
@@ -87,9 +89,12 @@ class TransactionRepository {
   Future<List<PaymentMethodModel>> getPaymentMethods() async {
     final response = await TransactionApiClient().getPaymentMethods();
     if (response.code == 200) {
-      return (response.data as List<dynamic>)
+      final result = (response.data as List<dynamic>)
           .map((item) => PaymentMethodModel.fromJson(item as Map<String, dynamic>))
           .toList();
+      _paymentMethods.clear();
+      _paymentMethods.addAll(result);
+      return _paymentMethods;
     } else {
       throw Exception('Failed to fetch payment methods: ${response.message}');
     }
