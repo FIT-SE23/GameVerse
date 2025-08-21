@@ -1,6 +1,12 @@
+// import 'dart:convert';
+
+// import 'package:flutter/material.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
+import 'package:gameverse/domain/models/notification_model/notification_model.dart';
+
 import 'package:gameverse/data/services/publisher_api_client.dart';
+// import 'package:gameverse/utils/response.dart';
 
 class PublisherRepository {
   final PublisherApiClient _apiClient;
@@ -66,5 +72,26 @@ class PublisherRepository {
       description: description,
       paymentMethodId: paymentMethodId,
     );
+  }
+
+  Future<List<NotificationModel>> getRejectedRegistration(String userId) async {
+    try {
+      final response = await PublisherApiClient().getRejectedRegistration(userId);
+
+      if (response.code != 200) {
+        throw Exception('Fail to get rejected registration attempts: ${response.message}');
+      } else {
+        final notifications = <NotificationModel>[];
+        for (final json in response.data as List<dynamic>) {
+          Map<String, dynamic> map = json as Map<String, dynamic>;
+          map['approved'] = false;
+          notifications.add(NotificationModel.fromJson(map));
+        }
+        return notifications;
+      }
+
+    } catch (e) {
+      throw Exception('Fail to get rejected registration attempts: $e');
+    }
   }
 }

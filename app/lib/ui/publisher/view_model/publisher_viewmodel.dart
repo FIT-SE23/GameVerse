@@ -7,6 +7,8 @@ import 'package:gameverse/domain/models/game_request_model/game_request_model.da
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 import 'package:gameverse/domain/models/user_model/user_model.dart';
+import 'package:gameverse/domain/models/notification_model/notification_model.dart';
+
 import 'package:gameverse/data/repositories/publisher_repository.dart';
 
 enum PublisherViewState { loading, success, error }
@@ -298,6 +300,25 @@ class PublisherViewModel extends ChangeNotifier {
     } catch (e) {
       _errorMessage = 'Cancellation failed: $e';
       return false;
+    }
+  }
+
+  List<NotificationModel> _rejectedRegistrationAttempts = [];
+  List<NotificationModel> get rejectedRegistrationAttempts => _rejectedRegistrationAttempts;
+
+  Future<void> loadRegistrationData(String userId) async {
+    try {
+      _state = PublisherViewState.loading;
+      notifyListeners();
+      _rejectedRegistrationAttempts = await _publisherRepository.getRejectedRegistration(userId);
+      
+      _state = PublisherViewState.success;
+      notifyListeners();
+    } catch (e) {
+      _state = PublisherViewState.error;
+      _errorMessage = 'Failed to load rejected registration attempts';
+    } finally {
+      notifyListeners();
     }
   }
 }

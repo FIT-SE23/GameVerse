@@ -121,7 +121,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                                   style: ElevatedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
+                                      borderRadius: BorderRadius.circular(6),
                                     ),
                                   ),
                                 ),
@@ -251,7 +251,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                           margin: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
                             color: theme.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(0),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: Row(
                             children: [
@@ -437,7 +437,7 @@ class _ViewToggleButton extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected ? Theme.of(context).colorScheme.primary : null,
-          borderRadius: BorderRadius.circular(0),
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Icon(
           icon,

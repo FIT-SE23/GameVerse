@@ -1,10 +1,13 @@
 import 'dart:convert';
+// import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/config/api_endpoints.dart';
+
+import 'package:gameverse/utils/response.dart';
 
 class PublisherApiClient {
   final http.Client _client;
@@ -37,6 +40,26 @@ class PublisherApiClient {
       debugPrint('Register publisher error: $e');
       return false;
     }
+  }
+
+  Future<Response> getRejectedRegistration(String userId) async {
+    final raw = await _client.get(
+      Uri.parse('${ApiEndpoints.baseUrl}/messages/publisher?userid=$userId')
+    );
+
+    var jsonBody;
+    try {
+      jsonBody = jsonDecode(raw.body);
+    } on FormatException catch (e) {
+      return Response.fromJson(400, {'message': e.message});
+    }
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonBody as Map<String, dynamic>,
+    );
+    
+    return response;
   }
 
   Future<dynamic> getPublisherProfile(String publisherId) async {
@@ -87,7 +110,7 @@ class PublisherApiClient {
 
   Future<List<GameRequestModel>> getPendingRequests(String publisherId) async {
     try {
-      // This would need to be implemented on your server
+      // This would need to be implemented on server
       // For now, return mock data
       return [
         GameRequestModel(
@@ -130,7 +153,7 @@ class PublisherApiClient {
     required double price,
   }) async {
     try {
-      // This would need to be implemented on your server
+      // This would need to be implemented on server
       // For now, simulate success
       await Future.delayed(const Duration(seconds: 1));
       return true;
