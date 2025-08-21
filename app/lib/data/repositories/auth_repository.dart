@@ -9,6 +9,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:gameverse/domain/models/user_model/user_model.dart';
 import 'package:gameverse/data/services/auth_api_client.dart';
 import 'package:gameverse/data/services/secure_storage_service.dart';
+import 'package:gameverse/ui/home/view_model/home_viewmodel.dart';
+
 
 
 enum AuthProvider { server, google, facebook }
@@ -202,7 +204,13 @@ class AuthRepository {
       // Clear secure storage
       await SecureStorageService.clearAuthData();
       await supabase.auth.signOut();
-      await Provider.of<GameRepository>(context, listen: false).clearCache();
+      if (context.mounted) {
+        await Provider.of<GameRepository>(context, listen: false).clearCache(); 
+        // Reload home page data
+        if (context.mounted) {
+          await Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+        }
+      }
     } catch (e) {
       debugPrint('Logout error: $e');
     }
