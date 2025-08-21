@@ -259,7 +259,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
         game: game,
         controller: controller,
         onTap: () {
-          context.push('/game/${game.gameId}');
+          context.push('/game-details/${game.gameId}');
         },
       );
     }).toList();
