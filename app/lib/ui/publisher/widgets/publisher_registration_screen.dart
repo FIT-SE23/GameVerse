@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/data/repositories/transaction_repository.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -358,16 +359,21 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
 
     try {
       // Create payment method model
-      final paymentMethod = PaymentMethodModel(
-        paymentMethodId: '', 
-        type: _selectedPaymentType,
-        information: _paymentInfoController.text.trim(),
-      );
+      final paymentMethod = Provider.of<TransactionRepository>(context, listen: false).
+        paymentMethods.firstWhere(
+          (method) => method.information == _selectedPaymentType,
+          orElse: () => PaymentMethodModel(
+            paymentMethodId: '',
+            type: _selectedPaymentType,
+            information: _paymentInfoController.text.trim(),
+          ),
+        );
 
       final success = await publisherViewModel.registerAsPublisher(
         userId: authViewModel.user!.id,
         description: _descriptionController.text.trim(),
         paymentMethod: paymentMethod,
+        paymentCardNumber: _paymentInfoController.text.trim(),
       );
 
       if (!context.mounted) return;
