@@ -99,7 +99,7 @@ class _PostScreenState extends State<PostScreen> {
                             backgroundColor: theme.colorScheme.primary,
                             radius: 16,
                             child: Text(
-                              post.authorId[0].toUpperCase(),
+                              post.username[0].toUpperCase(),
                               style: TextStyle(
                                 color: theme.colorScheme.onPrimary,
                                 fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _PostScreenState extends State<PostScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'User ${post.authorId.substring(0, 4)}',
+                                post.username,
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -373,7 +373,7 @@ class _CommentCard extends StatelessWidget {
                 backgroundColor: theme.colorScheme.secondary,
                 radius: 14,
                 child: Text(
-                  'U',
+                  comment.username[0].toUpperCase(),
                   style: TextStyle(
                     color: theme.colorScheme.onSecondary,
                     fontWeight: FontWeight.bold,
@@ -383,7 +383,7 @@ class _CommentCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'User ${comment.userId.substring(0, 4)}',
+                comment.username,
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),

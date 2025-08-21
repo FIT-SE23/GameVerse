@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:gameverse/data/services/post_api_client.dart';
 import 'package:gameverse/domain/models/post_model/post_model.dart';
 
+import 'package:gameverse/data/services/user_api_client.dart';
+
 class PostSortCriteria {
   static final date = 'date';
   static final recommend = 'recommend';
@@ -42,7 +44,10 @@ class PostRepository {
       if (response.code != 200) {
         throw Exception('Failed to load post: ${response.message}');
       } else {
-        final post = PostModel.fromJson(response.data as Map<String, dynamic>);
+        Map<String, dynamic> postJson = response.data as Map<String, dynamic>;
+        final tmpResponse = await UserApiClient().getUsername(postJson['userid'] as String);
+        postJson['username'] = tmpResponse.data;
+        final post = PostModel.fromJson(postJson);
         return post;
       }
     } catch (e) {
@@ -118,6 +123,9 @@ class PostRepository {
   }
 
   Future<bool> recommendStatus(String token, String postId) async {
+    if (token.isEmpty) {
+      return false;
+    }
     try {
       final response = await PostApiClient().isPostRecommended(token, postId);
       

@@ -452,7 +452,7 @@ class _PostCard extends StatelessWidget {
                     backgroundColor: theme.colorScheme.primary,
                     radius: 16,
                     child: Text(
-                      post.authorId[0].toUpperCase(),
+                      post.username[0].toUpperCase(),
                       style: TextStyle(
                         color: theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold,
@@ -466,7 +466,7 @@ class _PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'User ${post.authorId.substring(0, 4)}',
+                          post.username,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),

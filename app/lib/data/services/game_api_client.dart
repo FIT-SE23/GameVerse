@@ -232,7 +232,7 @@ class GameApiClient {
   }
 
   Future<Response> getPublisherName(String publisherId) async {
-    final raw = await http.get(Uri.parse(
+    final raw = await _client.get(Uri.parse(
       "${ApiEndpoints.baseUrl}/user/$publisherId"
     ));
 

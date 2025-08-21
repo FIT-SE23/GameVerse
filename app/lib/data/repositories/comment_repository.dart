@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:gameverse/data/services/comment_api_client.dart';
 import 'package:gameverse/domain/models/comment_model/comment_model.dart';
 
+import 'package:gameverse/data/services/user_api_client.dart';
+
 class CommentSortCriteria {
   static final date = 'date';
   static final recommend = 'recommend';
@@ -20,7 +22,10 @@ class CommentRepository {
       if (response.code != 200) {
         throw Exception('Failed to get comment: ${response.message}');
       } else {
-        return CommentModel.fromJson(response.data);
+        Map<String, dynamic> commentJson = response.data as Map<String, dynamic>;
+        final tmpResponse = await UserApiClient().getUsername(commentJson['userid'] as String);
+        commentJson['username'] = tmpResponse.data;
+        return CommentModel.fromJson(commentJson);
       }
     } catch (e) {
       throw Exception('Failed to get comment: $e');
@@ -117,6 +122,9 @@ class CommentRepository {
   }
 
   Future<bool> recommendStatus(String token, String commentId) async {
+    if (token.isEmpty) {
+      return false;
+    }
     try {
       final response = await CommentApiClient().isCommentRecommended(token, commentId);
       
