@@ -56,11 +56,6 @@ func addPublisher(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	// _, _, err = client.From("User").Update(map[string]string{"type": "publisher"}, "", "").Eq("userid", userid).ExecuteString()
-	// if err != nil {
-	// 	return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-	// }
-
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
