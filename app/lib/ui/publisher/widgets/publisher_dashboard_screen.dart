@@ -445,6 +445,13 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
+            color: theme.colorScheme.surfaceContainerHighest,
+          ),
+          child: Text(
+            'Pending',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       ),
