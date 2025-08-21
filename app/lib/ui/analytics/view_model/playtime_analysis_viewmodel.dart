@@ -66,7 +66,7 @@ class PlaytimeAnalysisViewModel extends ChangeNotifier {
       }
       
       _playtimeSessions = await _playtimeRepository.getPlaytimeSessions(
-        token: _authRepository.accessToken!,
+        token: _authRepository.accessToken,
         startDate: startDate,
         endDate: now,
       );

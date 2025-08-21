@@ -59,7 +59,7 @@ class _LoginScreenState extends State<AuthScreen> with SingleTickerProviderState
       await authViewModel.login(provider);
       
       if (mounted && authViewModel.status == AuthStatus.authenticated) {
-        context.pop();
+        context.go('/');
       }
       //  else {
           // _showErrorSnackBar(authViewModel.errorMessage);
