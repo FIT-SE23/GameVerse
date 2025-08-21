@@ -12,17 +12,26 @@ import (
 func getPublisher(c echo.Context, client *supabase.Client) error {
 	publisherid := c.Param("id")
 
-	rep, _, err := client.From("Publisher").Select("description, Game(*)", "", false).Eq("publisherid", publisherid).Single().ExecuteString()
+	rep, _, err := client.From("Publisher").Select("*", "", false).Eq("publisherid", publisherid).Single().ExecuteString()
+	fmt.Println(rep)
+	var publisher map[string]any
+	err = json.Unmarshal([]byte(rep), &publisher)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return jsonResponse(c, http.StatusBadRequest, "Invalid publisherid", "")
+	}
+	publisher["game"] = []any{}
+
+	rep, _, err = client.From("Game").Select("*, Category(*), Resource(*)", "", false).Eq("publisherid", publisherid).ExecuteString()
+	if err == nil {
+		var games []map[string]any
+		err = json.Unmarshal([]byte(rep), &games)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, "Invalid publisherid" /*err.Error()*/, "")
+		}
+		publisher["game"] = games
 	}
 
-	var user map[string]any
-	err = json.Unmarshal([]byte(rep), &user)
-	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid publisherid" /*err.Error()*/, "")
-	}
-	return jsonResponse(c, http.StatusOK, "", user)
+	return jsonResponse(c, http.StatusOK, "", publisher)
 }
 
 func addPublisher(c echo.Context, client *supabase.Client) error {
