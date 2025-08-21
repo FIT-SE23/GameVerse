@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CommentModel {
 
-@JsonKey(name: 'commentid') String get commentId;@JsonKey(name: 'userid') String get userId;@JsonKey(name: 'postid') String get postId; String get content; int get recommend;@JsonKey(name: 'commentdate') DateTime get commentDate;
+ String get username;@JsonKey(name: 'commentid') String get commentId;@JsonKey(name: 'userid') String get userId;@JsonKey(name: 'postid') String get postId; String get content; int get recommend;@JsonKey(name: 'commentdate') DateTime get commentDate;
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CommentModelCopyWith<CommentModel> get copyWith => _$CommentModelCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentModel&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.content, content) || other.content == content)&&(identical(other.recommend, recommend) || other.recommend == recommend)&&(identical(other.commentDate, commentDate) || other.commentDate == commentDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentModel&&(identical(other.username, username) || other.username == username)&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.content, content) || other.content == content)&&(identical(other.recommend, recommend) || other.recommend == recommend)&&(identical(other.commentDate, commentDate) || other.commentDate == commentDate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,commentId,userId,postId,content,recommend,commentDate);
+int get hashCode => Object.hash(runtimeType,username,commentId,userId,postId,content,recommend,commentDate);
 
 @override
 String toString() {
-  return 'CommentModel(commentId: $commentId, userId: $userId, postId: $postId, content: $content, recommend: $recommend, commentDate: $commentDate)';
+  return 'CommentModel(username: $username, commentId: $commentId, userId: $userId, postId: $postId, content: $content, recommend: $recommend, commentDate: $commentDate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CommentModelCopyWith<$Res>  {
   factory $CommentModelCopyWith(CommentModel value, $Res Function(CommentModel) _then) = _$CommentModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'commentid') String commentId,@JsonKey(name: 'userid') String userId,@JsonKey(name: 'postid') String postId, String content, int recommend,@JsonKey(name: 'commentdate') DateTime commentDate
+ String username,@JsonKey(name: 'commentid') String commentId,@JsonKey(name: 'userid') String userId,@JsonKey(name: 'postid') String postId, String content, int recommend,@JsonKey(name: 'commentdate') DateTime commentDate
 });
 
 
@@ -65,9 +65,10 @@ class _$CommentModelCopyWithImpl<$Res>
 
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? commentId = null,Object? userId = null,Object? postId = null,Object? content = null,Object? recommend = null,Object? commentDate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? commentId = null,Object? userId = null,Object? postId = null,Object? content = null,Object? recommend = null,Object? commentDate = null,}) {
   return _then(_self.copyWith(
-commentId: null == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
+username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,commentId: null == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'commentid')  String commentId, @JsonKey(name: 'userid')  String userId, @JsonKey(name: 'postid')  String postId,  String content,  int recommend, @JsonKey(name: 'commentdate')  DateTime commentDate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'commentid')  String commentId, @JsonKey(name: 'userid')  String userId, @JsonKey(name: 'postid')  String postId,  String content,  int recommend, @JsonKey(name: 'commentdate')  DateTime commentDate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CommentModel() when $default != null:
-return $default(_that.commentId,_that.userId,_that.postId,_that.content,_that.recommend,_that.commentDate);case _:
+return $default(_that.username,_that.commentId,_that.userId,_that.postId,_that.content,_that.recommend,_that.commentDate);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.commentId,_that.userId,_that.postId,_that.content,_that.re
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'commentid')  String commentId, @JsonKey(name: 'userid')  String userId, @JsonKey(name: 'postid')  String postId,  String content,  int recommend, @JsonKey(name: 'commentdate')  DateTime commentDate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'commentid')  String commentId, @JsonKey(name: 'userid')  String userId, @JsonKey(name: 'postid')  String postId,  String content,  int recommend, @JsonKey(name: 'commentdate')  DateTime commentDate)  $default,) {final _that = this;
 switch (_that) {
 case _CommentModel():
-return $default(_that.commentId,_that.userId,_that.postId,_that.content,_that.recommend,_that.commentDate);case _:
+return $default(_that.username,_that.commentId,_that.userId,_that.postId,_that.content,_that.recommend,_that.commentDate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.commentId,_that.userId,_that.postId,_that.content,_that.re
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'commentid')  String commentId, @JsonKey(name: 'userid')  String userId, @JsonKey(name: 'postid')  String postId,  String content,  int recommend, @JsonKey(name: 'commentdate')  DateTime commentDate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'commentid')  String commentId, @JsonKey(name: 'userid')  String userId, @JsonKey(name: 'postid')  String postId,  String content,  int recommend, @JsonKey(name: 'commentdate')  DateTime commentDate)?  $default,) {final _that = this;
 switch (_that) {
 case _CommentModel() when $default != null:
-return $default(_that.commentId,_that.userId,_that.postId,_that.content,_that.recommend,_that.commentDate);case _:
+return $default(_that.username,_that.commentId,_that.userId,_that.postId,_that.content,_that.recommend,_that.commentDate);case _:
   return null;
 
 }
@@ -214,9 +215,10 @@ return $default(_that.commentId,_that.userId,_that.postId,_that.content,_that.re
 @JsonSerializable()
 
 class _CommentModel implements CommentModel {
-  const _CommentModel({@JsonKey(name: 'commentid') required this.commentId, @JsonKey(name: 'userid') required this.userId, @JsonKey(name: 'postid') required this.postId, required this.content, required this.recommend, @JsonKey(name: 'commentdate') required this.commentDate});
+  const _CommentModel({required this.username, @JsonKey(name: 'commentid') required this.commentId, @JsonKey(name: 'userid') required this.userId, @JsonKey(name: 'postid') required this.postId, required this.content, required this.recommend, @JsonKey(name: 'commentdate') required this.commentDate});
   factory _CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);
 
+@override final  String username;
 @override@JsonKey(name: 'commentid') final  String commentId;
 @override@JsonKey(name: 'userid') final  String userId;
 @override@JsonKey(name: 'postid') final  String postId;
@@ -237,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentModel&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.content, content) || other.content == content)&&(identical(other.recommend, recommend) || other.recommend == recommend)&&(identical(other.commentDate, commentDate) || other.commentDate == commentDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentModel&&(identical(other.username, username) || other.username == username)&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.content, content) || other.content == content)&&(identical(other.recommend, recommend) || other.recommend == recommend)&&(identical(other.commentDate, commentDate) || other.commentDate == commentDate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,commentId,userId,postId,content,recommend,commentDate);
+int get hashCode => Object.hash(runtimeType,username,commentId,userId,postId,content,recommend,commentDate);
 
 @override
 String toString() {
-  return 'CommentModel(commentId: $commentId, userId: $userId, postId: $postId, content: $content, recommend: $recommend, commentDate: $commentDate)';
+  return 'CommentModel(username: $username, commentId: $commentId, userId: $userId, postId: $postId, content: $content, recommend: $recommend, commentDate: $commentDate)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$CommentModelCopyWith<$Res> implements $CommentModelCopyWi
   factory _$CommentModelCopyWith(_CommentModel value, $Res Function(_CommentModel) _then) = __$CommentModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'commentid') String commentId,@JsonKey(name: 'userid') String userId,@JsonKey(name: 'postid') String postId, String content, int recommend,@JsonKey(name: 'commentdate') DateTime commentDate
+ String username,@JsonKey(name: 'commentid') String commentId,@JsonKey(name: 'userid') String userId,@JsonKey(name: 'postid') String postId, String content, int recommend,@JsonKey(name: 'commentdate') DateTime commentDate
 });
 
 
@@ -274,9 +276,10 @@ class __$CommentModelCopyWithImpl<$Res>
 
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? commentId = null,Object? userId = null,Object? postId = null,Object? content = null,Object? recommend = null,Object? commentDate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? commentId = null,Object? userId = null,Object? postId = null,Object? content = null,Object? recommend = null,Object? commentDate = null,}) {
   return _then(_CommentModel(
-commentId: null == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
+username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,commentId: null == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable

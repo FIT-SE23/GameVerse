@@ -115,8 +115,8 @@ class _GameMediaCarouselState extends State<GameMediaCarousel> {
                               child: Image.network(
                                 widget.media[index],
                                 fit: BoxFit.cover,
-                                cacheWidth: 128,
-                                cacheHeight: 72,
+                                // cacheWidth: 128,
+                                // cacheHeight: 72,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
                                     color: theme.colorScheme.surfaceContainerHighest,

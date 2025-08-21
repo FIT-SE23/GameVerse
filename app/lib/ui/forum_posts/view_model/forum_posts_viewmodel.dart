@@ -55,6 +55,7 @@ class ForumPostsViewModel extends ChangeNotifier {
 
   Future<void> createPost(String gameId, String title, String content, String authorId) async {
     final newPost = PostModel(
+      username: '',
       postId: '0',              // this is generated on server side
       title: title,
       content: content,

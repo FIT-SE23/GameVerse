@@ -73,6 +73,7 @@ class PostViewModel extends ChangeNotifier {
     if (_post == null) return;
 
     final newComment = CommentModel(
+      username: '',
       commentId: '0',
       userId: authorId,
       postId: _post != null ? _post!.postId : '',
