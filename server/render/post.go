@@ -248,7 +248,7 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 
 	filter := client.
 		From("Post").
-		Select("*", "", false).
+		Select("*, Post_userid_fkey(username)", "", false).
 		Limit(limit, "").
 		Eq("forumid", forumId)
 
@@ -274,6 +274,15 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
+	for _, row := range posts {
+		if u, ok := row["Post_userid_fkey"].(map[string]any); ok {
+			if name, ok := u["username"].(string); ok {
+				row["username"] = name
+			}
+		}
+		delete(row, "Post_userid_fkey")
+	}
+
 	return jsonResponse(c, http.StatusOK, "", posts)
 }
 
@@ -289,7 +298,7 @@ func listComments(c echo.Context, client *supabase.Client, postid string) error 
 
 	filter := client.
 		From("Comment").
-		Select("*", "", false).
+		Select("*, Comment_userid_fkey(username)", "", false).
 		Eq("postid", postid).
 		Limit(limit, "")
 
@@ -306,9 +315,17 @@ func listComments(c echo.Context, client *supabase.Client, postid string) error 
 	}
 
 	var comments []map[string]any
-	err = json.Unmarshal([]byte(rep), &comments)
-	if err != nil {
+	if err := json.Unmarshal([]byte(rep), &comments); err != nil {
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse comments", nil)
+	}
+
+	for _, row := range comments {
+		if u, ok := row["Comment_userid_fkey"].(map[string]any); ok {
+			if name, ok := u["username"].(string); ok {
+				row["username"] = name
+			}
+		}
+		delete(row, "Comment_userid_fkey")
 	}
 
 	return jsonResponse(c, http.StatusOK, "", comments)

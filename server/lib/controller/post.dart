@@ -174,9 +174,13 @@ Future<Response> listPosts(String forumId, String title, String sortBy, {int lim
     jsonBody as Map<String, dynamic>,
   );
 
-  final posts = <Post>[];
+  final posts = <Map<String, dynamic>>[];
   for (var post in response.data as List<dynamic>) {
-    posts.add(Post.fromJson(post as Map<String, dynamic>));
+    final map = post as Map<String, dynamic>;
+    posts.add({
+      "post": Post.fromJson(map),
+      "username": map["username"],
+    });
   }
 
   return Response(code: response.code, message: response.message, data: posts);
