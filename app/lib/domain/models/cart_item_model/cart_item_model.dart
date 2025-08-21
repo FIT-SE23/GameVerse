@@ -19,7 +19,10 @@ abstract class CartItemModel with _$CartItemModel {
 
 extension CartItemModelExtension on CartItemModel {
   double get price {
-    if (game.isSale == true && game.discountPercent != null) {
+    if (game.isSale == true && game.discountPercent != null
+        && DateTime.now().isAfter(game.saleStartDate!)
+        && DateTime.now().isBefore(game.saleEndDate!)
+    ) {
       return game.price * (1 - (game.discountPercent! / 100));
     }
     return game.price;

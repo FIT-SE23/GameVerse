@@ -19,8 +19,8 @@ class GameSortCriteria {
 }
 
 class GameRepository {
-  static final Set<GameModel> _allGames = {};
-  Set<GameModel> get allGames => _allGames;
+  final Set<GameModel> _libraryGames = {};
+  Set<GameModel> get libraryGames => _libraryGames;
 
   static List<CategoryModel> _categories = [];
   List<CategoryModel> get categories => _categories;
@@ -52,8 +52,8 @@ class GameRepository {
       // Update the game with isOwned
       GameModel game;
       try {
-        game = _allGames.firstWhere((g) => g.gameId == gameData.gameId);
-        _allGames.remove(game);
+        _libraryGames.firstWhere((g) => g.gameId == gameData.gameId);
+        continue; // Skip if the game is already in the library
       } catch (e) {
         game = gameData as GameModel;
       }
@@ -81,15 +81,15 @@ class GameRepository {
           setGameInstallation(game.gameId);
         } else {
           debugPrint('Failed to get download URL for ${game.gameId}: ${response.message}');
-          _allGames.add(game.copyWith(
+          _libraryGames.add(game.copyWith(
             binaries: [],
             exes: [],
           ));
         }
       }
-      _allGames.add(game);
+      _libraryGames.add(game);
     }
-    final libraryGames = _allGames.where((game) => game.isOwned).toList();
+    final libraryGames = _libraryGames.where((game) => game.isOwned).toList();
     return libraryGames;
   }
 
@@ -102,25 +102,21 @@ class GameRepository {
     for (var gameData in response.data) {
       GameModel game;
       try {
-        game = _allGames.firstWhere((g) => g.gameId == gameData.gameId);
-        _allGames.remove(game);
+        game = _libraryGames.firstWhere((g) => g.gameId == gameData.gameId);
       } catch (e) {
         game = gameData as GameModel;
       }
       game = game.copyWith(isInWishlist: true);
-      _allGames.add(game);
+      _libraryGames.add(game);
     }
-    final wishlistGames = _allGames.where((game) => game.isInWishlist).toList();
+    final wishlistGames = _libraryGames.where((game) => game.isInWishlist).toList();
     return wishlistGames;
   }
 
   Future<GameModel?> getGameDetails(String gameId, {String token = ''}) async {
     GameModel? existingGame;
     try {
-      existingGame = _allGames.firstWhereOrNull(
-        (game) => game.gameId == gameId
-      );
-      if (existingGame == null) {
+      existingGame = _libraryGames.firstWhereOrNull((game) => game.gameId == gameId);      if (existingGame == null) {
         final response = await GameApiClient().getGame(token, gameId);
         if (response.code != 200) {
           throw Exception('Failed to load game details: ${response.message}');
@@ -131,7 +127,6 @@ class GameRepository {
       
     } catch (e) {
       debugPrint('Game with ID $gameId not found in repository.');
-      debugPrint('Available games: ${_allGames.map((game) => game.gameId).join(', ')}');
       return null;
     }
     return existingGame;
@@ -143,32 +138,25 @@ class GameRepository {
 
   Future<List<GameModel>> getDiscountededGames() async {
     final discountededGames =
-     await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
-    _allGames.addAll(discountededGames);
+      await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 10, '', true)) as List<GameModel>;
     return discountededGames;
   }
 
   Future<List<GameModel>> getNewGames() async {
     final newGames =
       await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.date, 0, 10, '', false)) as List<GameModel>;
-
-    _allGames.addAll(newGames);
     return newGames;
   }
 
   Future<List<GameModel>> getPopularGames() async {
     final popularGames =
       await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 5, '', false)) as List<GameModel>;
-
-    _allGames.addAll(popularGames);
     return popularGames;
   }
 
   Future<List<GameModel>> getTopRecommendedGames() async {
     final topRecommendedGames =
       await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.recommend, 0, 10, '', false)) as List<GameModel>;
-
-    _allGames.addAll(topRecommendedGames);
     return topRecommendedGames;
   }
 
@@ -181,21 +169,11 @@ class GameRepository {
     return response.data;
   }
 
-  // static Future<List<GameModel>> _getMockFeaturedGames() async {
-  //   return [
-  //     await _getDataFromResponse(GameApiClient().getGame('', 'b5e14fbb-0b28-4e34-9848-7403175d5a48')) as GameModel,
-  //     await _getDataFromResponse(GameApiClient().getGame('', 'c0ea830e-6081-4086-9392-0a968d425128')) as GameModel,
-  //     await _getDataFromResponse(GameApiClient().getGame('', '0f1f4c69-1f25-4770-ab25-ed553388330a')) as GameModel,
-  //     await _getDataFromResponse(GameApiClient().getGame('', 'bca0264f-f451-489e-9e19-0378c56d4c18')) as GameModel,
-  //     await _getDataFromResponse(GameApiClient().getGame('', '60ce4bab-c05d-4d71-9f4a-028f545c6cb0')) as GameModel,
-  //   ];
-  // }
-
   // Set folder path for game installation
   void setGameInstallationPath(String gameId, String path) {
     GameModel game;
     try {
-      game = _allGames.firstWhere(
+      game = _libraryGames.firstWhere(
         (game) => game.gameId == gameId,
       );
     } catch (e) {
@@ -203,8 +181,8 @@ class GameRepository {
       return;
     }
     
-    _allGames.remove(game);
-    _allGames.add(game.copyWith(path: path));
+    _libraryGames.remove(game);
+    _libraryGames.add(game.copyWith(path: path));
   }
 
   // Check if the game is isInstalled, if yes, set the isInstalled field to true
@@ -212,7 +190,7 @@ class GameRepository {
     // Try to find the game in the set
     GameModel? game;
     try {
-      game = _allGames.firstWhere((g) => g.gameId == gameId);
+      game = _libraryGames.firstWhere((g) => g.gameId == gameId);
     } catch (e) {
       // Game not found in the set
       return false;
@@ -221,12 +199,12 @@ class GameRepository {
     if (game.path != null) {
       String executablePath = await checkGameInstallation(game.path!);
       if (executablePath.isNotEmpty) {
-        _allGames.remove(game);
-        _allGames.add(game.copyWith(isInstalled: true));
+        _libraryGames.remove(game);
+        _libraryGames.add(game.copyWith(isInstalled: true));
         return true;
       } else {
-        _allGames.remove(game);
-        _allGames.add(game.copyWith(
+        _libraryGames.remove(game);
+        _libraryGames.add(game.copyWith(
           isInstalled: false,
           path: null,
         ));
@@ -319,34 +297,34 @@ class GameRepository {
     }
     GameModel? game;
     try {
-      game = _allGames.firstWhere((g) => g.gameId == gameId);
+      game = _libraryGames.firstWhere((g) => g.gameId == gameId);
     } catch (e) {
       debugPrint('Game with ID $gameId not found in repository.');
       // Print the available games for debugging
-      debugPrint('Available games: ${_allGames.map((game) => game.gameId).join(', ')}');
+      debugPrint('Available games: ${_libraryGames.map((game) => game.gameId).join(', ')}');
       return false;
     }
-    _allGames.remove(game);
-    _allGames.add(game.copyWith(isInWishlist: !isInWishlist));
+    _libraryGames.remove(game);
+    _libraryGames.add(game.copyWith(isInWishlist: !isInWishlist));
     return true;
   }
 
   // Update specific game details
-  Future<void> updateGameDetails(GameModel updatedGame) async {
-    GameModel? existingGame;
-    try {
-      existingGame = _allGames.firstWhere((game) => game.gameId == updatedGame.gameId);
-    } catch (e) {
-      debugPrint('Game with ID ${updatedGame.gameId} not found in repository.');
-      return;
-    }
-    _allGames.remove(existingGame);
-    _allGames.add(updatedGame);
-  }
+  // void updateGameDetails(GameModel updatedGame) {
+  //   GameModel? existingGame;
+  //   try {
+  //     existingGame = _allGames.firstWhere((game) => game.gameId == updatedGame.gameId);
+  //   } catch (e) {
+  //     debugPrint('Game with ID ${updatedGame.gameId} not found in repository.');
+  //     return;
+  //   }
+  //   _allGames.remove(existingGame);
+  //   _allGames.add(updatedGame);
+  // }
 
   // Clear the game cache
   Future<void> clearCache() async {
-    _allGames.clear();
+    _libraryGames.clear();
     _categories.clear();
   }
 }

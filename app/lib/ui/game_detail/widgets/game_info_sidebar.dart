@@ -117,7 +117,10 @@ class GameInfoSidebar extends StatelessWidget {
                     return Expanded(
                       child: ElevatedButton(
                         style: theme.elevatedButtonTheme.style!.copyWith(
-                          backgroundColor: WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
+                          backgroundColor: gameDetailsViewModel.isInWishlist
+                              ? WidgetStatePropertyAll(AppTheme.oppositeThemeColors(theme.brightness).getShell)
+                              :
+                          WidgetStatePropertyAll(AppTheme.currentThemeColors(theme.brightness).getShell)
                         ),
                         onPressed: () async {
                           bool ok = await gameDetailsViewModel.toggleWishlist(game.gameId);
@@ -145,7 +148,9 @@ class GameInfoSidebar extends StatelessWidget {
                           gameDetailsViewModel.isInWishlist
                               ? Icons.bookmark
                               : Icons.bookmark_add_outlined,
-                          color: AppTheme.currentThemeColors(theme.brightness).getText,
+                          color: gameDetailsViewModel.isInWishlist
+                              ? AppTheme.oppositeThemeColors(theme.brightness).getText
+                              : AppTheme.currentThemeColors(theme.brightness).getText,
                         )
                       ),
                     );

@@ -102,7 +102,11 @@ class TransactionViewModel extends ChangeNotifier {
 
   double calculateDiscount() {
     return _cartItems.fold(0.0, (sum, item) {
-      if (item.game.isSale == true && item.game.discountPercent != null) {
+      final dateNow = DateTime.now();
+      if (item.game.isSale == true && item.game.discountPercent != null
+          && dateNow.isAfter(item.game.saleStartDate!)
+          && dateNow.isBefore(item.game.saleEndDate!)
+      ) {
         return sum + (item.game.price * item.game.discountPercent! / 100);
       }
       return sum;
@@ -110,7 +114,7 @@ class TransactionViewModel extends ChangeNotifier {
   }
 
   double calculateTotal() {
-    return _cartItems.fold(0.0, (sum, item) => sum + item.price);
+    return calculateSubtotal() - calculateDiscount();
   }
 
   // Load user's transactions
@@ -137,7 +141,6 @@ class TransactionViewModel extends ChangeNotifier {
       _state = TransactionViewState.loading;
       notifyListeners();
 
-      // Assuming the repository has a method to get cart items
       _cartItems = await _transactionRepository.getCartItems(token);
       
       _state = TransactionViewState.success;

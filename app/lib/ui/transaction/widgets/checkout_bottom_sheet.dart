@@ -111,10 +111,12 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: item.game.isSale == true && item.game.discountPercent != null
+                          && DateTime.now().isAfter(item.game.saleStartDate!)
+                          && DateTime.now().isBefore(item.game.saleEndDate!)
                           ? Text('${item.game.discountPercent!.toInt()}% off')
                           : null,
                       trailing: Text(
-                        '\$${item.price.toStringAsFixed(2)}',
+                        '${item.price.toStringAsFixed(2)} VND',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),

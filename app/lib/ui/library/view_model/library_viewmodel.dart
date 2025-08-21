@@ -57,7 +57,7 @@ class LibraryViewModel extends ChangeNotifier {
     try {
       await _gameRepository.getLibraryGames(token, userId);
       await _gameRepository.getWishlistGames(token, userId);
-      _games = _gameRepository.allGames.where((game) => game.isOwned || game.isInWishlist).toList();
+      _games = _gameRepository.libraryGames.toList();
 
       _availableTags = _extractTags(_games);
       _applyFilters();

@@ -55,17 +55,11 @@ class GameDetailsViewModel extends ChangeNotifier {
       notifyListeners();
 
       _gameDetail = await _gameRepository.getGameDetails(gameId);
-      _gameDetail = _gameDetail?.copyWith(
-        isInstalled: await _gameRepository.setGameInstallation(gameId),
-        isInWishlist: checkInWishlist(gameId),
-        path: gamePath.isNotEmpty ? gamePath : _gameDetail?.path,
-      );
-      _isRecommended = _authRepository.accessToken != null 
-          ? await _gameRepository.isRecommended(
-              _authRepository.accessToken!,
-              gameId,
-            )
-          : false;
+      if (_authRepository.accessToken != '') {
+        _isRecommended = await checkRecommended(gameId);
+      } else {
+        _isRecommended = false;
+      }
       _publisherName = _gameDetail != null ? await _gameRepository.getPublisherName(_gameDetail!.publisherId) : '';
       
       if (_gameDetail != null) {
@@ -92,14 +86,6 @@ class GameDetailsViewModel extends ChangeNotifier {
       );
       if (success) {
         _isRecommended = !_isRecommended;
-        // Update the recommended number in the game detail
-        if (_gameDetail != null) {
-          _gameDetail = _gameDetail!.copyWith(
-            recommended: _isRecommended ? (_gameDetail!.recommended + 1) : (_gameDetail!.recommended - 1),
-          );
-          // Update the game detail in the repository
-          await _gameRepository.updateGameDetails(_gameDetail!);
-        }
         notifyListeners();
       }
       return success;
@@ -142,7 +128,7 @@ class GameDetailsViewModel extends ChangeNotifier {
 
   bool checkInWishlist(String gameId) {
     try {
-      _isInWishlist = _gameRepository.allGames
+      _isInWishlist = _gameRepository.libraryGames
           .any((game) => game.gameId == gameId && game.isInWishlist);
       return _isInWishlist;
     } catch (e) {
