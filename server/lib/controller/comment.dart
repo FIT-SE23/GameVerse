@@ -1,7 +1,7 @@
-  import 'dart:convert';
-  import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-  import "../config/config.dart";
+import "../config/config.dart";
 
 class Comment {
   final String? commentId;
@@ -28,9 +28,10 @@ class Comment {
     final recommend = json["recommend"]?.toInt();
 
     final commentDateStr = json["commentdate"] as String?;
-    final commentDate = (commentDateStr != null && commentDateStr.isNotEmpty)
-        ? DateTime.parse(commentDateStr)
-        : null;
+    final commentDate =
+        (commentDateStr != null && commentDateStr.isNotEmpty)
+            ? DateTime.parse(commentDateStr)
+            : null;
 
     return Comment(
       commentId: commentId,
@@ -60,21 +61,17 @@ class Comment {
   }
 }
 
-Future<Response> addComment(
-  String token,
-  String postId,
-  String content,
-) async {
+Future<Response> addComment(String token, String postId, String content) async {
   final raw = await http.post(
     Uri.parse(serverURL + "comment"),
     headers: {"Authorization": "Bearer $token"},
-    body: {
-      "postid": postId,
-      "content": content,
-    },
+    body: {"postid": postId, "content": content},
   );
 
-  return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 }
 
 Future<Response> getComment(String commentId) async {
@@ -87,42 +84,58 @@ Future<Response> getComment(String commentId) async {
     return Response.fromJson(400, {"message": e.message});
   }
 
-  final response = Response.fromJson(raw.statusCode, jsonBody as Map<String, dynamic>);
+  final response = Response.fromJson(
+    raw.statusCode,
+    jsonBody as Map<String, dynamic>,
+  );
   final comment = Comment.fromJson(response.data[0] as Map<String, dynamic>);
-  return Response(code: response.code, message: response.message, data: comment);
+  return Response(
+    code: response.code,
+    message: response.message,
+    data: comment,
+  );
 }
 
 Future<Response> updateComment(
   String token,
   String commentId,
-  String content
+  String content,
 ) async {
   final raw = await http.patch(
     Uri.parse(serverURL + "comment/$commentId"),
     headers: {"Authorization": "Bearer $token"},
-    body: {"content": content}
+    body: {"content": content},
   );
 
-  return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 }
 
 Future<Response> deleteComment(String token, String commentId) async {
   final raw = await http.delete(
     Uri.parse(serverURL + "comment/$commentId"),
-    headers: {"Authorization": "Bearer $token"}
+    headers: {"Authorization": "Bearer $token"},
   );
 
-  return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 }
 
 Future<Response> recommendComment(String token, String commentId) async {
   final raw = await http.post(
     Uri.parse(serverURL + "recommend/comment"),
     headers: {"Authorization": "Bearer $token"},
-    body: {"commentid": commentId}
+    body: {"commentid": commentId},
   );
 
-  return Response.fromJson(raw.statusCode, jsonDecode(raw.body) as Map<String, dynamic>);
+  return Response.fromJson(
+    raw.statusCode,
+    jsonDecode(raw.body) as Map<String, dynamic>,
+  );
 }
 
 Future<Response> isCommentRecommended(String token, String commentId) async {
@@ -137,10 +150,13 @@ Future<Response> isCommentRecommended(String token, String commentId) async {
   );
 }
 
-Future<Response> listComments(String postId, String sortBy, {int limit = 20}) async {
+Future<Response> listComments(
+  String postId,
+  String sortBy, {
+  int limit = 20,
+}) async {
   final raw = await http.get(
-    Uri.parse(serverURL +
-        "post/$postId/comment?sortby=$sortBy&limit=$limit")
+    Uri.parse(serverURL + "post/$postId/comment?sortby=$sortBy&limit=$limit"),
   );
 
   var jsonBody;
@@ -151,14 +167,18 @@ Future<Response> listComments(String postId, String sortBy, {int limit = 20}) as
   }
 
   final response = Response.fromJson(
-    raw.statusCode, 
+    raw.statusCode,
     jsonBody as Map<String, dynamic>,
   );
 
-  final comments = <Comment>[];
+  final comments = <Map<String, dynamic>>[];
   for (var comment in response.data as List<dynamic>) {
-    comments.add(Comment.fromJson(comment as Map<String, dynamic>));
+    final map = comment as Map<String, dynamic>;
+    comments.add({
+      "comment": Comment.fromJson(map),
+      "username": map["username"],
+    });
   }
 
-  return Response(code: response.code, message: response.message, data: comments);
+  return Response(code: response.code, message: response.message,data: comments);
 }

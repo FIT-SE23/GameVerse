@@ -50,7 +50,7 @@ void main() async {
   //     ),
   //   );
   // }
-  
+
   if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data.toString();
@@ -137,9 +137,19 @@ void main() async {
     print(await downloadGame(token, "60ce4bab-c05d-4d71-9f4a-028f545c6cb0"));
   }
 
-  if (true) {
+  if (false) {
     final resp = await login("gamingizmylife@gmail.com", "noobmaster");
     final token = resp.data["token"].toString();
-    print(await addComment(token, "1a6de353-8e25-42d0-a486-04f62f78c69c", "hello"));
+    print(
+      await addComment(token, "1a6de353-8e25-42d0-a486-04f62f78c69c", "hello"),
+    );
+  }
+
+  if (false) {
+    print(await listComments("29d08a83-6bd2-4f18-9eb9-cdddb00f5561", "date"));
+  }
+
+  if (false) {
+    print(await listPosts("60ce4bab-c05d-4d71-9f4a-028f545c6cb0", "", ""));
   }
 }
