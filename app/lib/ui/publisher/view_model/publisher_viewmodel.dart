@@ -62,14 +62,14 @@ class PublisherViewModel extends ChangeNotifier {
       );
       if (!isRegistered) {
         _state = PublisherViewState.error;
-        _errorMessage = 'Registration failed';
+        _errorMessage = 'Registration failed: You are already registered as a publisher. Please wait for approval.';
         notifyListeners();
         return false;
       }
 
       _state = PublisherViewState.success;
       notifyListeners();
-      return isRegistered;
+      return true;
     } catch (e) {
       _state = PublisherViewState.error;
       _errorMessage = 'Registration failed: $e';

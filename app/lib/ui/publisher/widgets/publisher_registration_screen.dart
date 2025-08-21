@@ -124,7 +124,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.3))
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       child: Form(
         key: _formKey,
@@ -173,7 +173,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -205,7 +205,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
                       contentPadding: EdgeInsets.zero,
                       visualDensity: VisualDensity.compact,
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -385,7 +385,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
             backgroundColor: Colors.green,
           ),
         );
-        context.pop();
+        context.push('/');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
