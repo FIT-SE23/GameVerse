@@ -19,6 +19,17 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
   final _paymentInfoController = TextEditingController();
   String _selectedPaymentType = 'PayPal'; // Default value
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      if (authViewModel.user != null) {
+        Provider.of<PublisherViewModel>(context, listen: false).loadRegistrationData(authViewModel.user!.id);
+      }
+    });
+  }
   
   // Payment method types and their hints
   final Map<String, String> _paymentMethods = {
@@ -35,46 +46,82 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-          children: [
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  'Publisher Registration',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+    return Consumer<PublisherViewModel>(
+      builder:(context, viewModel, child) {
+        if (viewModel.state == PublisherViewState.success) {
+          return SingleChildScrollView(
+            child: Column(
+                children: [
+                  Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(24),
+                        bottomRight: Radius.circular(24),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Publisher Registration',
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  Center(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 32,
+                        children: [
+                          _buildHeader(context),
+                          
+                          _buildRegistrationForm(context),
+                          
+                          _buildRequirementsSection(context),
+                          
+                          if (viewModel.rejectedRegistrationAttempts.isNotEmpty)
+                            _buildRejectedRegistrationHistory(context)
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 600),
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(context),
-                    const SizedBox(height: 32),
-                    _buildRegistrationForm(context),
-                    const SizedBox(height: 32),
-                    _buildRequirementsSection(context),
-                  ],
-                ),
+          );
+        } else if (viewModel.state == PublisherViewState.loading) {
+          return SizedBox(
+            height: 600,
+            child: const Center(
+              child: CircularProgressIndicator()
+            )
+          );
+        } else {
+          return SizedBox(
+            height: 600,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error: ${viewModel.errorMessage}',
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => viewModel.loadRegistrationData(Provider.of<AuthViewModel>(context, listen: false).user!.id),
+                    child: const Text('Try again'),
+                  )
+                ],
               ),
-            ),
-          ],
-        ),
+            )
+          );
+        }
+      },
     );
   }
 
@@ -341,6 +388,70 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRejectedRegistrationHistory(BuildContext context) {
+    final theme = Theme.of(context);
+    final viewModel = Provider.of<PublisherViewModel>(context, listen: false);
+    
+    return Container(
+      constraints: BoxConstraints(minWidth: 1000),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Text(
+            'Your Registration History',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          ...[for (final rejectedAttempt in viewModel.rejectedRegistrationAttempts)
+            Container(
+              constraints: BoxConstraints(minWidth: 600),
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 4,
+                children: [
+                  Text(
+                    'Date: ${rejectedAttempt.date.toString().split(' ')[0]}',
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      text: 'Status: ',
+                      style: theme.textTheme.bodyMedium,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: rejectedAttempt.approved ? 'Approved' : 'Rejected',
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: rejectedAttempt.approved ? theme.primaryColor : Colors.red.shade400,
+                            fontWeight: FontWeight.bold
+                          )
+                        )
+                      ]
+                    )
+                  ),
+                  Text(
+                    'Message from operator: ${rejectedAttempt.message}',
+                  )
+                ],
+              ),
+            )
+          ]
         ],
       ),
     );
