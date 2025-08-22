@@ -19,8 +19,9 @@ mixin _$GameModel implements DiagnosticableTreeMixin {
 @JsonKey(name: 'isverified') bool? get isVerified;// e.g., 'pending', 'approved', 'rejected'
 // Sale related fields
 @JsonKey(name: 'issale') bool? get isSale;@JsonKey(name: 'discountpercent') double? get discountPercent;@JsonKey(name: 'salestartdate') DateTime? get saleStartDate;@JsonKey(name: 'saleenddate') DateTime? get saleEndDate;// Download related fields
- String? get path; List<String>? get binaries; List<String>? get exes;// Field for User only
-@JsonKey(name: 'isowned') bool get isOwned;@JsonKey(name: 'isinstalled') bool get isInstalled;@JsonKey(name: 'isinwishlist') bool get isInWishlist;@JsonKey(name: 'playtimehours') double? get playtimeHours;
+ String? get path; List<UrlModel>? get binaries; List<UrlModel>? get exes;// Field for User only
+@JsonKey(name: 'isowned') bool get isOwned; String? get downloadState;// e.g., 'completed', 'partial', 'nothing'
+ bool get isInWishlist; double? get playtimeHours;
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -34,21 +35,21 @@ $GameModelCopyWith<GameModel> get copyWith => _$GameModelCopyWithImpl<GameModel>
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'GameModel'))
-    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('briefDescription', briefDescription))..add(DiagnosticsProperty('requirement', requirement))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('isVerified', isVerified))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('isInstalled', isInstalled))..add(DiagnosticsProperty('isInWishlist', isInWishlist))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
+    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('briefDescription', briefDescription))..add(DiagnosticsProperty('requirement', requirement))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('isVerified', isVerified))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('downloadState', downloadState))..add(DiagnosticsProperty('isInWishlist', isInWishlist))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.requirement, requirement) || other.requirement == requirement)&&(identical(other.price, price) || other.price == price)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&const DeepCollectionEquality().equals(other.categories, categories)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.binaries, binaries)&&const DeepCollectionEquality().equals(other.exes, exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.isInstalled, isInstalled) || other.isInstalled == isInstalled)&&(identical(other.isInWishlist, isInWishlist) || other.isInWishlist == isInWishlist)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.requirement, requirement) || other.requirement == requirement)&&(identical(other.price, price) || other.price == price)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&const DeepCollectionEquality().equals(other.categories, categories)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.binaries, binaries)&&const DeepCollectionEquality().equals(other.exes, exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.downloadState, downloadState) || other.downloadState == downloadState)&&(identical(other.isInWishlist, isInWishlist) || other.isInWishlist == isInWishlist)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,description,briefDescription,requirement,price,recommended,releaseDate,const DeepCollectionEquality().hash(categories),const DeepCollectionEquality().hash(media),headerImage,isVerified,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(binaries),const DeepCollectionEquality().hash(exes),isOwned,isInstalled,isInWishlist,playtimeHours]);
+int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,description,briefDescription,requirement,price,recommended,releaseDate,const DeepCollectionEquality().hash(categories),const DeepCollectionEquality().hash(media),headerImage,isVerified,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(binaries),const DeepCollectionEquality().hash(exes),isOwned,downloadState,isInWishlist,playtimeHours]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, description: $description, briefDescription: $briefDescription, requirement: $requirement, price: $price, recommended: $recommended, releaseDate: $releaseDate, categories: $categories, media: $media, headerImage: $headerImage, isVerified: $isVerified, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, isInstalled: $isInstalled, isInWishlist: $isInWishlist, playtimeHours: $playtimeHours)';
+  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, description: $description, briefDescription: $briefDescription, requirement: $requirement, price: $price, recommended: $recommended, releaseDate: $releaseDate, categories: $categories, media: $media, headerImage: $headerImage, isVerified: $isVerified, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, downloadState: $downloadState, isInWishlist: $isInWishlist, playtimeHours: $playtimeHours)';
 }
 
 
@@ -59,7 +60,7 @@ abstract mixin class $GameModelCopyWith<$Res>  {
   factory $GameModelCopyWith(GameModel value, $Res Function(GameModel) _then) = _$GameModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'gameid') String gameId,@JsonKey(name: 'publisherid') String publisherId, String name, String description,@JsonKey(name: 'briefdescription') String briefDescription, String requirement, double price,@JsonKey(name: 'recommend') int recommended,@JsonKey(name: 'releasedate') DateTime releaseDate, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'headerimage') String headerImage,@JsonKey(name: 'isverified') bool? isVerified,@JsonKey(name: 'issale') bool? isSale,@JsonKey(name: 'discountpercent') double? discountPercent,@JsonKey(name: 'salestartdate') DateTime? saleStartDate,@JsonKey(name: 'saleenddate') DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes,@JsonKey(name: 'isowned') bool isOwned,@JsonKey(name: 'isinstalled') bool isInstalled,@JsonKey(name: 'isinwishlist') bool isInWishlist,@JsonKey(name: 'playtimehours') double? playtimeHours
+@JsonKey(name: 'gameid') String gameId,@JsonKey(name: 'publisherid') String publisherId, String name, String description,@JsonKey(name: 'briefdescription') String briefDescription, String requirement, double price,@JsonKey(name: 'recommend') int recommended,@JsonKey(name: 'releasedate') DateTime releaseDate, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'headerimage') String headerImage,@JsonKey(name: 'isverified') bool? isVerified,@JsonKey(name: 'issale') bool? isSale,@JsonKey(name: 'discountpercent') double? discountPercent,@JsonKey(name: 'salestartdate') DateTime? saleStartDate,@JsonKey(name: 'saleenddate') DateTime? saleEndDate, String? path, List<UrlModel>? binaries, List<UrlModel>? exes,@JsonKey(name: 'isowned') bool isOwned, String? downloadState, bool isInWishlist, double? playtimeHours
 });
 
 
@@ -76,7 +77,7 @@ class _$GameModelCopyWithImpl<$Res>
 
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? description = null,Object? briefDescription = null,Object? requirement = null,Object? price = null,Object? recommended = null,Object? releaseDate = null,Object? categories = null,Object? media = freezed,Object? headerImage = null,Object? isVerified = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? isInstalled = null,Object? isInWishlist = null,Object? playtimeHours = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? description = null,Object? briefDescription = null,Object? requirement = null,Object? price = null,Object? recommended = null,Object? releaseDate = null,Object? categories = null,Object? media = freezed,Object? headerImage = null,Object? isVerified = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? downloadState = freezed,Object? isInWishlist = null,Object? playtimeHours = freezed,}) {
   return _then(_self.copyWith(
 gameId: null == gameId ? _self.gameId : gameId // ignore: cast_nullable_to_non_nullable
 as String,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
@@ -97,10 +98,10 @@ as double?,saleStartDate: freezed == saleStartDate ? _self.saleStartDate : saleS
 as DateTime?,saleEndDate: freezed == saleEndDate ? _self.saleEndDate : saleEndDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,path: freezed == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String?,binaries: freezed == binaries ? _self.binaries : binaries // ignore: cast_nullable_to_non_nullable
-as List<String>?,exes: freezed == exes ? _self.exes : exes // ignore: cast_nullable_to_non_nullable
-as List<String>?,isOwned: null == isOwned ? _self.isOwned : isOwned // ignore: cast_nullable_to_non_nullable
-as bool,isInstalled: null == isInstalled ? _self.isInstalled : isInstalled // ignore: cast_nullable_to_non_nullable
-as bool,isInWishlist: null == isInWishlist ? _self.isInWishlist : isInWishlist // ignore: cast_nullable_to_non_nullable
+as List<UrlModel>?,exes: freezed == exes ? _self.exes : exes // ignore: cast_nullable_to_non_nullable
+as List<UrlModel>?,isOwned: null == isOwned ? _self.isOwned : isOwned // ignore: cast_nullable_to_non_nullable
+as bool,downloadState: freezed == downloadState ? _self.downloadState : downloadState // ignore: cast_nullable_to_non_nullable
+as String?,isInWishlist: null == isInWishlist ? _self.isInWishlist : isInWishlist // ignore: cast_nullable_to_non_nullable
 as bool,playtimeHours: freezed == playtimeHours ? _self.playtimeHours : playtimeHours // ignore: cast_nullable_to_non_nullable
 as double?,
   ));
@@ -187,10 +188,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'isverified')  bool? isVerified, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes, @JsonKey(name: 'isowned')  bool isOwned, @JsonKey(name: 'isinstalled')  bool isInstalled, @JsonKey(name: 'isinwishlist')  bool isInWishlist, @JsonKey(name: 'playtimehours')  double? playtimeHours)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'isverified')  bool? isVerified, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<UrlModel>? binaries,  List<UrlModel>? exes, @JsonKey(name: 'isowned')  bool isOwned,  String? downloadState,  bool isInWishlist,  double? playtimeHours)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameModel() when $default != null:
-return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.isVerified,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.isInWishlist,_that.playtimeHours);case _:
+return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.isVerified,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.downloadState,_that.isInWishlist,_that.playtimeHours);case _:
   return orElse();
 
 }
@@ -208,10 +209,10 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'isverified')  bool? isVerified, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes, @JsonKey(name: 'isowned')  bool isOwned, @JsonKey(name: 'isinstalled')  bool isInstalled, @JsonKey(name: 'isinwishlist')  bool isInWishlist, @JsonKey(name: 'playtimehours')  double? playtimeHours)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'isverified')  bool? isVerified, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<UrlModel>? binaries,  List<UrlModel>? exes, @JsonKey(name: 'isowned')  bool isOwned,  String? downloadState,  bool isInWishlist,  double? playtimeHours)  $default,) {final _that = this;
 switch (_that) {
 case _GameModel():
-return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.isVerified,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.isInWishlist,_that.playtimeHours);case _:
+return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.isVerified,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.downloadState,_that.isInWishlist,_that.playtimeHours);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -228,10 +229,10 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'isverified')  bool? isVerified, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<String>? binaries,  List<String>? exes, @JsonKey(name: 'isowned')  bool isOwned, @JsonKey(name: 'isinstalled')  bool isInstalled, @JsonKey(name: 'isinwishlist')  bool isInWishlist, @JsonKey(name: 'playtimehours')  double? playtimeHours)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'gameid')  String gameId, @JsonKey(name: 'publisherid')  String publisherId,  String name,  String description, @JsonKey(name: 'briefdescription')  String briefDescription,  String requirement,  double price, @JsonKey(name: 'recommend')  int recommended, @JsonKey(name: 'releasedate')  DateTime releaseDate,  List<CategoryModel> categories,  List<String>? media, @JsonKey(name: 'headerimage')  String headerImage, @JsonKey(name: 'isverified')  bool? isVerified, @JsonKey(name: 'issale')  bool? isSale, @JsonKey(name: 'discountpercent')  double? discountPercent, @JsonKey(name: 'salestartdate')  DateTime? saleStartDate, @JsonKey(name: 'saleenddate')  DateTime? saleEndDate,  String? path,  List<UrlModel>? binaries,  List<UrlModel>? exes, @JsonKey(name: 'isowned')  bool isOwned,  String? downloadState,  bool isInWishlist,  double? playtimeHours)?  $default,) {final _that = this;
 switch (_that) {
 case _GameModel() when $default != null:
-return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.isVerified,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.isInstalled,_that.isInWishlist,_that.playtimeHours);case _:
+return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_that.briefDescription,_that.requirement,_that.price,_that.recommended,_that.releaseDate,_that.categories,_that.media,_that.headerImage,_that.isVerified,_that.isSale,_that.discountPercent,_that.saleStartDate,_that.saleEndDate,_that.path,_that.binaries,_that.exes,_that.isOwned,_that.downloadState,_that.isInWishlist,_that.playtimeHours);case _:
   return null;
 
 }
@@ -243,7 +244,7 @@ return $default(_that.gameId,_that.publisherId,_that.name,_that.description,_tha
 @JsonSerializable()
 
 class _GameModel with DiagnosticableTreeMixin implements GameModel {
-  const _GameModel({@JsonKey(name: 'gameid') required this.gameId, @JsonKey(name: 'publisherid') required this.publisherId, required this.name, required this.description, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.requirement, required this.price, @JsonKey(name: 'recommend') required this.recommended, @JsonKey(name: 'releasedate') required this.releaseDate, required final  List<CategoryModel> categories, required final  List<String>? media, @JsonKey(name: 'headerimage') required this.headerImage, @JsonKey(name: 'isverified') this.isVerified, @JsonKey(name: 'issale') this.isSale, @JsonKey(name: 'discountpercent') this.discountPercent, @JsonKey(name: 'salestartdate') this.saleStartDate, @JsonKey(name: 'saleenddate') this.saleEndDate, this.path, final  List<String>? binaries, final  List<String>? exes, @JsonKey(name: 'isowned') this.isOwned = false, @JsonKey(name: 'isinstalled') this.isInstalled = false, @JsonKey(name: 'isinwishlist') this.isInWishlist = false, @JsonKey(name: 'playtimehours') this.playtimeHours}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
+  const _GameModel({@JsonKey(name: 'gameid') required this.gameId, @JsonKey(name: 'publisherid') required this.publisherId, required this.name, required this.description, @JsonKey(name: 'briefdescription') required this.briefDescription, required this.requirement, required this.price, @JsonKey(name: 'recommend') required this.recommended, @JsonKey(name: 'releasedate') required this.releaseDate, required final  List<CategoryModel> categories, required final  List<String>? media, @JsonKey(name: 'headerimage') required this.headerImage, @JsonKey(name: 'isverified') this.isVerified, @JsonKey(name: 'issale') this.isSale, @JsonKey(name: 'discountpercent') this.discountPercent, @JsonKey(name: 'salestartdate') this.saleStartDate, @JsonKey(name: 'saleenddate') this.saleEndDate, this.path, final  List<UrlModel>? binaries, final  List<UrlModel>? exes, @JsonKey(name: 'isowned') this.isOwned = false, this.downloadState, this.isInWishlist = false, this.playtimeHours}): _categories = categories,_media = media,_binaries = binaries,_exes = exes;
   factory _GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
 
 @override@JsonKey(name: 'gameid') final  String gameId;
@@ -282,8 +283,8 @@ class _GameModel with DiagnosticableTreeMixin implements GameModel {
 @override@JsonKey(name: 'saleenddate') final  DateTime? saleEndDate;
 // Download related fields
 @override final  String? path;
- final  List<String>? _binaries;
-@override List<String>? get binaries {
+ final  List<UrlModel>? _binaries;
+@override List<UrlModel>? get binaries {
   final value = _binaries;
   if (value == null) return null;
   if (_binaries is EqualUnmodifiableListView) return _binaries;
@@ -291,8 +292,8 @@ class _GameModel with DiagnosticableTreeMixin implements GameModel {
   return EqualUnmodifiableListView(value);
 }
 
- final  List<String>? _exes;
-@override List<String>? get exes {
+ final  List<UrlModel>? _exes;
+@override List<UrlModel>? get exes {
   final value = _exes;
   if (value == null) return null;
   if (_exes is EqualUnmodifiableListView) return _exes;
@@ -302,9 +303,10 @@ class _GameModel with DiagnosticableTreeMixin implements GameModel {
 
 // Field for User only
 @override@JsonKey(name: 'isowned') final  bool isOwned;
-@override@JsonKey(name: 'isinstalled') final  bool isInstalled;
-@override@JsonKey(name: 'isinwishlist') final  bool isInWishlist;
-@override@JsonKey(name: 'playtimehours') final  double? playtimeHours;
+@override final  String? downloadState;
+// e.g., 'completed', 'partial', 'nothing'
+@override@JsonKey() final  bool isInWishlist;
+@override final  double? playtimeHours;
 
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
@@ -320,21 +322,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'GameModel'))
-    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('briefDescription', briefDescription))..add(DiagnosticsProperty('requirement', requirement))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('isVerified', isVerified))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('isInstalled', isInstalled))..add(DiagnosticsProperty('isInWishlist', isInWishlist))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
+    ..add(DiagnosticsProperty('gameId', gameId))..add(DiagnosticsProperty('publisherId', publisherId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('briefDescription', briefDescription))..add(DiagnosticsProperty('requirement', requirement))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('recommended', recommended))..add(DiagnosticsProperty('releaseDate', releaseDate))..add(DiagnosticsProperty('categories', categories))..add(DiagnosticsProperty('media', media))..add(DiagnosticsProperty('headerImage', headerImage))..add(DiagnosticsProperty('isVerified', isVerified))..add(DiagnosticsProperty('isSale', isSale))..add(DiagnosticsProperty('discountPercent', discountPercent))..add(DiagnosticsProperty('saleStartDate', saleStartDate))..add(DiagnosticsProperty('saleEndDate', saleEndDate))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('binaries', binaries))..add(DiagnosticsProperty('exes', exes))..add(DiagnosticsProperty('isOwned', isOwned))..add(DiagnosticsProperty('downloadState', downloadState))..add(DiagnosticsProperty('isInWishlist', isInWishlist))..add(DiagnosticsProperty('playtimeHours', playtimeHours));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.requirement, requirement) || other.requirement == requirement)&&(identical(other.price, price) || other.price == price)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&const DeepCollectionEquality().equals(other._categories, _categories)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other._binaries, _binaries)&&const DeepCollectionEquality().equals(other._exes, _exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.isInstalled, isInstalled) || other.isInstalled == isInstalled)&&(identical(other.isInWishlist, isInWishlist) || other.isInWishlist == isInWishlist)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameModel&&(identical(other.gameId, gameId) || other.gameId == gameId)&&(identical(other.publisherId, publisherId) || other.publisherId == publisherId)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.briefDescription, briefDescription) || other.briefDescription == briefDescription)&&(identical(other.requirement, requirement) || other.requirement == requirement)&&(identical(other.price, price) || other.price == price)&&(identical(other.recommended, recommended) || other.recommended == recommended)&&(identical(other.releaseDate, releaseDate) || other.releaseDate == releaseDate)&&const DeepCollectionEquality().equals(other._categories, _categories)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.headerImage, headerImage) || other.headerImage == headerImage)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.isSale, isSale) || other.isSale == isSale)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.saleStartDate, saleStartDate) || other.saleStartDate == saleStartDate)&&(identical(other.saleEndDate, saleEndDate) || other.saleEndDate == saleEndDate)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other._binaries, _binaries)&&const DeepCollectionEquality().equals(other._exes, _exes)&&(identical(other.isOwned, isOwned) || other.isOwned == isOwned)&&(identical(other.downloadState, downloadState) || other.downloadState == downloadState)&&(identical(other.isInWishlist, isInWishlist) || other.isInWishlist == isInWishlist)&&(identical(other.playtimeHours, playtimeHours) || other.playtimeHours == playtimeHours));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,description,briefDescription,requirement,price,recommended,releaseDate,const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_media),headerImage,isVerified,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(_binaries),const DeepCollectionEquality().hash(_exes),isOwned,isInstalled,isInWishlist,playtimeHours]);
+int get hashCode => Object.hashAll([runtimeType,gameId,publisherId,name,description,briefDescription,requirement,price,recommended,releaseDate,const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_media),headerImage,isVerified,isSale,discountPercent,saleStartDate,saleEndDate,path,const DeepCollectionEquality().hash(_binaries),const DeepCollectionEquality().hash(_exes),isOwned,downloadState,isInWishlist,playtimeHours]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, description: $description, briefDescription: $briefDescription, requirement: $requirement, price: $price, recommended: $recommended, releaseDate: $releaseDate, categories: $categories, media: $media, headerImage: $headerImage, isVerified: $isVerified, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, isInstalled: $isInstalled, isInWishlist: $isInWishlist, playtimeHours: $playtimeHours)';
+  return 'GameModel(gameId: $gameId, publisherId: $publisherId, name: $name, description: $description, briefDescription: $briefDescription, requirement: $requirement, price: $price, recommended: $recommended, releaseDate: $releaseDate, categories: $categories, media: $media, headerImage: $headerImage, isVerified: $isVerified, isSale: $isSale, discountPercent: $discountPercent, saleStartDate: $saleStartDate, saleEndDate: $saleEndDate, path: $path, binaries: $binaries, exes: $exes, isOwned: $isOwned, downloadState: $downloadState, isInWishlist: $isInWishlist, playtimeHours: $playtimeHours)';
 }
 
 
@@ -345,7 +347,7 @@ abstract mixin class _$GameModelCopyWith<$Res> implements $GameModelCopyWith<$Re
   factory _$GameModelCopyWith(_GameModel value, $Res Function(_GameModel) _then) = __$GameModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'gameid') String gameId,@JsonKey(name: 'publisherid') String publisherId, String name, String description,@JsonKey(name: 'briefdescription') String briefDescription, String requirement, double price,@JsonKey(name: 'recommend') int recommended,@JsonKey(name: 'releasedate') DateTime releaseDate, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'headerimage') String headerImage,@JsonKey(name: 'isverified') bool? isVerified,@JsonKey(name: 'issale') bool? isSale,@JsonKey(name: 'discountpercent') double? discountPercent,@JsonKey(name: 'salestartdate') DateTime? saleStartDate,@JsonKey(name: 'saleenddate') DateTime? saleEndDate, String? path, List<String>? binaries, List<String>? exes,@JsonKey(name: 'isowned') bool isOwned,@JsonKey(name: 'isinstalled') bool isInstalled,@JsonKey(name: 'isinwishlist') bool isInWishlist,@JsonKey(name: 'playtimehours') double? playtimeHours
+@JsonKey(name: 'gameid') String gameId,@JsonKey(name: 'publisherid') String publisherId, String name, String description,@JsonKey(name: 'briefdescription') String briefDescription, String requirement, double price,@JsonKey(name: 'recommend') int recommended,@JsonKey(name: 'releasedate') DateTime releaseDate, List<CategoryModel> categories, List<String>? media,@JsonKey(name: 'headerimage') String headerImage,@JsonKey(name: 'isverified') bool? isVerified,@JsonKey(name: 'issale') bool? isSale,@JsonKey(name: 'discountpercent') double? discountPercent,@JsonKey(name: 'salestartdate') DateTime? saleStartDate,@JsonKey(name: 'saleenddate') DateTime? saleEndDate, String? path, List<UrlModel>? binaries, List<UrlModel>? exes,@JsonKey(name: 'isowned') bool isOwned, String? downloadState, bool isInWishlist, double? playtimeHours
 });
 
 
@@ -362,7 +364,7 @@ class __$GameModelCopyWithImpl<$Res>
 
 /// Create a copy of GameModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? description = null,Object? briefDescription = null,Object? requirement = null,Object? price = null,Object? recommended = null,Object? releaseDate = null,Object? categories = null,Object? media = freezed,Object? headerImage = null,Object? isVerified = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? isInstalled = null,Object? isInWishlist = null,Object? playtimeHours = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? gameId = null,Object? publisherId = null,Object? name = null,Object? description = null,Object? briefDescription = null,Object? requirement = null,Object? price = null,Object? recommended = null,Object? releaseDate = null,Object? categories = null,Object? media = freezed,Object? headerImage = null,Object? isVerified = freezed,Object? isSale = freezed,Object? discountPercent = freezed,Object? saleStartDate = freezed,Object? saleEndDate = freezed,Object? path = freezed,Object? binaries = freezed,Object? exes = freezed,Object? isOwned = null,Object? downloadState = freezed,Object? isInWishlist = null,Object? playtimeHours = freezed,}) {
   return _then(_GameModel(
 gameId: null == gameId ? _self.gameId : gameId // ignore: cast_nullable_to_non_nullable
 as String,publisherId: null == publisherId ? _self.publisherId : publisherId // ignore: cast_nullable_to_non_nullable
@@ -383,10 +385,10 @@ as double?,saleStartDate: freezed == saleStartDate ? _self.saleStartDate : saleS
 as DateTime?,saleEndDate: freezed == saleEndDate ? _self.saleEndDate : saleEndDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,path: freezed == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String?,binaries: freezed == binaries ? _self._binaries : binaries // ignore: cast_nullable_to_non_nullable
-as List<String>?,exes: freezed == exes ? _self._exes : exes // ignore: cast_nullable_to_non_nullable
-as List<String>?,isOwned: null == isOwned ? _self.isOwned : isOwned // ignore: cast_nullable_to_non_nullable
-as bool,isInstalled: null == isInstalled ? _self.isInstalled : isInstalled // ignore: cast_nullable_to_non_nullable
-as bool,isInWishlist: null == isInWishlist ? _self.isInWishlist : isInWishlist // ignore: cast_nullable_to_non_nullable
+as List<UrlModel>?,exes: freezed == exes ? _self._exes : exes // ignore: cast_nullable_to_non_nullable
+as List<UrlModel>?,isOwned: null == isOwned ? _self.isOwned : isOwned // ignore: cast_nullable_to_non_nullable
+as bool,downloadState: freezed == downloadState ? _self.downloadState : downloadState // ignore: cast_nullable_to_non_nullable
+as String?,isInWishlist: null == isInWishlist ? _self.isInWishlist : isInWishlist // ignore: cast_nullable_to_non_nullable
 as bool,playtimeHours: freezed == playtimeHours ? _self.playtimeHours : playtimeHours // ignore: cast_nullable_to_non_nullable
 as double?,
   ));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gameverse/config/spacing_config.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/library/view_model/library_viewmodel.dart';
@@ -30,7 +31,9 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final AuthViewModel authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      final SettingsViewModel settingsViewModel = Provider.of<SettingsViewModel>(context, listen: false);
       Provider.of<LibraryViewModel>(context, listen: false).loadLibrary(
+        settingsViewModel.downloadPath,
         authViewModel.accessToken!,
         authViewModel.user!.id,
       );
@@ -528,89 +531,89 @@ class _GameListTile extends StatelessWidget {
               const SizedBox(width: 16),
               
               // Game Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      game.name,
-                      style: theme.textTheme.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    if (game.playtimeHours != null) ...[
-                      Text(
-                        '${game.playtimeHours!.toStringAsFixed(1)} hours played',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        if (game.isInstalled) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text(
-                              'Installed',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                        Icon(
-                          Icons.star,
-                          size: 16,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         game.name,
+              //         style: theme.textTheme.titleMedium,
+              //         maxLines: 1,
+              //         overflow: TextOverflow.ellipsis,
+              //       ),
+              //       const SizedBox(height: 4),
+              //       if (game.playtimeHours != null) ...[
+              //         Text(
+              //           '${game.playtimeHours!.toStringAsFixed(1)} hours played',
+              //           style: theme.textTheme.bodySmall?.copyWith(
+              //             color: theme.colorScheme.onSurfaceVariant,
+              //           ),
+              //         ),
+              //       ],
+              //       const SizedBox(height: 8),
+              //       Row(
+              //         children: [
+              //           if (game.isInstalled) ...[
+              //             Container(
+              //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              //               decoration: BoxDecoration(
+              //                 color: Colors.green,
+              //                 borderRadius: BorderRadius.circular(12),
+              //               ),
+              //               child: const Text(
+              //                 'Installed',
+              //                 style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontSize: 12,
+              //                   fontWeight: FontWeight.w600,
+              //                 ),
+              //               ),
+              //             ),
+              //             const SizedBox(width: 8),
+              //           ],
+              //           Icon(
+              //             Icons.star,
+              //             size: 16,
+              //             color: theme.colorScheme.primary,
+              //           ),
+              //         ],
+              //       ),
+              //     ],
+              //   ),
+              // ),
               
               // Actions
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert),
-                onSelected: (value) {
-                  final libraryViewModel = Provider.of<LibraryViewModel>(context, listen: false);
-                  switch (value) {
-                    case 'favorite':
-                      libraryViewModel.toggleWishlist(game.gameId);
-                      break;
-                    case 'uninstall':
-                      libraryViewModel.toggleInstalled(game.gameId);
-                      break;
-                  }
-                },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'favorite',
-                    child: ListTile(
-                      leading: Icon(Icons.favorite_border),
-                      title: Text('Add to Favorites'),
-                    ),
-                  ),
-                  if (game.isInstalled)
-                    const PopupMenuItem(
-                      value: 'uninstall',
-                      child: ListTile(
-                        leading: Icon(Icons.delete_outline),
-                        title: Text('Uninstall'),
-                      ),
-                    ),
-                ],
-              ),
+              // PopupMenuButton<String>(
+              //   icon: const Icon(Icons.more_vert),
+              //   onSelected: (value) {
+              //     final libraryViewModel = Provider.of<LibraryViewModel>(context, listen: false);
+              //     switch (value) {
+              //       case 'favorite':
+              //         libraryViewModel.toggleWishlist(game.gameId);
+              //         break;
+              //       case 'uninstall':
+              //         libraryViewModel.toggleInstalled(game.gameId);
+              //         break;
+              //     }
+              //   },
+              //   itemBuilder: (context) => [
+              //     const PopupMenuItem(
+              //       value: 'favorite',
+              //       child: ListTile(
+              //         leading: Icon(Icons.favorite_border),
+              //         title: Text('Add to Favorites'),
+              //       ),
+              //     ),
+              //     if (game.isInstalled)
+              //       const PopupMenuItem(
+              //         value: 'uninstall',
+              //         child: ListTile(
+              //           leading: Icon(Icons.delete_outline),
+              //           title: Text('Uninstall'),
+              //         ),
+              //       ),
+              //   ],
+              // ),
             ],
           ),
         ),

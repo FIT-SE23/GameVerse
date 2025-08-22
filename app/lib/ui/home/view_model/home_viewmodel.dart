@@ -43,7 +43,7 @@ class HomeViewModel extends ChangeNotifier {
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
   
-  Future<void> loadHomePageData() async {
+  Future<void> loadHomePageData(String path) async {
     try {
       _state = HomeViewState.loading;
       notifyListeners();
@@ -53,9 +53,10 @@ class HomeViewModel extends ChangeNotifier {
       _popularGames = await _gameRepository.getPopularGames();
       _topRecommendedGames = await _gameRepository.getTopRecommendedGames();
       _categories = await _gameRepository.getCategories();
-      if (_authRepository.accessToken != '') {
-        print('User is authenticated, loading library and wishlist');
+      if (_authRepository.accessToken.isNotEmpty) {
+        print('Loading library games for user');
         await _gameRepository.getLibraryGames(
+          path,
           _authRepository.accessToken,
           _authRepository.currentUser!.id);
         await _gameRepository.getWishlistGames(
@@ -79,7 +80,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
   
-  void refreshData() {
-    loadHomePageData();
+  void refreshData(String path) {
+    loadHomePageData(path);
   }
 }

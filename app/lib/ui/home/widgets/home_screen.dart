@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/config/spacing_config.dart';
 
@@ -23,7 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
+      final SettingsViewModel settingsViewModel = Provider.of<SettingsViewModel>(context, listen: false);
+      Provider.of<HomeViewModel>(context, listen: false).loadHomePageData(
+        settingsViewModel.downloadPath
+      );
     });
   }
 

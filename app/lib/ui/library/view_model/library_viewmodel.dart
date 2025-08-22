@@ -10,6 +10,7 @@ class LibraryViewModel extends ChangeNotifier {
   LibraryViewModel({required GameRepository gameRepository})
       : _gameRepository = gameRepository;
 
+
   // State
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -37,10 +38,10 @@ class LibraryViewModel extends ChangeNotifier {
 
   // Computed properties
   List<GameModel> get ownedGames => 
-      _games.where((game) => game.isOwned && !game.isInstalled).toList();
+      _games.where((game) => game.isOwned).toList();
 
   List<GameModel> get downloadedGames => 
-      _games.where((game) => game.isInstalled).toList();
+      _games.where((game) => game.isOwned && game.downloadState == 'completed').toList();
 
   List<GameModel> get wishlistGames => 
       _games.where((game) => game.isInWishlist).toList();
@@ -50,14 +51,15 @@ class LibraryViewModel extends ChangeNotifier {
   // Wishlist games storage (in a real app, this would be persistent)
   final Set<String> _wishlistGameIds = {};
 
-  Future<void> loadLibrary(String token, String userId) async {
+  Future<void> loadLibrary(String path, String token, String userId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      await _gameRepository.getLibraryGames(token, userId);
+      await _gameRepository.getLibraryGames(path, token, userId);
       await _gameRepository.getWishlistGames(token, userId);
       _games = _gameRepository.libraryGames.toList();
+      print('Loaded ${_games.length} games from library');
 
       _availableTags = _extractTags(_games);
       _applyFilters();
@@ -105,16 +107,6 @@ class LibraryViewModel extends ChangeNotifier {
       _wishlistGameIds.add(gameId);
     }
     notifyListeners();
-  }
-
-  void toggleInstalled(String gameId) {
-    final gameIndex = _games.indexWhere((game) => game.gameId == gameId);
-    if (gameIndex != -1) {
-      _games[gameIndex] = _games[gameIndex].copyWith(
-        isInstalled: !_games[gameIndex].isInstalled,
-      );
-      _applyFilters();
-    }
   }
 
   void _applyFilters() {

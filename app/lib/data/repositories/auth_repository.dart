@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:gameverse/utils/response.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -200,17 +201,15 @@ class AuthRepository {
       // Clear local data
       _currentUser = null;
       _accessToken = '';
+      final GameRepository gameRepository = Provider.of<GameRepository>(context, listen: false);
+      final HomeViewModel homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+      final SettingsViewModel settingsViewModel = Provider.of<SettingsViewModel>(context, listen: false);
       
       // Clear secure storage
       await SecureStorageService.clearAuthData();
       await supabase.auth.signOut();
-      if (context.mounted) {
-        await Provider.of<GameRepository>(context, listen: false).clearCache(); 
-        // Reload home page data
-        if (context.mounted) {
-          await Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-        }
-      }
+      gameRepository.clearCache();
+      homeViewModel.loadHomePageData(settingsViewModel.downloadPath);
     } catch (e) {
       debugPrint('Logout error: $e');
     }

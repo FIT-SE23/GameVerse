@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:provider/provider.dart';
 // import 'package:gameverse/config/spacing_config.dart';
 // import 'package:gameverse/domain/models/game_model/game_model.dart';
@@ -35,7 +36,9 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GameDetailsViewModel>(context, listen: false).loadGameDetails(widget.gameId);
+      final gameDetailsViewModel = Provider.of<GameDetailsViewModel>(context, listen: false);
+      final settingsViewModel = Provider.of<SettingsViewModel>(context, listen: false);
+      gameDetailsViewModel.loadGameDetails(widget.gameId, gamePath: settingsViewModel.downloadPath);
 
       _scrollController.addListener(() {
         final scrollOffset = _scrollController.offset;

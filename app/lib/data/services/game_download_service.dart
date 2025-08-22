@@ -5,6 +5,7 @@ import 'package:path/path.dart' as path;
 
 class GameDownloadService {
   final Dio _dio;
+  CancelToken? _currentCancelToken;
   
   GameDownloadService() : _dio = Dio();
 
@@ -17,6 +18,7 @@ class GameDownloadService {
     CancelToken? cancelToken,
   }) async {
     try {
+      _currentCancelToken = cancelToken;
       final gameDir = Directory(path.join(downloadPath, gameId));
       if (!await gameDir.exists()) {
         await gameDir.create(recursive: true);
@@ -37,28 +39,23 @@ class GameDownloadService {
 
       return true;
     } catch (e) {
+      // Check if the error is due to user cancellation
+      if (e is DioException && e.type == DioExceptionType.cancel) {
+        debugPrint('Download was canceled by user');
+        return false;
+      }
       debugPrint('Download error: $e');
       return false;
     }
   }
-
-  Future<List<String>> getGameExecutables(String gameId, String downloadPath) async {
-    final gameDir = Directory(path.join(downloadPath, gameId));
-    if (!await gameDir.exists()) return [];
-
-    final executables = <String>[];
-    await for (final entity in gameDir.list(recursive: true)) {
-      if (entity is File) {
-        final extension = path.extension(entity.path).toLowerCase();
-        if (extension == '.exe' || extension == '.app' || extension == '.deb') {
-          executables.add(entity.path);
-        }
-      }
-    }
-
-    return executables;
+  
+  // Method to cancel current download
+  void cancelDownload() {
+    _currentCancelToken?.cancel('User canceled download');
+    _currentCancelToken = null;
   }
 
+  
   Future<void> deleteGame(String gameId, String downloadPath) async {
     final gameDir = Directory(path.join(downloadPath, gameId));
     debugPrint('Deleting game directory: ${gameDir.path}');
