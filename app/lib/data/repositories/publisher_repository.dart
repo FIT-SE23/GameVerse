@@ -82,7 +82,8 @@ class PublisherRepository {
         throw Exception('Fail to get game of this publisher: ${response.message}');
       } else {
         final games = <GameModel>[];
-        for (final json in response.data as List<dynamic>) {
+        final responseGames = response.data['game'];
+        for (final json in responseGames as List<dynamic>) {
           games.add(GameApiClient().jsonToGameModel(json as Map<String, dynamic>));
         }
 
