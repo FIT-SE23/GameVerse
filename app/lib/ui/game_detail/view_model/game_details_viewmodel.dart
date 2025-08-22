@@ -55,6 +55,10 @@ class GameDetailsViewModel extends ChangeNotifier {
       notifyListeners();
 
       _gameDetail = await _gameRepository.getGameDetails(gameId);
+      _gameRepository.setGameInstallation(
+        gamePath,
+        gameId,
+      );
       if (_authRepository.accessToken != '') {
         _isRecommended = await checkRecommended(gameId);
       } else {

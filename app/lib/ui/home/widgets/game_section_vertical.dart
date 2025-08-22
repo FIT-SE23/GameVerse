@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../view_model/home_viewmodel.dart';
@@ -69,7 +70,9 @@ class _GameSectionVerticalState extends State<GameSectionVertical> {
                   Text(viewModel.errorMessage),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => viewModel.loadHomePageData(),
+                    onPressed: () => viewModel.loadHomePageData(
+                      Provider.of<SettingsViewModel>(context, listen: false).downloadPath
+                    ),
                     child: const Text('Retry'),
                   ),
                 ],

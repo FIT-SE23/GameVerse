@@ -32,13 +32,15 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
       : DateTime.parse(json['saleenddate'] as String),
   path: json['path'] as String?,
   binaries: (json['binaries'] as List<dynamic>?)
-      ?.map((e) => e as String)
+      ?.map((e) => UrlModel.fromJson(e as Map<String, dynamic>))
       .toList(),
-  exes: (json['exes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  exes: (json['exes'] as List<dynamic>?)
+      ?.map((e) => UrlModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
   isOwned: json['isowned'] as bool? ?? false,
-  isInstalled: json['isinstalled'] as bool? ?? false,
-  isInWishlist: json['isinwishlist'] as bool? ?? false,
-  playtimeHours: (json['playtimehours'] as num?)?.toDouble(),
+  downloadState: json['downloadState'] as String?,
+  isInWishlist: json['isInWishlist'] as bool? ?? false,
+  playtimeHours: (json['playtimeHours'] as num?)?.toDouble(),
 );
 
 Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
@@ -64,7 +66,7 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'binaries': instance.binaries,
       'exes': instance.exes,
       'isowned': instance.isOwned,
-      'isinstalled': instance.isInstalled,
-      'isinwishlist': instance.isInWishlist,
-      'playtimehours': instance.playtimeHours,
+      'downloadState': instance.downloadState,
+      'isInWishlist': instance.isInWishlist,
+      'playtimeHours': instance.playtimeHours,
     };

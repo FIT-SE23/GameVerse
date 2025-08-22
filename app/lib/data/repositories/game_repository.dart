@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
+import 'package:gameverse/domain/models/url_model/url_model.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
@@ -42,7 +43,7 @@ class GameRepository {
     return _categories;
   }
 
-  Future<List<GameModel>> getLibraryGames(String token, String userId) async {
+  Future<List<GameModel>> getLibraryGames(String path, String token, String userId) async {
     final Response response = await GameApiClient().getLibraryGames(token, userId);
 
     if (response.code != 200) {
@@ -58,36 +59,36 @@ class GameRepository {
         game = gameData as GameModel;
       }
       game = game.copyWith(isOwned: true);
-      // Check if the game is already downloaded
-      bool isInstalled = await setGameInstallation(game.gameId);
-      game = game.copyWith(isInstalled: isInstalled);
-      // If the game is not installed, get download url
-      if (!isInstalled) {
-        final response = await GameApiClient().downloadGame(token, game.gameId);
-        List<String> binaries = [];
-        List<String> exes = [];
-        if (response.code == 200) {
-          for (final item in response.data as List<dynamic>) {{
-            if (item['type'] == 'binary') {
-              binaries.add(item['url']);
-            } else if (item['type'] == 'executable') {
-              exes.add(item['url']);
-            }
-          }}
-          game = game.copyWith(
-            binaries: binaries,
-            exes: exes,
-          );
-          setGameInstallation(game.gameId);
-        } else {
-          debugPrint('Failed to get download URL for ${game.gameId}: ${response.message}');
-          _libraryGames.add(game.copyWith(
-            binaries: [],
-            exes: [],
-          ));
+      final response = await GameApiClient().downloadGame(token, game.gameId);
+      List<UrlModel> binaries = [];
+      List<UrlModel> exes = [];
+      if (response.code == 200) {
+        for (final item in response.data as List<dynamic>) {
+          if (item['type'] == 'binary') {
+            binaries.add(UrlModel(
+              urlId: item['resourceId'],
+              url: item['url'],
+            ));
+          } else if (item['type'] == 'executable') {
+            exes.add(UrlModel(
+              urlId: item['resourceId'],
+              url: item['url'],
+            ));
+          }
         }
+        game = game.copyWith(
+          binaries: binaries,
+          exes: exes,
+        );
+      } else {
+        debugPrint('Failed to get download URL for ${game.gameId}: ${response.message}');
+        _libraryGames.add(game.copyWith(
+          binaries: [],
+          exes: [],
+        ));
       }
       _libraryGames.add(game);
+      setGameInstallation(path, game.gameId);
     }
     final libraryGames = _libraryGames.where((game) => game.isOwned).toList();
     return libraryGames;
@@ -103,6 +104,7 @@ class GameRepository {
       GameModel game;
       try {
         game = _libraryGames.firstWhere((g) => g.gameId == gameData.gameId);
+        _libraryGames.remove(game);
       } catch (e) {
         game = gameData as GameModel;
       }
@@ -186,7 +188,7 @@ class GameRepository {
   }
 
   // Check if the game is isInstalled, if yes, set the isInstalled field to true
-  Future<bool> setGameInstallation(String gameId) async {
+  Future<bool> setGameInstallation(String pathGame, String gameId) async {
     // Try to find the game in the set
     GameModel? game;
     try {
@@ -196,21 +198,56 @@ class GameRepository {
       return false;
     }
     
-    if (game.path != null) {
-      String executablePath = await checkGameInstallation(game.path!);
-      if (executablePath.isNotEmpty) {
-        _libraryGames.remove(game);
-        _libraryGames.add(game.copyWith(isInstalled: true));
-        return true;
-      } else {
-        _libraryGames.remove(game);
-        _libraryGames.add(game.copyWith(
-          isInstalled: false,
-          path: null,
-        ));
-      }
+    String state = await checkDownloadState(pathGame, game);
+    _libraryGames.remove(game);
+    _libraryGames.add(game.copyWith(
+      downloadState: state,
+    ));
+    if (state == 'completed') {
+      return true;
     }
     return false;
+  }
+
+  Future<String> checkDownloadState(String pathGame, GameModel game) async {   
+    // Check if game directory exists but isn't fully installed
+    final gameDirPath = path.join(pathGame, game.gameId);
+    final gameDir = Directory(gameDirPath);
+    if (await gameDir.exists()) {
+      // Check if the game has any files downloaded
+      final allUrl = [
+        ...game.binaries!.map((binary) => binary.url),
+        ...game.exes!.map((exe) => exe.url),
+      ];
+
+      int completedFiles = 0;
+      final files = [];
+      for (final url in allUrl) {
+        final baseName = path.basename(url);
+        final tokenIndex = baseName.indexOf('?token');
+        final nameFile = tokenIndex != -1 
+            ? baseName.substring(0, tokenIndex) 
+            : baseName;
+        files.add(nameFile);
+      }
+
+      for (final file in files) {
+        final filePath = path.join(gameDirPath, file);
+        final exists = await File(filePath).exists();
+        if (exists) completedFiles++;
+      }
+      
+      if (completedFiles > 0 && completedFiles < files.length) {
+        return 'partial';
+      }
+      else if (completedFiles == files.length) {
+        return 'completed';
+      } else {
+        return 'nothing';
+      }
+    } else {
+      return 'nothing';
+    }
   }
 
   
@@ -300,27 +337,12 @@ class GameRepository {
       game = _libraryGames.firstWhere((g) => g.gameId == gameId);
     } catch (e) {
       debugPrint('Game with ID $gameId not found in repository.');
-      // Print the available games for debugging
-      debugPrint('Available games: ${_libraryGames.map((game) => game.gameId).join(', ')}');
       return false;
     }
     _libraryGames.remove(game);
     _libraryGames.add(game.copyWith(isInWishlist: !isInWishlist));
     return true;
   }
-
-  // Update specific game details
-  // void updateGameDetails(GameModel updatedGame) {
-  //   GameModel? existingGame;
-  //   try {
-  //     existingGame = _allGames.firstWhere((game) => game.gameId == updatedGame.gameId);
-  //   } catch (e) {
-  //     debugPrint('Game with ID ${updatedGame.gameId} not found in repository.');
-  //     return;
-  //   }
-  //   _allGames.remove(existingGame);
-  //   _allGames.add(updatedGame);
-  // }
 
   // Clear the game cache
   Future<void> clearCache() async {

@@ -149,7 +149,7 @@ class PublisherViewModel extends ChangeNotifier {
           saleStartDate: DateTime.now().subtract(const Duration(days: 5)),
           saleEndDate: DateTime.now().add(const Duration(days: 10)),
           isOwned: false,
-          isInstalled: false,
+          downloadState: 'nothing',
           isInWishlist: false,
         ),
         GameModel(
@@ -173,7 +173,7 @@ class PublisherViewModel extends ChangeNotifier {
           releaseDate: DateTime.now().subtract(const Duration(days: 60)),
           isSale: false,
           isOwned: false,
-          isInstalled: false,
+          downloadState: 'nothing',
           isInWishlist: false,
         ),
       ];

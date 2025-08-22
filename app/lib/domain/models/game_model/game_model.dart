@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
+import 'package:gameverse/domain/models/url_model/url_model.dart';
 
 part 'game_model.freezed.dart';
 part 'game_model.g.dart';
@@ -32,14 +33,14 @@ abstract class GameModel with _$GameModel {
 
     // Download related fields
     String? path,
-    List<String>? binaries,
-    List<String>? exes,
+    List<UrlModel>? binaries,
+    List<UrlModel>? exes,
 
     // Field for User only
     @JsonKey(name: 'isowned') @Default(false) bool isOwned,
-    @JsonKey(name: 'isinstalled') @Default(false) bool isInstalled,
-    @JsonKey(name: 'isinwishlist') @Default(false) bool isInWishlist,
-    @JsonKey(name: 'playtimehours') double? playtimeHours,
+    String? downloadState, // e.g., 'completed', 'partial', 'nothing'
+    @Default(false) bool isInWishlist,
+    double? playtimeHours,
   }) = _GameModel;
 
   factory GameModel.fromJson(Map<String, dynamic> json) => 

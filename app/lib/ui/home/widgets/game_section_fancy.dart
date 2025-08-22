@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gameverse/config/spacing_config.dart';
@@ -136,7 +137,9 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                           Text(viewModel.errorMessage),
                           const SizedBox(height: 16),
                           ElevatedButton(
-                            onPressed: () => viewModel.loadHomePageData(),
+                            onPressed: () => viewModel.loadHomePageData(
+                              Provider.of<SettingsViewModel>(context, listen: false).downloadPath
+                            ),
                             child: const Text('Retry'),
                           ),
                         ],
