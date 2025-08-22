@@ -423,30 +423,44 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
                 color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 4,
+                spacing: 12,
                 children: [
-                  Text(
-                    'Date: ${rejectedAttempt.date.toString().split(' ')[0]}',
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Status: ',
-                      style: theme.textTheme.bodyMedium,
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: rejectedAttempt.approved ? 'Approved' : 'Rejected',
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 0,
+                      children: [
+                        Text(
+                          rejectedAttempt.date.toString().split(' ')[0],
+                        ),
+                        Text(
+                          rejectedAttempt.approved ? 'Approved' : 'Rejected',
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: rejectedAttempt.approved ? theme.primaryColor : Colors.red.shade400,
                             fontWeight: FontWeight.bold
                           )
-                        )
-                      ]
-                    )
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    'Message from operator: ${rejectedAttempt.message}',
+
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Message from operator:',
+                          style: theme.textTheme.bodyMedium!.copyWith(color: theme.primaryColor),
+                        ),
+                        Text(
+                          '${rejectedAttempt.message}'
+                        )
+                      ],
+                    )
                   )
                 ],
               ),
