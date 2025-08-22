@@ -418,7 +418,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
           ...[for (final rejectedAttempt in viewModel.rejectedRegistrationAttempts)
             Container(
               constraints: BoxConstraints(minWidth: 600),
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(12),

@@ -74,7 +74,7 @@ class PublisherRepository {
     );
   }
 
-  Future<({List<GameModel> verifiedGames, List<GameModel> pendingGames, List<GameModel> rejectedGames})> getGamesOfPublisher(String publisherId) async {
+  Future<({List<GameModel> verifiedGames, List<GameModel> pendingGames, List<NotificationModel> rejectedGameNotifications})> getGamesOfPublisher(String publisherId) async {
     try {
       final response = await _apiClient.getGamesByPublisher(publisherId);
 
@@ -89,30 +89,21 @@ class PublisherRepository {
 
         List<GameModel> verifiedGames = [];
         List<GameModel> pendingGames = [];
-        List<GameModel> rejectedGames = [];
 
-        List<NotificationModel> gameMessages = await getGameMessages(publisherId);
-        Set<String> rejectedGameNames = {};
-        for (final notification in gameMessages) {
-          rejectedGameNames.add(notification.gameName ?? '');
-        }
+        List<NotificationModel> rejectedGameNotifications = await getGameMessages(publisherId);
 
         for (final game in games) {
           if (game.isVerified!) {
             verifiedGames.add(game);
           } else {
-            if (rejectedGameNames.contains(game.name)) {
-              rejectedGames.add(game);
-            } else {
-              pendingGames.add(game);
-            }
+            pendingGames.add(game);
           }
         }
 
         return (
           verifiedGames: verifiedGames,
           pendingGames: pendingGames,
-          rejectedGames: rejectedGames
+          rejectedGameNotifications: rejectedGameNotifications
         );
       }
     } catch (e) {

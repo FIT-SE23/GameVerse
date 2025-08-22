@@ -38,11 +38,11 @@ class PublisherViewModel extends ChangeNotifier {
   List<GameModel> _pendingGames = [];
   List<GameModel> get pendingGames => _pendingGames;
 
-  List<GameModel> _rejectedGames = [];
-  List<GameModel> get rejectedGames => _rejectedGames;
+  List<NotificationModel> _rejectedGameNotifications = [];
+  List<NotificationModel> get rejectedGameNotifications => _rejectedGameNotifications;
 
-  List<GameRequestModel> _pendingRequests = [];
-  List<GameRequestModel> get pendingRequests => _pendingRequests;
+  // List<GameRequestModel> _pendingRequests = [];
+  // List<GameRequestModel> get pendingRequests => _pendingRequests;
 
   UserModel? _publisherProfile;
   UserModel? get publisherProfile => _publisherProfile;
@@ -114,26 +114,13 @@ class PublisherViewModel extends ChangeNotifier {
       _state = PublisherViewState.loading;
       notifyListeners();
 
-      // Create mock publisher profile
-      _publisherProfile = UserModel(
-        id: publisherId,
-        username: 'MockPublisher',
-        email: '123@gmail.com',
-        type: 'publisher',
-        description: 'Indie game developer passionate about creating immersive gaming experiences',
-        paymentMethod: PaymentMethodModel(
-          paymentMethodId: 'pm_mock_001',
-          type: 'Banking',
-          information: 'PayPal',
-        ),
-        publishedGamesID: ['game_001', 'game_002'],
-      );
+      _publisherProfile = _authRepository.currentUser!;
 
       final allGamesOfPublisher = await _publisherRepository.getGamesOfPublisher(publisherId);
 
       _publishedGames = allGamesOfPublisher.verifiedGames;
       _pendingGames = allGamesOfPublisher.pendingGames;
-      _rejectedGames = allGamesOfPublisher.rejectedGames;
+      _rejectedGameNotifications = allGamesOfPublisher.rejectedGameNotifications;
 
       // // Create mock published games
       // _publishedGames = [
@@ -294,7 +281,7 @@ class PublisherViewModel extends ChangeNotifier {
         return false;
       }
 
-      _pendingRequests.insert(0, newRequest);
+      // _pendingRequests.insert(0, newRequest);
       notifyListeners();
       return true;
     } catch (e) {
@@ -306,7 +293,7 @@ class PublisherViewModel extends ChangeNotifier {
   // Cancel game request
   Future<bool> cancelGameRequest(String gameName) async {
     try {
-      _pendingRequests.removeWhere((request) => request.gameName == gameName);
+      // _pendingRequests.removeWhere((request) => request.gameName == gameName);
       notifyListeners();
       return true;
     } catch (e) {

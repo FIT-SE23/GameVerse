@@ -109,7 +109,7 @@ class AppTheme {
       color: DarkThemeColors.shell,           // Card background
       elevation: 3,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
     ),
     

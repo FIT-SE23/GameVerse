@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:gameverse/ui/publisher/view_model/publisher_viewmodel.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
-import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
+// import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:gameverse/ui/publisher/widgets/game_request_dialog.dart';
 
 import 'package:gameverse/ui/shared/widgets/page_footer.dart';
+// import 'package:gameverse/ui/shared/widgets/game_card.dart';
+// import 'package:gameverse/ui/shared/widgets/game_card_long.dart';
 import 'package:gameverse/config/spacing_config.dart';
 
 class PublisherDashboardScreen extends StatefulWidget {
@@ -45,7 +47,10 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
               Consumer<PublisherViewModel>(
                 builder: (context, publisherViewModel, _) {
                   if (publisherViewModel.state == PublisherViewState.loading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return SizedBox(
+                      height: 600,
+                      child: const Center(child: CircularProgressIndicator())
+                    );
                   }
               
                   if (publisherViewModel.state == PublisherViewState.error) {
@@ -115,6 +120,13 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
                         
                         // Pending requests
                         _buildPendingRequests(context, publisherViewModel),
+
+                        const SizedBox(height: 32),
+
+                        // Rejected games
+                        _buildRejectedRequests(context, publisherViewModel),
+
+                        const SizedBox(height: 64),
                       ],
                     ),
                   );
@@ -208,7 +220,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
               child: _buildStatCard(
                 context,
                 'Pending Requests',
-                publisherViewModel.pendingRequests.length.toString(),
+                publisherViewModel.pendingGames.length.toString(),
                 Icons.pending,
                 Colors.orange,
               ),
@@ -270,7 +282,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
 
   Widget _buildPendingRequests(BuildContext context, PublisherViewModel publisherViewModel) {
     final theme = Theme.of(context);
-    final pendingRequests = publisherViewModel.pendingRequests;
+    final pendingGames = publisherViewModel.pendingGames;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,7 +295,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
         ),
         const SizedBox(height: 16),
         
-        if (pendingRequests.isEmpty) ...[
+        if (pendingGames.isEmpty) ...[
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -310,10 +322,102 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: pendingRequests.length,
+            itemCount: pendingGames.length,
             itemBuilder: (context, index) {
-              final request = pendingRequests[index];
+              final request = pendingGames[index];
               return _buildRequestCard(context, request);
+            },
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildRejectedRequests(BuildContext context, PublisherViewModel publisherViewModel) {
+    final theme = Theme.of(context);
+    final rejectedGameNotifications = publisherViewModel.rejectedGameNotifications;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Rejected Requests',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        
+        if (rejectedGameNotifications.isEmpty) ...[
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Congratulation! All your games are approved!',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ] else ...[
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: rejectedGameNotifications.length,
+            itemBuilder: (context, index) {
+              final notification = rejectedGameNotifications[index];
+              return Container(
+                constraints: BoxConstraints(minWidth: 1000),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.cardTheme.color,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 12,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        notification.gameName ?? '',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Message from operator:',
+                            style: theme.textTheme.bodyMedium!.copyWith(color: theme.primaryColor),
+                          ),
+                          Text(
+                            notification.message ?? '',
+                            style: theme.textTheme.bodyMedium,
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              );
             },
           ),
         ],
@@ -345,7 +449,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              game.price > 0 ? '\$${game.price.toStringAsFixed(2)}' : 'Free',
+              game.price > 0 ? '${game.price.toInt()} VND' : 'Free',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.primary,
                 fontWeight: FontWeight.w600,
@@ -430,13 +534,13 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
     );
   }
 
-  Widget _buildRequestCard(BuildContext context, GameRequestModel request) {
+  Widget _buildRequestCard(BuildContext context, GameModel request) {
     final theme = Theme.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         title: Text(
-          request.gameName,
+          request.name,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
