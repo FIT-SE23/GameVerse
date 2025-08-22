@@ -139,7 +139,7 @@ class GameApiClient {
   }
 
   // a temporary function
-  GameModel _jsonToGameModel(Map<String, dynamic> json) {
+  GameModel jsonToGameModel(Map<String, dynamic> json) {
     List<CategoryModel> categories = [];
     for (var list in json["Category"] as List<dynamic>) {     
       categories.add(_jsonToCategoryModel(list));
@@ -171,6 +171,7 @@ class GameApiClient {
         categories: categories,
         media: media,
         headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
+        isVerified: json["isverified"],
 
         isSale: false,
       );
@@ -189,6 +190,7 @@ class GameApiClient {
         categories: categories,
         media: media,
         headerImage: (rawHeader.isNotEmpty ? rawHeader["url"] : '') as String,
+        isVerified: json["isverified"],
 
         isSale: true,
         discountPercent: gameSale["discountpercentage"].toDouble() as double,
@@ -226,7 +228,7 @@ class GameApiClient {
     //   print("$key: ${json[key].runtimeType}");
     // }
     
-    final game = _jsonToGameModel(json);
+    final game = jsonToGameModel(json);
 
     return Response(code: response.code, message: response.message, data: game);
   }
@@ -274,7 +276,7 @@ class GameApiClient {
 
     List<GameModel> games = <GameModel>[];
     for (var json in response.data as List<dynamic>) {
-      games.add(_jsonToGameModel(json as Map<String, dynamic>));
+      games.add(jsonToGameModel(json as Map<String, dynamic>));
     }
 
     return Response(code: response.code, message: response.message, data: games);

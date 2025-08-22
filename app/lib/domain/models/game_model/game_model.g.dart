@@ -21,7 +21,7 @@ _GameModel _$GameModelFromJson(Map<String, dynamic> json) => _GameModel(
       .toList(),
   media: (json['media'] as List<dynamic>?)?.map((e) => e as String).toList(),
   headerImage: json['headerimage'] as String,
-  requestStatus: json['requeststatus'] as String?,
+  isVerified: json['isverified'] as bool?,
   isSale: json['issale'] as bool?,
   discountPercent: (json['discountpercent'] as num?)?.toDouble(),
   saleStartDate: json['salestartdate'] == null
@@ -55,7 +55,7 @@ Map<String, dynamic> _$GameModelToJson(_GameModel instance) =>
       'categories': instance.categories,
       'media': instance.media,
       'headerimage': instance.headerImage,
-      'requeststatus': instance.requestStatus,
+      'isverified': instance.isVerified,
       'issale': instance.isSale,
       'discountpercent': instance.discountPercent,
       'salestartdate': instance.saleStartDate?.toIso8601String(),

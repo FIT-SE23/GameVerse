@@ -22,7 +22,7 @@ abstract class GameModel with _$GameModel {
     @JsonKey(name: 'headerimage') required String headerImage,
 
     // Request related fields
-    @JsonKey(name: 'requeststatus') String? requestStatus, // e.g., 'pending', 'approved', 'rejected'
+    @JsonKey(name: 'isverified') bool? isVerified, // e.g., 'pending', 'approved', 'rejected'
 
     // Sale related fields
     @JsonKey(name: 'issale') bool? isSale,
