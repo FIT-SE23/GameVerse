@@ -115,7 +115,9 @@ class PublisherApiClient {
       return Response.fromJson(400, {'message': e.message});
     }
 
-    final response = Response.fromJson(raw.statusCode, jsonBody as Map<String, dynamic>);
+    final games = jsonBody['game'];
+
+    final response = Response.fromJson(raw.statusCode, games as Map<String, dynamic>);
     return response;
   }
   
