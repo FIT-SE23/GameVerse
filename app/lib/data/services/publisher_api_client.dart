@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/domain/models/game_request_model/game_request_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:gameverse/domain/models/game_model/game_model.dart';
+// import 'package:gameverse/domain/models/game_model/game_model.dart';
 import 'package:gameverse/config/api_endpoints.dart';
 
 import 'package:gameverse/utils/response.dart';
@@ -86,27 +86,59 @@ class PublisherApiClient {
       return null;
     }
   }
+  
+  Future<Response> getGameMessages(String publisherId) async {
+    final raw = await _client.get(
+      Uri.parse('${ApiEndpoints.baseUrl}/messages/game?publisherid=$publisherId')
+    );
 
-  Future<List<GameModel>> getPublishedGames(String publisherId) async {
+    dynamic jsonBody;
     try {
-      final response = await _client.get(
-        Uri.parse('${ApiEndpoints.baseUrl}/publisher/$publisherId'),
-      );
-      
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        if (jsonData['code'] == 200) {
-          final data = jsonData['data'];
-          final List<dynamic> gamesData = data['Game'] ?? [];
-          return gamesData.map((gameJson) => GameModel.fromJson(gameJson)).toList();
-        }
-      }
-      return [];
-    } catch (e) {
-      debugPrint('Get published games error: $e');
-      return [];
+      jsonBody = jsonDecode(raw.body);
+    } on FormatException catch (e) {
+      return Response.fromJson(400, {'message': e.message});
     }
+
+    final response = Response.fromJson(raw.statusCode, jsonBody as Map<String, dynamic>);
+    return response;
   }
+  
+  Future<Response> getGamesByPublisher(String publisherId) async {
+    final raw = await _client.get(
+      Uri.parse('${ApiEndpoints.baseUrl}/publisher/$publisherId'),
+    );
+
+    dynamic jsonBody;
+    try {
+      jsonBody = jsonDecode(raw.body);
+    } on FormatException catch (e) {
+      return Response.fromJson(400, {'message': e.message});
+    }
+
+    final response = Response.fromJson(raw.statusCode, jsonBody as Map<String, dynamic>);
+    return response;
+  }
+  
+  // Future<List<GameModel>> getGamesByPublisher(String publisherId) async {
+  //   try {
+  //     final response = await _client.get(
+  //       Uri.parse('${ApiEndpoints.baseUrl}/publisher/$publisherId'),
+  //     );
+      
+  //     if (response.statusCode == 200) {
+  //       final jsonData = json.decode(response.body);
+  //       if (jsonData['code'] == 200) {
+  //         final data = jsonData['data'];
+  //         final List<dynamic> gamesData = data['Game'] ?? [];
+  //         return gamesData.map((gameJson) => GameModel.fromJson(gameJson)).toList();
+  //       }
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     debugPrint('Get published games error: $e');
+  //     return [];
+  //   }
+  // }
 
   Future<List<GameRequestModel>> getPendingRequests(String publisherId) async {
     try {

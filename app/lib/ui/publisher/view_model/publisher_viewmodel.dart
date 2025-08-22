@@ -34,6 +34,12 @@ class PublisherViewModel extends ChangeNotifier {
 
   List<GameModel> _publishedGames = [];
   List<GameModel> get publishedGames => _publishedGames;
+  
+  List<GameModel> _pendingGames = [];
+  List<GameModel> get pendingGames => _pendingGames;
+
+  List<GameModel> _rejectedGames = [];
+  List<GameModel> get rejectedGames => _rejectedGames;
 
   List<GameRequestModel> _pendingRequests = [];
   List<GameRequestModel> get pendingRequests => _pendingRequests;
@@ -123,112 +129,118 @@ class PublisherViewModel extends ChangeNotifier {
         publishedGamesID: ['game_001', 'game_002'],
       );
 
-      // Create mock published games
-      _publishedGames = [
-        GameModel(
-          gameId: 'game_001',
-          publisherId: publisherId,
-          name: 'Mystery Adventure',
-          recommended: 156,
-          briefDescription: 'An exciting mystery adventure game',
-          description: 'Embark on a thrilling mystery adventure where every choice matters. Solve puzzles, uncover secrets, and experience a story that adapts to your decisions.',
-          requirement: 'Windows 10, 4GB RAM, DirectX 11',
-          headerImage: 'https://picsum.photos/800/400?random=1',
-          price: 19.99,
-          categories: [
-            CategoryModel(categoryId: '1', name: 'Adventure', isSensitive: false),
-            CategoryModel(categoryId: '2', name: 'Mystery', isSensitive: false),
-          ],
-          media: [
-            'https://picsum.photos/1920/1080?random=2',
-            'https://picsum.photos/1920/1080?random=3',
-          ],
-          releaseDate: DateTime.now().subtract(const Duration(days: 30)),
-          isSale: true,
-          discountPercent: 20.0,
-          saleStartDate: DateTime.now().subtract(const Duration(days: 5)),
-          saleEndDate: DateTime.now().add(const Duration(days: 10)),
-          isOwned: false,
-          downloadState: 'nothing',
-          isInWishlist: false,
-        ),
-        GameModel(
-          gameId: 'game_002',
-          publisherId: publisherId,
-          name: 'Space Explorer',
-          recommended: 89,
-          briefDescription: 'Explore the vast universe',
-          description: 'Build your spaceship, explore distant galaxies, and discover new civilizations in this epic space exploration game.',
-          requirement: 'Windows 10, 6GB RAM, DirectX 12',
-          headerImage: 'https://picsum.photos/800/400?random=4',
-          price: 29.99,
-          categories: [
-            CategoryModel(categoryId: '3', name: 'Simulation', isSensitive: false),
-            CategoryModel(categoryId: '4', name: 'Space', isSensitive: false),
-          ],
-          media: [
-            'https://picsum.photos/1920/1080?random=5',
-            'https://picsum.photos/1920/1080?random=6',
-          ],
-          releaseDate: DateTime.now().subtract(const Duration(days: 60)),
-          isSale: false,
-          isOwned: false,
-          downloadState: 'nothing',
-          isInWishlist: false,
-        ),
-      ];
+      final allGamesOfPublisher = await _publisherRepository.getGamesOfPublisher(publisherId);
 
-      // Create mock pending requests
-      _pendingRequests = [
-        GameRequestModel(
-          publisherId: publisherId,
-          gameName: 'Pixel Warriors',
-          description: 'A retro-style pixel art fighting game with local multiplayer support.',
-          briefDescription: 'A retro-style pixel art fighting game with local multiplayer support.',
-          requirements: 'Windows 7, 2GB RAM, OpenGL 2.0',
-          headerImage: 'https://picsum.photos/800/400?random=7',
-          media: [
-            'https://picsum.photos/1920/1080?random=8',
-            'https://picsum.photos/1920/1080?random=9',
-          ],
-          categories: [
-            CategoryModel(categoryId: '5', name: 'Action', isSensitive: false),
-            CategoryModel(categoryId: '6', name: 'Fighting', isSensitive: false),
-          ],
-          price: 14.99,
-          binaries: [
-            'https://example.com/binaries/pixel_warriors_v1.0.bin',
-          ],
-          exes: [
-            'https://example.com/exes/pixel_warriors_v1.0.exe',
-          ],
-          submissionDate: DateTime.now().subtract(const Duration(days: 10)),
-        ),
-        GameRequestModel(
-          gameName: 'Farm Simulator Pro',
-          publisherId: publisherId,
-          briefDescription: 'The ultimate farming experience with realistic farming mechanics.',
-          description: 'The ultimate farming experience with realistic farming mechanics.',
-          requirements: 'Windows 10, 8GB RAM, DirectX 11',
-          headerImage: 'https://picsum.photos/800/400?random=10',
-          media: [
-            'https://picsum.photos/1920/1080?random=11',
-            'https://picsum.photos/1920/1080?random=12',
-          ],
-          categories: [
-            CategoryModel(categoryId: '7', name: 'Simulation', isSensitive: false),
-            CategoryModel(categoryId: '8', name: 'Farming', isSensitive: false),
-          ],
-          price: 24.99,
-          binaries: [
-            'https://example.com/binaries/farm_simulator_pro_v1.0.bin',
-          ],
-          exes: [
-            'https://example.com/exes/farm_simulator_pro_v1.0.exe',
-          ],
-          submissionDate: DateTime.now().subtract(const Duration(days: 5),
-        ),
-      )];
+      _publishedGames = allGamesOfPublisher.verifiedGames;
+      _pendingGames = allGamesOfPublisher.pendingGames;
+      _rejectedGames = allGamesOfPublisher.rejectedGames;
+
+      // // Create mock published games
+      // _publishedGames = [
+      //   GameModel(
+      //     gameId: 'game_001',
+      //     publisherId: publisherId,
+      //     name: 'Mystery Adventure',
+      //     recommended: 156,
+      //     briefDescription: 'An exciting mystery adventure game',
+      //     description: 'Embark on a thrilling mystery adventure where every choice matters. Solve puzzles, uncover secrets, and experience a story that adapts to your decisions.',
+      //     requirement: 'Windows 10, 4GB RAM, DirectX 11',
+      //     headerImage: 'https://picsum.photos/800/400?random=1',
+      //     price: 19.99,
+      //     categories: [
+      //       CategoryModel(categoryId: '1', name: 'Adventure', isSensitive: false),
+      //       CategoryModel(categoryId: '2', name: 'Mystery', isSensitive: false),
+      //     ],
+      //     media: [
+      //       'https://picsum.photos/1920/1080?random=2',
+      //       'https://picsum.photos/1920/1080?random=3',
+      //     ],
+      //     releaseDate: DateTime.now().subtract(const Duration(days: 30)),
+      //     isSale: true,
+      //     discountPercent: 20.0,
+      //     saleStartDate: DateTime.now().subtract(const Duration(days: 5)),
+      //     saleEndDate: DateTime.now().add(const Duration(days: 10)),
+      //     isOwned: false,
+      //     isInstalled: false,
+      //     isInWishlist: false,
+      //   ),
+      //   GameModel(
+      //     gameId: 'game_002',
+      //     publisherId: publisherId,
+      //     name: 'Space Explorer',
+      //     recommended: 89,
+      //     briefDescription: 'Explore the vast universe',
+      //     description: 'Build your spaceship, explore distant galaxies, and discover new civilizations in this epic space exploration game.',
+      //     requirement: 'Windows 10, 6GB RAM, DirectX 12',
+      //     headerImage: 'https://picsum.photos/800/400?random=4',
+      //     price: 29.99,
+      //     categories: [
+      //       CategoryModel(categoryId: '3', name: 'Simulation', isSensitive: false),
+      //       CategoryModel(categoryId: '4', name: 'Space', isSensitive: false),
+      //     ],
+      //     media: [
+      //       'https://picsum.photos/1920/1080?random=5',
+      //       'https://picsum.photos/1920/1080?random=6',
+      //     ],
+      //     releaseDate: DateTime.now().subtract(const Duration(days: 60)),
+      //     isSale: false,
+      //     isOwned: false,
+      //     isInstalled: false,
+      //     isInWishlist: false,
+      //   ),
+      // ];
+
+      // // Create mock pending requests
+      // _pendingRequests = [
+      //   GameRequestModel(
+      //     publisherId: publisherId,
+      //     gameName: 'Pixel Warriors',
+      //     description: 'A retro-style pixel art fighting game with local multiplayer support.',
+      //     briefDescription: 'A retro-style pixel art fighting game with local multiplayer support.',
+      //     requirements: 'Windows 7, 2GB RAM, OpenGL 2.0',
+      //     headerImage: 'https://picsum.photos/800/400?random=7',
+      //     media: [
+      //       'https://picsum.photos/1920/1080?random=8',
+      //       'https://picsum.photos/1920/1080?random=9',
+      //     ],
+      //     categories: [
+      //       CategoryModel(categoryId: '5', name: 'Action', isSensitive: false),
+      //       CategoryModel(categoryId: '6', name: 'Fighting', isSensitive: false),
+      //     ],
+      //     price: 14.99,
+      //     binaries: [
+      //       'https://example.com/binaries/pixel_warriors_v1.0.bin',
+      //     ],
+      //     exes: [
+      //       'https://example.com/exes/pixel_warriors_v1.0.exe',
+      //     ],
+      //     submissionDate: DateTime.now().subtract(const Duration(days: 10)),
+      //   ),
+      //   GameRequestModel(
+      //     gameName: 'Farm Simulator Pro',
+      //     publisherId: publisherId,
+      //     briefDescription: 'The ultimate farming experience with realistic farming mechanics.',
+      //     description: 'The ultimate farming experience with realistic farming mechanics.',
+      //     requirements: 'Windows 10, 8GB RAM, DirectX 11',
+      //     headerImage: 'https://picsum.photos/800/400?random=10',
+      //     media: [
+      //       'https://picsum.photos/1920/1080?random=11',
+      //       'https://picsum.photos/1920/1080?random=12',
+      //     ],
+      //     categories: [
+      //       CategoryModel(categoryId: '7', name: 'Simulation', isSensitive: false),
+      //       CategoryModel(categoryId: '8', name: 'Farming', isSensitive: false),
+      //     ],
+      //     price: 24.99,
+      //     binaries: [
+      //       'https://example.com/binaries/farm_simulator_pro_v1.0.bin',
+      //     ],
+      //     exes: [
+      //       'https://example.com/exes/farm_simulator_pro_v1.0.exe',
+      //     ],
+      //     submissionDate: DateTime.now().subtract(const Duration(days: 5),
+      //   ),
+      // )];
 
       _state = PublisherViewState.success;
     } catch (e) {
