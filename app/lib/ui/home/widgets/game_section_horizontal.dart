@@ -12,8 +12,16 @@ import 'package:gameverse/config/spacing_config.dart';
 class GameSectionHorizontal extends StatefulWidget {
   final String title;
   final List<GameModel> gameList;
+  final void Function() onSelect;
+  final TextStyle? titleStyle;
 
-  const GameSectionHorizontal({super.key, required this.title, required this.gameList});
+  const GameSectionHorizontal({
+    super.key,
+    required this.title,
+    required this.gameList,
+    required this.onSelect,
+    this.titleStyle
+  });
 
   @override
   State<GameSectionHorizontal> createState() => _GameSectionHorizontalState();
@@ -21,14 +29,6 @@ class GameSectionHorizontal extends StatefulWidget {
 
 class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
   final ScrollController _scrollController = ScrollController();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -44,9 +44,12 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title,
-          style: Theme.of(context).textTheme.displayLarge
+        InkWell(
+          onTap: widget.onSelect,
+          child: Text(
+            widget.title,
+            style: widget.titleStyle ?? Theme.of(context).textTheme.displayLarge
+          ),
         ),
         SizedBox(height: 16),
 

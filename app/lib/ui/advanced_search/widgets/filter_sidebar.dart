@@ -20,8 +20,13 @@ class FilterSidebar extends StatefulWidget {
 class _FilterSidebarState extends State<FilterSidebar> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-
   bool _discounted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _discounted = widget.viewModel.onlyDiscounted;
+  }
 
   @override
   Widget build(BuildContext context) {

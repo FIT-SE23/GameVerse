@@ -12,8 +12,16 @@ import 'package:gameverse/ui/home/widgets/game_card_big.dart';
 class GameSectionFancy extends StatefulWidget {
   final String title;
   final List<GameModel> gameList;
+  final void Function() onSelect;
+  final TextStyle? titleStyle;
   
-  const GameSectionFancy({super.key, required this.title, required this.gameList});
+  const GameSectionFancy({
+    super.key,
+    required this.title,
+    required this.gameList,
+    required this.onSelect,
+    this.titleStyle
+  });
 
   @override
   State<GameSectionFancy> createState() => _GameSectionFancyState();
@@ -21,14 +29,6 @@ class GameSectionFancy extends StatefulWidget {
 
 class _GameSectionFancyState extends State<GameSectionFancy> {
   int currentGameIndex = 0;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +115,12 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 64),
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.displayLarge
+                InkWell(
+                  onTap: widget.onSelect,
+                  child: Text(
+                    widget.title,
+                    style: widget.titleStyle ?? Theme.of(context).textTheme.displayLarge
+                  ),
                 ),
                 const SizedBox(height: 16),
             

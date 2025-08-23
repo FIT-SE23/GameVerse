@@ -79,7 +79,15 @@ class AppRouter {
                 final titleQuery = state.uri.queryParameters['title'] ?? '';
                 final categoriesList = state.uri.queryParameters['categories']?.split(',') ?? [];
                 final selectedCategories = categoriesList.toSet();
-                return AdvancedSearchScreen(titleQuery: titleQuery, selectedCategories: selectedCategories);
+                final sortCriteria = state.uri.queryParameters['sortBy'] ?? '';
+                final onlyDiscounted = state.uri.queryParameters['onlyDiscounted'] ?? '0';
+                print("sort from uri: $sortCriteria");
+
+                if (sortCriteria.isEmpty) {
+                  return AdvancedSearchScreen(titleQuery: titleQuery, selectedCategories: selectedCategories, onlyDiscounted: onlyDiscounted == '1',);
+                } else {
+                  return AdvancedSearchScreen(titleQuery: titleQuery, selectedCategories: selectedCategories, sortCriteria: sortCriteria, onlyDiscounted: onlyDiscounted == '1',);
+                }
               },
             ),
             GoRoute(
