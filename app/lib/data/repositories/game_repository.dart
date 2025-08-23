@@ -13,10 +13,15 @@ import 'package:collection/collection.dart';
 
 
 class GameSortCriteria {
-  static final popularity = 'popularity';
-  static final price = 'price';
-  static final date = 'date';
-  static final recommend = 'recommend';
+  static const String popularity = 'popularity';
+  static const String price = 'price';
+  static const String date = 'date';
+  static const String recommend = 'recommend';
+
+  static const String popularityDisplay = 'Popularity';
+  static const String priceDisplay = 'Price';
+  static const String dateDisplay = 'Date';
+  static const String recommendDisplay = 'Recommend';
 }
 
 class GameRepository {
@@ -162,8 +167,8 @@ class GameRepository {
     return topRecommendedGames;
   }
 
-  Future<List<GameModel>> getGamesByCategory(String category) async {
-    return await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, 5, category, false)) as List<GameModel>;
+  Future<List<GameModel>> getGamesByCategory(String category, int cnt) async {
+    return await _getDataFromResponse(GameApiClient().listGames('', GameSortCriteria.popularity, 0, cnt, category, false)) as List<GameModel>;
   }
 
   static Future<dynamic> _getDataFromResponse(Future<Response> futureResponse) async {

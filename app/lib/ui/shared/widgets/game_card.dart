@@ -22,6 +22,8 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
+    final currentTime = DateTime.now().subtract(const Duration(hours: 7));
+    
     return SizedBox(
       width: width,
       child: InkWell(
@@ -81,24 +83,25 @@ class GameCard extends StatelessWidget {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          if (game.isSale!)
-                            if (DateTime.now().isAfter(game.saleStartDate!) && DateTime.now().isBefore(game.saleEndDate!))
-                              Container(
-                                width: 48,
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.secondary,
-                                  // borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  '-${game.discountPercent!.toInt()}%',
-                                  style: theme.textTheme.bodySmall!.copyWith(
-                                    color: AppTheme.oppositeThemeColors(theme.brightness).getText,
-                                    fontWeight: FontWeight.bold
+                          if (showPrice)
+                            if (game.isSale!)
+                              if (currentTime.isAfter(game.saleStartDate!) && currentTime.isBefore(game.saleEndDate!))
+                                Container(
+                                  width: 48,
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.secondary,
+                                    // borderRadius: BorderRadius.circular(4),
                                   ),
-                                  textAlign: TextAlign.right,
+                                  child: Text(
+                                    '-${game.discountPercent!.toInt()}%',
+                                    style: theme.textTheme.bodySmall!.copyWith(
+                                      color: AppTheme.oppositeThemeColors(theme.brightness).getText,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                    textAlign: TextAlign.right,
+                                  ),
                                 ),
-                              ),
                           const SizedBox(height: 16)
                         ]
                       ),

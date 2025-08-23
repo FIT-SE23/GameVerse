@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
 import '../view_model/advanced_search_viewmodel.dart';
 
 import 'package:gameverse/ui/shared/widgets/category_chip.dart';
 import 'package:gameverse/config/app_theme.dart';
 
 class FilterSidebar extends StatefulWidget {
+  final AdvancedSearchViewmodel viewModel;
+
   const FilterSidebar({
     super.key,
+    required this.viewModel
   });
 
   @override
@@ -18,14 +20,17 @@ class FilterSidebar extends StatefulWidget {
 class _FilterSidebarState extends State<FilterSidebar> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-
   bool _discounted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _discounted = widget.viewModel.onlyDiscounted;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final viewModel = Provider.of<AdvancedSearchViewmodel>(context, listen: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +52,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                       icon: const Icon(Icons.clear),
                       onPressed: () {
                         _searchController.clear();
-                        viewModel.setSearchQuery('');
+                        widget.viewModel.setSearchQuery('');
                       },
                     )
                   : null,
@@ -66,7 +71,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 vertical: 12,
               ),
             ),
-            onChanged: viewModel.setSearchQuery,
+            onChanged: widget.viewModel.setSearchQuery,
           ),
         ),
         const SizedBox(height: 16),
@@ -78,7 +83,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
               onChanged: (value) {
                 setState(() {
                   _discounted = value!;
-                  viewModel.setOnlyDiscounted(_discounted);
+                  widget.viewModel.setOnlyDiscounted(_discounted);
                 });
               },
             ),
@@ -88,6 +93,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
             )
           ],
         ),
+        const SizedBox(height: 12,),
 
         // Categories filter
         Text(
@@ -99,13 +105,13 @@ class _FilterSidebarState extends State<FilterSidebar> {
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (String name in viewModel.categoryMap.keys) 
+            for (String name in widget.viewModel.categoryMap.keys) 
               CategoryChip(
                 name: name,
                 onSelect: () {
-                  viewModel.switchCategorySelectState(name);
+                  widget.viewModel.switchCategorySelectState(name);
                 },
-                isSelected: viewModel.categoryMap[name]!,
+                isSelected: widget.viewModel.categoryMap[name]!,
               )
           ],
         ),
@@ -118,7 +124,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
           child: ElevatedButton(
             style: theme.elevatedButtonTheme.style,
             onPressed: () {
-              viewModel.applyFilters();
+              widget.viewModel.applyFilters();
             },
             child: Text(
               'Apply filter',

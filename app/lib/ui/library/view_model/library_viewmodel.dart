@@ -145,7 +145,7 @@ class LibraryViewModel extends ChangeNotifier {
     // For now, we'll generate some mock tags based on game properties
     final tags = <String>[];
     for (final category in game.categories) {
-      tags.add(category.name.toLowerCase());
+      tags.add(category.name);
     }
     return tags;
   }

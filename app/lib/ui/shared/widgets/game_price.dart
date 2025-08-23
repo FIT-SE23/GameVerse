@@ -17,8 +17,8 @@ class GamePrice extends StatelessWidget {
     final theme = Theme.of(context);
     if (game.price > 0) {
       if (game.isSale!) {
-        final today = DateTime.now();
-        if (today.isAfter(game.saleStartDate!) && today.isBefore(game.saleEndDate!)) {
+        final currentTime = DateTime.now().subtract(const Duration(hours: 7));
+        if (currentTime.isAfter(game.saleStartDate!) && currentTime.isBefore(game.saleEndDate!)) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 5,

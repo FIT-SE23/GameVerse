@@ -23,14 +23,20 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
-func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid string, paymentMethodId string) error {
+func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid string, paymentMethodId string) (int, map[string]any) {
 	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
 	err := json.Unmarshal([]byte(rep), &items)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
+		return http.StatusBadRequest, map[string]any{}
 	}
+
+	now := time.Now()
+	createDate := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second())
+
+	gamenames := []string{}
+	total := 0.0
 
 	for _, item := range items {
 		price, err := strconv.ParseFloat(item["price"], 64)
@@ -38,9 +44,8 @@ func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid st
 		if err != nil {
 			continue
 		}
-
-		now := time.Now()
-		createDate := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second())
+		total += price
+		gamenames = append(gamenames, item["sku"])
 
 		transaction := map[string]any{
 			"senderid":        userid,
@@ -61,7 +66,133 @@ func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid st
 		fmt.Println(err.Error(), rep)
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	rep, _, err = client.From("User").Select("username", "", false).Eq("userid", userid).Single().ExecuteString()
+	if err != nil {
+		return http.StatusInternalServerError, map[string]any{}
+	}
+
+	var user map[string]string
+	err = json.Unmarshal([]byte(rep), &user)
+	if err != nil {
+		return http.StatusInternalServerError, map[string]any{}
+	}
+
+	rep, _, err = client.From("Game").Select("name", "", false).In("gameid", gamenames).ExecuteString()
+	if err != nil {
+		return http.StatusInternalServerError, map[string]any{}
+	}
+
+	var mapNames []map[string]string
+	err = json.Unmarshal([]byte(rep), &mapNames)
+	if err != nil {
+		return http.StatusInternalServerError, map[string]any{}
+	}
+
+	names := []string{}
+	for _, mapName := range mapNames {
+		names = append(names, mapName["name"])
+	}
+
+	return http.StatusOK, map[string]any{"game": names, "total": total, "username": user["username"]}
+}
+
+func genCheckoutPage(info map[string]any) string {
+	template := `<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout page</title>
+    <style>
+    @font-face {
+    font-family: "Play";
+    src: url(/static/Play-Regular.ttf) format("truetype");
+    }
+    body {
+    background-color: white;
+    }
+    .gray-box {
+    background-color: #eaeaea;
+    border-radius: 25px;
+    width: 50%%;
+    text-align:center;
+    margin: 0 auto;
+    padding-bottom: 4px;
+    }
+    .text {
+    color: black;
+    font-family: "Play", sans-serif;
+    }
+    .normal {
+    font-size: 20px;
+    }
+    .left {
+    margin-left: 4%%;
+    text-align: left;
+    }
+    .right {
+    margin-right: 4%%;
+    text-align: right;
+    }
+    .bold {
+    font-size: 32px;
+    font-weight: bold;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="gray-box">
+      <img src="/static/logo.svg" alt="GameVerse's logo" width="50%%">
+      %s
+    </div>
+    <p class="text" style="text-align: center">You can close this window or return to <a href="https://game-verse-bice.vercel.app/">homapage</a></p>
+  </body>
+</html>
+`
+	username, parseUserOk := info["username"].(string)
+	paymentMethod, parsePaymentMethodOk := info["paymentmethod"].(string)
+	gamenames, parseGameNameOk := info["game"].([]string)
+	total, parseTotalOk := info["total"].(float64)
+	if !parseUserOk || !parsePaymentMethodOk || !parseGameNameOk || !parseTotalOk {
+		return fmt.Sprintf(template,
+			`<p class="text bold">Purchase failed</p>
+			<p class="text normal" style="text-align: center; color: red">Invalid request</p>`)
+	}
+	content := `<p class="text bold">Thanks for your purchase</p>`
+
+	content += fmt.Sprintf(`
+      <div style="display: flex; justify-content: space-between;">
+        <p class="text normal left">User: </p>
+        <p class="text normal right">%s</p>
+      </div>
+		`, username)
+
+	content += fmt.Sprintf(`
+      <div style="display: flex; justify-content: space-between;">
+        <p class="text normal left">Payment method: </p>
+        <p class="text normal right">%s</p>
+      </div>
+		`, paymentMethod)
+	content += `
+	<div style="display: flex; justify-content: space-between;">
+	<p class="text normal left">Games: </p>
+	<div class="right">
+	`
+	for _, gamename := range gamenames {
+		content += fmt.Sprintf(`<p class="text normal">%s</p>`, gamename)
+	}
+	content += `
+	</div>
+	</div>
+	`
+
+	content += fmt.Sprintf(`
+      <div style="display: flex; justify-content: space-between;">
+        <p class="text normal left">Total: </p>
+        <p class="text normal right">%f</p>
+      </div>
+		`, total)
+
+	return fmt.Sprintf(template, content)
 }
 
 func getAccessToken(id string, secret string) string {
@@ -262,7 +393,7 @@ func checkPaypalPaymentIdValid(accessToken string, paymentId string) (bool, erro
 	return state != "approved", nil
 }
 
-func checkoutPaypal(c echo.Context, client *supabase.Client) error {
+func checkoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]any) {
 	payerId := c.QueryParam("PayerID")
 	paymentId := c.QueryParam("paymentId")
 	id := os.Getenv("PP_ID")
@@ -270,11 +401,11 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 	url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId + "/execute"
 	accessToken := getAccessToken(id, secret)
 	if accessToken == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
+		return http.StatusInternalServerError, map[string]any{}
 	}
 
 	if valid, err := checkPaypalPaymentIdValid(accessToken, paymentId); !valid || err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Checkout failed", "")
+		return http.StatusBadRequest, map[string]any{}
 	}
 	paymentData := map[string]any{
 		"payer_id": payerId,
@@ -283,21 +414,13 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 	jsonData, err := json.Marshal(paymentData)
 	if err != nil {
 		fmt.Println("Error marshalling JSON:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return http.StatusBadRequest, map[string]any{}
 	}
-
-	/*
-		_, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-		if err != nil {
-			fmt.Println("Error creating request:", err)
-			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
-		}
-	*/
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Println("Error creating request:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return http.StatusBadRequest, map[string]any{}
 	}
 
 	req.Header.Set("Authorization", "Bearer "+accessToken)
@@ -306,37 +429,37 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) error {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return http.StatusBadRequest, map[string]any{}
 	}
 
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return http.StatusBadRequest, map[string]any{}
 	}
 
 	var result map[string]any
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return http.StatusBadRequest, map[string]any{}
 	}
 
 	state, ok := result["state"].(string)
 	if !ok || state != "approved" {
-		return jsonResponse(c, http.StatusBadRequest, "Transaction failed", "")
+		return http.StatusBadRequest, map[string]any{}
 	}
 
 	var userid string
 	if payer, ok := result["payer"].(map[string]any); !ok {
-		return jsonResponse(c, http.StatusBadRequest, "Transaction failed: payer", "")
+		return http.StatusInternalServerError, map[string]any{}
 	} else if payerInfo, ok := payer["payer_info"].(map[string]any); !ok {
-		return jsonResponse(c, http.StatusBadRequest, "Transaction failed: payerInfo", "")
+		return http.StatusInternalServerError, map[string]any{}
 	} else if address, ok := payerInfo["shipping_address"].(map[string]any); !ok {
-		return jsonResponse(c, http.StatusBadRequest, "Transaction failed: address", "")
+		return http.StatusInternalServerError, map[string]any{}
 	} else if userid, ok = address["line1"].(string); !ok {
-		return jsonResponse(c, http.StatusBadRequest, "Transaction failed: line1", "")
+		return http.StatusInternalServerError, map[string]any{}
 	}
 
 	return moveBoughtGamesToLibrary(c, client, userid, "a2f4772b-38ac-4fe2-b5a6-bead806c1221")
@@ -525,21 +648,21 @@ func checkVNPPaymentIdValid(c echo.Context) (bool, error) {
 	return response["vnp_ResponseCode"] == "00", nil
 }
 
-func checkoutVnpay(c echo.Context, client *supabase.Client) error {
+func checkoutVnpay(c echo.Context, client *supabase.Client) (int, map[string]any) {
 	responseCode := c.QueryParam("vnp_ResponseCode")
 	if responseCode == "00" {
 		txnRef := c.QueryParam("vnp_TxnRef")
 		refList := strings.Split(txnRef, "|")
 		if len(refList) != 2 {
-			return jsonResponse(c, http.StatusBadGateway, "Vnpay response is missing vnp_TxnRef field", "")
+			return http.StatusBadGateway, map[string]any{}
 		}
 
 		userid := refList[0]
 		if valid, err := checkVNPPaymentIdValid(c); !valid || err != nil {
-			return jsonResponse(c, http.StatusBadRequest, "Checkout failed", "")
+			return http.StatusBadRequest, map[string]any{}
 		}
 		return moveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
 	}
 	transactionStatus := c.QueryParam("vnp_TransactionStatus")
-	return jsonResponse(c, http.StatusBadGateway, "", map[string]string{"responsecode": responseCode, "transactionstatus": transactionStatus})
+	return http.StatusBadGateway, map[string]any{"responsecode": responseCode, "transactionstatus": transactionStatus}
 }

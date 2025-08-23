@@ -38,6 +38,7 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.CORS())
+	e.Static("/static", "assets")
 
 	e.POST("/login", func(c echo.Context) error {
 		return login(c, client)
@@ -225,7 +226,15 @@ func main() {
 		return c.String(http.StatusOK, "No")
 	})
 	e.GET("/paypal/return", func(c echo.Context) error {
-		return checkoutPaypal(c, client)
+		code, msg := checkoutVnpay(c, client)
+		if code == http.StatusBadRequest {
+			return c.HTML(code, "Invalid request")
+		} else if code == http.StatusInternalServerError {
+			return c.HTML(code, "Internal server error")
+		}
+
+		msg["paymentmethod"] = "Paypal"
+		return c.HTML(http.StatusOK, genCheckoutPage(msg))
 	})
 
 	e.POST("/vnpay/create", func(c echo.Context) error {
@@ -237,7 +246,15 @@ func main() {
 		return createVnpayReceipt(c, client, userid)
 	})
 	e.GET("/vnpay/return", func(c echo.Context) error {
-		return checkoutVnpay(c, client)
+		code, msg := checkoutVnpay(c, client)
+		if code == http.StatusBadRequest {
+			return c.HTML(code, "Invalid request")
+		} else if code == http.StatusInternalServerError {
+			return c.HTML(code, "Internal server error")
+		}
+
+		msg["paymentmethod"] = "VNPay"
+		return c.HTML(http.StatusOK, genCheckoutPage(msg))
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {
