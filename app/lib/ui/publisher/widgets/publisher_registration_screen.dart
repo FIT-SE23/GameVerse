@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gameverse/data/repositories/transaction_repository.dart';
 import 'package:gameverse/domain/models/payment_method_model/payment_method_model.dart';
@@ -19,6 +20,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
   final _paymentInfoController = TextEditingController();
   String _selectedPaymentType = 'PayPal'; // Default value
   bool _isLoading = false;
+  bool _agreedToPolicy = false;
 
   @override
   void initState() {
@@ -53,7 +55,7 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
             child: Column(
                 children: [
                   Container(
-                    height: 200,
+                    height: 50,
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: const BorderRadius.only(
@@ -291,11 +293,64 @@ class _PublisherRegistrationScreenState extends State<PublisherRegistrationScree
               },
             ),
             
-            const SizedBox(height: 32),
+            const SizedBox(height: 8),
+
+            Row(
+              children: [
+                Checkbox(
+                  value: _agreedToPolicy,
+                  onChanged: (value) {
+                    setState(() {
+                      _agreedToPolicy = value ?? false;
+                    });
+                  },
+                ),
+                Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        children: [
+                          const TextSpan(text: 'I agree to the '),
+                          TextSpan(
+                            text: 'Publisher Policy',
+                            style: TextStyle(
+                              color: theme.colorScheme.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                context.push('/publisher-policy');
+                              },
+                          ),
+                          const TextSpan(text: '.')
+                        ],
+                      )
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
             
             // Submit button
             Consumer2<PublisherViewModel, AuthViewModel>(
               builder: (context, publisherViewModel, authViewModel, _) {
+                // If user not accepted policy, disable button
+                if (!_agreedToPolicy) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: null,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text('Apply to Become Publisher'),
+                    ),
+                  );
+                }
+
                 return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

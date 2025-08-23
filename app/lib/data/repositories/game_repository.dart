@@ -344,6 +344,14 @@ class GameRepository {
     return true;
   }
 
+  int getOwnedGamesCount() {
+    return _libraryGames.where((game) => game.isOwned).length;
+  }
+
+  int getWishlistCount() {
+    return _libraryGames.where((game) => game.isInWishlist).length;
+  }
+
   // Clear the game cache
   Future<void> clearCache() async {
     _libraryGames.clear();

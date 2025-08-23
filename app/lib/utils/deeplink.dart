@@ -15,9 +15,10 @@ class DeepLink {
   final GoRouter _router;
   StreamSubscription<Uri>? _linkSubscription;
   final BuildContext context;
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
   bool _isInitialized = false;
 
-  DeepLink(this.context, this._router) {
+  DeepLink(this.context, this._router, this.scaffoldMessengerKey) {
     _initializeDeepLinking();
   }
 
@@ -97,12 +98,6 @@ class DeepLink {
         
         // Force refresh the auth state
         await authViewModel.init();
-        
-        // Wait a bit more and check again if needed
-        if (authViewModel.status != AuthStatus.authenticated) {
-          await Future.delayed(const Duration(seconds: 2));
-          await authViewModel.init();
-        }
 
         // Navigate based on auth status
         if (authViewModel.status == AuthStatus.authenticated) {
@@ -115,7 +110,7 @@ class DeepLink {
           );
         } else {
           debugPrint('Authentication failed or incomplete');
-          _router.go('/login');
+          _router.go('/signup');
           
           _showSnackBar(
             'Login failed: ${authViewModel.errorMessage}',
@@ -150,26 +145,17 @@ class DeepLink {
   }
 
   void _showSnackBar(String message, {Color? backgroundColor}) {
-    // Use post frame callback to ensure the widget tree is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Check if context is still mounted and has ScaffoldMessenger
-      if (context.mounted) {
-        try {
-          final scaffoldMessenger = ScaffoldMessenger.maybeOf(context);
-          if (scaffoldMessenger != null) {
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(message),
-                duration: const Duration(seconds: 3),
-                backgroundColor: backgroundColor,
-              ),
-            );
-          } else {
-            debugPrint('ScaffoldMessenger not available: $message');
-          }
-        } catch (e) {
-          debugPrint('Error showing snackbar: $e - Message: $message');
-        }
+      try {
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(
+            content: Text(message),
+            duration: const Duration(seconds: 3),
+            backgroundColor: backgroundColor,
+          ),
+        );
+      } catch (e) {
+        debugPrint('Error showing snackbar: $e - Message: $message');
       }
     });
   }

@@ -51,7 +51,6 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isWideScreen = MediaQuery.of(context).size.width > 800;
 
     return SingleChildScrollView(
       child: Consumer<LibraryViewModel>(
@@ -114,33 +113,6 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                                   ],
                                 ),
                               ),
-                              
-                              // Add game button
-                              if (isWideScreen) ...[
-                                ElevatedButton.icon(
-                                  onPressed: () => context.push('/add-game'),
-                                  icon: const Icon(Icons.add),
-                                  label: const Text('Add Game'),
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                  ),
-                                ),
-                              ] else ...[
-                                IconButton(
-                                  icon: const Icon(Icons.add),
-                                  onPressed: () => context.push('/add-game'),
-                                  tooltip: 'Add Game',
-                                  style: IconButton.styleFrom(
-                                    padding: const EdgeInsets.all(12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ],
                           ),
                           
@@ -531,56 +503,104 @@ class _GameListTile extends StatelessWidget {
               const SizedBox(width: 16),
               
               // Game Info
-              // Expanded(
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       Text(
-              //         game.name,
-              //         style: theme.textTheme.titleMedium,
-              //         maxLines: 1,
-              //         overflow: TextOverflow.ellipsis,
-              //       ),
-              //       const SizedBox(height: 4),
-              //       if (game.playtimeHours != null) ...[
-              //         Text(
-              //           '${game.playtimeHours!.toStringAsFixed(1)} hours played',
-              //           style: theme.textTheme.bodySmall?.copyWith(
-              //             color: theme.colorScheme.onSurfaceVariant,
-              //           ),
-              //         ),
-              //       ],
-              //       const SizedBox(height: 8),
-              //       Row(
-              //         children: [
-              //           if (game.isInstalled) ...[
-              //             Container(
-              //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              //               decoration: BoxDecoration(
-              //                 color: Colors.green,
-              //                 borderRadius: BorderRadius.circular(12),
-              //               ),
-              //               child: const Text(
-              //                 'Installed',
-              //                 style: TextStyle(
-              //                   color: Colors.white,
-              //                   fontSize: 12,
-              //                   fontWeight: FontWeight.w600,
-              //                 ),
-              //               ),
-              //             ),
-              //             const SizedBox(width: 8),
-              //           ],
-              //           Icon(
-              //             Icons.star,
-              //             size: 16,
-              //             color: theme.colorScheme.primary,
-              //           ),
-              //         ],
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      game.name,
+                      style: theme.textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    if (game.playtimeHours != null) ...[
+                      Text(
+                        '${game.playtimeHours!.toStringAsFixed(1)} hours played',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        if (game.isOwned) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Owned',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                        if (game.isInWishlist) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Wishlist',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                        if (game.downloadState == 'completed') ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Installed',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ] else if (game.downloadState == 'nothing') ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Not Installed',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               
               // Actions
               // PopupMenuButton<String>(

@@ -86,7 +86,9 @@ Future<List<SingleChildWidget>> appProviders() async {
       ),
     ),
     ChangeNotifierProvider<ProfileViewModel>(
-      create: (_) => ProfileViewModel(),
+      create: (context) => ProfileViewModel(
+        gameRepository: context.read<GameRepository>(),
+      ),
     ),
     ChangeNotifierProvider<SettingsViewModel>(
       create: (_) => SettingsViewModel(),

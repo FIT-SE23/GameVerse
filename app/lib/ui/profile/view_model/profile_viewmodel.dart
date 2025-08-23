@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/data/repositories/game_repository.dart';
 
 class ProfileViewModel extends ChangeNotifier {
+  final GameRepository _gameRepository;
+
+  ProfileViewModel({required GameRepository gameRepository})
+      : _gameRepository = gameRepository {
+    _loadProfileData();
+  }
+
+
   // Profile Data
   String? _profileImageUrl;
   String? get profileImageUrl => _profileImageUrl;
@@ -8,16 +17,16 @@ class ProfileViewModel extends ChangeNotifier {
   final bool isOnline = true;
   bool get onlineStatus => isOnline;
 
-  final int _gamesOwned = 47;
+  int _gamesOwned = 0;
   int get gamesOwned => _gamesOwned;
 
-  final double _totalHoursPlayed = 1247.5;
+  final double _totalHoursPlayed = 0;
   double get totalHoursPlayed => _totalHoursPlayed;
 
-  final int _totalAchievements = 234;
+  final int _totalAchievements = 0;
   int get totalAchievements => _totalAchievements;
 
-  final int _wishlistCount = 12;
+  int _wishlistCount = 0;
   int get wishlistCount => _wishlistCount;
 
   String _favoriteGenre = 'Action RPG';
@@ -41,11 +50,10 @@ class ProfileViewModel extends ChangeNotifier {
   String _bio = 'Passionate gamer who loves RPGs and strategy games. Always up for a co-op adventure!';
   String get bio => _bio;
 
-  ProfileViewModel() {
-    _loadProfileData();
-  }
-
   void _loadProfileData() {
+    _gamesOwned = _gameRepository.getOwnedGamesCount();
+    _wishlistCount = _gameRepository.getWishlistCount();
+
     // Load mock friends
     _friends = [
       GameFriend(name: 'Alex', isOnline: true),
@@ -82,6 +90,7 @@ class ProfileViewModel extends ChangeNotifier {
         timeAgo: '1 week ago',
       ),
     ];
+    notifyListeners();
   }
 
   void updateProfileImage(String? imageUrl) {

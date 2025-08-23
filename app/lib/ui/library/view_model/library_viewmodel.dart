@@ -59,7 +59,7 @@ class LibraryViewModel extends ChangeNotifier {
       await _gameRepository.getLibraryGames(path, token, userId);
       await _gameRepository.getWishlistGames(token, userId);
       _games = _gameRepository.libraryGames.toList();
-      print('Loaded ${_games.length} games from library');
+      debugPrint('Loaded ${_games.length} games from library');
 
       _availableTags = _extractTags(_games);
       _applyFilters();
