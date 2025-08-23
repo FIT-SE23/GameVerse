@@ -83,14 +83,19 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   Future<void> loadData({
     String titleQuery = '',
     bool onlyDiscounted = false,
-    Set<String> selectedCategories = const {}
+    Set<String> selectedCategories = const {},
+    String sortCriteria = GameSortCriteria.popularity,
   }) async {
-    _isLoading = true;
+    // _isLoading = true;
+    _state = AdvancedSearchState.loading;
     notifyListeners();
 
     _searchQuery = titleQuery.toLowerCase();
     _onlyDiscounted = onlyDiscounted;
     _selectedCategories = selectedCategories;
+    _sortCriteria = sortCriteria;
+    print("sort by: $_sortCriteria");
+    notifyListeners();
     
     try {
       _games = await _gameRepository.searchGames(titleQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList(), false);
@@ -98,9 +103,11 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
       updateCategoryMap();
       applyFilters();
     } catch (e) {
+      _state = AdvancedSearchState.error;
       debugPrint('Error loading advanced search: $e');
     } finally {
-      _isLoading = false;
+      // _isLoading = false;
+      _state = AdvancedSearchState.success;
       notifyListeners();
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/data/repositories/game_repository.dart';
 import 'package:gameverse/ui/advanced_search/view_model/advanced_search_viewmodel.dart';
 
 import 'package:gameverse/config/spacing_config.dart';
@@ -11,11 +12,15 @@ import 'filtered_game_section.dart';
 class AdvancedSearchScreen extends StatefulWidget {
   final String titleQuery;
   final Set<String> selectedCategories;
+  final String sortCriteria;
+  final bool onlyDiscounted;
 
   const AdvancedSearchScreen({
     super.key,
     required this.titleQuery,
     required this.selectedCategories,
+    this.sortCriteria = GameSortCriteria.popularity,
+    this.onlyDiscounted = false
   });
 
   @override
@@ -34,7 +39,12 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AdvancedSearchViewmodel>(context, listen: false).loadData(titleQuery: widget.titleQuery, selectedCategories: widget.selectedCategories);
+      Provider.of<AdvancedSearchViewmodel>(context, listen: false).loadData(
+        titleQuery: widget.titleQuery,
+        selectedCategories: widget.selectedCategories,
+        sortCriteria: widget.sortCriteria,
+        onlyDiscounted: widget.onlyDiscounted
+      );
 
       _scrollController.addListener(() {
         final scrollOffset = _scrollController.offset;

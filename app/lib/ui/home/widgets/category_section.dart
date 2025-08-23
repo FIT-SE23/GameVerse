@@ -37,7 +37,6 @@ class CategorySection extends StatelessWidget {
     }
     
     int maxLen = 0;
-    // remove this when there are more games
     for (final category in pickedGamesByCategories.keys) {
       maxLen = max(maxLen, pickedGamesByCategories[category]!.length);
     }

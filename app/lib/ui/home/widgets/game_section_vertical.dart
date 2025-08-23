@@ -28,14 +28,6 @@ class GameSectionVertical extends StatefulWidget {
 }
 
 class _GameSectionVerticalState extends State<GameSectionVertical> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Provider.of<HomeViewModel>(context, listen: false).loadHomePageData();
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<HomeViewModel>(context, listen: false);
