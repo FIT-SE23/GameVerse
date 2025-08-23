@@ -69,7 +69,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     const double sidebarWidth = 280;
 
     return Consumer<AdvancedSearchViewmodel>(
-      builder: (context, advancedSearchViewmodel, child) {
+      builder: (context, advancedSearchViewmodel, child) {       
+        final state = advancedSearchViewmodel.state;
+
         return Stack(
           children: [
             SingleChildScrollView(
@@ -88,15 +90,33 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                         ),
                         const SizedBox(height: 32),
                         
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: FilteredGameSection(gameList: advancedSearchViewmodel.filteredGames),
-                            ),
-                            const SizedBox(width: 32 + sidebarWidth),
-                          ],
-                        ),
+                        if (state == AdvancedSearchState.initial)
+                          const SizedBox(
+                            height: 300,
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+
+                        if (state == AdvancedSearchState.loading || state == AdvancedSearchState.success)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: FilteredGameSection(viewModel: advancedSearchViewmodel,),
+                              ),
+                              const SizedBox(width: 32 + sidebarWidth),
+                            ],
+                          ),
+                        
+                        if (state == AdvancedSearchState.error)
+                          SizedBox(
+                            height: 300,
+                            child: Center(
+                              child: Text(
+                                advancedSearchViewmodel.errorMessage,
+                              ),
+                            )
+                          ),
+                        
                         const SizedBox(height: 96), // Extra space before footer
                       ],
                     ),
@@ -106,14 +126,17 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
               ),
             ),
 
-            Positioned(
-              top: _sidebarTop,
-              right: negativeSpaceWidth(context),
-              child: SizedBox(
-                width: sidebarWidth,
-                child: FilterSidebar(),
+            if (state == AdvancedSearchState.loading || state == AdvancedSearchState.success)
+              Positioned(
+                top: _sidebarTop,
+                right: negativeSpaceWidth(context),
+                child: SizedBox(
+                  width: sidebarWidth,
+                  child: FilterSidebar(
+                    viewModel: advancedSearchViewmodel,
+                  ),
+                ),
               ),
-            ),
           ],
         );
       }

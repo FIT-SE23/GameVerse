@@ -65,7 +65,7 @@ class HomeViewModel extends ChangeNotifier {
       }
 
       for (final category in _categories) {
-        final games = await _gameRepository.getGamesByCategory(category.name);
+        final games = await _gameRepository.getGamesByCategory(category.name, 3);
         if (games.isNotEmpty) {
           _gamesByCategories[category.name] = games;
         }

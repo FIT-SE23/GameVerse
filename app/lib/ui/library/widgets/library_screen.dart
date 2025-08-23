@@ -147,18 +147,18 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                           const SizedBox(height: 24),
                           
                           // Search Bar
-                          SizedBox(
+                          Container(
                             height: 48,
-                            // decoration: BoxDecoration(
-                            //   color: theme.colorScheme.surfaceContainerHighest,
-                            //   borderRadius: BorderRadius.circular(12),
-                            //   border: Border.all(
-                            //     color: _searchFocusNode.hasFocus 
-                            //         ? theme.colorScheme.primary 
-                            //         : Colors.transparent,
-                            //     width: 2,
-                            //   ),
-                            // ),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: _searchFocusNode.hasFocus 
+                                    ? theme.colorScheme.primary 
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
                             child: TextField(
                               controller: _searchController,
                               focusNode: _searchFocusNode,
@@ -180,11 +180,11 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                                 border: InputBorder.none,
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                                  borderRadius: BorderRadius.zero
+                                  borderRadius: BorderRadius.circular(6)
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                                  borderRadius: BorderRadius.zero
+                                  borderRadius: BorderRadius.circular(6)
                                 ),
                                 filled: false,
                                 contentPadding: const EdgeInsets.symmetric(
@@ -294,52 +294,40 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
                                   constraints: BoxConstraints(minHeight: 320),
                                   child: _buildGamesList(gameLists[_tabController.index], libraryViewModel.viewMode),
                                 ),
-                                // child: IndexedStack(
-                                //   key: ValueKey(_tabController.index),
-                                //   // controller: _tabController,
-                                //   // physics: const NeverScrollableScrollPhysics(),
-                                //   index: _tabController.index,
-                                //   children: [
-                                //     _buildGamesList(libraryViewModel.filteredGames, libraryViewModel.viewMode),
-                                //     _buildGamesList(libraryViewModel.downloadedGames, libraryViewModel.viewMode),
-                                //     _buildGamesList(libraryViewModel.favoriteGames, libraryViewModel.viewMode),
-                                //     _buildGamesList(libraryViewModel.recentGames, libraryViewModel.viewMode),
-                                //   ],
-                                // ),
                               ),
                 
                     // Load more button
-                    if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              // Load more functionality can be implemented here
-                              debugPrint('Load more games');
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(200, 60),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                const Text('Load More'),
-                                const SizedBox(height: 4),
-                                Icon(
-                                  Icons.arrow_downward,
-                                  size: 20,
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)
+                    // Padding(
+                    //   padding: const EdgeInsets.all(16),
+                    //   child: Column(
+                    //     children: [
+                    //       ElevatedButton(
+                    //         onPressed: () {
+                    //           // Load more functionality can be implemented here
+                    //           debugPrint('Load more games');
+                    //         },
+                    //         style: ElevatedButton.styleFrom(
+                    //           minimumSize: const Size(200, 60),
+                    //           shape: RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.circular(8),
+                    //           ),
+                    //         ),
+                    //         child: Column(
+                    //           children: [
+                    //             const Text('Load More'),
+                    //             const SizedBox(height: 4),
+                    //             Icon(
+                    //               Icons.arrow_downward,
+                    //               size: 20,
+                    //               color: Theme.of(context).colorScheme.onPrimary,
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     const SizedBox(height: 96),
                   ],

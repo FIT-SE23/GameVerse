@@ -4,8 +4,16 @@ import 'package:gameverse/domain/models/game_model/game_model.dart';
 // import 'package:gameverse/domain/models/category_model/category_model.dart';
 import 'package:gameverse/data/repositories/game_repository.dart';
 
+enum AdvancedSearchState { initial, loading, success, error }
+
 class AdvancedSearchViewmodel extends ChangeNotifier {
   final GameRepository _gameRepository;
+
+  AdvancedSearchState _state = AdvancedSearchState.initial;
+  AdvancedSearchState get state => _state;
+
+  String _errorMessage = '';
+  String get errorMessage => _errorMessage;
 
   String _searchQuery = '';
   String get searchQuery => _searchQuery;
@@ -17,6 +25,12 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   bool get onlyDiscounted => _onlyDiscounted;
   void setOnlyDiscounted(bool discounted) {
     _onlyDiscounted = discounted;
+  }
+
+  String _sortCriteria = GameSortCriteria.popularity;
+  String get sortCriteria => _sortCriteria;
+  void setSortCriteria(String criteria) {
+    _sortCriteria = criteria;
   }
 
   Map<String, bool> _categoryMap = {};
@@ -107,9 +121,19 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   }
 
   void applyFilters() async {
-    updateSelectedCategories();
-    _filteredGames = await _gameRepository.searchGames(_searchQuery, GameSortCriteria.popularity, 0, 30, selectedCategories.toList(), onlyDiscounted);
+    try {
+      _state = AdvancedSearchState.loading;
+      notifyListeners();
+      updateSelectedCategories();
+      _filteredGames = await _gameRepository.searchGames(_searchQuery, _sortCriteria, 0, 120, selectedCategories.toList(), onlyDiscounted);
 
-    notifyListeners();
+      _state = AdvancedSearchState.success;
+
+    } catch (e) {
+      _state = AdvancedSearchState.error;
+      _errorMessage = 'Failed to load data: $e';
+    } finally {
+      notifyListeners();
+    }
   }
 }

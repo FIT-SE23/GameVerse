@@ -46,28 +46,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: getNegativeSpacePadding(context),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 32,
                   children: [
-                    SizedBox(height: 32),
-                    GameSectionHorizontal(title: 'Feature Discounts', gameList: Provider.of<HomeViewModel>(context, listen: false).featuredDiscount,),
-              
+                    SizedBox(height: 0),
+
+                    if (Provider.of<HomeViewModel>(context, listen: false).featuredDiscount.isNotEmpty)
+                      GameSectionHorizontal(title: 'Feature Discounts', gameList: Provider.of<HomeViewModel>(context, listen: false).featuredDiscount,),
+                            
                     // SizedBox(height: 32),
-                    // Text(
-                    //   'Categories',
-                    //   style: Theme.of(context).textTheme.displayLarge
-                    // ),
-                    // SizedBox(height: 16),
-                    // GenresGame(),
-              
-                    SizedBox(height: 32),
                     GameSectionHorizontal(title: 'Explore New Games', gameList: Provider.of<HomeViewModel>(context, listen: false).newReleases,),
 
-                    SizedBox(height: 32),
+                    // SizedBox(height: 32),
                     GameSectionHorizontal(title: 'Top Recommended Games', gameList: Provider.of<HomeViewModel>(context, listen: false).topRecommendedGames,),
 
-                    SizedBox(height: 32),
+                    // SizedBox(height: 32),
                     CategorySection(),
               
-                    const SizedBox(height: 96), // Extra space before footer
+                    const SizedBox(height: 64), // Extra space before footer
                   ],
                 ),
               ),

@@ -173,7 +173,7 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
                         color: theme.colorScheme.onPrimaryContainer,
                       ),
                     ),
-                    if (publisher?.description != null)
+                    // if (publisher?.description != null)
                       Text(
                         publisher!.description ?? 'No description provided',
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -386,16 +386,24 @@ class _PublisherDashboardScreenState extends State<PublisherDashboardScreen> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   spacing: 12,
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Text(
-                        notification.gameName ?? '',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            notification.gameName ?? '',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            notification.date.toString().split(' ')[0],
+                            style: theme.textTheme.bodyMedium
+                          )
+                        ],
                       ),
                     ),
 

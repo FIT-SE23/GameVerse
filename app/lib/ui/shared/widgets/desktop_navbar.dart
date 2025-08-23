@@ -132,15 +132,16 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
           Row(
             children: [
               _buildNavItem(context, Routes.home, 'Home', widget.currentLocation),
-              _buildNavItem(context, Routes.library, 'Library', widget.currentLocation),
+              if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.authenticated)
+                _buildNavItem(context, Routes.library, 'Library', widget.currentLocation),
               _buildNavItem(context, Routes.forums, 'Forums', widget.currentLocation),
               _buildNavItem(context, Routes.advancedSearch, 'Search', widget.currentLocation),
               // If the user type is operator, show the admin panel
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
                 _buildNavItem(context, Routes.operatorDashboard, 'Operator Dashboard', widget.currentLocation),
               // If the user type is publisher, show the publisher dashboard
-              if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
-                _buildNavItem(context, Routes.publisherDashboard, 'Publisher Dashboard', widget.currentLocation),
+              // if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'publisher')
+              //   _buildNavItem(context, Routes.publisherDashboard, 'Publisher Dashboard', widget.currentLocation),
             ],
           ),
           const SizedBox(width: 16),
@@ -346,6 +347,15 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
                     title: Text('Publisher Registration'),
                   ),
               ),
+              if (authProvider.user?.type == 'publisher')
+                const PopupMenuItem(
+                  value: 'publisher-dashboard',
+                  mouseCursor: SystemMouseCursors.click,
+                  child: ListTile(
+                    leading: Icon(Icons.dashboard_rounded),
+                    title: Text('Publisher Dashboard'),
+                  ),
+                ),
               const PopupMenuItem(
                 value: 'analytics',
                 mouseCursor: SystemMouseCursors.click,

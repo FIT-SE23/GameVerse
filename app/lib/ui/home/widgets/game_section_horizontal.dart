@@ -75,6 +75,16 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
               ),
             ),
           )
+
+        else if (status == HomeViewState.success && widget.gameList.isEmpty)
+          SizedBox(
+            height: 200,
+            child: Center(
+              child: Text(
+                'No games here'
+              )
+            ),
+          )
           
         else if (status == HomeViewState.success && widget.gameList.isNotEmpty)
           Column(
