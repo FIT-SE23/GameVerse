@@ -51,7 +51,7 @@ func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid st
 			"senderid":        userid,
 			"gameid":          item["sku"],
 			"paymentmethodid": paymentMethodId,
-			"moneyamount":     price,
+			"moneyamount":     price * 1000,
 			"isrefundable":    true,
 			"transactiondate": createDate,
 		}
