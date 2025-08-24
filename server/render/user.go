@@ -183,7 +183,15 @@ func verifyPasswordResetToken(c echo.Context, client *supabase.Client) error {
 	if err == nil {
 		client.From("Password_Reset_Token").Delete("", "").Eq("email", email).ExecuteString()
 	}
-	return err
+
+	rep, _, err := client.From("User").Select("userid", "", false).Eq("email", email).Execute()
+	var user map[string]string
+	err = json.Unmarshal([]byte(rep), &user)
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	return jsonResponse(c, http.StatusOK, "", user)
 }
 
 func verifyUserToken(c echo.Context) (string, error) {
