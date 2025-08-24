@@ -94,7 +94,7 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
     _onlyDiscounted = onlyDiscounted;
     _selectedCategories = selectedCategories;
     _sortCriteria = sortCriteria;
-    print("sort by: $_sortCriteria");
+    // print("sort by: $_sortCriteria");
     notifyListeners();
     
     try {

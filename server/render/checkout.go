@@ -105,7 +105,7 @@ func genCheckoutPage(info map[string]any) string {
     <style>
     @font-face {
     font-family: "Play";
-    src: url(/static/Play-Regular.ttf) format("truetype");
+		src: url(https://game-verse-bice.vercel.app/assets/assets/fonts/Play-Regular.ttf) format("truetype");
     }
     body {
     background-color: white;
@@ -141,7 +141,7 @@ func genCheckoutPage(info map[string]any) string {
   </head>
   <body>
     <div class="gray-box">
-      <img src="/static/logo.svg" alt="GameVerse's logo" width="50%%">
+      <img src="https://game-verse-bice.vercel.app/assets/assets/logo/logo_vertical_black.svg" alt="GameVerse's logo" width="50%%">
       %s
     </div>
     <p class="text" style="text-align: center">You can close this window or return to <a href="https://game-verse-bice.vercel.app/">homapage</a></p>

@@ -57,7 +57,10 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
         builder: (context, libraryViewModel, child) {
           final tabList = const [
             Tab(text: 'All Games'),
-            Tab(text: 'Owned'),
+            Tab(
+              key: ValueKey('owned_tab'),
+              text: 'Owned'
+            ),
             Tab(text: 'Downloaded'),
             Tab(text: 'Wishlist'),
           ];

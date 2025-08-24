@@ -47,6 +47,7 @@ class AddToCartButton extends StatelessWidget {
         return Tooltip(
           message: 'Add to cart',
           child: ElevatedButton(
+            key: ValueKey('add_to_cart_button'),
             onPressed: () => 
             {
               if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.unauthenticated) {

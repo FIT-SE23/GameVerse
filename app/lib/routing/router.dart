@@ -85,7 +85,7 @@ class AppRouter {
                 final selectedCategories = categoriesList.toSet();
                 final sortCriteria = state.uri.queryParameters['sortBy'] ?? '';
                 final onlyDiscounted = state.uri.queryParameters['onlyDiscounted'] ?? '0';
-                print("sort from uri: $sortCriteria");
+                // print("sort from uri: $sortCriteria");
 
                 if (sortCriteria.isEmpty) {
                   return AdvancedSearchScreen(titleQuery: titleQuery, selectedCategories: selectedCategories, onlyDiscounted: onlyDiscounted == '1',);

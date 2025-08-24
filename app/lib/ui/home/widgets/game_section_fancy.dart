@@ -171,6 +171,7 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                             children: List.generate(
                               widget.gameList.length,
                               (int index) => GameTitleCard(
+                                  key: ValueKey(widget.gameList[index].name),
                                   game: widget.gameList[index],
                                   index: index,
                                   selectedIndex: currentGameIndex,

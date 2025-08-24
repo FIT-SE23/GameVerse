@@ -79,6 +79,7 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 8),
           // Email field
           TextFormField(
+            key: ValueKey('email_field'),
             controller: _emailController,
             decoration: InputDecoration(
               labelText: 'Email',
@@ -116,6 +117,7 @@ class _LoginFormState extends State<LoginForm> {
           
           // Password field
           TextFormField(
+            key: ValueKey('password_field'),
             controller: _passwordController,
             decoration: InputDecoration(
               labelText: 'Password',
@@ -181,6 +183,7 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
+              key: ValueKey('confirm_login_button'),
               onPressed: _isLoading ? null : _handleLogin,
               child: const Text('Log in'),
             ),
