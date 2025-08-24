@@ -255,7 +255,7 @@ class GameApiClient {
     bool onSale,
   ) async {
     String sonSale = onSale ? '1' : '';
-    final raw = await http.get(
+    final raw = await _client.get(
       Uri.parse(
         "${ApiEndpoints.baseUrl}/search?entity=game&gamename=$gamename&sortby=$sortBy&start=$start&cnt=$cnt&categories=$categories&onsale=$sonSale",
       ),
@@ -275,8 +275,11 @@ class GameApiClient {
     );
 
     List<GameModel> games = <GameModel>[];
-    for (var json in response.data as List<dynamic>) {
-      games.add(jsonToGameModel(json as Map<String, dynamic>));
+
+    if (response.code == 200) {
+      for (var json in response.data as List<dynamic>) {
+        games.add(jsonToGameModel(json as Map<String, dynamic>));
+      }
     }
 
     return Response(code: response.code, message: response.message, data: games);
@@ -295,8 +298,11 @@ class GameApiClient {
     );
 
     List<CategoryModel> categories = [];
-    for (var json in response.data as List<dynamic>) {     
-      categories.add(_jsonToCategoryModel(json));
+
+    if (response.code == 200) {
+      for (var json in response.data as List<dynamic>) {     
+        categories.add(_jsonToCategoryModel(json));
+      }
     }
 
     return Response(code: response.code, message: response.message, data: categories);

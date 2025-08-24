@@ -39,6 +39,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
         SizedBox(
           height: 36,
           child: TextField(
+            key: ValueKey('game_title'),
             controller: _searchController,
             focusNode: _searchFocusNode,
             decoration: InputDecoration(
@@ -107,6 +108,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
           children: [
             for (String name in widget.viewModel.categoryMap.keys) 
               CategoryChip(
+                key: ValueKey(name),
                 name: name,
                 onSelect: () {
                   widget.viewModel.switchCategorySelectState(name);
