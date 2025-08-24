@@ -1,4 +1,5 @@
 import 'package:gameverse/ui/advanced_search/widgets/advanced_search_screen.dart';
+import 'package:gameverse/ui/policy/widgets/publisher_policy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/auth/view_model/auth_viewmodel.dart';
@@ -24,6 +25,8 @@ import 'package:gameverse/ui/policy/widgets/terms_of_service_screen.dart';
 import 'package:gameverse/ui/policy/widgets/privacy_policy_screen.dart';
 import 'package:gameverse/ui/policy/widgets/cookie_policy_screen.dart';
 import 'package:gameverse/ui/policy/widgets/eula_screen.dart';
+import 'package:gameverse/ui/policy/widgets/faqs_screen.dart';
+import 'package:gameverse/ui/policy/widgets/about_us_screen.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -183,7 +186,18 @@ class AppRouter {
               path: Routes.analytics,
               builder: (context, state) => const PlaytimeAnalysisScreen(),
             ),
-
+            GoRoute(
+              path: Routes.faqs,
+              builder: (context, state) => const FAQsScreen(),
+            ),
+            GoRoute(
+              path: Routes.aboutUs,
+              builder: (context, state) => const AboutUsScreen(),
+            ),
+            GoRoute(
+              path: Routes.publisherPolicy,
+              builder: (context, state) => const PublisherPolicyScreen(),
+            )
           ],
         ),
         // Auth routes

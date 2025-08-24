@@ -121,7 +121,7 @@ class WidePageFooter extends StatelessWidget {
                                 style: theme.textTheme.titleMedium,
                               ),
                               const SizedBox(height: 8),
-                              _buildFooterLink(context, 'About Us', Routes.about),
+                              _buildFooterLink(context, 'About Us', Routes.aboutUs),
                               _buildFooterLink(context, 'FAQs', Routes.faqs),
                             ],
                           ),

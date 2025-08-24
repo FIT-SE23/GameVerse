@@ -43,6 +43,11 @@ class _SignUpFormState extends State<SignupForm> {
       setState(() => _isLoading = true);
       
       try {
+        if (!_termsAccepted) {
+          _showErrorSnackBar('You must accept the terms to register.');
+          return;
+        }
+
         final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
         bool isRegistered = await authViewModel.register(
           _nameController.text.trim(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gameverse/ui/auth/widgets/forgot_password_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -153,7 +154,32 @@ class _LoginFormState extends State<LoginForm> {
               return null;
             },
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
+          
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                // Show forgot password dialog
+                showDialog(
+                  context: context,
+                  builder: (context) => const ForgotPasswordDialog(),
+                );
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(0, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Forgot Password?',
+                style: TextStyle(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
           
           // Login button
           SizedBox(
@@ -166,13 +192,6 @@ class _LoginFormState extends State<LoginForm> {
           
           const SizedBox(height: 16),
           
-          // Forgot password
-          TextButton(
-            onPressed: () {
-              // Implement forgot password
-            },
-            child: const Text('Forgot Password?'),
-          ),
         ],
       ),
     );

@@ -9,7 +9,7 @@ abstract final class Routes {
   static const forumPosts = '/forum-posts';
   static const profile = '/profile';
   static const settings = '/settings';
-  static const about = '/about';
+  static const aboutUs = '/about-us';
   static const transactions = '/transactions';
   static const contact = '/contact';
   static const authCallback = '/auth-callback';
@@ -22,5 +22,6 @@ abstract final class Routes {
   static const privacyPolicy = '/privacy-policy';
   static const termsOfService = '/terms-of-service';
   static const cookiesPolicy = '/cookies-policy';
+  static const publisherPolicy = '/publisher-policy';
   static const eula = '/eula';
 }

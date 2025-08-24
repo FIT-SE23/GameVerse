@@ -65,7 +65,7 @@ class AuthViewModel extends ChangeNotifier {
         if (provider == AuthProvider.server) {
           _errorMessage = 'Invalid email or password';
         } else {
-          _errorMessage = 'Login failed, you may need to register first';
+          _errorMessage = 'You are not registered. Please sign up first.';
         }
       }
 
@@ -115,6 +115,30 @@ class AuthViewModel extends ChangeNotifier {
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = 'Logout failed: $e';
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> resetPassword(String email) async {
+    try {
+      _status = AuthStatus.loading;
+      notifyListeners();
+      
+      // final success = await _authRepository.resetPassword(email);
+      // if (!success) {
+      //   _errorMessage = 'Failed to send reset email. Please try again.';
+      //   _status = AuthStatus.error;
+      //   notifyListeners();
+      //   return false;
+      // }
+      return true;
+    } catch (e) {
+      _status = AuthStatus.error;
+      _errorMessage = 'Password reset failed: $e';
+      debugPrint('Password reset failed: $e');
+      notifyListeners();
+      return false;
     } finally {
       notifyListeners();
     }
