@@ -58,7 +58,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.go('/login'),
+                              onPressed: () => {
+                                // Return to previous state
+                                if (_state == 'enterOtp') {
+                                  setState(() {
+                                    _state = 'requestEmail';
+                                    _errorMessage = '';
+                                  })
+                                } else if (_state == 'resetPassword') {
+                                  setState(() {
+                                    _state = 'enterOtp';
+                                    _errorMessage = '';
+                                  })
+                                } else {
+                                  context.go('/login')
+                                }
+                              },
                             ),
                             const SizedBox(width: 16),
                             Text(
@@ -138,9 +153,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Row(
       children: [
         _buildProgressStep(1, 'Email', _state == 'requestEmail'),
-        _buildProgressLine(),
+        _buildProgressLine(1),
         _buildProgressStep(2, 'Verify', _state == 'enterOtp'),
-        _buildProgressLine(),
+        _buildProgressLine(2),
         _buildProgressStep(3, 'Reset', _state == 'resetPassword'),
       ],
     );
@@ -189,7 +204,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             color: isActive 
               ? theme.colorScheme.primary
               : completedStep
-                ? theme.colorScheme.primary.withOpacity(0.7)
+                ? theme.colorScheme.primary.withValues(alpha: 0.7)
                 : theme.colorScheme.onSurfaceVariant,
             fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
           ),
@@ -198,8 +213,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
   
-  Widget _buildProgressLine() {
+  Widget _buildProgressLine(int step) {
     final theme = Theme.of(context);
+    if (_getStepValue(step) < _getStepValue(_getCurrentStep())) {
+      return Expanded(
+        child: Container(
+          height: 2,
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          color: theme.colorScheme.primary,
+        ),
+      );
+    }
     return Expanded(
       child: Container(
         height: 2,
@@ -376,7 +400,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         }
       } else if (_state == 'resetPassword') {
         final success = await authViewModel.resetPassword(
-          _emailController.text.trim(), 
           _newPasswordController.text.trim(),
         );
         if (success && mounted) {
@@ -442,6 +465,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           'Your password has been reset successfully. You can now login with your new password.'
         ),
         actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey,
+            ),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();

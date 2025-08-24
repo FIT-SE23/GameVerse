@@ -52,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
         if (!mounted) return;
         
         if (authViewModel.status == AuthStatus.authenticated) {
-          context.pop();
+          context.go(Routes.home);
         } else {
           _showErrorSnackBar(authViewModel.errorMessage);
         }

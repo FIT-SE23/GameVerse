@@ -228,4 +228,49 @@ class AuthRepository {
       return false;
     }
   }
+
+  Future<bool> requestPasswordResetEmail(String email) async {
+    try {
+      final Response result = await _apiClient.requestPasswordResetEmail(email);
+      if (result.code == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Request password reset email error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> verifyOtp(String email, int otp) async {
+    try {
+      final Response result = await _apiClient.verifyOtp(email, otp);
+      if (result.code == 200) {
+        _currentUser = UserModel(
+          id: result.data['userid'],
+          username: "",
+          email: email,
+          type: 'user',
+        );
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Verify OTP error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword(String password) async {
+    try {
+      final Response result = await _apiClient.resetPassword(currentUser!.id, password);
+      if (result.code == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Reset password error: $e');
+      return false;
+    }
+  }
 }

@@ -120,18 +120,18 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> resetPassword(String email, String newPassword) async {
+  Future<bool> resetPassword(String newPassword) async {
     try {
       _status = AuthStatus.loading;
       notifyListeners();
       
-      // final success = await _authRepository.resetPassword(email);
-      // if (!success) {
-      //   _errorMessage = 'Failed to send reset email. Please try again.';
-      //   _status = AuthStatus.error;
-      //   notifyListeners();
-      //   return false;
-      // }
+      final success = await _authRepository.resetPassword(newPassword);
+      if (!success) {
+        _errorMessage = 'Failed to send reset email. Please try again.';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
+      }
       return true;
     } catch (e) {
       _status = AuthStatus.error;
@@ -148,14 +148,13 @@ class AuthViewModel extends ChangeNotifier {
     try {
       _status = AuthStatus.loading;
       notifyListeners();
-      
-      // final success = await _authRepository.requestPasswordResetEmail(email);
-      // if (!success) {
-      //   _errorMessage = 'Failed to send reset email. Please try again.';
-      //   _status = AuthStatus.error;
-      //   notifyListeners();
-      //   return false;
-      // }
+      final success = await _authRepository.requestPasswordResetEmail(email);
+      if (!success) {
+        _errorMessage = 'Failed to send reset email. Please try again.';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
+      }
       return true;
     } catch (e) {
       _status = AuthStatus.error;
@@ -172,14 +171,17 @@ class AuthViewModel extends ChangeNotifier {
     try {
       _status = AuthStatus.loading;
       notifyListeners();
+      // Convert OTP to int and handle potential format errors
+      otp = otp.trim();
+      final intOtp = int.parse(otp);
       
-      // final success = await _authRepository.verifyOtp(email, otp);
-      // if (!success) {
-      //   _errorMessage = 'Invalid OTP. Please try again.';
-      //   _status = AuthStatus.error;
-      //   notifyListeners();
-      //   return false;
-      // }
+      final success = await _authRepository.verifyOtp(email, intOtp);
+      if (!success) {
+        _errorMessage = 'Invalid OTP. Please try again.';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
+      }
       return true;
     } catch (e) {
       _status = AuthStatus.error;
