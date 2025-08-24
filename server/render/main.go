@@ -64,7 +64,7 @@ func main() {
 		return getUser(c, client)
 	})
 	e.PATCH("/user/:id", func(c echo.Context) error {
-		return jsonResponse(c, http.StatusBadRequest, "Unsupported request", "")
+		return updateUser(c, client)
 	})
 	e.GET("/user/:id/library", func(c echo.Context) error {
 		userid := c.Param("id")

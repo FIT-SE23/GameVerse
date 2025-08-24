@@ -386,8 +386,10 @@ func updateUser(c echo.Context, client *supabase.Client) error {
 	}
 
 	updates := map[string]any{}
-	hashPassword := c.FormValue("hashpassword")
-	if hashPassword != "" {
+	password := c.FormValue("password")
+	if password != "" {
+		checkSum := sha256.Sum256([]byte(password))
+		hashPassword := hex.EncodeToString(checkSum[:])
 		updates["hashpassword"] = hashPassword
 	}
 
