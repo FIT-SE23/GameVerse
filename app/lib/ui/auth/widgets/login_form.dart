@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gameverse/ui/auth/widgets/forgot_password_dialog.dart';
+import 'package:gameverse/routing/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -52,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
         if (!mounted) return;
         
         if (authViewModel.status == AuthStatus.authenticated) {
-          context.pop();
+          context.go(Routes.home);
         } else {
           _showErrorSnackBar(authViewModel.errorMessage);
         }
@@ -162,11 +162,7 @@ class _LoginFormState extends State<LoginForm> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                // Show forgot password dialog
-                showDialog(
-                  context: context,
-                  builder: (context) => const ForgotPasswordDialog(),
-                );
+                context.push(Routes.forgotPassword);
               },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,

@@ -125,6 +125,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
           const SizedBox(height: 8),
           // Cancel button to stop the download
           ElevatedButton(
+            key: ValueKey('cancel_button'),
             onPressed: () {
               _cancelToken?.cancel('User canceled download');
               setState(() {
@@ -181,7 +182,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
           LinearProgressIndicator(value: _downloadProgress),
           const SizedBox(height: 8),
           Text(
-            'Download paused (${_completedFiles}/${_totalFiles} files)',
+            'Download paused ($_completedFiles/$_totalFiles files)',
             style: theme.textTheme.bodySmall,
           ),
           const SizedBox(height: 8),
@@ -189,6 +190,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
             children: [
               Expanded(
                 child: ElevatedButton.icon(
+                  key: ValueKey('resume_button'),
                   onPressed: () => _resumeDownload(context),
                   icon: const Icon(Icons.play_arrow),
                   label: const Text('Resume Download'),
@@ -210,6 +212,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
+        key: ValueKey('downdload_button'),
         onPressed: widget.game.binaries?.isNotEmpty == true
             ? () => _downloadGame(context)
             : null,

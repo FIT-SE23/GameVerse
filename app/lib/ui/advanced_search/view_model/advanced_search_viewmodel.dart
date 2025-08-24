@@ -49,7 +49,7 @@ class AdvancedSearchViewmodel extends ChangeNotifier {
   Set<String> _selectedCategories = {};
   Set<String> get selectedCategories => _selectedCategories;
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   List<GameModel> _games = [];

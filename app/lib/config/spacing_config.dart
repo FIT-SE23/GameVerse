@@ -20,6 +20,12 @@ const int minCardPerRow = 2;
 
 const double backgroundKeyArtHeight = 640;
 
+int cardPerRow(BuildContext context) {
+  int cardPerRow = min(((screenWidth(context) - 2 * negativeSpaceWidth(context) + spaceCardHorizontal) / (minCardWidth + spaceCardHorizontal)).toInt(), maxCardPerRow);
+  cardPerRow = max(cardPerRow, minCardPerRow);
+  return cardPerRow;
+}
+
 double cardWidth(BuildContext context) {
   int cardPerRow = min(((screenWidth(context) - 2 * negativeSpaceWidth(context) + spaceCardHorizontal) / (minCardWidth + spaceCardHorizontal)).toInt(), maxCardPerRow);
   cardPerRow = max(cardPerRow, minCardPerRow);

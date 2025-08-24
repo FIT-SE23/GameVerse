@@ -69,7 +69,6 @@ class AuthApiClient {
   // Verify token is still valid
   Future<bool> verifyToken(String token) async {
     try {
-      // You'll need to add a token verification endpoint on your server
       final response = await _client.get(
         Uri.parse('${ApiEndpoints.baseUrl}/verify-token'),
         headers: {
@@ -106,5 +105,56 @@ class AuthApiClient {
       debugPrint('OAuth token verification error: $e');
       return Response(code: 500, message: 'Internal Server Error', data: {});
     }
+  }
+
+  Future<Response> requestPasswordResetEmail(String email) async {
+    final raw = await _client.get(
+      Uri.parse('${ApiEndpoints.baseUrl}/recover?email=$email'),
+    );
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    return response;
+  }
+
+  Future<Response> verifyOtp(String email, int otp) async {
+    final raw = await _client.get(
+      Uri.parse('${ApiEndpoints.baseUrl}/verify?email=$email&otp=$otp'),
+    );
+
+    try {
+      final response = Response.fromJson(
+        raw.statusCode,
+        jsonDecode(raw.body) as Map<String, dynamic>,
+      );
+      return response;
+    } catch (e) {
+      debugPrint('Error parsing OTP verification response: $e');
+      return Response(code: 500, message: 'Internal Server Error', data: {});
+    }
+  }
+
+  Future<Response> resetPassword(String userid, String newPassword) async {
+    final bytePassword = utf8.encode(newPassword);
+    final hashPassword = sha256.convert(bytePassword).toString();
+
+    final raw = await _client.patch(
+      Uri.parse('${ApiEndpoints.baseUrl}/user/$userid'),
+      body: <String, String>{
+        "password": hashPassword,
+      },
+    );
+
+    final response = Response.fromJson(
+      raw.statusCode,
+      jsonDecode(raw.body) as Map<String, dynamic>,
+    );
+
+    debugPrint('Reset password response: ${response.toString()}');
+
+    return response;
   }
 }

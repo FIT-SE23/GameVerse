@@ -288,7 +288,7 @@ class _GameRequestDetailState extends State<GameRequestDetail> with SingleTicker
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: theme.colorScheme.surfaceVariant,
+                            color: theme.colorScheme.surfaceContainerHighest,
                             child: Center(
                               child: Icon(
                                 Icons.image_not_supported,

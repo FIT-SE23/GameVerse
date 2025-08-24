@@ -120,23 +120,73 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> resetPassword(String email) async {
+  Future<bool> resetPassword(String newPassword) async {
     try {
       _status = AuthStatus.loading;
       notifyListeners();
       
-      // final success = await _authRepository.resetPassword(email);
-      // if (!success) {
-      //   _errorMessage = 'Failed to send reset email. Please try again.';
-      //   _status = AuthStatus.error;
-      //   notifyListeners();
-      //   return false;
-      // }
+      final success = await _authRepository.resetPassword(newPassword);
+      if (!success) {
+        _errorMessage = 'Failed to send reset email. Please try again.';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
+      }
       return true;
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = 'Password reset failed: $e';
       debugPrint('Password reset failed: $e');
+      notifyListeners();
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> requestEmail(String email) async {
+    try {
+      _status = AuthStatus.loading;
+      notifyListeners();
+      final success = await _authRepository.requestPasswordResetEmail(email);
+      if (!success) {
+        _errorMessage = 'Failed to send reset email. Please try again.';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
+      }
+      return true;
+    } catch (e) {
+      _status = AuthStatus.error;
+      _errorMessage = 'Requesting reset email failed: $e';
+      debugPrint('Requesting reset email failed: $e');
+      notifyListeners();
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> verifyOtp(String email, String otp) async {
+    try {
+      _status = AuthStatus.loading;
+      notifyListeners();
+      // Convert OTP to int and handle potential format errors
+      otp = otp.trim();
+      final intOtp = int.parse(otp);
+      
+      final success = await _authRepository.verifyOtp(email, intOtp);
+      if (!success) {
+        _errorMessage = 'Invalid OTP. Please try again.';
+        _status = AuthStatus.error;
+        notifyListeners();
+        return false;
+      }
+      return true;
+    } catch (e) {
+      _status = AuthStatus.error;
+      _errorMessage = 'OTP verification failed: $e';
+      debugPrint('OTP verification failed: $e');
       notifyListeners();
       return false;
     } finally {
