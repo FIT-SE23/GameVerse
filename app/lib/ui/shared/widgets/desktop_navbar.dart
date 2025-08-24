@@ -138,7 +138,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
               if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.authenticated)
                 _buildNavItem(context, Routes.library, 'Library', widget.currentLocation, key: ValueKey('library_button')),
               _buildNavItem(context, Routes.forums, 'Forums', widget.currentLocation),
-              _buildNavItem(context, Routes.advancedSearch, 'Search', widget.currentLocation),
+              _buildNavItem(context, Routes.advancedSearch, 'Search', widget.currentLocation, key: ValueKey('search_button')),
               // If the user type is operator, show the admin panel
               if (Provider.of<AuthViewModel>(context, listen: false).user?.type == 'operator')
                 _buildNavItem(context, Routes.operatorDashboard, 'Operator Dashboard', widget.currentLocation),
