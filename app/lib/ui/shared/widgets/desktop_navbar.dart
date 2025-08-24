@@ -307,7 +307,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
                 authProvider.logout(context);
                 await Future.delayed(const Duration(milliseconds: 1000));
                 if (context.mounted) {
-                  context.push('/login');
+                  context.go('/');
                 }
               }
               else {
