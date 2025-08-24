@@ -48,6 +48,18 @@ func main() {
 		return addUser(c, client)
 	})
 
+	e.GET("/recover", func(c echo.Context) error {
+		return recoverPassword(c, client)
+	})
+	e.GET("/verify", func(c echo.Context) error {
+		err := verifyPasswordResetToken(c, client)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		}
+
+		return jsonResponse(c, http.StatusOK, "", "")
+	})
+
 	e.GET("/user/:id", func(c echo.Context) error {
 		return getUser(c, client)
 	})

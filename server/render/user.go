@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -85,6 +89,30 @@ func createUserToken(userid string) string {
 	return token
 }
 
+func createPasswordResetToken(email string) string {
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"email":      email,
+			"authorized": true,
+			"exp":        time.Now().Add(time.Minute * 10).Unix(),
+		})
+
+	gvSecret := os.Getenv("GV_SERECT")
+	token, _ := claims.SignedString([]byte(gvSecret))
+	return token
+}
+
+func createPasswordResetOTP(email string) string {
+	const digits = "0123456789"
+	const otpLen = 6
+	code := make([]byte, otpLen)
+	_, _ = rand.Read(code)
+	for i := range code {
+		code[i] = digits[int(code[i])%10]
+	}
+	return string(code)
+}
+
 func verifyOAuthToken(c echo.Context, client *supabase.Client) error {
 	header := c.Request().Header
 	auth := header["Authorization"]
@@ -143,6 +171,21 @@ func verifyToken(c echo.Context) error {
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
+func verifyPasswordResetToken(c echo.Context, client *supabase.Client) error {
+	// email := c.FormValue("email")
+	// otp := c.FormValue("otp")
+	email := c.QueryParam("email")
+	otp := c.QueryParam("otp")
+
+	now := time.Now().UTC().Format("2006-01-02 15:04:05")
+	fmt.Println("Now", now)
+	_, _, err := client.From("Password_Reset_Token").Select("", "", false).Eq("email", email).Eq("otp", otp).Gte("expiredtime", now).Single().Execute()
+	if err == nil {
+		client.From("Password_Reset_Token").Delete("", "").Eq("email", email).ExecuteString()
+	}
+	return err
+}
+
 func verifyUserToken(c echo.Context) (string, error) {
 	header := c.Request().Header
 	auth := header["Authorization"]
@@ -191,7 +234,6 @@ func login(c echo.Context, client *supabase.Client) error {
 	hashPassword := hex.EncodeToString(checkSum[:])
 	rep, _, err := client.From("User").Select("userid, type", "", false).Eq("email", email).Eq("hashpassword", hashPassword).Single().ExecuteString()
 	if err != nil {
-
 		return jsonResponse(c, http.StatusBadRequest, "Invalid email or password" /*err.Error()*/, "")
 	}
 
@@ -296,7 +338,6 @@ func addPlaytimeData(c echo.Context, client *supabase.Client) error {
 }
 
 func getPlaytimeData(c echo.Context, client *supabase.Client, userid string) error {
-
 	startDate := c.QueryParam("startDate")
 	endDate := c.QueryParam("endDate")
 
@@ -324,4 +365,143 @@ func getPlaytimeData(c echo.Context, client *supabase.Client, userid string) err
 	}
 
 	return jsonResponse(c, http.StatusOK, "", playtimeData)
+}
+
+func updateUser(c echo.Context, client *supabase.Client) error {
+	userid := c.Param("id")
+
+	rep, _, err := client.From("User").Select("userid", "", false).Eq("userid", userid).Single().ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusNotFound, "User not found!", err.Error())
+	}
+
+	var userData map[string]any
+	if err := json.Unmarshal([]byte(rep), &userData); err != nil {
+		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse game data!", err.Error())
+	}
+
+	userID, ok := userData["userid"].(string)
+	if !ok || userID == "" {
+		return jsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
+	}
+
+	updates := map[string]any{}
+	hashPassword := c.FormValue("hashpassword")
+	if hashPassword != "" {
+		updates["hashpassword"] = hashPassword
+	}
+
+	if len(updates) > 0 {
+		_, _, err := client.From("User").Update(updates, "", "").Eq("userid", userid).ExecuteString()
+		if err != nil {
+			return jsonResponse(c, http.StatusInternalServerError, "Failed to update user information", err.Error())
+		}
+	}
+
+	return jsonResponse(c, http.StatusOK, "", "")
+}
+
+func recoverPassword(c echo.Context, client *supabase.Client) error {
+	email := c.QueryParam("email")
+	otp := createPasswordResetOTP(email)
+
+	_, _, err := client.From("Password_Reset_Token").Upsert(map[string]string{"email": email, "otp": otp, "expiredtime": time.Now().Add(time.Minute * 10).Format(time.RFC3339)}, "", "", "").ExecuteString()
+	if err != nil {
+		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+	}
+
+	htmlTemplate := `<!DOCTYPE html>
+		<html>
+		<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Password reset token</title>
+		<style>
+		@font-face {
+		font-family: "Play";
+		src: url(https://game-verse-bice.vercel.app/assets/assets/fonts/Play-Regular.ttf) format("truetype");
+		}
+		body {
+		background-color: white;
+		}
+		.gray-box {
+		background-color: #eaeaea;
+		border-radius: 25px;
+		width: 80%;
+		text-align:center;
+		margin: 0 auto;
+		padding: 4% 4% 4% 4%;
+		}
+		.text {
+		color: black;
+		font-family: "Play", sans-serif;
+		}
+		.normal {
+		font-size: 20px;
+		text-align: left;
+		}
+		.bold {
+		font-size: 32px;
+		font-weight: bold;
+		}
+		.otp {
+		margin-top:48px;
+		display:inline-block;
+		font-size:36px;
+		font-weight:700;
+		letter-spacing:24px;
+		color:#fff;
+		background-color:#0b57d0;
+		padding:18px 24px 18px 24px;
+		padding-right: 0px;
+		border-radius:12px;
+		}
+		</style>
+		</head>
+		<body>
+		<div class="gray-box">
+		<!--<div style="background-image:url(https://game-verse-bice.vercel.app/assets/assets/logo/logo_vertical_black.svg" alt="GameVerse's logo" width="50%"> -->
+		<p class="text bold">Password reset</p>
+		`
+	htmlTemplate += fmt.Sprintf(`<p class="text normal left">Hello,</p>
+		<p class="text normal">You are receiving this email because a password reset was requested for your account.</p>
+		<p class="text normal">To proceed with updating your password, please use the one-time password (OTP) below. This code is valid for 10 minutes.</p>
+		<div class="otp">%s</div>
+		<p class="text" style="text-align: center;font-size: 14px;color: gray">If you didn’t request this token, you can safely ignore this email.</p>
+			`, otp)
+
+	htmlTemplate += `		</div>
+		</body>
+		</html>
+		`
+
+	apiKey := os.Getenv("RESEND_KEY")
+	mailContent := map[string]any{
+		"from":    "GameVerse <gameverse@spoonie.tech>",
+		"to":      []string{email},
+		"subject": "Your OTP code",
+		"html":    htmlTemplate,
+	}
+
+	body, _ := json.Marshal(mailContent)
+	req, _ := http.NewRequestWithContext(context.Background(),
+		http.MethodPost, "https://api.resend.com/emails", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Idempotency-Key", fmt.Sprintf("otp-%d", time.Now().UnixNano()))
+
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	res, err := httpClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	body, _ = io.ReadAll(res.Body)
+	if res.StatusCode != http.StatusOK {
+		return jsonResponse(c, http.StatusBadRequest, "Send failed", string(body))
+	}
+	fmt.Println("Sent:", string(body))
+
+	return jsonResponse(c, http.StatusOK, "", "An email has sent to email "+email)
 }
