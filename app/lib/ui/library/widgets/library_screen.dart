@@ -23,6 +23,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   late TabController _tabController;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
     _searchController.dispose();
     _searchFocusNode.dispose();
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -52,267 +54,281 @@ class _LibraryScreenState extends State<LibraryScreen> with TickerProviderStateM
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Consumer<LibraryViewModel>(
-        builder: (context, libraryViewModel, child) {
-          final tabList = const [
-            Tab(text: 'All Games'),
-            Tab(
-              key: ValueKey('owned_tab'),
-              text: 'Owned'
-            ),
-            Tab(text: 'Downloaded'),
-            Tab(text: 'Wishlist'),
-          ];
-
-          final gameLists = [
-            libraryViewModel.filteredGames,
-            libraryViewModel.ownedGames,
-            libraryViewModel.downloadedGames,
-            libraryViewModel.wishlistGames,
-          ];
-
-          return Column(
-            children: [
-              Padding(
-                padding: getNegativeSpacePadding(context),
-                child: Column(
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 64),
-                    // Header Section
-                    SizedBox(
-                      // decoration: BoxDecoration(
-                      //   color: theme.cardColor,
-                      //   boxShadow: [
-                      //     BoxShadow(
-                      //       color: Colors.black.withValues(alpha: 0.1),
-                      //       blurRadius: 8,
-                      //       offset: const Offset(0, 2),
-                      //     ),
-                      //   ],
-                      // ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Title and Stats
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Scrollbar(
+      key: ValueKey('library_scrollbar'),
+      controller: _scrollController,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Consumer<LibraryViewModel>(
+          builder: (context, libraryViewModel, child) {
+            final tabList = const [
+              Tab(
+                key: ValueKey('all_games_tab'),
+                text: 'All Games'
+              ),
+              Tab(
+                key: ValueKey('owned_tab'),
+                text: 'Owned'
+              ),
+              Tab(
+                key: ValueKey('downloaded_tab'),
+                text: 'Downloaded'
+              ),
+              Tab(
+                key: ValueKey('wishlist_tab'),
+                text: 'Wishlist'
+              ),
+            ];
+      
+            final gameLists = [
+              libraryViewModel.filteredGames,
+              libraryViewModel.ownedGames,
+              libraryViewModel.downloadedGames,
+              libraryViewModel.wishlistGames,
+            ];
+      
+            return Column(
+              children: [
+                Padding(
+                  padding: getNegativeSpacePadding(context),
+                  child: Column(
+                    // mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 64),
+                      // Header Section
+                      SizedBox(
+                        // decoration: BoxDecoration(
+                        //   color: theme.cardColor,
+                        //   boxShadow: [
+                        //     BoxShadow(
+                        //       color: Colors.black.withValues(alpha: 0.1),
+                        //       blurRadius: 8,
+                        //       offset: const Offset(0, 2),
+                        //     ),
+                        //   ],
+                        // ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title and Stats
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Your Library',
+                                        style: theme.textTheme.displayLarge,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '${libraryViewModel.games.length} games • ${libraryViewModel.downloadedCount} downloaded',
+                                        style: theme.textTheme.bodyLarge?.copyWith(
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 24),
+                            
+                            // Search Bar
+                            Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _searchFocusNode.hasFocus 
+                                      ? theme.colorScheme.primary 
+                                      : Colors.transparent,
+                                  width: 2,
+                                ),
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                focusNode: _searchFocusNode,
+                                decoration: InputDecoration(
+                                  hintText: 'Search your games...',
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: theme.colorScheme.onSurfaceVariant
+                                  ),
+                                  suffixIcon: _searchController.text.isNotEmpty
+                                      ? IconButton(
+                                          icon: const Icon(Icons.clear),
+                                          onPressed: () {
+                                            _searchController.clear();
+                                            libraryViewModel.searchGames('');
+                                          },
+                                        )
+                                      : null,
+                                  border: InputBorder.none,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
+                                    borderRadius: BorderRadius.circular(6)
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
+                                    borderRadius: BorderRadius.circular(6)
+                                  ),
+                                  filled: false,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                onChanged: libraryViewModel.searchGames,
+                              ),
+                            ),
+                            
+                            const SizedBox(height: 16),
+                            
+                            // Tags Filter
+                            if (libraryViewModel.availableTags.isNotEmpty) ...[
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
                                   children: [
-                                    Text(
-                                      'Your Library',
-                                      style: theme.textTheme.displayLarge,
+                                    _TagChip(
+                                      label: 'All',
+                                      isSelected: libraryViewModel.selectedTags.isEmpty,
+                                      onTap: () => libraryViewModel.clearTagFilters(),
                                     ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      '${libraryViewModel.games.length} games • ${libraryViewModel.downloadedCount} downloaded',
-                                      style: theme.textTheme.bodyLarge?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
+                                    const SizedBox(width: 8),
+                                    ...libraryViewModel.availableTags.map(
+                                      (tag) => Padding(
+                                        padding: const EdgeInsets.only(right: 8),
+                                        child: _TagChip(
+                                          label: tag,
+                                          isSelected: libraryViewModel.selectedTags.contains(tag),
+                                          onTap: () => libraryViewModel.toggleTag(tag),
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 16),
                             ],
-                          ),
-                          
-                          const SizedBox(height: 24),
-                          
-                          // Search Bar
-                          Container(
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _searchFocusNode.hasFocus 
-                                    ? theme.colorScheme.primary 
-                                    : Colors.transparent,
-                                width: 2,
-                              ),
+                            
+                            // Category Tabs
+                            TabBar(
+                              controller: _tabController,
+                              isScrollable: true,
+                              tabAlignment: TabAlignment.start,
+                              // onTap: libraryViewModel.setActiveCategory,
+                              onTap: (int index) {
+                                setState(() {});
+                              },
+                              tabs: tabList,
+                              labelColor: AppTheme.currentThemeColors(theme.brightness).getCyan,
+                              unselectedLabelColor: AppTheme.currentThemeColors(theme.brightness).getText,
                             ),
-                            child: TextField(
-                              controller: _searchController,
-                              focusNode: _searchFocusNode,
-                              decoration: InputDecoration(
-                                hintText: 'Search your games...',
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: theme.colorScheme.onSurfaceVariant
-                                ),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.clear),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          libraryViewModel.searchGames('');
-                                        },
-                                      )
-                                    : null,
-                                border: InputBorder.none,
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getText),
-                                  borderRadius: BorderRadius.circular(6)
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: AppTheme.currentThemeColors(theme.brightness).getCyan),
-                                  borderRadius: BorderRadius.circular(6)
-                                ),
-                                filled: false,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
-                                ),
-                              ),
-                              onChanged: libraryViewModel.searchGames,
-                            ),
-                          ),
-                          
-                          const SizedBox(height: 16),
-                          
-                          // Tags Filter
-                          if (libraryViewModel.availableTags.isNotEmpty) ...[
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  _TagChip(
-                                    label: 'All',
-                                    isSelected: libraryViewModel.selectedTags.isEmpty,
-                                    onTap: () => libraryViewModel.clearTagFilters(),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  ...libraryViewModel.availableTags.map(
-                                    (tag) => Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: _TagChip(
-                                        label: tag,
-                                        isSelected: libraryViewModel.selectedTags.contains(tag),
-                                        onTap: () => libraryViewModel.toggleTag(tag),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
                           ],
-                          
-                          // Category Tabs
-                          TabBar(
-                            controller: _tabController,
-                            isScrollable: true,
-                            tabAlignment: TabAlignment.start,
-                            // onTap: libraryViewModel.setActiveCategory,
-                            onTap: (int index) {
-                              setState(() {});
-                            },
-                            tabs: tabList,
-                            labelColor: AppTheme.currentThemeColors(theme.brightness).getCyan,
-                            unselectedLabelColor: AppTheme.currentThemeColors(theme.brightness).getText,
+                        ),
+                      ),
+                        
+                      const SizedBox(height: 8),
+                      
+                      // View Mode Toggle
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              children: [
+                                _ViewToggleButton(
+                                  icon: Icons.view_list,
+                                  isSelected: libraryViewModel.viewMode == LibraryViewMode.list,
+                                  onTap: () => libraryViewModel.setViewMode(LibraryViewMode.list),
+                                ),
+                                _ViewToggleButton(
+                                  icon: Icons.grid_view,
+                                  isSelected: libraryViewModel.viewMode == LibraryViewMode.grid,
+                                  onTap: () => libraryViewModel.setViewMode(LibraryViewMode.grid),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                      
-                    const SizedBox(height: 8),
-                    
-                    // View Mode Toggle
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            children: [
-                              _ViewToggleButton(
-                                icon: Icons.view_list,
-                                isSelected: libraryViewModel.viewMode == LibraryViewMode.list,
-                                onTap: () => libraryViewModel.setViewMode(LibraryViewMode.list),
-                              ),
-                              _ViewToggleButton(
-                                icon: Icons.grid_view,
-                                isSelected: libraryViewModel.viewMode == LibraryViewMode.grid,
-                                onTap: () => libraryViewModel.setViewMode(LibraryViewMode.grid),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-                
-                    // Games Content
-                    libraryViewModel.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : libraryViewModel.filteredGames.isEmpty
-                            ? _buildEmptyState(context)
-                            : AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                transitionBuilder: (Widget child, Animation<double> animation) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                                child: Container(
-                                  key: ValueKey(_tabController.index),
-                                  constraints: BoxConstraints(minHeight: 320),
-                                  child: _buildGamesList(gameLists[_tabController.index], libraryViewModel.viewMode),
+      
+                      const SizedBox(height: 16),
+                  
+                      // Games Content
+                      libraryViewModel.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : libraryViewModel.filteredGames.isEmpty
+                              ? _buildEmptyState(context)
+                              : AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  transitionBuilder: (Widget child, Animation<double> animation) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                  child: Container(
+                                    key: ValueKey(_tabController.index),
+                                    constraints: BoxConstraints(minHeight: 320),
+                                    child: _buildGamesList(gameLists[_tabController.index], libraryViewModel.viewMode),
+                                  ),
                                 ),
-                              ),
-                
-                    // Load more button
-                    // if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)
-                    // Padding(
-                    //   padding: const EdgeInsets.all(16),
-                    //   child: Column(
-                    //     children: [
-                    //       ElevatedButton(
-                    //         onPressed: () {
-                    //           // Load more functionality can be implemented here
-                    //           debugPrint('Load more games');
-                    //         },
-                    //         style: ElevatedButton.styleFrom(
-                    //           minimumSize: const Size(200, 60),
-                    //           shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(8),
-                    //           ),
-                    //         ),
-                    //         child: Column(
-                    //           children: [
-                    //             const Text('Load More'),
-                    //             const SizedBox(height: 4),
-                    //             Icon(
-                    //               Icons.arrow_downward,
-                    //               size: 20,
-                    //               color: Theme.of(context).colorScheme.onPrimary,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-
-                    const SizedBox(height: 96),
-                  ],
+                  
+                      // Load more button
+                      // if (libraryViewModel.filteredGames.isNotEmpty && !libraryViewModel.isLoading)
+                      // Padding(
+                      //   padding: const EdgeInsets.all(16),
+                      //   child: Column(
+                      //     children: [
+                      //       ElevatedButton(
+                      //         onPressed: () {
+                      //           // Load more functionality can be implemented here
+                      //           debugPrint('Load more games');
+                      //         },
+                      //         style: ElevatedButton.styleFrom(
+                      //           minimumSize: const Size(200, 60),
+                      //           shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(8),
+                      //           ),
+                      //         ),
+                      //         child: Column(
+                      //           children: [
+                      //             const Text('Load More'),
+                      //             const SizedBox(height: 4),
+                      //             Icon(
+                      //               Icons.arrow_downward,
+                      //               size: 20,
+                      //               color: Theme.of(context).colorScheme.onPrimary,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+      
+                      const SizedBox(height: 96),
+                    ],
+                  ),
                 ),
-              ),
-
-              PageFooter()
-            ],
-          );
-        },
+      
+                PageFooter()
+              ],
+            );
+          },
+        ),
       ),
     );
   }

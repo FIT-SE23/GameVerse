@@ -134,9 +134,9 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
           // Navigation items
           Row(
             children: [
-              _buildNavItem(context, Routes.home, 'Home', widget.currentLocation),
+              _buildNavItem(context, Routes.home, 'Home', widget.currentLocation, key: ValueKey('home_button')),
               if (Provider.of<AuthViewModel>(context, listen: false).status == AuthStatus.authenticated)
-                _buildNavItem(context, Routes.library, 'Library', widget.currentLocation),
+                _buildNavItem(context, Routes.library, 'Library', widget.currentLocation, key: ValueKey('library_button')),
               _buildNavItem(context, Routes.forums, 'Forums', widget.currentLocation),
               _buildNavItem(context, Routes.advancedSearch, 'Search', widget.currentLocation),
               // If the user type is operator, show the admin panel
@@ -427,7 +427,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
   }
 
     // Desktop navigation item
-  Widget _buildNavItem(BuildContext context, String route, String title, String currentLocation) {
+  Widget _buildNavItem(BuildContext context, String route, String title, String currentLocation, {Key? key}) {
     // Check inside the current location to see if route is present
     bool isSelected = currentLocation.contains(route);
     if (route == '/' && currentLocation != '/') {
@@ -445,7 +445,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
         ),
       ),
       child: InkWell(
-        key: ValueKey('library_button'),
+        key: key,
         onTap: () => context.push(route),
         borderRadius: BorderRadius.circular(8),
         child: Container(

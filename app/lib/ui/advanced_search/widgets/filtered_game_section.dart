@@ -56,6 +56,7 @@ class _FilteredGameSectionState extends State<FilteredGameSection> {
               ),
               constraints: BoxConstraints(maxHeight: 200, maxWidth: 200),
               child: DropdownButton<String>(
+                key: ValueKey('sort_by_menu'),
                 focusColor: Colors.transparent,
                 isDense: true,
                 value: sortCriteria,
@@ -70,6 +71,7 @@ class _FilteredGameSectionState extends State<FilteredGameSection> {
                 ),
                 items: [
                   DropdownMenuItem(
+                    key: ValueKey(GameSortCriteria.popularity),
                     value: GameSortCriteria.popularity,
                     child: Text(
                       GameSortCriteria.popularityDisplay,
@@ -77,6 +79,7 @@ class _FilteredGameSectionState extends State<FilteredGameSection> {
                     ), 
                   ),
                   DropdownMenuItem(
+                    key: ValueKey(GameSortCriteria.date),
                     value: GameSortCriteria.date,
                     child: Text(
                       GameSortCriteria.dateDisplay,
@@ -84,6 +87,7 @@ class _FilteredGameSectionState extends State<FilteredGameSection> {
                     ), 
                   ),
                   DropdownMenuItem(
+                    key: ValueKey(GameSortCriteria.recommend),
                     value: GameSortCriteria.recommend,
                     child: Text(
                       GameSortCriteria.recommendDisplay,
@@ -91,6 +95,7 @@ class _FilteredGameSectionState extends State<FilteredGameSection> {
                     ), 
                   ),
                   DropdownMenuItem(
+                    key: ValueKey(GameSortCriteria.price),
                     value: GameSortCriteria.price,
                     child: Text(
                       GameSortCriteria.priceDisplay,

@@ -240,6 +240,15 @@ func getAccessToken(id string, secret string) string {
 }
 
 func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
+	test := os.Getenv("test")
+	if test != "" {
+		url := "https://example.com"
+		if test != "REDIRECT" {
+			url = ""
+		}
+		return jsonResponse(c, http.StatusBadRequest, "Test", url)
+	}
+
 	serverURL := os.Getenv("SERVER_URL")
 	if serverURL == "" {
 		serverURL = "http://localhost:1323/"
@@ -394,6 +403,14 @@ func checkPaypalPaymentIdValid(accessToken string, paymentId string) (bool, erro
 }
 
 func checkoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]any) {
+	test := os.Getenv("test")
+	if test != "" {
+		status := http.StatusOK
+		if test != "REDIRECT" {
+			status = http.StatusBadRequest
+		}
+		return status, nil
+	}
 	payerId := c.QueryParam("PayerID")
 	paymentId := c.QueryParam("paymentId")
 	id := os.Getenv("PP_ID")
@@ -466,6 +483,14 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]an
 }
 
 func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) error {
+	test := os.Getenv("test")
+	if test != "" {
+		url := "https://example.com"
+		if test != "REDIRECT" {
+			url = ""
+		}
+		return jsonResponse(c, http.StatusBadRequest, "Test", url)
+	}
 	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
@@ -649,6 +674,14 @@ func checkVNPPaymentIdValid(c echo.Context) (bool, error) {
 }
 
 func checkoutVnpay(c echo.Context, client *supabase.Client) (int, map[string]any) {
+	test := os.Getenv("test")
+	if test != "" {
+		status := http.StatusOK
+		if test != "REDIRECT" {
+			status = http.StatusBadRequest
+		}
+		return status, nil
+	}
 	responseCode := c.QueryParam("vnp_ResponseCode")
 	if responseCode == "00" {
 		txnRef := c.QueryParam("vnp_TxnRef")
