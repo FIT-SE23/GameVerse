@@ -272,6 +272,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
       builder: (context, authProvider, _) {
         if (authProvider.status == AuthStatus.authenticated) {
           return PopupMenuButton<String>(
+            key: ValueKey('user_menu'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
@@ -323,6 +324,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
                 ),
               ),
               const PopupMenuItem(
+                key: ValueKey('menu_transaction'),
                 value: 'transactions',
                 mouseCursor: SystemMouseCursors.click,
                 child: ListTile(
@@ -380,6 +382,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
             mainAxisSize: MainAxisSize.min,
             children: [
               OutlinedButton(
+                key: const ValueKey('login_button'),
                 onPressed: () => context.push('/login'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -420,6 +423,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
         ),
       ),
       child: InkWell(
+        key: ValueKey('library_button'),
         onTap: () => context.push(route),
         borderRadius: BorderRadius.circular(8),
         child: Container(

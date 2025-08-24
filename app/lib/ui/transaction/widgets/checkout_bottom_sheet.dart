@@ -174,6 +174,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               // PayPal option
               Card(
                 child: RadioListTile(
+                  key: ValueKey('paypal_method'),
                   title: Row(
                     children: [
                       Icon(Icons.paypal, color: theme.colorScheme.primary),
@@ -194,6 +195,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               const SizedBox(height: 8),
               Card(
                 child: RadioListTile(
+                  key: ValueKey('vnpay_method'),
                   title: Row(
                     children: [
                       Icon(Icons.credit_card, color: theme.colorScheme.primary),
@@ -217,6 +219,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
+                  key: ValueKey('pay_button'),
                   onPressed: () => {
                     setState(() {
                       _isProcessing = true;

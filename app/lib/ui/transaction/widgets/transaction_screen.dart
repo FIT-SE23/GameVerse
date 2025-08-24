@@ -222,6 +222,7 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
+                key: ValueKey('checkout_button'),
                 onPressed: transactionViewModel.isProcessingCheckout
                     ? null
                     : () => _showCheckoutSheet(context),
