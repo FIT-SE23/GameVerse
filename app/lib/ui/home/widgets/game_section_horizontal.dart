@@ -14,13 +14,15 @@ class GameSectionHorizontal extends StatefulWidget {
   final List<GameModel> gameList;
   final void Function() onSelect;
   final TextStyle? titleStyle;
+  final Key? scrollBarKey;
 
   const GameSectionHorizontal({
     super.key,
     required this.title,
     required this.gameList,
     required this.onSelect,
-    this.titleStyle
+    this.titleStyle,
+    this.scrollBarKey
   });
 
   @override
@@ -95,6 +97,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
               SizedBox(
                 height: 300,
                 child: Scrollbar(
+                  key: widget.scrollBarKey,
                   thumbVisibility: false,
                   scrollbarOrientation: ScrollbarOrientation.bottom,
                   thickness: 8,
@@ -117,15 +120,16 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                 ),
               ),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '← Scroll to see more →',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              )
+              if (cardPerRow(context) < widget.gameList.length)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '← Scroll to see more →',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                )
             ],
           )
 
