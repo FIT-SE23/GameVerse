@@ -7,10 +7,10 @@ class CartItemCard extends StatelessWidget {
   final VoidCallback onRemove;
 
   const CartItemCard({
-    Key? key,
+    super.key,
     required this.cartItem,
     required this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

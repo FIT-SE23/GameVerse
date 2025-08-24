@@ -31,7 +31,7 @@ class TransactionViewModel extends ChangeNotifier {
   List<CartItemModel> _cartItems = [];
   List<CartItemModel> get cartItems => _cartItems;
   
-  bool _isProcessingCheckout = false;
+  final bool _isProcessingCheckout = false;
   bool get isProcessingCheckout => _isProcessingCheckout;
 
   List<PaymentMethodModel> _paymentMethods = [];

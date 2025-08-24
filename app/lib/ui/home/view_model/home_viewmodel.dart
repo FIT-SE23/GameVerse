@@ -33,7 +33,7 @@ class HomeViewModel extends ChangeNotifier {
   List<GameModel> _topRecommendedGames = [];
   List<GameModel> get topRecommendedGames => _topRecommendedGames;
 
-  Map<String, List<GameModel>> _gamesByCategories = {};
+  final Map<String, List<GameModel>> _gamesByCategories = {};
   Map<String, List<GameModel>> get gamesByCategories => _gamesByCategories;
 
   List<CategoryModel> _categories = [];

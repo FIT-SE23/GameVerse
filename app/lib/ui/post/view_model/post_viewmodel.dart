@@ -35,7 +35,7 @@ class PostViewModel extends ChangeNotifier {
   List<CommentModel> _comments = [];
   List<CommentModel> get comments => _comments;
 
-  Map<String, bool> _commentRecommendStatuses = {};
+  final Map<String, bool> _commentRecommendStatuses = {};
   Map<String, bool> get commentRecommendStatuses => _commentRecommendStatuses;
 
   String _errorMessage = '';

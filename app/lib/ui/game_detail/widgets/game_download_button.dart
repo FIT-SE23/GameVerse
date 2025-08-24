@@ -181,7 +181,7 @@ class _GameDownloadButtonState extends State<GameDownloadButton> {
           LinearProgressIndicator(value: _downloadProgress),
           const SizedBox(height: 8),
           Text(
-            'Download paused (${_completedFiles}/${_totalFiles} files)',
+            'Download paused ($_completedFiles/$_totalFiles files)',
             style: theme.textTheme.bodySmall,
           ),
           const SizedBox(height: 8),

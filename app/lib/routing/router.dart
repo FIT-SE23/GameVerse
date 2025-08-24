@@ -1,4 +1,5 @@
 import 'package:gameverse/ui/advanced_search/widgets/advanced_search_screen.dart';
+import 'package:gameverse/ui/auth/widgets/forgot_password_screen.dart';
 import 'package:gameverse/ui/policy/widgets/publisher_policy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -197,6 +198,10 @@ class AppRouter {
             GoRoute(
               path: Routes.publisherPolicy,
               builder: (context, state) => const PublisherPolicyScreen(),
+            ),
+            GoRoute(
+              path: Routes.forgotPassword,
+              builder: (context, state) => const ForgotPasswordScreen(),
             )
           ],
         ),

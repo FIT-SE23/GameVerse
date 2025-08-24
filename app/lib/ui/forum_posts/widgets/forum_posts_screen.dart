@@ -23,7 +23,7 @@ class ForumPostsScreen extends StatefulWidget {
 class _ForumPostsScreenState extends State<ForumPostsScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _sortBy = 'newest'; // newest, oldest, popular
+  final String _sortBy = 'newest'; // newest, oldest, popular
 
   @override
   void initState() {
