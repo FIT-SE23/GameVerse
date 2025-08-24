@@ -38,7 +38,7 @@ class LibraryViewModel extends ChangeNotifier {
 
   // Computed properties
   List<GameModel> get ownedGames => 
-      _games.where((game) => game.isOwned).toList();
+      _games.where((game) => game.isOwned && game.downloadState != 'completed').toList();
 
   List<GameModel> get downloadedGames => 
       _games.where((game) => game.isOwned && game.downloadState == 'completed').toList();

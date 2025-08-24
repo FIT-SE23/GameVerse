@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:gameverse/data/repositories/game_repository.dart';
 import 'package:gameverse/domain/models/game_model/game_model.dart';
@@ -49,7 +52,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
     });
 
     try {
-      final results = await Provider.of<GameRepository>(context, listen: false)
+      final results = await Provider.of<GameRepository>(context as BuildContext, listen: false)
                       .searchGames(query, GameSortCriteria.popularity, 0, 5, [], false);
   
       if (mounted) {
@@ -99,7 +102,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
             },
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
-
+    
             // Reload page button
             IconButton(
             tooltip: 'Reload page',
@@ -115,7 +118,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
             },
             color: Theme.of(context).appBarTheme.foregroundColor,
             ),
-
+    
           // Logo/header
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -126,7 +129,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
               SvgPicture.asset(logoAddr, fit: BoxFit.fitHeight, width: 10, height: 50,)
             ),
           ),
-
+    
           
           // Navigation items
           Row(
@@ -186,7 +189,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
                 if (query != controller.text) {
                   return [];
                 }
-
+    
                 // Perform search and return results
                 await _performSearch(controller.text);
                 if (context.mounted) {
@@ -217,11 +220,30 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
           ),
           const SizedBox(width: 8),
           
+          // Downloads application for desktop button
+          if (kIsWeb == true) ...[
+            Tooltip(
+              message: 'Download GameVerse for Windows',
+              child: IconButton(
+                onPressed: () {
+                  url_launcher.launchUrl(Uri.parse('https://github.com/FIT-SE23/GameVerse/releases/download/v1.0.0/windows_x64.zip') );
+                },
+                icon: Icon(
+                  Icons.download,
+                  color: Theme.of(context).appBarTheme.foregroundColor,
+                ),
+              )
+            ),
+            const SizedBox(width: 16),
+          ],
+
+
           // Account section
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: _buildAccountSection(context),
           ),
+
         ],
       ),
     );

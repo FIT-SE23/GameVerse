@@ -52,12 +52,12 @@ func main() {
 		return recoverPassword(c, client)
 	})
 	e.GET("/verify", func(c echo.Context) error {
-		user := verifyPasswordResetToken(c, client)
-		if user == nil {
-			return jsonResponse(c, http.StatusBadRequest, "Failed to verify otp", "")
+		err := verifyPasswordResetToken(c, client)
+		if err != nil {
+			return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
 		}
 
-		return jsonResponse(c, http.StatusOK, "", user)
+		return jsonResponse(c, http.StatusOK, "", "")
 	})
 
 	e.GET("/user/:id", func(c echo.Context) error {
