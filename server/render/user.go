@@ -171,7 +171,7 @@ func verifyToken(c echo.Context) error {
 	return jsonResponse(c, http.StatusOK, "", "")
 }
 
-func verifyPasswordResetToken(c echo.Context, client *supabase.Client) error {
+func verifyPasswordResetToken(c echo.Context, client *supabase.Client) map[string]any {
 	// email := c.FormValue("email")
 	// otp := c.FormValue("otp")
 	email := c.QueryParam("email")
@@ -184,14 +184,14 @@ func verifyPasswordResetToken(c echo.Context, client *supabase.Client) error {
 		client.From("Password_Reset_Token").Delete("", "").Eq("email", email).ExecuteString()
 	}
 
-	rep, _, err := client.From("User").Select("userid", "", false).Eq("email", email).Execute()
-	var user map[string]string
+	rep, _, err := client.From("User").Select("userid", "", false).Eq("email", email).Single().ExecuteString()
+	var user map[string]any
 	err = json.Unmarshal([]byte(rep), &user)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return nil
 	}
 
-	return jsonResponse(c, http.StatusOK, "", user)
+	return user
 }
 
 func verifyUserToken(c echo.Context) (string, error) {
