@@ -91,7 +91,7 @@ class TransactionCard extends StatelessWidget {
                   style: theme.textTheme.bodyLarge,
                 ),
                 Text(
-                  '\$${transaction.moneyAmount.toStringAsFixed(2)}',
+                  '${transaction.moneyAmount} VND',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.bold,
