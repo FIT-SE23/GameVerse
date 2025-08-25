@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -52,7 +51,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
     });
 
     try {
-      final results = await Provider.of<GameRepository>(context as BuildContext, listen: false)
+      final results = await Provider.of<GameRepository>(context, listen: false)
                       .searchGames(query, GameSortCriteria.popularity, 0, 5, [], false);
   
       if (mounted) {

@@ -116,7 +116,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                           ? Text('${item.game.discountPercent!.toInt()}% off')
                           : null,
                       trailing: Text(
-                        '${item.price.toStringAsFixed(2)} VND',
+                        '${item.price} VND',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -131,14 +131,14 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               // Price breakdown
               ListTile(
                 title: const Text('Subtotal'),
-                trailing: Text('\$${transactionViewModel.calculateSubtotal().toStringAsFixed(2)}'),
+                trailing: Text('${transactionViewModel.calculateSubtotal()} VND'),
               ),
               
               if (transactionViewModel.calculateDiscount() > 0)
                 ListTile(
                   title: const Text('Discount'),
                   trailing: Text(
-                    '-\$${transactionViewModel.calculateDiscount().toStringAsFixed(2)}',
+                    '-${transactionViewModel.calculateDiscount()} VND',
                     style: TextStyle(color: theme.colorScheme.error),
                   ),
                 ),
@@ -151,7 +151,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                   ),
                 ),
                 trailing: Text(
-                  '\$${total.toStringAsFixed(2)}',
+                  '${total} VND',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.bold,
@@ -227,7 +227,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                     transactionViewModel.getUrlPaymentGateway(method),
                   },
                   icon: const Icon(Icons.payment),
-                  label: Text('Pay \$${total.toStringAsFixed(2)} with ${method.toUpperCase()}'),
+                  label: Text('Pay ${total} VND with ${method.toUpperCase()}'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),

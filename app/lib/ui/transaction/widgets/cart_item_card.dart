@@ -79,7 +79,7 @@ class CartItemCard extends StatelessWidget {
                             && DateTime.now().isBefore(game.saleEndDate!)
                         ) ...[
                           Text(
-                            '${game.price.toStringAsFixed(2)} VND',
+                            '${game.price} VND',
                             style: theme.textTheme.bodySmall?.copyWith(
                               decoration: TextDecoration.lineThrough,
                               color: theme.colorScheme.onSurfaceVariant,
@@ -106,7 +106,7 @@ class CartItemCard extends StatelessWidget {
                           const SizedBox(width: 8),
                         ],
                         Text(
-                          '${cartItem.price.toStringAsFixed(2)} VND',
+                          '${cartItem.price} VND',
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,

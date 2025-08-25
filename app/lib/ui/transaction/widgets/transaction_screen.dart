@@ -186,7 +186,7 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Subtotal', style: theme.textTheme.bodyLarge),
-                Text('\$${subtotal.toStringAsFixed(2)}', style: theme.textTheme.bodyLarge),
+                Text('$subtotal VND', style: theme.textTheme.bodyLarge),
               ],
             ),
             
@@ -196,7 +196,7 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Discount', style: theme.textTheme.bodyLarge),
-                  Text('-\$${discount.toStringAsFixed(2)}',
+                  Text('-$discount VND',
                       style: theme.textTheme.bodyLarge?.copyWith(color: Colors.green)),
                 ],
               ),
@@ -209,7 +209,7 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
               children: [
                 Text('Total', 
                     style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                Text('\$${total.toStringAsFixed(2)}',
+                Text('$total VND',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,
