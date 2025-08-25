@@ -65,6 +65,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                   child: Column(
                     children: [
                       ElevatedButton.icon(
+                        key: ValueKey('gateway_button'),
                         onPressed: () {
                           // Open the payment gateway URL
                           launchUrl(Uri.parse(transactionViewModel.urlToPaymentGateway));

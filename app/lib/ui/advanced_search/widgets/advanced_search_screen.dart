@@ -84,55 +84,59 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
 
         return Stack(
           children: [
-            SingleChildScrollView(
+            Scrollbar(
+              key: ValueKey('advanced_search_scrollbar'),
               controller: _scrollController,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: getNegativeSpacePadding(context),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 64),
-                        Text(
-                          'Advanced Search',
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                        const SizedBox(height: 32),
-                        
-                        if (state == AdvancedSearchState.initial)
-                          const SizedBox(
-                            height: 300,
-                            child: Center(child: CircularProgressIndicator()),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: getNegativeSpacePadding(context),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 64),
+                          Text(
+                            'Advanced Search',
+                            style: Theme.of(context).textTheme.displayLarge,
                           ),
-
-                        if (state == AdvancedSearchState.loading || state == AdvancedSearchState.success)
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: FilteredGameSection(viewModel: advancedSearchViewmodel,),
-                              ),
-                              const SizedBox(width: 32 + sidebarWidth),
-                            ],
-                          ),
-                        
-                        if (state == AdvancedSearchState.error)
-                          SizedBox(
-                            height: 300,
-                            child: Center(
-                              child: Text(
-                                advancedSearchViewmodel.errorMessage,
-                              ),
-                            )
-                          ),
-                        
-                        const SizedBox(height: 96), // Extra space before footer
-                      ],
+                          const SizedBox(height: 32),
+                          
+                          if (state == AdvancedSearchState.initial)
+                            const SizedBox(
+                              height: 300,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+              
+                          if (state == AdvancedSearchState.loading || state == AdvancedSearchState.success)
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: FilteredGameSection(viewModel: advancedSearchViewmodel,),
+                                ),
+                                const SizedBox(width: 32 + sidebarWidth),
+                              ],
+                            ),
+                          
+                          if (state == AdvancedSearchState.error)
+                            SizedBox(
+                              height: 300,
+                              child: Center(
+                                child: Text(
+                                  advancedSearchViewmodel.errorMessage,
+                                ),
+                              )
+                            ),
+                          
+                          const SizedBox(height: 96), // Extra space before footer
+                        ],
+                      ),
                     ),
-                  ),
-                  PageFooter(),
-                ],
+                    PageFooter(),
+                  ],
+                ),
               ),
             ),
 
