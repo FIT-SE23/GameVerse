@@ -162,6 +162,7 @@ class _FilteredGameSectionState extends State<FilteredGameSection> {
               ),
               itemCount: gameList.length,
               itemBuilder: (context, index) => GameCard(
+                key: ValueKey(gameList[index].name),
                 game: gameList[index],
                 width: cardWidth(context),
                 showPrice: true,

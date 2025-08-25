@@ -90,6 +90,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
         children: [
           // Previous page button
           IconButton(
+            key: const ValueKey('go_back_button'),
             tooltip: 'Go back',
             icon: const Icon(
               Icons.arrow_back_ios_new,
@@ -104,7 +105,8 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
           ),
     
             // Reload page button
-            IconButton(
+          IconButton(
+            key: const ValueKey('reload_button'),
             tooltip: 'Reload page',
             icon: const Icon(
               Icons.refresh,

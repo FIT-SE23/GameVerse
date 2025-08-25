@@ -124,6 +124,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
           width: 128,
           height: 36,
           child: ElevatedButton(
+            key: ValueKey('apply_filter_button'),
             style: theme.elevatedButtonTheme.style,
             onPressed: () {
               widget.viewModel.applyFilters();
