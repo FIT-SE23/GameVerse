@@ -4,26 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"runtime"
+	"render/config"
+	"render/model"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/supabase-community/supabase-go"
 )
-
-func _jsonResponse(c echo.Context, code int, message string, returnVal any) error {
-	jsonData := map[string]any{
-		"message": message,
-		"return":  returnVal,
-	}
-	return c.JSON(code, jsonData)
-}
-
-func jsonResponse(c echo.Context, code int, message string, returnVal any) error {
-	_, filename, line, _ := runtime.Caller(1)
-	fmt.Println(filename, line)
-	return _jsonResponse(c, code, message, returnVal)
-}
 
 func main() {
 	supabaseURL := os.Getenv("SUPABASE_URL")
@@ -41,73 +28,73 @@ func main() {
 	e.Static("/static", "assets")
 
 	e.POST("/login", func(c echo.Context) error {
-		return login(c, client)
+		return model.Login(c, client)
 	})
 
 	e.POST("/register", func(c echo.Context) error {
-		return addUser(c, client)
+		return model.AddUser(c, client)
 	})
 
 	e.GET("/recover", func(c echo.Context) error {
-		return recoverPassword(c, client)
+		return model.RecoverPassword(c, client)
 	})
 	e.GET("/verify", func(c echo.Context) error {
-		user := verifyPasswordResetToken(c, client)
+		user := model.VerifyPasswordResetToken(c, client)
 		if user == nil {
-			return jsonResponse(c, http.StatusBadRequest, "Failed to verify otp. Try again", "")
+			return config.JsonResponse(c, http.StatusBadRequest, "Failed to verify otp. Try again", "")
 		}
 
-		return jsonResponse(c, http.StatusOK, "", user)
+		return config.JsonResponse(c, http.StatusOK, "", user)
 	})
 
 	e.GET("/user/:id", func(c echo.Context) error {
-		return getUser(c, client)
+		return model.GetUser(c, client)
 	})
 	e.PATCH("/user/:id", func(c echo.Context) error {
-		return updateUser(c, client)
+		return model.UpdateUser(c, client)
 	})
 	e.GET("/user/:id/library", func(c echo.Context) error {
 		userid := c.Param("id")
-		return getGamesWithStatus(c, client, userid, "In library")
+		return model.GetGamesWithStatus(c, client, userid, "In library")
 	})
 	e.GET("/user/:id/wishlist", func(c echo.Context) error {
 		userid := c.Param("id")
-		return getGamesWithStatus(c, client, userid, "In wishlist")
+		return model.GetGamesWithStatus(c, client, userid, "In wishlist")
 	})
 	e.GET("/user/:id/post", func(c echo.Context) error {
 		userid := c.Param("id")
-		return getOwnedPost(c, client, userid)
+		return model.GetOwnedPost(c, client, userid)
 	})
 	e.POST("/user/cart", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
-		return getGamesWithStatus(c, client, userid, "In cart")
+		return model.GetGamesWithStatus(c, client, userid, "In cart")
 	})
 
 	e.POST("/user/playtime", func(c echo.Context) error {
-		return addPlaytimeData(c, client)
+		return model.AddPlaytimeData(c, client)
 	})
 	e.GET("/user/playtime", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
-		return getPlaytimeData(c, client, userid)
+		return model.GetPlaytimeData(c, client, userid)
 	})
 
 	e.POST("/addgameto", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
 		status := c.FormValue("status")
 		if status != "In library" && status != "In wishlist" && status != "In cart" {
-			return jsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
+			return config.JsonResponse(c, http.StatusBadRequest, "Allow add games to library/wishlist/cart only", "")
 		}
 
 		gameid := c.FormValue("gameid")
@@ -117,19 +104,19 @@ func main() {
 			"status": status,
 		}
 
-		return addGameWithStatus(c, client, userGame)
+		return model.AddGameWithStatus(c, client, userGame)
 	})
 
 	e.POST("/removegamefrom", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
 		status := c.FormValue("status")
 		if status != "In wishlist" && status != "In cart" {
-			return jsonResponse(c, http.StatusBadRequest, "Allow remove games from wishlist/cart only", "")
+			return config.JsonResponse(c, http.StatusBadRequest, "Allow remove games from wishlist/cart only", "")
 		}
 
 		gameid := c.FormValue("gameid")
@@ -139,31 +126,31 @@ func main() {
 			"status": status,
 		}
 
-		return removeGameWithStatus(c, client, userGame)
+		return model.RemoveGameWithStatus(c, client, userGame)
 	})
 
 	e.POST("/game", func(c echo.Context) error {
-		return addGame(c, client, bucketId)
+		return model.AddGame(c, client, bucketId)
 	})
 	e.GET("/game/:id", func(c echo.Context) error {
-		return getGame(c, client)
+		return model.GetGame(c, client)
 	})
 	e.PATCH("/game/:id", func(c echo.Context) error {
-		return updateGame(c, client, bucketId)
+		return model.UpdateGame(c, client, bucketId)
 	})
 	e.POST("/game/requests", func(c echo.Context) error {
-		return getGameRequests(c, client)
+		return model.GetGameRequests(c, client)
 	})
 	e.POST("/game/verify", func(c echo.Context) error {
-		return verifyGame(c, client)
+		return model.VerifyGame(c, client)
 	})
 	e.POST("/download/game", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
 
-		return downloadGame(c, client, userid)
+		return model.DownloadGame(c, client, userid)
 	})
 
 	e.GET("/search", func(c echo.Context) error {
@@ -172,73 +159,73 @@ func main() {
 		switch entity {
 		case "user":
 			{
-				return searchUsers(c, client)
+				return model.SearchUsers(c, client)
 			}
 		case "game":
 			{
-				return searchGames(c, client)
+				return model.SearchGames(c, client)
 			}
 		case "post":
 			{
-				return searchPosts(c, client)
+				return model.SearchPosts(c, client)
 			}
 		}
 
-		return jsonResponse(c, http.StatusBadRequest, "Unsupported entity", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Unsupported entity", "")
 	})
 
 	e.POST("/category", func(c echo.Context) error {
-		return addCategory(c, client)
+		return model.AddCategory(c, client)
 	})
 	e.GET("/categories", func(c echo.Context) error {
-		return getCategories(c, client)
+		return model.GetCategories(c, client)
 	})
 
 	e.POST("/payment", func(c echo.Context) error {
-		return addPaymentMethod(c, client)
+		return model.AddPaymentMethod(c, client)
 	})
 	e.GET("/payment", func(c echo.Context) error {
-		return getPaymentMethods(c, client)
+		return model.GetPaymentMethods(c, client)
 	})
 
 	e.POST("/publisher", func(c echo.Context) error {
-		return addPublisher(c, client)
+		return model.AddPublisher(c, client)
 	})
 	e.GET("/publisher/:id", func(c echo.Context) error {
-		return getPublisher(c, client)
+		return model.GetPublisher(c, client)
 	})
 	e.PATCH("/publisher/:id", func(c echo.Context) error {
-		return updatePublisher(c, client)
+		return model.UpdatePublisher(c, client)
 	})
 	e.POST("/publisher/requests", func(c echo.Context) error {
-		return getPublisherRequests(c, client)
+		return model.GetPublisherRequests(c, client)
 	})
 	e.POST("/publisher/verify", func(c echo.Context) error {
-		return verifyPublisher(c, client)
+		return model.VerifyPublisher(c, client)
 	})
 
 	e.POST("/transactions", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
-		return getTransactions(c, client, userid)
+		return model.GetTransactions(c, client, userid)
 	})
 	e.POST("/paypal/create", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			// TODO: Redirect to login page
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
-		return createPaypalReceipt(c, client, userid)
+		return model.CreatePaypalReceipt(c, client, userid)
 	})
 	e.GET("/paypal/cancel", func(c echo.Context) error {
 		return c.String(http.StatusOK, "No")
 	})
 	e.GET("/paypal/return", func(c echo.Context) error {
-		code, msg := checkoutVnpay(c, client)
+		code, msg := model.CheckoutVnpay(c, client)
 		if code == http.StatusBadRequest {
 			return c.HTML(code, "Invalid request")
 		} else if code == http.StatusInternalServerError {
@@ -246,19 +233,19 @@ func main() {
 		}
 
 		msg["paymentmethod"] = "Paypal"
-		return c.HTML(http.StatusOK, genCheckoutPage(msg))
+		return c.HTML(http.StatusOK, model.GenCheckoutPage(msg))
 	})
 
 	e.POST("/vnpay/create", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
-			return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+			return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 		}
 
-		return createVnpayReceipt(c, client, userid)
+		return model.CreateVnpayReceipt(c, client, userid)
 	})
 	e.GET("/vnpay/return", func(c echo.Context) error {
-		code, msg := checkoutVnpay(c, client)
+		code, msg := model.CheckoutVnpay(c, client)
 		if code == http.StatusBadRequest {
 			return c.HTML(code, "Invalid request")
 		} else if code == http.StatusInternalServerError {
@@ -266,146 +253,146 @@ func main() {
 		}
 
 		msg["paymentmethod"] = "VNPay"
-		return c.HTML(http.StatusOK, genCheckoutPage(msg))
+		return c.HTML(http.StatusOK, model.GenCheckoutPage(msg))
 	})
 
 	e.POST("/recommend/game", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return recommendGame(c, client, userid)
+		return model.RecommendGame(c, client, userid)
 	})
 
 	e.GET("/recommend/game/:id", func(c echo.Context) error {
 		gameid := c.Param("id")
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return isRecommended(c, client, userid, gameid)
+		return model.IsRecommended(c, client, userid, gameid)
 	})
 
 	e.POST("/post", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return addPost(c, client, userid)
+		return model.AddPost(c, client, userid)
 	})
 
 	e.GET("/post/:id", func(c echo.Context) error {
-		return getPost(c, client)
+		return model.GetPost(c, client)
 	})
 
 	e.PATCH("/post/:id", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return updatePost(c, client, userid)
+		return model.UpdatePost(c, client, userid)
 	})
 
 	e.POST("/recommend/post", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return recommendPost(c, client, userid)
+		return model.RecommendPost(c, client, userid)
 	})
 
 	e.GET("/recommend/post/:id", func(c echo.Context) error {
 		postid := c.Param("id")
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return isPostRecommended(c, client, userid, postid)
+		return model.IsPostRecommended(c, client, userid, postid)
 	})
 
 	e.DELETE("/post/:id", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return deletePost(c, client, userid)
+		return model.DeletePost(c, client, userid)
 	})
 
 	e.GET("/post/:id/comment", func(c echo.Context) error {
 		postid := c.Param("id")
-		return listComments(c, client, postid)
+		return model.ListComments(c, client, postid)
 	})
 
 	e.POST("/comment", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return addComment(c, client, userid)
+		return model.AddComment(c, client, userid)
 	})
 
 	e.GET("/comment/:id", func(c echo.Context) error {
-		return getComment(c, client)
+		return model.GetComment(c, client)
 	})
 
 	e.PATCH("/comment/:id", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return updateComment(c, client, userid)
+		return model.UpdateComment(c, client, userid)
 	})
 
 	e.POST("/recommend/comment", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return recommendComment(c, client, userid)
+		return model.RecommendComment(c, client, userid)
 	})
 
 	e.GET("/recommend/comment/:id", func(c echo.Context) error {
 		commentid := c.Param("id")
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return isCommentRecommended(c, client, userid, commentid)
+		return model.IsCommentRecommended(c, client, userid, commentid)
 	})
 
 	e.DELETE("/comment/:id", func(c echo.Context) error {
-		userid, err := verifyUserToken(c)
+		userid, err := model.VerifyUserToken(c)
 		if err != nil {
 			return err
 		}
-		return deleteComment(c, client, userid)
+		return model.DeleteComment(c, client, userid)
 	})
 
 	e.GET("/forum", func(c echo.Context) error {
-		return getAllForums(c, client)
+		return model.GetAllForums(c, client)
 	})
 	e.GET("/forum/:id", func(c echo.Context) error {
-		return getForum(c, client)
+		return model.GetForum(c, client)
 	})
 
 	e.POST("/verify-oauth-token", func(c echo.Context) error {
-		return verifyOAuthToken(c, client)
+		return model.VerifyOAuthToken(c, client)
 	})
 	e.POST("/verify-user-token", func(c echo.Context) error {
-		return verifyToken(c)
+		return model.VerifyToken(c)
 	})
 
 	e.POST("/messages/game", func(c echo.Context) error {
-		return addGameMessage(c, client)
+		return model.AddGameMessage(c, client)
 	})
 	e.GET("/messages/game", func(c echo.Context) error {
-		return getGameMessage(c, client)
+		return model.GetGameMessage(c, client)
 	})
 	e.POST("/messages/publisher", func(c echo.Context) error {
-		return addPublisherMessage(c, client)
+		return model.AddPublisherMessage(c, client)
 	})
 	e.GET("/messages/publisher", func(c echo.Context) error {
-		return getPublisherMessage(c, client)
+		return model.GetPublisherMessage(c, client)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))

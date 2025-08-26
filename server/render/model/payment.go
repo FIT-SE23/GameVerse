@@ -1,14 +1,15 @@
-package main
+package model
 
 import (
 	"encoding/json"
 	"net/http"
+	"render/config"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
 
-func addPaymentMethod(c echo.Context, client *supabase.Client) error {
+func AddPaymentMethod(c echo.Context, client *supabase.Client) error {
 	paymentType := c.FormValue("type")
 	information := c.FormValue("information")
 
@@ -18,23 +19,23 @@ func addPaymentMethod(c echo.Context, client *supabase.Client) error {
 	}
 	_, _, err := client.From("PaymentMethod").Insert(payment, false, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func getPaymentMethods(c echo.Context, client *supabase.Client) error {
+func GetPaymentMethods(c echo.Context, client *supabase.Client) error {
 	paymentMethods, _, err := client.From("PaymentMethod").Select("*", "", false).ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var methods []map[string]any
 	err = json.Unmarshal([]byte(paymentMethods), &methods)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid payment methods", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid payment methods", "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", methods)
+	return config.JsonResponse(c, http.StatusOK, "", methods)
 }
