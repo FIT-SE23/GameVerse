@@ -5,10 +5,20 @@ import (
 	"fmt"
 	"net/http"
 	"render/config"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
+
+type Publisher struct {
+	PublisherID       string    `json:"publisherid" db:"publisherid"`
+	PaymentMethodID   string    `json:"paymentmethodid" db:"paymentmethodid"`
+	Description       string    `json:"description" db:"description"`
+	PaymentCardNumber string    `json:"paymentcardnumber" db:"paymentcardnumber"`
+	Date              time.Time `json:"date" db:"date"`
+	IsVerified        string    `json:"isverified" db:"isverified"`
+}
 
 func GetPublisher(c echo.Context, client *supabase.Client) error {
 	publisherid := c.Param("id")

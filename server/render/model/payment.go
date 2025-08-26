@@ -9,6 +9,12 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
+type Payment struct {
+	PaymentID   string `json:"paymentid" db:"paymentid"`
+	Type        string `json:"type" db:"type"`
+	Information string `json:"information" db:"information"`
+}
+
 func AddPaymentMethod(c echo.Context, client *supabase.Client) error {
 	paymentType := c.FormValue("type")
 	information := c.FormValue("information")

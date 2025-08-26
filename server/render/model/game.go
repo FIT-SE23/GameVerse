@@ -19,6 +19,18 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
+type Game struct {
+	GamID            string `json:"gameid" db:"gameid"`
+	PublisherID      string `json:"publisherid" db:"publisherid"`
+	Name             string `json:"name" db:"name"`
+	Description      string `json:"description" db:"description"`
+	Recommend        int    `json:"recommend" db:"recommend"`
+	ReleaseDate      string `json:"releasedate" db:"releasedate"`
+	Requirement      string `json:"requirement" db:"requirement"`
+	BriefDescription string `json:"briefdescription" db:"briefdescription"`
+	IsVerified       bool   `json:"isverified" db:"isverified"`
+}
+
 func AddResources(client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
 	errFiles := []string{}
 	h := sha256.New()

@@ -9,6 +9,12 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
+type Category struct {
+	CategoryID   string `json:"categoryid" db:"categoryid"`
+	CategoryName string `json:"categoryname" db:"categoryname"`
+	IsSensitive  string `json:"issensitive" db:"issensitive"`
+}
+
 func AddCategory(c echo.Context, client *supabase.Client) error {
 	categoryName := c.FormValue("categoryname")
 	isSensitive := c.FormValue("issensitive")

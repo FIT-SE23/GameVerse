@@ -4,10 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 	"render/config"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
+
+type Comment struct {
+	CommentID   string    `json:"commentid" db:"commentid"`
+	UserID      string    `json:"userid" db:"userid"`
+	Content     string    `json:"content" db:"content"`
+	PostID      string    `json:"postid" db:"postid"`
+	ForumID     string    `json:"forumid" db:"forumid"`
+	Recommend   string    `json:"recommend" db:"recommend"`
+	CommentDate time.Time `json:"commentdate" db:"commentdate"`
+}
 
 func GetComment(c echo.Context, client *supabase.Client) error {
 	commentid := c.Param("id")
@@ -213,4 +224,3 @@ func DeleteComment(c echo.Context, client *supabase.Client, userid string) error
 
 	return config.JsonResponse(c, http.StatusOK, "", "")
 }
-

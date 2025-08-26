@@ -84,7 +84,7 @@ func SearchUsers(c echo.Context, client *supabase.Client) error {
 	return config.JsonResponse(c, http.StatusOK, "", users)
 }
 
-func createUserToken(userid string) string {
+func CreateUserToken(userid string) string {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"userid":     userid,
@@ -97,7 +97,7 @@ func createUserToken(userid string) string {
 	return token
 }
 
-func createPasswordResetToken(email string) string {
+func CreatePasswordResetToken(email string) string {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"email":      email,
@@ -110,7 +110,7 @@ func createPasswordResetToken(email string) string {
 	return token
 }
 
-func createPasswordResetOTP(email string) string {
+func CreatePasswordResetOTP(email string) string {
 	const digits = "0123456789"
 	const otpLen = 6
 	code := make([]byte, otpLen)
@@ -147,7 +147,7 @@ func VerifyOAuthToken(c echo.Context, client *supabase.Client) error {
 	}
 	return config.JsonResponse(c, http.StatusOK, "", map[string]string{
 		"userid": userid,
-		"token":  createUserToken(userid),
+		"token":  CreateUserToken(userid),
 	})
 }
 
@@ -258,11 +258,11 @@ func Login(c echo.Context, client *supabase.Client) error {
 	if err != nil {
 		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	// return config.JsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
+	// return config.JsonResponse(c, http.StatusOK, "", CreateUserToken(userid["userid"]))
 	// Return the user ID and token
 	return config.JsonResponse(c, http.StatusOK, "", map[string]string{
 		"userid": user["userid"],
-		"token":  createUserToken(user["userid"]),
+		"token":  CreateUserToken(user["userid"]),
 	})
 }
 
@@ -421,7 +421,7 @@ func UpdateUser(c echo.Context, client *supabase.Client) error {
 
 func RecoverPassword(c echo.Context, client *supabase.Client) error {
 	email := c.QueryParam("email")
-	otp := createPasswordResetOTP(email)
+	otp := CreatePasswordResetOTP(email)
 
 	_, _, err := client.From("Password_Reset_Token").Upsert(map[string]string{"email": email, "otp": otp, "expiredtime": time.Now().Add(time.Minute * 10).Format(time.RFC3339)}, "", "", "").ExecuteString()
 	if err != nil {

@@ -5,11 +5,21 @@ import (
 	"net/http"
 	"render/config"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/postgrest-go"
 	"github.com/supabase-community/supabase-go"
 )
+
+type Post struct {
+	PostID   string    `json:"postid" db:"postid"`
+	UserID   string    `json:"userid" db:"userid"`
+	ForumID  string    `json:"forumid" db:"forumid"`
+	Content  string    `json:"content" db:"content"`
+	PostDate time.Time `json:"postdate" db:"postdate"`
+	Title    string    `json:"title" db:"title"`
+}
 
 func GetPost(c echo.Context, client *supabase.Client) error {
 	postid := c.Param("id")
