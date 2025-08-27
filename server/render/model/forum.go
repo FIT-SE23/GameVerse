@@ -1,34 +1,35 @@
-package main
+package model
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"render/config"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
 
 // Function to get all forums Ids
-func getAllForums(c echo.Context, client *supabase.Client) error {
+func GetAllForums(c echo.Context, client *supabase.Client) error {
 	rep, _, err := client.
 		From("Forum").
 		Select("forumid, Game!inner(isverified)", "", false).
 		Eq("Game.isverified", "true").
 		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var forums []map[string]any
 	err = json.Unmarshal([]byte(rep), &forums)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid forums" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid forums" /*err.Error()*/, "")
 	}
-	return jsonResponse(c, http.StatusOK, "", forums)
+	return config.JsonResponse(c, http.StatusOK, "", forums)
 }
 
-func getForum(c echo.Context, client *supabase.Client) error {
+func GetForum(c echo.Context, client *supabase.Client) error {
 	columns := "gameid, name, briefdescription, Resource(url, type)"
 
 	gameID := c.Param("id")
@@ -37,12 +38,12 @@ func getForum(c echo.Context, client *supabase.Client) error {
 	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID).Eq("isverified", "true").In("Resource.type", []string{"media_header"})
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	var gameBasicInfo []map[string]any
 	err = json.Unmarshal([]byte(rep), &gameBasicInfo)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid gameid or the return value datatype does not match with gameBasicInfo datatype" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid gameid or the return value datatype does not match with gameBasicInfo datatype" /*err.Error()*/, "")
 	}
 
 	// Change the resource in gameBasicInfo to a name header image and delete the resource field
@@ -56,5 +57,5 @@ func getForum(c echo.Context, client *supabase.Client) error {
 	}
 	fmt.Println(gameBasicInfo)
 
-	return jsonResponse(c, http.StatusOK, "", gameBasicInfo)
+	return config.JsonResponse(c, http.StatusOK, "", gameBasicInfo)
 }

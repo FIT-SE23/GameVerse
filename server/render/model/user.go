@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"bytes"
@@ -12,6 +12,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"render/config"
 	"strconv"
 	"strings"
 	"time"
@@ -22,24 +23,31 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
-func getUser(c echo.Context, client *supabase.Client) error {
+type User struct {
+	Userid   string `json:"userid" db:"userid"`
+	Username string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
+	Password string `json:"hashpassword" db:"hashpassword"`
+}
+
+func GetUser(c echo.Context, client *supabase.Client) error {
 	userid := c.Param("id")
 
 	rep, _, err := client.From("User").Select("userid, username, email, type", "", false).Eq("userid", userid).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var user map[string]any
 	err = json.Unmarshal([]byte(rep), &user)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid userid" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid userid" /*err.Error()*/, "")
 	}
 	user["id"] = userid
-	return jsonResponse(c, http.StatusOK, "", user)
+	return config.JsonResponse(c, http.StatusOK, "", user)
 }
 
-func addUser(c echo.Context, client *supabase.Client) error {
+func AddUser(c echo.Context, client *supabase.Client) error {
 	username := c.FormValue("username")
 	email := c.FormValue("email")
 	password := c.FormValue("password")
@@ -53,30 +61,30 @@ func addUser(c echo.Context, client *supabase.Client) error {
 	_, _, err := client.From("User").Insert(data, false, "", "", "").ExecuteString()
 	if err != nil {
 		fmt.Println("Error inserting user:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	// TODO: "return" field
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func searchUsers(c echo.Context, client *supabase.Client) error {
+func SearchUsers(c echo.Context, client *supabase.Client) error {
 	username := c.QueryParam("username")
 	rep, _, err := client.From("User").Select("userid, username", "", false).Like("username", "%"+username+"%").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var users []map[string]any
 	err = json.Unmarshal([]byte(rep), &users)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", users)
+	return config.JsonResponse(c, http.StatusOK, "", users)
 }
 
-func createUserToken(userid string) string {
+func CreateUserToken(userid string) string {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"userid":     userid,
@@ -89,7 +97,7 @@ func createUserToken(userid string) string {
 	return token
 }
 
-func createPasswordResetToken(email string) string {
+func CreatePasswordResetToken(email string) string {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"email":      email,
@@ -102,7 +110,7 @@ func createPasswordResetToken(email string) string {
 	return token
 }
 
-func createPasswordResetOTP(email string) string {
+func CreatePasswordResetOTP(email string) string {
 	const digits = "0123456789"
 	const otpLen = 6
 	code := make([]byte, otpLen)
@@ -113,11 +121,11 @@ func createPasswordResetOTP(email string) string {
 	return string(code)
 }
 
-func verifyOAuthToken(c echo.Context, client *supabase.Client) error {
+func VerifyOAuthToken(c echo.Context, client *supabase.Client) error {
 	header := c.Request().Header
 	auth := header["Authorization"]
 	if len(auth) == 0 {
-		return jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
 	}
 	rawToken := strings.Split(auth[0], " ")
 
@@ -126,33 +134,33 @@ func verifyOAuthToken(c echo.Context, client *supabase.Client) error {
 	// Find userid by email in the database
 	rep, _, err := client.From("User").Select("userid", "", false).Eq("email", email).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
 	}
 	var user map[string]string
 	err = json.Unmarshal([]byte(rep), &user)
 	if err != nil {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
 	}
 	userid, ok := user["userid"]
 	if !ok {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
 	}
-	return jsonResponse(c, http.StatusOK, "", map[string]string{
+	return config.JsonResponse(c, http.StatusOK, "", map[string]string{
 		"userid": userid,
-		"token":  createUserToken(userid),
+		"token":  CreateUserToken(userid),
 	})
 }
 
-func verifyToken(c echo.Context) error {
+func VerifyToken(c echo.Context) error {
 	header := c.Request().Header
 	auth := header["Authorization"]
 	if len(auth) == 0 {
-		return jsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Require Authorization header", "")
 	}
 
 	rawToken := strings.Split(auth[0], " ")
 	if len(rawToken) < 2 {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Invalid Authorization header", "")
 	}
 
 	token := rawToken[1]
@@ -161,17 +169,17 @@ func verifyToken(c echo.Context) error {
 		return []byte(gvSecret), nil
 	})
 	if err != nil {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
 	}
 
 	if !raw.Valid {
-		return jsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Invalid token", "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func verifyPasswordResetToken(c echo.Context, client *supabase.Client) map[string]any {
+func VerifyPasswordResetToken(c echo.Context, client *supabase.Client) map[string]any {
 	// email := c.FormValue("email")
 	// otp := c.FormValue("otp")
 	email := c.QueryParam("email")
@@ -194,7 +202,7 @@ func verifyPasswordResetToken(c echo.Context, client *supabase.Client) map[strin
 	return user
 }
 
-func verifyUserToken(c echo.Context) (string, error) {
+func VerifyUserToken(c echo.Context) (string, error) {
 	header := c.Request().Header
 	auth := header["Authorization"]
 	if len(auth) == 0 {
@@ -234,7 +242,7 @@ func verifyUserToken(c echo.Context) (string, error) {
 	return userid, nil
 }
 
-func login(c echo.Context, client *supabase.Client) error {
+func Login(c echo.Context, client *supabase.Client) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
 	fmt.Println("")
@@ -242,57 +250,57 @@ func login(c echo.Context, client *supabase.Client) error {
 	hashPassword := hex.EncodeToString(checkSum[:])
 	rep, _, err := client.From("User").Select("userid, type", "", false).Eq("email", email).Eq("hashpassword", hashPassword).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid email or password" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid email or password" /*err.Error()*/, "")
 	}
 
 	var user map[string]string
 	err = json.Unmarshal([]byte(rep), &user)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
-	// return jsonResponse(c, http.StatusOK, "", createUserToken(userid["userid"]))
+	// return config.JsonResponse(c, http.StatusOK, "", CreateUserToken(userid["userid"]))
 	// Return the user ID and token
-	return jsonResponse(c, http.StatusOK, "", map[string]string{
+	return config.JsonResponse(c, http.StatusOK, "", map[string]string{
 		"userid": user["userid"],
-		"token":  createUserToken(user["userid"]),
+		"token":  CreateUserToken(user["userid"]),
 	})
 }
 
-func getGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
+func GetGamesWithStatus(c echo.Context, client *supabase.Client, userid string, status string) error {
 	rep, _, err := client.From("User_Game").Select("Game(gameid)", "", false).Eq("userid", userid).Eq("status", status).ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var user []map[string]any
 	err = json.Unmarshal([]byte(rep), &user)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
 	}
-	return jsonResponse(c, http.StatusOK, "", user)
+	return config.JsonResponse(c, http.StatusOK, "", user)
 }
 
-func addGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
+func AddGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
 	_, _, err := client.From("User_Game").Insert(userGame, false, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	// TODO: "return" field
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func removeGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
+func RemoveGameWithStatus(c echo.Context, client *supabase.Client, userGame map[string]string) error {
 	_, _, err := client.From("User_Game").Delete("", "").Eq("userid", userGame["userid"]).Eq("gameid", userGame["gameid"]).Eq("status", userGame["status"]).ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	// TODO: "return" field
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error {
+func GetOwnedPost(c echo.Context, client *supabase.Client, userid string) error {
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
 	if err != nil || limit <= 0 {
 		limit = 10
@@ -309,23 +317,23 @@ func getOwnedPost(c echo.Context, client *supabase.Client, userid string) error 
 		Limit(limit, "").
 		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var posts []map[string]any
 	err = json.Unmarshal([]byte(rep), &posts)
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse posts", "")
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse posts", "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", posts)
+	return config.JsonResponse(c, http.StatusOK, "", posts)
 }
 
 // function to add playtime data
-func addPlaytimeData(c echo.Context, client *supabase.Client) error {
-	userid, err := verifyUserToken(c)
+func AddPlaytimeData(c echo.Context, client *supabase.Client) error {
+	userid, err := VerifyUserToken(c)
 	if err != nil {
-		return jsonResponse(c, http.StatusUnauthorized, "Please login", "")
+		return config.JsonResponse(c, http.StatusUnauthorized, "Please login", "")
 	}
 
 	begin := c.FormValue("begin")
@@ -339,13 +347,13 @@ func addPlaytimeData(c echo.Context, client *supabase.Client) error {
 
 	_, _, err = client.From("User_Playtime").Insert(data, false, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "Playtime data added successfully", "")
+	return config.JsonResponse(c, http.StatusOK, "Playtime data added successfully", "")
 }
 
-func getPlaytimeData(c echo.Context, client *supabase.Client, userid string) error {
+func GetPlaytimeData(c echo.Context, client *supabase.Client, userid string) error {
 	startDate := c.QueryParam("startDate")
 	endDate := c.QueryParam("endDate")
 
@@ -363,34 +371,34 @@ func getPlaytimeData(c echo.Context, client *supabase.Client, userid string) err
 
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var playtimeData []map[string]any
 	err = json.Unmarshal([]byte(rep), &playtimeData)
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse playtime data", "")
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse playtime data", "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", playtimeData)
+	return config.JsonResponse(c, http.StatusOK, "", playtimeData)
 }
 
-func updateUser(c echo.Context, client *supabase.Client) error {
+func UpdateUser(c echo.Context, client *supabase.Client) error {
 	userid := c.Param("id")
 
 	rep, _, err := client.From("User").Select("userid", "", false).Eq("userid", userid).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusNotFound, "User not found!", err.Error())
+		return config.JsonResponse(c, http.StatusNotFound, "User not found!", err.Error())
 	}
 
 	var userData map[string]any
 	if err := json.Unmarshal([]byte(rep), &userData); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse game data!", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse game data!", err.Error())
 	}
 
 	userID, ok := userData["userid"].(string)
 	if !ok || userID == "" {
-		return jsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
+		return config.JsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
 	}
 
 	updates := map[string]any{}
@@ -404,20 +412,20 @@ func updateUser(c echo.Context, client *supabase.Client) error {
 	if len(updates) > 0 {
 		_, _, err := client.From("User").Update(updates, "", "").Eq("userid", userid).ExecuteString()
 		if err != nil {
-			return jsonResponse(c, http.StatusInternalServerError, "Failed to update user information", err.Error())
+			return config.JsonResponse(c, http.StatusInternalServerError, "Failed to update user information", err.Error())
 		}
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func recoverPassword(c echo.Context, client *supabase.Client) error {
+func RecoverPassword(c echo.Context, client *supabase.Client) error {
 	email := c.QueryParam("email")
-	otp := createPasswordResetOTP(email)
+	otp := CreatePasswordResetOTP(email)
 
 	_, _, err := client.From("Password_Reset_Token").Upsert(map[string]string{"email": email, "otp": otp, "expiredtime": time.Now().Add(time.Minute * 10).Format(time.RFC3339)}, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	htmlTemplate := `<!DOCTYPE html>
@@ -509,9 +517,9 @@ func recoverPassword(c echo.Context, client *supabase.Client) error {
 
 	body, _ = io.ReadAll(res.Body)
 	if res.StatusCode != http.StatusOK {
-		return jsonResponse(c, http.StatusBadRequest, "Send failed", string(body))
+		return config.JsonResponse(c, http.StatusBadRequest, "Send failed", string(body))
 	}
 	fmt.Println("Sent:", string(body))
 
-	return jsonResponse(c, http.StatusOK, "", "An email has sent to email "+email)
+	return config.JsonResponse(c, http.StatusOK, "", "An email has sent to email "+email)
 }

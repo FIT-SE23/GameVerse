@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"crypto/sha256"
@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"render/config"
 	"slices"
 	"sort"
 	"strconv"
@@ -18,7 +19,19 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
-func addResources(client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
+type Game struct {
+	GamID            string `json:"gameid" db:"gameid"`
+	PublisherID      string `json:"publisherid" db:"publisherid"`
+	Name             string `json:"name" db:"name"`
+	Description      string `json:"description" db:"description"`
+	Recommend        int    `json:"recommend" db:"recommend"`
+	ReleaseDate      string `json:"releasedate" db:"releasedate"`
+	Requirement      string `json:"requirement" db:"requirement"`
+	BriefDescription string `json:"briefdescription" db:"briefdescription"`
+	IsVerified       bool   `json:"isverified" db:"isverified"`
+}
+
+func AddResources(client *supabase.Client, userID string, gameID string, bucketId string, files []*multipart.FileHeader, resourceType string) []string {
 	errFiles := []string{}
 	h := sha256.New()
 	for _, file := range files {
@@ -99,7 +112,7 @@ func addResources(client *supabase.Client, userID string, gameID string, bucketI
 	return errFiles
 }
 
-func deleteResources(client *supabase.Client, bucketId string, resourceIDs []string) []string {
+func DeleteResources(client *supabase.Client, bucketId string, resourceIDs []string) []string {
 	var errorResources []string
 	var toDelete []string
 
@@ -164,15 +177,15 @@ func deleteResources(client *supabase.Client, bucketId string, resourceIDs []str
 	return errorResources
 }
 
-func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
-	userid, err := verifyUserToken(c)
+func AddGame(c echo.Context, client *supabase.Client, bucketId string) error {
+	userid, err := VerifyUserToken(c)
 	if err != nil {
 		fmt.Println(err.Error())
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	publisherID := userid
 	if publisherID == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Require publisherID", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Require publisherID", "")
 	}
 
 	// TODO: Check game's name length
@@ -192,58 +205,58 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	}
 	_, _, err = client.From("Game").Insert(game, false, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	rep, _, err := client.From("Game").Select("gameid", "", false).Eq("publisherid", publisherID).Eq("name", gameName).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	var gameID map[string]string
 	err = json.Unmarshal([]byte(rep), &gameID)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Game uploaded but database does not return the id" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Game uploaded but database does not return the id" /*err.Error()*/, "")
 	}
 	userID := publisherID
 
 	// https://echo.labstack.com/docs/cookbook/file-upload
 	form, err := c.MultipartForm()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	files := form.File["binary"]
-	errFiles := addResources(client, userID, gameID["gameid"], bucketId, files, "binary")
+	errFiles := AddResources(client, userID, gameID["gameid"], bucketId, files, "binary")
 	if len(errFiles) > 0 {
-		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+		return config.JsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
 	files = form.File["media"]
-	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "media")
+	errFiles = AddResources(client, userID, gameID["gameid"], bucketId, files, "media")
 	if len(errFiles) > 0 {
-		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+		return config.JsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
 	files = form.File["media_header"]
-	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "media_header")
+	errFiles = AddResources(client, userID, gameID["gameid"], bucketId, files, "media_header")
 	if len(errFiles) > 0 {
-		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+		return config.JsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
 	files = form.File["executable"]
-	errFiles = addResources(client, userID, gameID["gameid"], bucketId, files, "executable")
+	errFiles = AddResources(client, userID, gameID["gameid"], bucketId, files, "executable")
 	if len(errFiles) > 0 {
-		return jsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
+		return config.JsonResponse(c, http.StatusBadRequest, "Upload failed. Maybe the files do not exist or have been added or cannot link gameid with resourceid", errFiles)
 	}
 
 	rep, _, err = client.From("Category").Select("", "", false).ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var knownCategories []map[string]any
 	err = json.Unmarshal([]byte(rep), &knownCategories)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	categories := strings.Split(c.FormValue("categories"), ",")
@@ -271,7 +284,7 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	}
 
 	if len(errCat) > 0 {
-		return jsonResponse(c, http.StatusBadRequest, "Unknown categories", errCat)
+		return config.JsonResponse(c, http.StatusBadRequest, "Unknown categories", errCat)
 	}
 
 	forum := map[string]string{
@@ -279,15 +292,15 @@ func addGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	}
 	_, _, err = client.From("Forum").Insert(forum, false, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func getGame(c echo.Context, client *supabase.Client) error {
+func GetGame(c echo.Context, client *supabase.Client) error {
 	columns := "*, Category(categoryname), Resource(url, type), Game_Sale(*)"
-	_, err := verifyUserToken(c)
+	_, err := VerifyUserToken(c)
 	if err == nil {
 		columns += ", User_Game(status)"
 	}
@@ -298,18 +311,18 @@ func getGame(c echo.Context, client *supabase.Client) error {
 	filter := client.From("Game").Select(columns, "", false).Eq("gameid", gameID).In("Resource.type", []string{"media_header", "media"})
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	var gameBasicInfo []map[string]any
 	err = json.Unmarshal([]byte(rep), &gameBasicInfo)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid gameid or the return value datatype does not match with gameBasicInfo datatype" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid gameid or the return value datatype does not match with gameBasicInfo datatype" /*err.Error()*/, "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", gameBasicInfo)
+	return config.JsonResponse(c, http.StatusOK, "", gameBasicInfo)
 }
 
-func searchGames(c echo.Context, client *supabase.Client) error {
+func SearchGames(c echo.Context, client *supabase.Client) error {
 	gamename := c.QueryParam("gamename")
 	sortBy := c.QueryParam("sortby")
 	categories := c.QueryParam("categories")
@@ -317,14 +330,14 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	onSale := c.QueryParam("onsale") == "1"
 
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	cnt, err := strconv.Atoi(c.QueryParam("cnt"))
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	if start < 0 || cnt < 0 {
-		return jsonResponse(c, http.StatusBadRequest, "", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "", "")
 	}
 
 	rep := client.Rpc("searchgames", "", map[string]any{"gname": gamename, "categories": "{" + categories + "}", "start": start, "cnt": cnt, "onsale": onSale, "sortby": sortBy})
@@ -335,7 +348,7 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 	err = json.Unmarshal([]byte(rep), &games)
 	if err != nil {
 		fmt.Println(rep)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "[]")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "[]")
 	}
 
 	for _, game := range games {
@@ -395,25 +408,25 @@ func searchGames(c echo.Context, client *supabase.Client) error {
 		}
 	}
 
-	return jsonResponse(c, http.StatusOK, "", games)
+	return config.JsonResponse(c, http.StatusOK, "", games)
 }
 
-func updateGame(c echo.Context, client *supabase.Client, bucketId string) error {
+func UpdateGame(c echo.Context, client *supabase.Client, bucketId string) error {
 	gameID := c.Param("id")
 
 	rep, _, err := client.From("Game").Select("publisherid", "", false).Eq("gameid", gameID).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusNotFound, "Game not found!", err.Error())
+		return config.JsonResponse(c, http.StatusNotFound, "Game not found!", err.Error())
 	}
 
 	var gameData map[string]interface{}
 	if err := json.Unmarshal([]byte(rep), &gameData); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse game data!", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse game data!", err.Error())
 	}
 
 	userID, ok := gameData["publisherid"].(string)
 	if !ok || userID == "" {
-		return jsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
+		return config.JsonResponse(c, http.StatusInternalServerError, "Could not determine the publisher of this game!", nil)
 	}
 
 	errorReport := make(map[string]any)
@@ -438,7 +451,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	if len(updates) > 0 {
 		_, _, err := client.From("Game").Update(updates, "", "").Eq("gameid", gameID).ExecuteString()
 		if err != nil {
-			return jsonResponse(c, http.StatusInternalServerError, "Failed to update game metadata!", err.Error())
+			return config.JsonResponse(c, http.StatusInternalServerError, "Failed to update game metadata!", err.Error())
 		}
 	}
 
@@ -450,13 +463,13 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 		if len(newCats) > 0 {
 			rep, _, err := client.From("Category").Select("", "", false).ExecuteString()
 			if err != nil {
-				return jsonResponse(c, http.StatusInternalServerError, "Failed to fetch categories!", err.Error())
+				return config.JsonResponse(c, http.StatusInternalServerError, "Failed to fetch categories!", err.Error())
 			}
 
 			var knownCategories []map[string]any
 			err = json.Unmarshal([]byte(rep), &knownCategories)
 			if err != nil {
-				return jsonResponse(c, http.StatusInternalServerError, "Failed to parse categories!", err.Error())
+				return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse categories!", err.Error())
 			}
 
 			errCat := []string{}
@@ -492,7 +505,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	if replaceRaw != "" {
 		err := json.Unmarshal([]byte(replaceRaw), &toDelete)
 		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
+			return config.JsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
 		}
 		if len(toDelete) > 0 {
 			// Verify resources belong to this game before deletion
@@ -509,7 +522,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 				}
 
 				if len(toDelete) > 0 {
-					failed := deleteResources(client, bucketId, toDelete)
+					failed := DeleteResources(client, bucketId, toDelete)
 					if len(failed) > 0 {
 						errorReport["failed_deletions"] = failed
 					}
@@ -520,12 +533,12 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 
 	form, err := c.MultipartForm()
 	if err != nil && err != http.ErrNotMultipart {
-		return jsonResponse(c, http.StatusBadRequest, "Failed to parse form data!", err.Error())
+		return config.JsonResponse(c, http.StatusBadRequest, "Failed to parse form data!", err.Error())
 	}
 	if form != nil {
 		files := form.File["binary"]
 		if len(files) > 0 {
-			errFiles := addResources(client, userID, gameID, bucketId, files, "binary")
+			errFiles := AddResources(client, userID, gameID, bucketId, files, "binary")
 			if len(errFiles) > 0 {
 				errorReport["failed_binary"] = errFiles
 			}
@@ -533,7 +546,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 
 		files = form.File["media"]
 		if len(files) > 0 {
-			errFiles := addResources(client, userID, gameID, bucketId, files, "media")
+			errFiles := AddResources(client, userID, gameID, bucketId, files, "media")
 			if len(errFiles) > 0 {
 				errorReport["failed_media"] = errFiles
 			}
@@ -541,7 +554,7 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 
 		files = form.File["executable"]
 		if len(files) > 0 {
-			errFiles := addResources(client, userID, gameID, bucketId, files, "executable")
+			errFiles := AddResources(client, userID, gameID, bucketId, files, "executable")
 			if len(errFiles) > 0 {
 				errorReport["failed_executable"] = errFiles
 			}
@@ -549,16 +562,16 @@ func updateGame(c echo.Context, client *supabase.Client, bucketId string) error 
 	}
 
 	if len(errorReport) > 0 {
-		return jsonResponse(c, http.StatusPartialContent, "Some errors occur", errorReport)
+		return config.JsonResponse(c, http.StatusPartialContent, "Some errors occur", errorReport)
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func recommendGame(c echo.Context, client *supabase.Client, userID string) error {
+func RecommendGame(c echo.Context, client *supabase.Client, userID string) error {
 	gameID := c.FormValue("gameid")
 	if gameID == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
 	}
 
 	vote := map[string]string{
@@ -580,9 +593,9 @@ func recommendGame(c echo.Context, client *supabase.Client, userID string) error
 			Match(vote).
 			ExecuteString()
 		if err != nil {
-			return jsonResponse(c, http.StatusInternalServerError, "Failed to remove recommend", err.Error())
+			return config.JsonResponse(c, http.StatusInternalServerError, "Failed to remove recommend", err.Error())
 		}
-		return jsonResponse(c, http.StatusOK, "", "")
+		return config.JsonResponse(c, http.StatusOK, "", "")
 	}
 
 	_, _, err = client.
@@ -590,14 +603,14 @@ func recommendGame(c echo.Context, client *supabase.Client, userID string) error
 		Insert(vote, false, "", "", "").
 		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to add recommend", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to add recommend", err.Error())
 	}
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func isRecommended(c echo.Context, client *supabase.Client, userID string, gameID string) error {
+func IsRecommended(c echo.Context, client *supabase.Client, userID string, gameID string) error {
 	if gameID == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
 	}
 
 	vote := map[string]string{
@@ -612,23 +625,23 @@ func isRecommended(c echo.Context, client *supabase.Client, userID string, gameI
 		ExecuteString()
 	if err != nil {
 		fmt.Println(err.Error())
-		return jsonResponse(c, http.StatusOK, "", false)
+		return config.JsonResponse(c, http.StatusOK, "", false)
 	}
 
 	var result []map[string]any
 	err = json.Unmarshal([]byte(rep), &result)
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
 	}
 	fmt.Println(result, len(result))
 
-	return jsonResponse(c, http.StatusOK, "", len(result) == 1)
+	return config.JsonResponse(c, http.StatusOK, "", len(result) == 1)
 }
 
-func downloadGame(c echo.Context, client *supabase.Client, userID string) error {
+func DownloadGame(c echo.Context, client *supabase.Client, userID string) error {
 	gameID := c.FormValue("gameid")
 	if gameID == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Missing game ID", "")
 	}
 
 	_, _, err := client.From("User_Game").
@@ -639,7 +652,7 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 		Single().
 		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusForbidden, "User doesn't own this game", "")
+		return config.JsonResponse(c, http.StatusForbidden, "User doesn't own this game", "")
 	}
 
 	rawIDs := c.FormValue("resourceids")
@@ -647,7 +660,7 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 	if rawIDs != "" {
 		err := json.Unmarshal([]byte(rawIDs), &resourceIDs)
 		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
+			return config.JsonResponse(c, http.StatusBadRequest, "Invalid resourceids format", err.Error())
 		}
 		sort.Strings(resourceIDs)
 	}
@@ -657,7 +670,7 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 	var resources []map[string]string
 	if err := json.Unmarshal([]byte(rep), &resources); err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
+		return config.JsonResponse(c, http.StatusInternalServerError, "Invalid response format", "")
 	}
 	resources = slices.DeleteFunc(resources, func(resource map[string]string) bool {
 		return resource["type"] != "binary" && resource["type"] != "executable"
@@ -670,5 +683,5 @@ func downloadGame(c echo.Context, client *supabase.Client, userID string) error 
 		})
 	}
 
-	return jsonResponse(c, http.StatusOK, "", resources)
+	return config.JsonResponse(c, http.StatusOK, "", resources)
 }

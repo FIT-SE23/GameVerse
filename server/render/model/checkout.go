@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"bytes"
@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"render/config"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,7 +24,7 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
-func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid string, paymentMethodId string) (int, map[string]any) {
+func MoveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid string, paymentMethodId string) (int, map[string]any) {
 	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
@@ -96,7 +97,7 @@ func moveBoughtGamesToLibrary(c echo.Context, client *supabase.Client, userid st
 	return http.StatusOK, map[string]any{"game": names, "total": total, "username": user["username"]}
 }
 
-func genCheckoutPage(info map[string]any) string {
+func GenCheckoutPage(info map[string]any) string {
 	template := `<html>
   <head>
     <meta charset="UTF-8">
@@ -195,7 +196,7 @@ func genCheckoutPage(info map[string]any) string {
 	return fmt.Sprintf(template, content)
 }
 
-func getAccessToken(id string, secret string) string {
+func GetAccessToken(id string, secret string) string {
 	url := "https://api-m.sandbox.paypal.com/v1/oauth2/token"
 	data := []byte("grant_type=client_credentials")
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
@@ -239,14 +240,14 @@ func getAccessToken(id string, secret string) string {
 	}
 }
 
-func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
+func CreatePaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
 	test := os.Getenv("test")
 	if test != "" {
 		url := "https://example.com"
 		if test != "REDIRECT" {
 			url = ""
 		}
-		return jsonResponse(c, http.StatusBadRequest, "Test", url)
+		return config.JsonResponse(c, http.StatusBadRequest, "Test", url)
 	}
 
 	serverURL := os.Getenv("SERVER_URL")
@@ -257,9 +258,9 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 	url := "https://api-m.sandbox.paypal.com/v1/payments/payment"
 	id := os.Getenv("PP_ID")
 	secret := os.Getenv("PP_SECRET")
-	accessToken := getAccessToken(id, secret)
+	accessToken := GetAccessToken(id, secret)
 	if accessToken == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Cannot get access token", "")
 	}
 
 	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
@@ -267,7 +268,7 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 	var items []map[string]string
 	err := json.Unmarshal([]byte(rep), &items)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
 	}
 
 	total := 0.0
@@ -319,13 +320,13 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 	jsonData, err := json.Marshal(paymentData)
 	if err != nil {
 		fmt.Println("Error marshalling JSON:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Println("Error creating request:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	// Set the headers
@@ -335,35 +336,35 @@ func createPaypalReceipt(c echo.Context, client *supabase.Client, userid string)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var result map[string]any
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		fmt.Println(err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	if result["state"] == nil {
-		return jsonResponse(c, http.StatusBadRequest, "Cannot create receipt", result["details"])
+		return config.JsonResponse(c, http.StatusBadRequest, "Cannot create receipt", result["details"])
 	}
 
 	links, ok := result["links"].([]map[string]any)
 	if !ok {
-		return jsonResponse(c, http.StatusOK, "", result["links"])
+		return config.JsonResponse(c, http.StatusOK, "", result["links"])
 	}
-	return jsonResponse(c, http.StatusOK, "", links[1])
+	return config.JsonResponse(c, http.StatusOK, "", links[1])
 }
 
-func checkPaypalPaymentIdValid(accessToken string, paymentId string) (bool, error) {
+func CheckPaypalPaymentIdValid(accessToken string, paymentId string) (bool, error) {
 	url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -402,7 +403,7 @@ func checkPaypalPaymentIdValid(accessToken string, paymentId string) (bool, erro
 	return state != "approved", nil
 }
 
-func checkoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]any) {
+func CheckoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]any) {
 	test := os.Getenv("test")
 	if test != "" {
 		status := http.StatusOK
@@ -416,12 +417,12 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]an
 	id := os.Getenv("PP_ID")
 	secret := os.Getenv("PP_SECRET")
 	url := "https://api.sandbox.paypal.com/v1/payments/payment/" + paymentId + "/execute"
-	accessToken := getAccessToken(id, secret)
+	accessToken := GetAccessToken(id, secret)
 	if accessToken == "" {
 		return http.StatusInternalServerError, map[string]any{}
 	}
 
-	if valid, err := checkPaypalPaymentIdValid(accessToken, paymentId); !valid || err != nil {
+	if valid, err := CheckPaypalPaymentIdValid(accessToken, paymentId); !valid || err != nil {
 		return http.StatusBadRequest, map[string]any{}
 	}
 	paymentData := map[string]any{
@@ -479,24 +480,24 @@ func checkoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]an
 		return http.StatusInternalServerError, map[string]any{}
 	}
 
-	return moveBoughtGamesToLibrary(c, client, userid, "a2f4772b-38ac-4fe2-b5a6-bead806c1221")
+	return MoveBoughtGamesToLibrary(c, client, userid, "a2f4772b-38ac-4fe2-b5a6-bead806c1221")
 }
 
-func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) error {
+func CreateVnpayReceipt(c echo.Context, client *supabase.Client, userid string) error {
 	test := os.Getenv("test")
 	if test != "" {
 		url := "https://example.com"
 		if test != "REDIRECT" {
 			url = ""
 		}
-		return jsonResponse(c, http.StatusBadRequest, "Test", url)
+		return config.JsonResponse(c, http.StatusBadRequest, "Test", url)
 	}
 	rep := client.Rpc("listgamesincart", "", map[string]string{"id": userid})
 
 	var items []map[string]string
 	err := json.Unmarshal([]byte(rep), &items)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Empty list" /*err.Error()*/, "")
 	}
 
 	total := 0.0
@@ -568,7 +569,7 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 	req, err := http.NewRequest("GET", vnpayUrl+queryString, bytes.NewBuffer([]byte{}))
 	if err != nil {
 		fmt.Println("Error creating request:", err)
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -585,10 +586,10 @@ func createVnpayReceipt(c echo.Context, client *supabase.Client, userid string) 
 		}
 	*/
 
-	return jsonResponse(c, http.StatusOK, "", vnpayUrl+queryString)
+	return config.JsonResponse(c, http.StatusOK, "", vnpayUrl+queryString)
 }
 
-func checkVNPPaymentIdValid(c echo.Context) (bool, error) {
+func CheckVNPPaymentIdValid(c echo.Context) (bool, error) {
 	hostName, err := os.Hostname()
 	if err != nil {
 		fmt.Println("Hostname", err)
@@ -673,7 +674,7 @@ func checkVNPPaymentIdValid(c echo.Context) (bool, error) {
 	return response["vnp_ResponseCode"] == "00", nil
 }
 
-func checkoutVnpay(c echo.Context, client *supabase.Client) (int, map[string]any) {
+func CheckoutVnpay(c echo.Context, client *supabase.Client) (int, map[string]any) {
 	test := os.Getenv("test")
 	if test != "" {
 		status := http.StatusOK
@@ -691,10 +692,10 @@ func checkoutVnpay(c echo.Context, client *supabase.Client) (int, map[string]any
 		}
 
 		userid := refList[0]
-		if valid, err := checkVNPPaymentIdValid(c); !valid || err != nil {
+		if valid, err := CheckVNPPaymentIdValid(c); !valid || err != nil {
 			return http.StatusBadRequest, map[string]any{}
 		}
-		return moveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
+		return MoveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
 	}
 	transactionStatus := c.QueryParam("vnp_TransactionStatus")
 	return http.StatusBadGateway, map[string]any{"responsecode": responseCode, "transactionstatus": transactionStatus}

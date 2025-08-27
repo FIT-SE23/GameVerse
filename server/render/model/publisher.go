@@ -1,15 +1,26 @@
-package main
+package model
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"render/config"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
 
-func getPublisher(c echo.Context, client *supabase.Client) error {
+type Publisher struct {
+	PublisherID       string    `json:"publisherid" db:"publisherid"`
+	PaymentMethodID   string    `json:"paymentmethodid" db:"paymentmethodid"`
+	Description       string    `json:"description" db:"description"`
+	PaymentCardNumber string    `json:"paymentcardnumber" db:"paymentcardnumber"`
+	Date              time.Time `json:"date" db:"date"`
+	IsVerified        string    `json:"isverified" db:"isverified"`
+}
+
+func GetPublisher(c echo.Context, client *supabase.Client) error {
 	publisherid := c.Param("id")
 
 	rep, _, err := client.From("Publisher").Select("*", "", false).Eq("publisherid", publisherid).Single().ExecuteString()
@@ -17,7 +28,7 @@ func getPublisher(c echo.Context, client *supabase.Client) error {
 	var publisher map[string]any
 	err = json.Unmarshal([]byte(rep), &publisher)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid publisherid", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid publisherid", "")
 	}
 	publisher["game"] = []any{}
 
@@ -26,19 +37,19 @@ func getPublisher(c echo.Context, client *supabase.Client) error {
 		var games []map[string]any
 		err = json.Unmarshal([]byte(rep), &games)
 		if err != nil {
-			return jsonResponse(c, http.StatusBadRequest, "Invalid publisherid" /*err.Error()*/, "")
+			return config.JsonResponse(c, http.StatusBadRequest, "Invalid publisherid" /*err.Error()*/, "")
 		}
 		publisher["game"] = games
 	}
 
-	return jsonResponse(c, http.StatusOK, "", publisher)
+	return config.JsonResponse(c, http.StatusOK, "", publisher)
 }
 
-func addPublisher(c echo.Context, client *supabase.Client) error {
-	userid, err := verifyUserToken(c)
+func AddPublisher(c echo.Context, client *supabase.Client) error {
+	userid, err := VerifyUserToken(c)
 	if err != nil {
 		fmt.Println(err.Error())
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 	paymentMethodID := c.FormValue("paymentmethodid")
 	description := c.FormValue("description")
@@ -53,18 +64,18 @@ func addPublisher(c echo.Context, client *supabase.Client) error {
 	}
 	_, _, err = client.From("Publisher").Insert(publisher, false, "", "", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func updatePublisher(c echo.Context, client *supabase.Client) error {
+func UpdatePublisher(c echo.Context, client *supabase.Client) error {
 	publisherID := c.Param("id")
 
 	_, _, err := client.From("Publisher").Select("publisherid", "", false).Eq("publisherid", publisherID).Single().ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	paymentMethodID := c.FormValue("paymentmethodid")
@@ -73,7 +84,7 @@ func updatePublisher(c echo.Context, client *supabase.Client) error {
 	isVerified := c.FormValue("isverified")
 
 	if paymentMethodID == "" && description == "" && paymentCardNumber == "" && isVerified == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Nothing to update", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Nothing to update", "")
 	}
 
 	updates := map[string]any{}
@@ -92,8 +103,8 @@ func updatePublisher(c echo.Context, client *supabase.Client) error {
 
 	_, _, err = client.From("Publisher").Update(updates, "", "").Eq("publisherid", publisherID).ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }

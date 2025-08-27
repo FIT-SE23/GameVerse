@@ -1,44 +1,54 @@
-package main
+package model
 
 import (
 	"encoding/json"
 	"net/http"
+	"render/config"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/supabase-community/supabase-go"
 	"github.com/supabase-community/postgrest-go"
+	"github.com/supabase-community/supabase-go"
 )
 
-func getPost(c echo.Context, client *supabase.Client) error {
+type Post struct {
+	PostID   string    `json:"postid" db:"postid"`
+	UserID   string    `json:"userid" db:"userid"`
+	ForumID  string    `json:"forumid" db:"forumid"`
+	Content  string    `json:"content" db:"content"`
+	PostDate time.Time `json:"postdate" db:"postdate"`
+	Title    string    `json:"title" db:"title"`
+}
+
+func GetPost(c echo.Context, client *supabase.Client) error {
 	postid := c.Param("id")
 
 	rep, _, err := client.
-			From("Post").
-			Select("*", "", false).
-			Eq("postid", postid).
-			Single().
-			ExecuteString()
-
+		From("Post").
+		Select("*", "", false).
+		Eq("postid", postid).
+		Single().
+		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var post map[string]any
 	err = json.Unmarshal([]byte(rep), &post)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid post" /*err.Error()*/, "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid post" /*err.Error()*/, "")
 	}
-	return jsonResponse(c, http.StatusOK, "", post)
+	return config.JsonResponse(c, http.StatusOK, "", post)
 }
 
-func addPost(c echo.Context, client *supabase.Client, userid string) error {
+func AddPost(c echo.Context, client *supabase.Client, userid string) error {
 	forumid := c.FormValue("forumid")
 	title := c.FormValue("title")
 	content := c.FormValue("content")
 
 	if forumid == "" || title == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Missing forumid or title", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Missing forumid or title", "")
 	}
 
 	post := map[string]any{
@@ -52,27 +62,27 @@ func addPost(c echo.Context, client *supabase.Client, userid string) error {
 
 	rep, _, err := client.From("Post").Insert(post, false, "", "representation", "").ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var results []map[string]any
 	if err := json.Unmarshal([]byte(rep), &results); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", "")
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse response", "")
 	}
 
 	if len(results) == 0 {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to return post", "")
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to return post", "")
 	}
 
 	postId, ok := results[0]["postid"].(string)
 	if !ok {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to get id from response", "")
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to get id from response", "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", postId)
+	return config.JsonResponse(c, http.StatusOK, "", postId)
 }
 
-func updatePost(c echo.Context, client *supabase.Client, userid string) error {
+func UpdatePost(c echo.Context, client *supabase.Client, userid string) error {
 	postid := c.Param("id")
 
 	rep, _, err := client.
@@ -81,25 +91,24 @@ func updatePost(c echo.Context, client *supabase.Client, userid string) error {
 		Eq("postid", postid).
 		Single().
 		ExecuteString()
-
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Post not found", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Post not found", "")
 	}
 
 	var postData map[string]any
 	if err := json.Unmarshal([]byte(rep), &postData); err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid post data", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid post data", "")
 	}
 
 	if postData["userid"] != userid {
-		return jsonResponse(c, http.StatusForbidden, "No authorization", "")
+		return config.JsonResponse(c, http.StatusForbidden, "No authorization", "")
 	}
 
 	content := c.FormValue("content")
 	title := c.FormValue("title")
 
 	if content == "" && title == "" {
-		return jsonResponse(c, http.StatusBadRequest, "No data", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "No data", "")
 	}
 
 	post := map[string]any{}
@@ -115,18 +124,17 @@ func updatePost(c echo.Context, client *supabase.Client, userid string) error {
 		Update(post, "", "").
 		Eq("postid", postid).
 		ExecuteString()
-
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func recommendPost(c echo.Context, client *supabase.Client, userid string) error {
+func RecommendPost(c echo.Context, client *supabase.Client, userid string) error {
 	postid := c.FormValue("postid")
 	if postid == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Missing post ID", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Missing post ID", "")
 	}
 
 	vote := map[string]string{
@@ -147,28 +155,26 @@ func recommendPost(c echo.Context, client *supabase.Client, userid string) error
 			Delete("", "").
 			Match(vote).
 			ExecuteString()
-
 		if err != nil {
-			return jsonResponse(c, http.StatusInternalServerError, "Failed to remove recommend", err.Error())
+			return config.JsonResponse(c, http.StatusInternalServerError, "Failed to remove recommend", err.Error())
 		}
-		return jsonResponse(c, http.StatusOK, "", "")
+		return config.JsonResponse(c, http.StatusOK, "", "")
 	}
 
 	_, _, err = client.
 		From("Post_Recommend").
 		Insert(vote, false, "", "", "").
 		ExecuteString()
-
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to add recommend", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to add recommend", err.Error())
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func isPostRecommended(c echo.Context, client *supabase.Client, userID string, postID string) error {
+func IsPostRecommended(c echo.Context, client *supabase.Client, userID string, postID string) error {
 	if postID == "" {
-		return jsonResponse(c, http.StatusBadRequest, "Missing post ID", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Missing post ID", "")
 	}
 
 	vote := map[string]string{
@@ -182,19 +188,19 @@ func isPostRecommended(c echo.Context, client *supabase.Client, userID string, p
 		Match(vote).
 		ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Cant query from database", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Cant query from database", err.Error())
 	}
 
 	var result []map[string]any
 	err = json.Unmarshal([]byte(rep), &result)
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse response", err.Error())
 	}
 
-	return jsonResponse(c, http.StatusOK, "", len(result) > 0)
+	return config.JsonResponse(c, http.StatusOK, "", len(result) > 0)
 }
 
-func deletePost(c echo.Context, client *supabase.Client, userid string) error {
+func DeletePost(c echo.Context, client *supabase.Client, userid string) error {
 	postid := c.Param("id")
 
 	rep, _, err := client.
@@ -203,18 +209,17 @@ func deletePost(c echo.Context, client *supabase.Client, userid string) error {
 		Eq("postid", postid).
 		Single().
 		ExecuteString()
-
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Post not found", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Post not found", "")
 	}
 
 	var post map[string]any
 	if err := json.Unmarshal([]byte(rep), &post); err != nil {
-		return jsonResponse(c, http.StatusBadRequest, "Invalid post data", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "Invalid post data", "")
 	}
 
 	if post["userid"] != userid {
-		return jsonResponse(c, http.StatusForbidden, "No authorization", "")
+		return config.JsonResponse(c, http.StatusForbidden, "No authorization", "")
 	}
 
 	_, _, err = client.
@@ -222,18 +227,17 @@ func deletePost(c echo.Context, client *supabase.Client, userid string) error {
 		Delete("", "").
 		Eq("postid", postid).
 		ExecuteString()
-
 	if err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to delete post", err.Error())
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to delete post", err.Error())
 	}
 
-	return jsonResponse(c, http.StatusOK, "", "")
+	return config.JsonResponse(c, http.StatusOK, "", "")
 }
 
-func searchPosts(c echo.Context, client *supabase.Client) error {
+func SearchPosts(c echo.Context, client *supabase.Client) error {
 	forumId := c.QueryParam("forumid")
 	if forumId == "" {
-		return jsonResponse(c, http.StatusBadRequest, "forumid is required", "")
+		return config.JsonResponse(c, http.StatusBadRequest, "forumid is required", "")
 	}
 
 	title := c.QueryParam("title")
@@ -265,13 +269,13 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	var posts []map[string]any
 	err = json.Unmarshal([]byte(rep), &posts)
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), "")
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), "")
 	}
 
 	for _, row := range posts {
@@ -283,10 +287,10 @@ func searchPosts(c echo.Context, client *supabase.Client) error {
 		delete(row, "Post_userid_fkey")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", posts)
+	return config.JsonResponse(c, http.StatusOK, "", posts)
 }
 
-func listComments(c echo.Context, client *supabase.Client, postid string) error {
+func ListComments(c echo.Context, client *supabase.Client, postid string) error {
 	sortBy := c.QueryParam("sortby")
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
 	if err != nil || limit <= 0 {
@@ -311,12 +315,12 @@ func listComments(c echo.Context, client *supabase.Client, postid string) error 
 
 	rep, _, err := filter.ExecuteString()
 	if err != nil {
-		return jsonResponse(c, http.StatusBadRequest, err.Error(), nil)
+		return config.JsonResponse(c, http.StatusBadRequest, err.Error(), nil)
 	}
 
 	var comments []map[string]any
 	if err := json.Unmarshal([]byte(rep), &comments); err != nil {
-		return jsonResponse(c, http.StatusInternalServerError, "Failed to parse comments", nil)
+		return config.JsonResponse(c, http.StatusInternalServerError, "Failed to parse comments", nil)
 	}
 
 	for _, row := range comments {
@@ -328,5 +332,6 @@ func listComments(c echo.Context, client *supabase.Client, postid string) error 
 		delete(row, "Comment_userid_fkey")
 	}
 
-	return jsonResponse(c, http.StatusOK, "", comments)
+	return config.JsonResponse(c, http.StatusOK, "", comments)
 }
+
