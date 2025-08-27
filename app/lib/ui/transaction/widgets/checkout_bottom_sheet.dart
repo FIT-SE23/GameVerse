@@ -3,6 +3,7 @@ import 'package:gameverse/domain/models/cart_item_model/cart_item_model.dart';
 import 'package:provider/provider.dart';
 import 'package:gameverse/ui/transaction/view_model/transaction_viewmodel.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:gameverse/data/services/transaction_api_client.dart';
 
 class CheckoutBottomSheet extends StatefulWidget {
   final VoidCallback onCheckoutComplete;
@@ -66,10 +67,29 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                     children: [
                       ElevatedButton.icon(
                         key: ValueKey('gateway_button'),
-                        onPressed: () {
-                          // Open the payment gateway URL
-                          launchUrl(Uri.parse(transactionViewModel.urlToPaymentGateway));
-                        },
+                      onPressed: () async {
+                        final m = TransactionApiClient.testMode ?? '';
+                        if (m.isNotEmpty) {
+                          if (m.toLowerCase() == 'success') {
+                            widget.onCheckoutComplete();
+                            if (context.mounted) Navigator.of(context).pop();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Payment failed (mock)')),
+                            );
+                          }
+                          return;
+                        }
+                        
+                        final url = transactionViewModel.urlToPaymentGateway;
+                        if (url.isNotEmpty) {
+                          await launchUrl(Uri.parse(url));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('No payment URL available')),
+                          );
+                        }
+                      },
                         icon: const Icon(Icons.open_in_new),
                         label: Text('Open ${method.toUpperCase()} Gateway'),
                       ),

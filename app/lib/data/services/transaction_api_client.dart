@@ -6,13 +6,24 @@ import 'package:gameverse/config/api_endpoints.dart';
 
 class TransactionApiClient {
   final http.Client _client;
-
   TransactionApiClient({http.Client? client}) : _client = client ?? http.Client();
 
-  // Get PayPal payment gateway URL
+  /// null hoặc ''
+  /// 'success'
+  /// 'fail'
+  static String? testMode;
+
+  Uri _buildUri(String path) {
+    final base = '${ApiEndpoints.baseUrl}$path';
+    final m = testMode;
+    if (m == null || m.isEmpty) return Uri.parse(base);
+    final sep = base.contains('?') ? '&' : '?';
+    return Uri.parse('$base${sep}test=$m');
+  }
+
   Future<Response> getPayPalPaymentGatewayUrl(String token) async {
     final raw = await http.post(
-      Uri.parse('${ApiEndpoints.baseUrl}/paypal/create'),
+      _buildUri('/paypal/create'),
       headers: <String, String>{"Authorization": "Bearer $token"},
     );
     final response = Response.fromJson(
@@ -20,7 +31,13 @@ class TransactionApiClient {
       jsonDecode(raw.body) as Map<String, dynamic>,
     );
 
+    if (testMode != null && testMode!.isNotEmpty) return response;
+
     if (response.code == 200) {
+      final data = response.data;
+      if (data is String) {
+        return Response(code: response.code, message: response.message, data: data);
+      }
       final links = response.data as List<dynamic>;
       for (final link in links) {
         final linkMap = link as Map<String, dynamic>;
@@ -38,18 +55,23 @@ class TransactionApiClient {
       {'message': 'Failed to fetch PayPal payment gateway URL'},
     );
   }
-  // Get VNPay payment gateway URL
+
   Future<Response> getVNPayPaymentGatewayUrl(String token) async {
-    final response = await _client.post(
-      Uri.parse('${ApiEndpoints.baseUrl}/vnpay/create'),
+    final raw = await _client.post(
+      _buildUri('/vnpay/create'),
       headers: <String, String>{"Authorization": "Bearer $token"},
     );
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
+    final jsonData = jsonDecode(raw.body);
+
+    if (testMode != null && testMode!.isNotEmpty) {
+      return Response.fromJson(raw.statusCode, jsonData as Map<String, dynamic>);
+    }
+
+    if (raw.statusCode == 200) {
       return Response.fromJson(200, jsonData as Map<String, dynamic>);
     } else {
       return Response.fromJson(
-        response.statusCode,
+        raw.statusCode,
         {'message': 'Failed to fetch VNPay payment gateway URL'},
       );
     }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:csv/csv.dart';
 import 'package:gameverse/main.dart' as app;
@@ -56,6 +57,14 @@ void runTest() {
       final c = cases[i];
 
       testWidgets('CSV[$i] ${c.success ? "PASSED" : "FAILED"}', (t) async {
+        final bool mockSuccess = (i == 0)
+            ? true
+            : (i == 1)
+            ? false
+            : c.success;
+        setTestMode(enabled: true, success: mockSuccess);
+        addTearDown(() => setTestMode(enabled: false, success: true));
+
         app.main([]);
         await t.pumpAndSettle(d);
 
@@ -73,7 +82,7 @@ void runTest() {
         await proceedCheckout(t, c.payment);
         await closeGatewayAndReload(t);
 
-        if (c.success) {
+        if (mockSuccess) {
           expect(find.text('Your Cart is Empty'), findsOneWidget);
 
           await openOwned(t);

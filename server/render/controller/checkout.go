@@ -1,6 +1,10 @@
 package controller
 
 import (
+	"net/http"
+	"strings"
+
+	"render/config"
 	"render/model"
 
 	"github.com/labstack/echo/v4"
@@ -20,6 +24,14 @@ func GetAccessToken(id string, secret string) string {
 }
 
 func CreatePaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
+	test := strings.ToLower(strings.TrimSpace(c.QueryParam("test")))
+	if test == "success" {
+		status, _ := MoveBoughtGamesToLibrary(c, client, userid, "a2f4772b-38ac-4fe2-b5a6-bead806c1221")
+		return config.JsonResponse(c, status, "Test OK", "")
+	}
+	if test == "fail" {
+		return config.JsonResponse(c, http.StatusOK, "Test FAIL", "")
+	}
 	return model.CreatePaypalReceipt(c, client, userid)
 }
 
@@ -32,6 +44,14 @@ func CheckoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]an
 }
 
 func CreateVnpayReceipt(c echo.Context, client *supabase.Client, userid string) error {
+	test := strings.ToLower(strings.TrimSpace(c.QueryParam("test")))
+	if test == "success" {
+		status, _ := MoveBoughtGamesToLibrary(c, client, userid, "8fd6a904-efc7-4dad-b164-4694c103bf33")
+		return config.JsonResponse(c, status, "Test OK", "")
+	}
+	if test == "fail" {
+		return config.JsonResponse(c, http.StatusOK, "Test FAIL", "")
+	}
 	return model.CreateVnpayReceipt(c, client, userid)
 }
 

@@ -241,15 +241,6 @@ func GetAccessToken(id string, secret string) string {
 }
 
 func CreatePaypalReceipt(c echo.Context, client *supabase.Client, userid string) error {
-	test := os.Getenv("test")
-	if test != "" {
-		url := "https://example.com"
-		if test != "REDIRECT" {
-			url = ""
-		}
-		return config.JsonResponse(c, http.StatusBadRequest, "Test", url)
-	}
-
 	serverURL := os.Getenv("SERVER_URL")
 	if serverURL == "" {
 		serverURL = "http://localhost:1323/"
@@ -404,14 +395,6 @@ func CheckPaypalPaymentIdValid(accessToken string, paymentId string) (bool, erro
 }
 
 func CheckoutPaypal(c echo.Context, client *supabase.Client) (int, map[string]any) {
-	test := os.Getenv("test")
-	if test != "" {
-		status := http.StatusOK
-		if test != "REDIRECT" {
-			status = http.StatusBadRequest
-		}
-		return status, nil
-	}
 	payerId := c.QueryParam("PayerID")
 	paymentId := c.QueryParam("paymentId")
 	id := os.Getenv("PP_ID")

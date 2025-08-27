@@ -7,7 +7,7 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
   group('Integration Tests', () {
-    // buy_game_csv.runTest();
+    buy_game_csv.runTest();
     // advanced_search.runTest();
   });
 }

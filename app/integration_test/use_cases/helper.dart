@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gameverse/data/services/transaction_api_client.dart';
 
 const d = Duration(seconds: 3);
+
+void setTestMode({required bool enabled, required bool success}) {
+  if (!enabled) {
+    TransactionApiClient.testMode = null;
+  } else {
+    TransactionApiClient.testMode = success ? 'success' : 'fail';
+  }
+}
 
 Future<void> login(
   WidgetTester t, {
