@@ -99,6 +99,7 @@ dev_dependencies:
   msix: ^3.16.9
   win32: ^5.14.0
   ffi: ^2.1.4
+  csv: ^5.0.2
 
 dependency_overrides:
   flutter_secure_storage_linux:

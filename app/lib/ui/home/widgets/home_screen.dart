@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // this is not in Padding because the background key art
                 // fills the window's width
                 GameSectionFancy(
+                  key: ValueKey('popular_games_section'),
                   title: 'Popular Games',
                   gameList: Provider.of<HomeViewModel>(context, listen: false).popularGames,
                   onSelect: () {
@@ -83,12 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               
                       // SizedBox(height: 32),
                       GameSectionHorizontal(
+                        key: ValueKey('new_games_section'),
                         title: 'Explore New Games',
                         gameList: Provider.of<HomeViewModel>(context, listen: false).newReleases,
                         onSelect: () {
                           // context.push('${Routes.advancedSearch}?sortBy=${GameSortCriteria.date}');
                         },
-                        scrollBarKey: ValueKey('new_games_scrollbar'),
                       ),
       
                       // SizedBox(height: 32),

@@ -159,7 +159,10 @@ class _GameSectionFancyState extends State<GameSectionFancy> {
                       children: [
                         Expanded(
                           flex: 7,
-                          child: GameCardBig(game: widget.gameList[currentGameIndex], height: defaultHeight),
+                          child: GameCardBig(
+                                key: ValueKey('big_card_${widget.gameList[currentGameIndex].name}'),
+                                game: widget.gameList[currentGameIndex], 
+                                height: defaultHeight),
                         ),
                   
                         const SizedBox(width: 32),

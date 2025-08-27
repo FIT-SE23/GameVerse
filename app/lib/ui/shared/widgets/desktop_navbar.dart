@@ -391,6 +391,7 @@ class _DesktopNavbarState extends State<DesktopNavbar> {
               ),
               const PopupMenuDivider(),
               const PopupMenuItem(
+                key: ValueKey('logout_button'),
                 value: 'logout',
                 mouseCursor: SystemMouseCursors.click,
                 child: ListTile(

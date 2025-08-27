@@ -111,6 +111,7 @@ class _GameSectionHorizontalState extends State<GameSectionHorizontal> {
                     itemBuilder: (context, index) {
                       final game = widget.gameList[index];
                       return GameCard(
+                        key: ValueKey(game.name),
                         game: game,
                         width: cardWidth(context),
                       );
